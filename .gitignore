@@ -38,3 +38,6 @@ jspm_packages
 
 # Webstorm directory
 .idea
+
+# Project generated files
+/src/public/bundle.js
