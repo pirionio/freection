@@ -15,4 +15,14 @@ const Thing = thinky.createModel('Thing', {
     }]
 })
 
+Thing.ensureIndex('whatsnew', function(doc) {
+    return doc('readList').filter({isRead:false}).map(function(r) {
+        return r('user')
+    })
+}, {multi:true})
+
+Thing.defineStatic('getWhatsNew', function(user) {
+    return this.getAll(user, {index: 'whatsnew'})
+})
+
 module.exports = {Thing}
