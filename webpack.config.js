@@ -1,4 +1,5 @@
 const path = require('path')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = {
     devtool: 'inline-source-map',
@@ -9,6 +10,9 @@ module.exports = {
         filename: 'bundle.js',
         publicPath: '/'
     },
+    plugins: [
+        new ExtractTextPlugin('style.css', { allChunks: true })
+    ],
     module: {
         loaders:[
             {
@@ -17,6 +21,10 @@ module.exports = {
                 loaders: [
                     'babel?presets[]=react&presets[]=es2015'
                 ]
+            },
+            {
+                test: /\.(scss|css)$/,
+                loader: ExtractTextPlugin.extract('css!sass')
             }
         ]
     }
