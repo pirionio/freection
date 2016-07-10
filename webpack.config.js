@@ -1,6 +1,5 @@
 const webpack = require('webpack')
 const path = require('path')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = {
     devtool: 'inline-source-map',
@@ -14,8 +13,7 @@ module.exports = {
         publicPath: '/'
     },
     plugins: [
-        new webpack.HotModuleReplacementPlugin(),
-        new ExtractTextPlugin('style.css', { allChunks: true })
+        new webpack.HotModuleReplacementPlugin()
     ],
     module: {
         loaders:[
@@ -29,7 +27,7 @@ module.exports = {
             },
             {
                 test: /\.(scss|css)$/,
-                loader: ExtractTextPlugin.extract('css!sass')
+                loader: 'style!css!sass'
             }
         ]
     }
