@@ -5,7 +5,7 @@ const App = require('../App/App')
 class Root extends Component {
     render () {
         return (
-            <App></App>
+            <App />
         )
     }
 }

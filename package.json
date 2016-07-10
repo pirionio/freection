@@ -28,6 +28,8 @@
     "node-sass": "3.8.0",
     "react": "0.14.7",
     "react-dom": "0.14.7",
+    "react-redux": "4.4.5",
+    "redux": "3.5.2",
     "sass-loader": "4.0.0",
     "style-loader": "0.13.1",
     "thinky": "2.3.3",
