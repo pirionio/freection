@@ -1,13 +1,27 @@
 
 .app {
-  height: 100%;
+  $top-bar-height: 60px;
+  $app-header-height: 20px;
+
+  height: calc(100% - #{$top-bar-height} - #{$app-header-height});
   width: 100%;
 
   .top-bar {
+    height:   $top-bar-height;
+    line-height: $top-bar-height;
+    background-color: black;
+    padding: 0 10px;
+    margin-bottom: 15px;
 
+    .title {
+      color: white;
+      font-size: 25px;
+    }
   }
 
-  .bottom-bar {
-
+  .app-header {
+    height: $app-header-height;
+    padding: 0 10px;
+    margin-bottom: 15px;
   }
 }
