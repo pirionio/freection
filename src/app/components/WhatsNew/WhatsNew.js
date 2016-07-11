@@ -28,7 +28,7 @@ WhatsNew.propTypes = {
 const mapStateToProps = (state) => {
     return {
         things: state.whatsNew.things,
-        isFetching: state.whatsNew.isFetchingWhatsNew
+        isFetching: state.whatsNew.isFetching
     }
 }
 

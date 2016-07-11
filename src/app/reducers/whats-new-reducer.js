@@ -1,38 +1,39 @@
-
 const WhatsNewActionTypes = require('../actions/types/whats-new-action-types')
+const {ActionStatus} = require('../constants')
 
 const initialState = {
-    things: [
-        {
-            id: 1,
-            createAt: new Date(),
-            creator: 'Daniel',
-            assignee: 'Doron',
-            subject: 'Fuck Off',
-            body: 'This is the first thing we are going to do'
-        },
-        {
-            id: 2,
-            createAt: new Date(),
-            creator: 'Doron',
-            assignee: 'Daniel',
-            subject: 'I change to yellow',
-            body: 'Had enough with HaPoel'
-        }
-    ]
+    things: [],
+    isFetching: false
+}
+
+function fetchWhatsNew(state, action) {
+    switch (action.status) {
+        case ActionStatus.START:
+            return {
+                things: state.things,
+                isFetching: true
+            }
+        case ActionStatus.COMPLETE:
+            return {
+                things: action.things,
+                isFetching: false
+            }
+        default:
+            return {
+                things: state.things,
+                isFetching: false
+            }
+    }
 }
 
 module.exports = (state = initialState, action) => {
     switch (action.type) {
         case WhatsNewActionTypes.FETCH_WHATS_NEW:
-            return {
-                things: state.things,
-                isFetchingWhatsNew: true
-            }
+            return fetchWhatsNew(state, action)
         default:
             return {
                 things: state.things,
-                isFetchingWhatsNew: false
+                isFetching: false
             }
     }
 }

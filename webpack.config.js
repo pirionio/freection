@@ -6,7 +6,8 @@ module.exports = {
     context: path.join(__dirname, '/src/app'),
     entry: [
         'webpack-hot-middleware/client',
-        './index.js'],
+        './index.js'
+    ],
     output: {
         path: path.join(__dirname, '/src/public'),
         filename: 'bundle.js',
