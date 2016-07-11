@@ -1,12 +1,24 @@
 'use strict'
 const express = require('express')
+const passport = require('passport')
 const path = require('path')
 const bodyParser = require('body-parser')
+const login = require('./routes/login')
 const api = require('./routes/api')
+const token = require('./token')
 
+// Configure express
 const app = new express()
 app.use(bodyParser.json())
+app.use(passport.initialize())
+app.use(token.initialize(passport,
+    {secret: "JustSomeRandomText"})) // TODO: get it from ENV VAR
+
+// Serve static
 app.use(express.static(path.join(__dirname, '../public')))
+
+// Routing
+app.use('/login', login)
 app.use('/api', api)
 
 // Dev only
