@@ -1,7 +1,6 @@
 'use strict'
 const jwt = require('jsonwebtoken')
 const Strategy = require('passport-strategy')
-const objectAssign = require('object-assign')
 
 class TokenStrategy extends Strategy {
     constructor() {
@@ -70,7 +69,7 @@ class Token {
             options.query = true
 
         this._options = options
-        const copy = objectAssign({session:false}, options)
+        const copy = Object.assign({session:false}, options)
         passport.use(new TokenStrategy())
 
         return passport.authenticate('token', copy)
@@ -89,6 +88,9 @@ class Token {
      * @api public
      */
     login(options) {
+        if (!options)
+            options = {}
+
         return (req, res, next) => {
             const secret = this._options.secret
 
@@ -96,7 +98,7 @@ class Token {
             if (!user)
                 throw new Error('No user is set')
 
-            jwt.sign(user, secret, {expiresIn: options.expiresIn}, token => {
+            jwt.sign(user, secret, {expiresIn: options.expiresIn}, (err,token) => {
                 if (this._options.cookie)
                     res.cookie('token', token, {httpOnly: true})
 

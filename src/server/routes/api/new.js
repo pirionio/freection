@@ -1,10 +1,9 @@
 const router = require('express').Router()
-const {Thing} = require('../../models')
-
-/* assignee, body, subject, isread, creator*/
+const {Thing, User} = require('../../models')
 
 router.post('/', function(request, response) {
     const {assignee, body, subject} = request.body
+    const creatorUserId = request.user.id
 
     if (!assignee) {
         response.status(400).send("assignee field is missing")
@@ -16,19 +15,27 @@ router.post('/', function(request, response) {
         return
     }
 
-    Thing.save({
-        createdAt: new Date(),
-        creator:'user', // HARD CODED user
-        assignee: assignee,
-        body: body,
-        subject: subject,
-        readList: [{user: assignee, isRead:false}]
-    }).then(() => {
-        response.sendStatus(200)
-    }).error(e => {
-        console.log(e)
-        response.sendStatus(500)
-    })
+    User.
+        getUserByEmail(assignee).
+        then(user => {
+            const assigneeUserId = user.id;
+
+            return Thing.save({
+                createdAt: new Date(),
+                creatorUserId,
+                assigneeUserId,
+                body,
+                subject,
+                readList: [{userId: assigneeUserId, isRead:false}]
+            })
+        }).
+        then(()=> response.sendStatus(200)).
+        catch(e => {
+            if (e === "NotFound")
+                response.status(404).send(`user ${assignee} doesn't exist`)
+            else
+                response.sendStatus(500)
+        })
 })
 
 module.exports = router

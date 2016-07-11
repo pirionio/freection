@@ -13,5 +13,24 @@ const User = thinky.createModel('User', {
 })
 
 User.ensureIndex('googleId')
+User.ensureIndex('email')
+
+User.defineStatic('getUserByGoogleId', function(googleId) {
+  return this.getAll(googleId, {index: 'googleId'}).run().then(users => {
+      if (users.length == 0)
+          throw "NotFound"
+
+      return users[0]
+  })
+})
+
+User.defineStatic('getUserByEmail', function(email) {
+    return this.getAll(email, {index:'email'}).run().then(users => {
+        if (users.length == 0)
+            throw "NotFound"
+
+        return users[0]
+    })
+})
 
 module.exports = User

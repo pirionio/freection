@@ -17,23 +17,26 @@ passport.use(new GoogleStrategy({
     const lastName = profile.name.familyName
     const email = profile.emails[0].value
 
-    User.getAll(googleId, {index: 'googleId'}).run().then(users => {
-        if (users.length == 0) {
-            // creating new user
-            return User.save({
-                createdAt: new Date(),
-                googleId,
-                email,
-                firstName,
-                lastName,
-                accessToken,
-                refreshToken
-            })
-        } else {
-            const user = users[0]
-            return user
-        }
-    }).then(u=> cb(null, {id: u.id})).catch(err=> cb(err))
+    User.
+        getUserByGoogleId(googleId).
+        catch(e=> {
+            if (e === "NotFound") {
+                // creating new user
+                return User.save({
+                    createdAt: new Date(),
+                    googleId,
+                    email,
+                    firstName,
+                    lastName,
+                    accessToken,
+                    refreshToken
+                })
+            }
+            else
+                throw e
+        }).
+        then(u=> cb(null, {id: u.id})).
+        catch(err=> cb(err))
 }))
 
 router.get('/logout', token.logout({redirect: '/'}))
@@ -48,6 +51,6 @@ router.get('/google', passport.authenticate('google', {
 
 router.get('/google/callback',
     passport.authenticate('google', {session: false, failureRedirect: '/login'}),
-    token.login({ redirect: '/'}))
+    token.login({ send: true}))
 
 module.exports = router

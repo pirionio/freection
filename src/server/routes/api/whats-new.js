@@ -1,20 +1,26 @@
 const router = require('express').Router()
-const {Thing} = require('../../models')
+const {Thing,User} = require('../../models')
+const _ = require('lodash')
 
 router.get('/things', function(request, response) {
-    Thing.getWhatsNew('user').run().then(r=> {
-        response.json(r.map(t=> {return {
-            id: t.id,
-            createdAt: t.createdAt,
-            creator: t.creator,
-            assignee: t.assignee,
-            subject: t.subject,
-            body: t.body
-        }}))
-    }).error(e=> {
-        console.log(e)
-        response.sendStatus(500)
-    })
+    const userId = request.user.id
+    User.
+        get(userId).run().
+        then(user => Thing.getWhatsNew(user.id)).
+        then(things => {
+            response.json(things.map(thing => {return {
+                id: thing.id,
+                createdAt: thing.createdAt,
+                creator: _.pick(thing.creator, ['id', 'firstName', 'lastName', 'email']),
+                assignee: _.pick(thing.assignee, ['id', 'firstName', 'lastName', 'email']),
+                subject: thing.subject,
+                body: thing.body
+            }}))
+        }).
+        catch(e=> {
+            console.log(e)
+            response.sendStatus(500)
+        })
 })
 
 module.exports = router

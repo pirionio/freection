@@ -12,6 +12,7 @@ const token = require('./token')
 const app = new express()
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs')
+app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 app.use(cookieParser())
 app.use(passport.initialize())
