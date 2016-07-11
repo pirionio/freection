@@ -31,9 +31,6 @@ module.exports = (state = initialState, action) => {
         case WhatsNewActionTypes.FETCH_WHATS_NEW:
             return fetchWhatsNew(state, action)
         default:
-            return {
-                things: state.things,
-                isFetching: false
-            }
+            return state
     }
 }

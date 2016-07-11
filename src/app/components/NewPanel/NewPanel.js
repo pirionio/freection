@@ -1,16 +1,50 @@
 const React = require('react')
-const {Component} = React
+const {Component, PropTypes} = React
+const {connect} = require('react-redux')
+
+const NewThingActions = require('../../actions/new-thing-action')
 
 class NewPanel extends Component {
+    constructor(props) {
+        super(props)
+        this.state = props.thing
+        this.createNewThing = this.createNewThing.bind(this)
+        this.handleRecipientChange = this.handleRecipientChange.bind(this)
+        this.handleBodyChange = this.handleBodyChange.bind(this)
+        this.handleSubjectChange = this.handleSubjectChange.bind(this)
+    }
+
+    createNewThing() {
+        this.props.createNewThing(this.state)
+        this.replaceState({})
+    }
+
+    handleRecipientChange(event) {
+        this.setState({recipient: event.target.value})
+    }
+
+    handleBodyChange(event) {
+        this.setState({body: event.target.value})
+    }
+
+    handleSubjectChange(event) {
+        this.setState({subject: event.target.value})
+    }
+
     render () {
+        const {thing} = this.props
         return (
             <div className="new-panel">
                 <div className="text-section">
-                    <textarea className="message-text" tabIndex="1" placeholder="message" />
-                    <input className="message-subject" tabIndex="2" placeholder="subject" />
+                    <input className="message-recipients" tabIndex="1" placeholder="to" value={thing.recipient}
+                           onChange={this.handleRecipientChange} />
+                    <textarea className="message-text" tabIndex="2" placeholder="message" value={thing.body}
+                              onChange={this.handleBodyChange}/>
+                    <input className="message-subject" tabIndex="3" placeholder="subject" value={thing.subject}
+                           onChange={this.handleSubjectChange}/>
                 </div>
                 <div className="send-section">
-                    <button onClick="">Send</button>
+                    <button onClick={this.createNewThing}>Send</button>
                 </div>
             </div>
         )
@@ -18,6 +52,19 @@ class NewPanel extends Component {
 }
 
 NewPanel.propTypes = {
+    thing: PropTypes.object.isRequired
 }
 
-module.exports = NewPanel
+const mapStateToProps = (state) => {
+    return {
+        thing: state.NewThing.thing
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        createNewThing: (thing) => dispatch(NewThingActions.createNewThing(thing))
+    }
+}
+
+module.exports = connect(mapStateToProps, mapDispatchToProps)(NewPanel)

@@ -6,13 +6,18 @@
   height: $new-panel-height;
 
   .text-section {
-    float:left;
+    float: left;
     width: calc(100% - #{$send-section-width} - 10px);
+
+    .message-recipients {
+      height: 25px;
+      width: 100%;
+    }
 
     .message-text {
       height: 70px;
       width: 100%;
-      margin-bottom: 15px;
+      margin: 15px 0 15px;
     }
 
     .message-subject {
