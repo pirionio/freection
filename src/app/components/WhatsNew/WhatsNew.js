@@ -12,7 +12,7 @@ class WhatsNew extends Component {
 
     render () {
         const {things} = this.props
-        const rows = things ? things.map(thing => <NewThing thing={thing} key={thing.id} />) : []
+        const rows = things && things.length ? things.map(thing => <NewThing thing={thing} key={thing.id} />) : 'There are no new Things'
         return (
             <div className="whats-new">
                 {rows}
