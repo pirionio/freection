@@ -1,16 +1,15 @@
 const React = require('react')
 const {Component} = React
-const TopBar = require('./TopBar')
-const AppHeader = require('./AppHeader')
-const WhatsNew = require('../WhatsNew/WhatsNew')
+
+const TopBar = require('../TopBar/TopBar')
+const MainApp = require('../MainApp/MainApp')
 
 class App extends Component {
     render () {
         return (
-            <div className="app">
-                <TopBar></TopBar>
-                <AppHeader></AppHeader>
-                <WhatsNew></WhatsNew>
+            <div className="app-root">
+                <TopBar />
+                <MainApp />
             </div>
         )
     }

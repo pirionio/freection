@@ -1,0 +1,6 @@
+@import '../vars';
+
+.main-app {
+  height:  calc(100% - #{$top-bar-height} - 25px);
+  margin: 0 10px 10px;
+}

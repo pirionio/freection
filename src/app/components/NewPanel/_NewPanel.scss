@@ -1,0 +1,29 @@
+@import '../vars';
+
+.new-panel {
+  $send-section-width: 60px;
+
+  height: $new-panel-height;
+
+  .text-section {
+    float:left;
+    width: calc(100% - #{$send-section-width} - 10px);
+
+    .message-text {
+      height: 70px;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    .message-subject {
+      height: 25px;
+      width: 100%;
+    }
+  }
+
+  .send-section {
+    float: left;
+    width: $send-section-width;
+    margin-left: 10px;
+  }
+}

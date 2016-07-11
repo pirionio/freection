@@ -1,0 +1,14 @@
+@import '../vars';
+
+.top-bar {
+  height:   $top-bar-height;
+  line-height: $top-bar-height;
+  background-color: black;
+  margin-bottom: 15px;
+  padding: 0 10px;
+
+  .title {
+    color: white;
+    font-size: 25px;
+  }
+}

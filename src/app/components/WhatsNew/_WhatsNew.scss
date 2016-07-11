@@ -1,5 +1,6 @@
+@import '../vars';
 
 .whats-new {
-  padding: 0 10px;
-
+  height: calc(100% - #{$new-panel-height});
+  width: 100%;
 }

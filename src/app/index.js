@@ -6,7 +6,7 @@ const reducers = require('./reducers')
 const {Provider} = require('react-redux')
 const thunk = require('redux-thunk').default
 
-const Root = require('./components/Root/Root')
+const App = require('./components/App/App')
 
 require('./index.scss')
 
@@ -16,7 +16,7 @@ let store = createStore(reducers, window.__STATE__, applyMiddleware(
 
 ReactDOM.render(
     <Provider store={store}>
-        <Root />
+        <App />
     </Provider>,
     document.getElementById('app')
 )
