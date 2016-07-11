@@ -7,7 +7,7 @@ const Root = require('./components/Root/Root')
 
 require('./index.scss')
 
-let store = createStore(reducers)
+let store = createStore(reducers, window.__STATE__)
 
 ReactDOM.render(
     <Provider store={store}>

@@ -3,19 +3,34 @@ const express = require('express')
 const passport = require('passport')
 const path = require('path')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const login = require('./routes/login')
 const api = require('./routes/api')
 const token = require('./token')
 
 // Configure express
 const app = new express()
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs')
 app.use(bodyParser.json())
+app.use(cookieParser())
 app.use(passport.initialize())
 app.use(token.initialize(passport,
     {secret: "JustSomeRandomText"})) // TODO: get it from ENV VAR
 
 // Serve static
 app.use(express.static(path.join(__dirname, '../public')))
+
+// Homepage
+app.get('/', function (request, response) {
+    response.render('index', {
+        state: {
+            auth: {
+                isAuthenticated: request.isAuthenticated()
+            }
+        }
+    })
+})
 
 // Routing
 app.use('/login', login)

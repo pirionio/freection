@@ -5,6 +5,9 @@
     <body>
         <div id="app"></div>
 
+        <script type="text/javascript">
+            window.__STATE__ = <%- JSON.stringify(state) %>
+        </script>
         <script type="application/javascript" src="bundle.js"></script>
     </body>
 </html>
