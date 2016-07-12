@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser')
 const login = require('./routes/login')
 const api = require('./routes/api')
 const token = require('./token')
+const tokenConfig = require('./config/token')
 
 // Configure express
 const app = new express()
@@ -16,8 +17,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 app.use(cookieParser())
 app.use(passport.initialize())
-app.use(token.initialize(passport,
-    {secret: "JustSomeRandomText"})) // TODO: get it from ENV VAR
+app.use(token.initialize(passport, {secret: tokenConfig.secret}))
 
 // Serve static
 app.use(express.static(path.join(__dirname, '../public')))
