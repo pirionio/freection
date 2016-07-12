@@ -6,6 +6,9 @@ class NewThing extends Component {
         const {thing} = this.props
         return (
             <div className="new-thing">
+                <div className="thing-creator">
+                    {thing.creator.email}
+                </div>
                 <div className="thing-subject">
                     {thing.subject}
                 </div>
