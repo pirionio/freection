@@ -22,17 +22,6 @@ app.use(token.initialize(passport, {secret: tokenConfig.secret}))
 // Serve static
 app.use(express.static(path.join(__dirname, '../public')))
 
-// Homepage
-app.get('/', function (request, response) {
-    response.render('index', {
-        state: {
-            auth: {
-                isAuthenticated: request.isAuthenticated()
-            }
-        }
-    })
-})
-
 // Routing
 app.use('/login', login)
 app.use('/api', api)
@@ -47,6 +36,18 @@ if (app.get('env') === 'development') {
     app.use(webpackDevMiddleware(compiler, {noInfo: true, publicPath: webpackConfig.output.publicPath}))
     app.use(webpackHotMiddleware(compiler))
 }
+
+// Serve the main index file for any request that's not handled specifically,
+// to support URL navigation without hash tags.
+app.get('*', function (request, response) {
+    response.render('index', {
+        state: {
+            auth: {
+                isAuthenticated: request.isAuthenticated()
+            }
+        }
+    })
+})
 
 app.set('port', (process.env.PORT || 3000))
 app.listen(app.get('port'), function () {
