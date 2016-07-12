@@ -2,12 +2,16 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 
+const {GeneralConstants} = require('../../constants')
 const NewThing = require('../Thing/NewThing')
 const WhatsNewActions = require('../../actions/whats-new-actions')
 
 class WhatsNew extends Component {
     componentDidMount () {
         this.props.fetchWhatsNew()
+        setInterval(() => {
+            this.props.fetchWhatsNew()
+        }, GeneralConstants.FETCH_INTERVAL_MILLIS)
     }
 
     render () {

@@ -4,4 +4,8 @@ const ActionStatus = {
     ERROR: 'ERROR'
 }
 
-module.exports = {ActionStatus}
+const GeneralConstants = {
+    FETCH_INTERVAL_MILLIS: 10000
+}
+
+module.exports = {ActionStatus, GeneralConstants}
