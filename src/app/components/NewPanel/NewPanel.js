@@ -16,7 +16,7 @@ class NewPanel extends Component {
 
     createNewThing() {
         this.props.createNewThing(this.state)
-        this.replaceState({})
+        this.setState({recipient: null, body: null, subject: null})
     }
 
     handleRecipientChange(event) {

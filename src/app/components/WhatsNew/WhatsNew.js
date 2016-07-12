@@ -18,8 +18,10 @@ class WhatsNew extends Component {
         const {things} = this.props
         const rows = things && things.length ? things.map(thing => <NewThing thing={thing} key={thing.id} />) : 'There are no new Things'
         return (
-            <div className="whats-new">
-                {rows}
+            <div className="whats-new-container">
+                <div className="whats-new-content">
+                    {rows}
+                </div>
             </div>
         )
     }

@@ -1,6 +1,10 @@
 @import '../vars';
 
-.whats-new {
-  height: calc(100% - #{$new-panel-height});
-  width: 100%;
+.whats-new-container {
+  height: calc(100% - #{$new-panel-height} - 15px);
+  overflow-y: hidden;
+
+  .whats-new-content {
+    height: 100%;
+  }
 }
