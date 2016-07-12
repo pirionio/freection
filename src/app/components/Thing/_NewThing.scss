@@ -3,6 +3,13 @@
     margin-top: 15px;
   }
 
+  .metadata-row {
+    margin-bottom: 8px;
+    height: 20px;
+    width: 100%;
+
+  }
+
   .thing-creator {
     float: left;
     width: 190px;
@@ -12,8 +19,19 @@
   }
 
   .thing-subject {
+    float: left;
     font-size: 18px;
-    margin-bottom: 8px;
     font-weight: bold;
+  }
+
+  .thing-creation-time {
+    float: left;
+    margin-left: 25px;
+    margin-top: 2px;
+    font-style: italic;
+  }
+
+  .thing-body {
+    font-size: 18px;
   }
 }
