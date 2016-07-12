@@ -44,7 +44,7 @@ router.get('/logout', token.logout({redirect: '/'}))
 
 router.get('/google', passport.authenticate('google', {
     accessType: 'offline',
-    approvalPrompt: 'force',
+    prompt:'consent',
     scope: [
         'profile',
         'email',
