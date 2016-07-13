@@ -2,7 +2,7 @@
 
 .whats-new-container {
   height: calc(100% - #{$new-panel-height} - 15px);
-  overflow-y: scroll;
+  overflow-y: auto;
 
   .whats-new-content {
     height: 100%;
