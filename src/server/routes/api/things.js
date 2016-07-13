@@ -1,8 +1,16 @@
 const router = require('express').Router()
-const {remove} = require('lodash')
+const {remove, pick} = require('lodash')
 
-const {Event, Thing} = require('../../models')
+const {Event, Thing, User} = require('../../models')
 const logger = require('../../utils/logger')
+
+function getUser(userId) {
+    return User.get(userId).run()
+}
+
+function getUserWhatsNew(user) {
+    return Event.getWhatsNew(user.id)
+}
 
 function getThing(thingId) {
     return Thing.get(thingId).run()
@@ -32,6 +40,29 @@ function userReadEvent(event, user) {
 function getEvent(eventId) {
     return Event.get(eventId).run()
 }
+
+router.get('/whatsnew', function(request, response) {
+    const user = request.user
+    getUser(user.id).
+        then(getUserWhatsNew).
+        then(events => {
+            response.json(events.map(event => {
+                return {
+                    eventId: event.id,
+                    thingId: event.thing.id,
+                    createdAt: event.createdAt,
+                    creator: pick(event.thing.creator, ['id', 'firstName', 'lastName', 'email']),
+                    to: pick(event.thing.to, ['id', 'firstName', 'lastName', 'email']),
+                    subject: event.thing.subject,
+                    body: event.thing.body
+                }
+            }))
+        }).
+        catch(error => {
+            logger.error(`error while fetching whats new for user ${user.email}`, e)
+            response.sendStatus(500)
+        })
+})
 
 router.post('/do', function(request, response) {
     const user = request.user
