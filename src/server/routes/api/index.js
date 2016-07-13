@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const newRouter = require('./new')
 const whatsnew = require('./whats-new')
-const token = require('../../token')
+const token = require('../../utils/token-strategy')
 
 router.use('/', token.auth())
 router.use('/new', newRouter)

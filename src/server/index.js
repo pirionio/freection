@@ -6,7 +6,7 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const login = require('./routes/login')
 const api = require('./routes/api')
-const token = require('./token')
+const token = require('./utils/token-strategy')
 const tokenConfig = require('./config/token')
 
 // Configure express
