@@ -3,8 +3,7 @@
 .top-bar {
   height:   $top-bar-height;
   line-height: $top-bar-height;
-  background-color: black;
-  margin-bottom: 15px;
+  background-color: $top-bar-color;
   padding: 0 10px;
 
   .title {

@@ -1,0 +1,18 @@
+@import '../vars';
+
+.side-bar {
+  height: calc(100% - #{$top-bar-height});
+  width: $side-bar-width;
+  float: left;
+  padding: 10px 10px;
+  background-color: $side-bar-color;
+
+  .side-bar-link {
+    color: white;
+    display: inline-block;
+
+    &:not(:last-of-type) {
+      margin-bottom: 15px;
+    }
+  }
+}

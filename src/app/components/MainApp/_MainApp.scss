@@ -1,6 +1,8 @@
 @import '../vars';
 
 .main-app {
+  float: left;
   height:  calc(100% - #{$top-bar-height} - 25px);
-  margin: 0 10px 10px;
+  width: calc(100% - #{$side-bar-width} - 20px);
+  margin: 10px 10px 10px;
 }

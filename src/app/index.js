@@ -8,7 +8,7 @@ const reducers = require('./reducers')
 const {Provider} = require('react-redux')
 const thunk = require('redux-thunk').default
 
-const App = require('./components/App/App')
+const AppRouter = require('./routes')
 
 require('./index.scss')
 
@@ -18,7 +18,7 @@ let store = createStore(reducers, window.__STATE__, applyMiddleware(
 
 ReactDOM.render(
     <Provider store={store}>
-        <App />
+        <AppRouter />
     </Provider>,
     document.getElementById('app')
 )
