@@ -4,9 +4,7 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy
 const token = require('../utils/token-strategy')
 const {User} = require('../models')
 const config = require('../config/google-oauth')
-
-// TODO: clientID and clientSecret should come from ENV VAR
-// TODO: on  Prod callback should be freection app url
+const logger = require('../utils/logger')
 
 passport.use(new GoogleStrategy({
     clientID: config.clientID,
@@ -36,7 +34,10 @@ passport.use(new GoogleStrategy({
             else
                 throw e
         }).
-        then(u=> cb(null, {id: u.id})).
+        then(u=> {
+            logger.info(`new user ${u.firstName} ${u.lastName} ${u.email}`)
+            cb(null, {id: u.id, email: u.email})
+        }).
         catch(err=> cb(err))
 }))
 

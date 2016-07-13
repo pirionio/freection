@@ -1,9 +1,10 @@
 const router = require('express').Router()
 const {Thing, User, Event} = require('../../models')
+const logger = require('../../utils/logger')
 
 router.post('/', function(request, response) {
     const {to, body, subject} = request.body
-    const creatorUserId = request.user.id
+    const {id: creatorUserId, email: creatorEmail} = request.user
 
     if (!to) {
         response.status(400).send("to field is missing")
@@ -42,12 +43,15 @@ router.post('/', function(request, response) {
                 }]
             })
         }).
-        then(() => response.sendStatus(200)).
+        then(() => {
+            logger.info(`new thing from ${creatorEmail} to ${to} subject ${subject}`)
+            response.sendStatus(200)
+        }).
         catch(e => {
             if (e === "NotFound")
                 response.status(404).send(`user ${to} doesn't exist`)
             else {
-                console.log(e)
+                logger.error("error while saving new thing", e)
                 response.sendStatus(500)
             }
         })

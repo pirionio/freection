@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const {Event,User} = require('../../models')
 const _ = require('lodash')
+const logger = require('../../utils/logger')
 
 router.get('/things', function(request, response) {
     const userId = request.user.id
@@ -21,7 +22,7 @@ router.get('/things', function(request, response) {
             }}))
         }).
         catch(e=> {
-            console.log(e)
+            logger.error('error while fetching whats new', e)
             response.sendStatus(500)
         })
 })

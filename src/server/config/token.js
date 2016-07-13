@@ -1,10 +1,12 @@
 const process = require('process')
 
+const version = '1'
+
 if (process.env.NODE_ENV === 'production') {
-    module.exports = {secret: 'process.env.TOKEN_SECRET'}
+    module.exports = {secret: 'process.env.TOKEN_SECRET' + version}
 } else {
     module.exports = {
-        secret : 'JustSomeRandomText'
+        secret : 'JustSomeRandomText' + version
     }
 }
 

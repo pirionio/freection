@@ -8,6 +8,7 @@ const login = require('./routes/login')
 const api = require('./routes/api')
 const token = require('./utils/token-strategy')
 const tokenConfig = require('./config/token')
+const logger = require('./utils/logger')
 
 // Configure express
 const app = new express()
@@ -51,7 +52,5 @@ app.get('*', function (request, response) {
 
 app.set('port', (process.env.PORT || 3000))
 app.listen(app.get('port'), function () {
-    console.log(`Running in ${app.get('env')} mode on port ${app.get('port')}`)
+    logger.info(`Running in ${app.get('env')} mode on port ${app.get('port')}`)
 })
-
-
