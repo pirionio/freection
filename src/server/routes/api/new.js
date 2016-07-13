@@ -38,9 +38,7 @@ router.post('/', function(request, response) {
                 type: Event.events.CREATED,
                 createdAt,
                 payload: {},
-                readList: [{
-                    userId: thing.toUserId
-                }]
+                readList: [thing.toUserId]
             })
         }).
         then(() => {

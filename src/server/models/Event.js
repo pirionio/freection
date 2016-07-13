@@ -8,10 +8,7 @@ const Event = thinky.createModel('Event', {
     type: type.string().required(),
     createdAt: type.date().required(),
     payload: type.object(),
-    readList: [{
-        userId: type.string().required(),
-        readAt: type.date()
-    }]
+    readList: [type.string()]
 })
 
 Event.belongsTo(Thing, 'thing', 'thingId', 'id')
@@ -24,9 +21,7 @@ const events = {
 Event.events = events
 
 Event.ensureIndex('whatsnew', function(doc) {
-    return doc('readList').map(function(r) {
-        return r('userId')
-    })
+    return doc('readList')
 }, {multi:true})
 
 Event.defineStatic('getWhatsNew', function(userId) {

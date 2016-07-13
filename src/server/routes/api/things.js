@@ -33,7 +33,7 @@ function acceptThing(thing) {
 }
 
 function userReadEvent(event, user) {
-    remove(event.readList, item => item.userId === user.id)
+    remove(event.readList, readerUserId => readerUserId === user.id)
     return event.save()
 }
 
