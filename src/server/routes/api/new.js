@@ -1,12 +1,12 @@
 const router = require('express').Router()
-const {Thing, User} = require('../../models')
+const {Thing, User, Event} = require('../../models')
 
 router.post('/', function(request, response) {
-    const {assignee, body, subject} = request.body
+    const {to, body, subject} = request.body
     const creatorUserId = request.user.id
 
-    if (!assignee) {
-        response.status(400).send("assignee field is missing")
+    if (!to) {
+        response.status(400).send("to field is missing")
         return
     }
 
@@ -15,26 +15,41 @@ router.post('/', function(request, response) {
         return
     }
 
-    User.
-        getUserByEmail(assignee).
+    const createdAt = new Date()
+
+    User.getUserByEmail(to).
         then(user => {
-            const assigneeUserId = user.id;
+            const toUserId = user.id
 
             return Thing.save({
-                createdAt: new Date(),
+                createdAt,
                 creatorUserId,
-                assigneeUserId,
+                toUserId,
                 body,
                 subject,
-                readList: [{userId: assigneeUserId, isRead:false}]
+                followers: [creatorUserId]
             })
         }).
-        then(()=> response.sendStatus(200)).
+        then(thing => {
+            return Event.save({
+                thingId: thing.id,
+                type: Event.events.CREATED,
+                createdAt,
+                payload: {},
+                readList: [{
+                    userId: thing.toUserId,
+                    isRead: false
+                }]
+            })
+        }).
+        then(() => response.sendStatus(200)).
         catch(e => {
             if (e === "NotFound")
-                response.status(404).send(`user ${assignee} doesn't exist`)
-            else
+                response.status(404).send(`user ${to} doesn't exist`)
+            else {
+                console.log(e)
                 response.sendStatus(500)
+            }
         })
 })
 

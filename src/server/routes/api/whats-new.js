@@ -1,20 +1,23 @@
 const router = require('express').Router()
-const {Thing,User} = require('../../models')
+const {Event,User} = require('../../models')
 const _ = require('lodash')
 
 router.get('/things', function(request, response) {
     const userId = request.user.id
     User.
         get(userId).run().
-        then(user => Thing.getWhatsNew(user.id)).
-        then(things => {
-            response.json(things.map(thing => {return {
-                id: thing.id,
-                createdAt: thing.createdAt,
-                creator: _.pick(thing.creator, ['id', 'firstName', 'lastName', 'email']),
-                assignee: _.pick(thing.assignee, ['id', 'firstName', 'lastName', 'email']),
-                subject: thing.subject,
-                body: thing.body
+        then(user => Event.getWhatsNew(user.id)).
+        then(events => {
+            response.json(
+                events.map(event => {
+                    return {
+                        eventId: event.id,
+                        thingId: event.thing.id,
+                        createdAt: event.createdAt,
+                        creator: _.pick(event.thing.creator, ['id', 'firstName', 'lastName', 'email']),
+                        to: _.pick(event.thing.to, ['id', 'firstName', 'lastName', 'email']),
+                        subject: event.thing.subject,
+                        body: event.thing.body
             }}))
         }).
         catch(e=> {

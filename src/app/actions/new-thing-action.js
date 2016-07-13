@@ -21,7 +21,7 @@ const createNewThing = (thing) => {
     return dispatch => {
         dispatch(sendNewThing(thing))
         NewThingService.createNewThing({
-            assignee: thing.recipient,
+            to: thing.to,
             body: thing.body,
             subject: thing.subject
         }).then(() => {

@@ -16,11 +16,11 @@ class NewPanel extends Component {
 
     createNewThing() {
         this.props.createNewThing(this.state)
-        this.setState({recipient: null, body: null, subject: null})
+        this.setState({to: null, body: null, subject: null})
     }
 
     handleRecipientChange(event) {
-        this.setState({recipient: event.target.value})
+        this.setState({to: event.target.value})
     }
 
     handleBodyChange(event) {
@@ -36,7 +36,7 @@ class NewPanel extends Component {
         return (
             <div className="new-panel">
                 <div className="text-section">
-                    <input className="message-recipients" tabIndex="1" placeholder="to" value={thing.recipient}
+                    <input className="message-recipients" tabIndex="1" placeholder="to" value={thing.to}
                            onChange={this.handleRecipientChange} />
                     <textarea className="message-text" tabIndex="2" placeholder="message" value={thing.body}
                               onChange={this.handleBodyChange}/>
