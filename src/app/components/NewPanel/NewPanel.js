@@ -2,7 +2,7 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 
-const NewThingActions = require('../../actions/new-thing-action')
+const NewThingActions = require('../../actions/new-thing-actions')
 
 class NewPanel extends Component {
     constructor(props) {
@@ -57,7 +57,7 @@ NewPanel.propTypes = {
 
 const mapStateToProps = (state) => {
     return {
-        thing: state.NewThing.thing
+        thing: state.newThing.thing
     }
 }
 

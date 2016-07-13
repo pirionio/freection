@@ -1,10 +1,10 @@
-const NewThingActions = require('./types/new-thing-action-types')
-const NewThingService = require('../services/new-thing-service')
+const ThingActionsTypes = require('./types/thing-action-types')
+const ThingService = require('../services/thing-service')
 const {ActionStatus} = require('../constants')
 
 function sendNewThing(thing) {
     return {
-        type: NewThingActions.NEW_THING,
+        type: ThingActionsTypes.NEW_THING,
         status: ActionStatus.START,
         thing
     }
@@ -12,7 +12,7 @@ function sendNewThing(thing) {
 
 function newThingComplete() {
     return {
-        type: NewThingActions.NEW_THING,
+        type: ThingActionsTypes.NEW_THING,
         status: ActionStatus.COMPLETE
     }
 }
@@ -20,7 +20,7 @@ function newThingComplete() {
 const createNewThing = (thing) => {
     return dispatch => {
         dispatch(sendNewThing(thing))
-        NewThingService.createNewThing({
+        ThingService.createNewThing({
             to: thing.to,
             body: thing.body,
             subject: thing.subject

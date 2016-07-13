@@ -1,11 +1,7 @@
+const ResourceUtil = require('../util/resource-util')
+
 function getThings() {
-    return fetch('/api/whatsnew/things', {
-        credentials: 'include'
-    }).then(
-        response => response.json()
-    ).catch((response) => {
-        throw new Error(response.message)
-    })
+    return ResourceUtil.get('/api/whatsnew/things')
 }
 
 module.exports = {getThings}

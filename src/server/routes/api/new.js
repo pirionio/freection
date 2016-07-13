@@ -28,7 +28,8 @@ router.post('/', function(request, response) {
                 toUserId,
                 body,
                 subject,
-                followers: [creatorUserId]
+                followers: [creatorUserId],
+                doers: []
             })
         }).
         then(thing => {
@@ -38,14 +39,13 @@ router.post('/', function(request, response) {
                 createdAt,
                 payload: {},
                 readList: [{
-                    userId: thing.toUserId,
-                    isRead: false
+                    userId: thing.toUserId
                 }]
             })
         }).
         then(() => {
             logger.info(`new thing from ${creatorEmail} to ${to} subject ${subject}`)
-            response.sendStatus(200)
+            response.json({})
         }).
         catch(e => {
             if (e === "NotFound")

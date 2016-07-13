@@ -1,37 +1,58 @@
 .new-thing {
+  $thing-height: 50px;
+  $actions-width: 100px;
+
+  height: $thing-height;
+
   &:not(:first-of-type) {
     margin-top: 15px;
   }
 
-  .metadata-row {
-    margin-bottom: 8px;
+  .thing-content {
+    float: left;
+    height: $thing-height;
+    width: calc(100% - #{$actions-width});
+
+    .thing-creator {
+      float: left;
+      width: 190px;
+      margin-right: 15px;
+      margin-top: 2px;
+      font-style: italic;
+    }
+
+    .thing-subject {
+      float: left;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .thing-creation-time {
+      float: left;
+      margin-left: 25px;
+      margin-top: 2px;
+      font-style: italic;
+    }
+
+    .thing-body {
+      font-size: 18px;
+    }
+  }
+
+  .thing-actions {
+    float: right;
+    width: 100px;
+
+    .thing-do {
+      width: 100%;
+    }
+  }
+
+  .thing-row {
     height: 20px;
-    width: 100%;
 
-  }
-
-  .thing-creator {
-    float: left;
-    width: 190px;
-    margin-right: 15px;
-    margin-top: 2px;
-    font-style: italic;
-  }
-
-  .thing-subject {
-    float: left;
-    font-size: 18px;
-    font-weight: bold;
-  }
-
-  .thing-creation-time {
-    float: left;
-    margin-left: 25px;
-    margin-top: 2px;
-    font-style: italic;
-  }
-
-  .thing-body {
-    font-size: 18px;
+    &:not(:last-of-type) {
+      margin-bottom: 8px;
+    }
   }
 }

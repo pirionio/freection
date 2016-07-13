@@ -27,11 +27,10 @@ function requestWhatsNewFailed() {
 const fetchWhatsNew = () => {
     return dispatch => {
         dispatch(requestWhatsNew())
-        WhatsNewService.getThings().then(things => {
-            dispatch(requestWhatsNewCompelte(things))
-        }).catch(() => {
-            dispatch(requestWhatsNewFailed())
-        })
+        WhatsNewService.getThings().
+            then(things => dispatch(requestWhatsNewCompelte(things))).
+            catch(() => dispatch(requestWhatsNewFailed())
+        )
     }
 }
 

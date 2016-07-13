@@ -34,7 +34,7 @@ class WhatsNew extends Component {
 
     render () {
         const rows = this.props.things && this.props.things.length ?
-            this.sortThingsByDate().map(thing => <NewThing thing={thing} key={thing.id} />) :
+            this.sortThingsByDate().map(thing => <NewThing thing={thing} key={thing.eventId} />) :
             'There are no new Things'
         return (
             <div className="whats-new-container">
@@ -52,8 +52,7 @@ WhatsNew.propTypes = {
 
 const mapStateToProps = (state) => {
     return {
-        things: state.whatsNew.things,
-        isFetching: state.whatsNew.isFetching
+        things: state.whatsNew.things
     }
 }
 

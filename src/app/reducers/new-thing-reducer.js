@@ -1,4 +1,4 @@
-const NewThingActionTypes = require('../actions/types/new-thing-action-types')
+const ThingActionTypes = require('../actions/types/thing-action-types')
 const {ActionStatus} = require('../constants')
 
 const initialState = {
@@ -24,7 +24,7 @@ function createNewThing(state, action) {
 
 module.exports = (state = initialState, action) => {
     switch (action.type) {
-        case NewThingActionTypes.NEW_THING:
+        case ThingActionTypes.NEW_THING:
             return createNewThing(state, action)
         default:
             return state
