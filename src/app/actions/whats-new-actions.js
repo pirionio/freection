@@ -9,11 +9,11 @@ function requestWhatsNew() {
     }
 }
 
-function requestWhatsNewCompelte(things) {
+function requestWhatsNewCompelte(notifications) {
     return {
         type: WhatsNewActionTypes.FETCH_WHATS_NEW,
         status: ActionStatus.COMPLETE,
-        things
+        notifications
     }
 }
 
@@ -27,8 +27,8 @@ function requestWhatsNewFailed() {
 const fetchWhatsNew = () => {
     return dispatch => {
         dispatch(requestWhatsNew())
-        WhatsNewService.getThings().
-            then(things => dispatch(requestWhatsNewCompelte(things))).
+        WhatsNewService.getNotifications().
+            then(notifications => dispatch(requestWhatsNewCompelte(notifications))).
             catch(() => dispatch(requestWhatsNewFailed())
         )
     }

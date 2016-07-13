@@ -3,19 +3,19 @@ const {ActionStatus} = require('../constants')
 const {filter} = require('lodash')
 
 const initialState = {
-    things: []
+    notifications: []
 }
 
 function fetchWhatsNew(state, action) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
             return {
-                things: action.things
+                notifications: action.notifications
             }
         case ActionStatus.START:
         default:
             return {
-                things: state.things
+                notifications: state.notifications
             }
     }
 }
@@ -24,13 +24,13 @@ function doThing(state, action) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
             return {
-                things: filter(state.things, thing => thing.id !== action.thing.id)
+                notifications: filter(state.notifications, notification => notification.thingId !== action.notification.id)
             }
         case ActionStatus.START:
         case ActionStatus.ERROR:
         default:
             return {
-                things: state.things
+                notifications: state.notifications
             }
     }
 }

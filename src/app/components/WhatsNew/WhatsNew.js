@@ -5,7 +5,7 @@ const {sortBy} = require('lodash')
 const ReactDOM = require('react-dom')
 
 const {GeneralConstants} = require('../../constants')
-const NewThing = require('../Thing/NewThing')
+const NewNotification = require('./NewNotification')
 const WhatsNewActions = require('../../actions/whats-new-actions')
 
 class WhatsNew extends Component {
@@ -28,13 +28,13 @@ class WhatsNew extends Component {
         }
     }
 
-    sortThingsByDate () {
-        return sortBy(this.props.things, thing => thing.createdAt)
+    sortNotificationsByDate () {
+        return sortBy(this.props.notifications, notification => notification.createdAt)
     }
 
     render () {
-        const rows = this.props.things && this.props.things.length ?
-            this.sortThingsByDate().map(thing => <NewThing thing={thing} key={thing.eventId} />) :
+        const rows = this.props.notifications && this.props.notifications.length ?
+            this.sortNotificationsByDate().map(notification => <NewNotification notification={notification} key={notification.eventId} />) :
             'There are no new Things'
         return (
             <div className="whats-new-container">
@@ -47,12 +47,12 @@ class WhatsNew extends Component {
 }
 
 WhatsNew.propTypes = {
-    things: PropTypes.array.isRequired
+    notifications: PropTypes.array.isRequired
 }
 
 const mapStateToProps = (state) => {
     return {
-        things: state.whatsNew.things
+        notifications: state.whatsNew.notifications
     }
 }
 

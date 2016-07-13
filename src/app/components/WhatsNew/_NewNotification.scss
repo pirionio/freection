@@ -1,19 +1,19 @@
-.new-thing {
-  $thing-height: 50px;
+.new-notification {
+  $notification-height: 50px;
   $actions-width: 100px;
 
-  height: $thing-height;
+  height: $notification-height;
 
   &:not(:first-of-type) {
     margin-top: 15px;
   }
 
-  .thing-content {
+  .notification-content {
     float: left;
-    height: $thing-height;
+    height: $notification-height;
     width: calc(100% - #{$actions-width});
 
-    .thing-creator {
+    .notification-creator {
       float: left;
       width: 190px;
       margin-right: 15px;
@@ -21,34 +21,34 @@
       font-style: italic;
     }
 
-    .thing-subject {
+    .notification-subject {
       float: left;
       font-size: 18px;
       font-weight: bold;
     }
 
-    .thing-creation-time {
+    .notification-creation-time {
       float: left;
       margin-left: 25px;
       margin-top: 2px;
       font-style: italic;
     }
 
-    .thing-body {
+    .notification-body {
       font-size: 18px;
     }
   }
 
-  .thing-actions {
+  .notification-actions {
     float: right;
     width: 100px;
 
-    .thing-do {
+    .notification-do {
       width: 100%;
     }
   }
 
-  .thing-row {
+  .notification-row {
     height: 20px;
 
     &:not(:last-of-type) {

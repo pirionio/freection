@@ -1,7 +1,7 @@
 const ResourceUtil = require('../util/resource-util')
 
-function getThings() {
+function getNotifications() {
     return ResourceUtil.get('/api/things/whatsnew')
 }
 
-module.exports = {getThings}
+module.exports = {getNotifications}
