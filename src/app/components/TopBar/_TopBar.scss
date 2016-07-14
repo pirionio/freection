@@ -10,4 +10,13 @@
     color: white;
     font-size: 25px;
   }
+
+  .user-info {
+    color: white;
+    float: right;
+
+    .logout-link {
+      color: white;
+    }
+  }
 }

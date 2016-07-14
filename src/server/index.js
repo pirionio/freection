@@ -41,11 +41,19 @@ if (app.get('env') === 'development') {
 // Serve the main index file for any request that's not handled specifically,
 // to support URL navigation without hash tags.
 app.get('*', function (request, response) {
+    const auth = {
+        isAuthenticated: request.isAuthenticated(),
+    }
+
+    if (auth.isAuthenticated) {
+        auth.firstName = request.user.firstName
+        auth.lastName = request.user.lastName
+        auth.email = request.user.email
+    }
+
     response.render('index', {
         state: {
-            auth: {
-                isAuthenticated: request.isAuthenticated()
-            }
+            auth
         }
     })
 })

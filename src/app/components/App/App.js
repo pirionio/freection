@@ -1,22 +1,42 @@
 const React = require('react')
-const {Component} = React
+const {Component, PropTypes} = React
+const {connect} = require('react-redux')
 
 const TopBar = require('../TopBar/TopBar')
 const SideBar = require('../SideBar/SideBar')
+const Login = require('../Login/Login')
 
 class App extends Component {
     render () {
-        return (
-            <div className="app-root">
-                <TopBar />
-                <SideBar />
-                {this.props.children}
-            </div>
-        )
+        const {isAuthenticated} = this.props
+
+        if (isAuthenticated) {
+            return (
+                <div className="app-root">
+                    <TopBar />
+                    <SideBar />
+                    {this.props.children}
+                </div>
+            )
+        } else {
+            return (
+                <div className="app-root">
+                    <TopBar />
+                    <Login />
+                </div>
+            )
+        }
     }
 }
 
 App.propTypes = {
+    isAuthenticated: PropTypes.bool.isRequired
 }
 
-module.exports = App
+const mapStateToProps = (state) => {
+    return {
+        isAuthenticated: state.auth.isAuthenticated
+    }
+}
+
+module.exports = connect(mapStateToProps)(App)

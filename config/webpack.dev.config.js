@@ -1,7 +1,7 @@
 const webpack = require('webpack')
 const config = require('./webpack.config')
 
-config.devtool = 'inline-source-map'
+config.devtool = 'source-map'
 config.entry = [
     'webpack-hot-middleware/client',
     ...config.entry]

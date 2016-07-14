@@ -36,7 +36,12 @@ passport.use(new GoogleStrategy({
         }).
         then(u=> {
             logger.info(`new user ${u.firstName} ${u.lastName} ${u.email}`)
-            cb(null, {id: u.id, email: u.email})
+            cb(null, {
+                id: u.id,
+                email: u.email,
+                firstName: u.firstName,
+                lastName: u.lastName
+            })
         }).
         catch(err=> cb(err))
 }))
@@ -54,6 +59,6 @@ router.get('/google', passport.authenticate('google', {
 
 router.get('/google/callback',
     passport.authenticate('google', {session: false, failureRedirect: '/login'}),
-    token.login({ send: true}))
+    token.login({ redirect: '/'}))
 
 module.exports = router

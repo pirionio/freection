@@ -1,0 +1,10 @@
+@import '../vars';
+
+.login-container {
+  height: calc(100% - 15px);
+  overflow-y: scroll;
+
+  .login-content {
+    height: 100%;
+  }
+}

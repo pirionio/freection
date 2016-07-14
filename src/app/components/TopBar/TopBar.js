@@ -1,6 +1,8 @@
 const React = require('react')
 const {Component} = React
 
+const UserInfo = require('./UserInfo')
+
 class TopBar extends Component {
     render () {
         return (
@@ -8,6 +10,7 @@ class TopBar extends Component {
                 <span className="title">
                     Freection
                 </span>
+                <UserInfo />
             </div>
         )
     }
