@@ -4,12 +4,12 @@
   "description": "",
   "main": "src/server/index.js",
   "engines": {
-    "node": "5.12.0"
+    "node": "6.3.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --harmony_destructuring src/server/index.js",
-    "dev": "forever -f -w --watchDirectory \"src/server\" -c \"node --harmony_destructuring\" src/server/index.js",
+    "start": "node src/server/index.js",
+    "dev": "forever -f -w --watchDirectory \"src/server\" -c node src/server/index.js",
     "postinstall": "webpack --config ./config/webpack.prod.config.js --progress --colors"
   },
   "repository": {
