@@ -24,7 +24,7 @@ function doThing(state, action) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
             return {
-                notifications: filter(state.notifications, notification => notification.thingId !== action.notification.id)
+                notifications: filter(state.notifications, notification => notification.eventId !== action.notification.eventId)
             }
         case ActionStatus.START:
         case ActionStatus.ERROR:
