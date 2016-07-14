@@ -24,6 +24,10 @@ Thing.ensureIndex('doers', function(doc) {
     return doc('doers')
 }, {multi:true})
 
+Thing.defineStatic('getFullThing', function(thingId) {
+    return this.get(thingId).getJoin({to: true, creator: true}).run()
+})
+
 Thing.defineStatic('getUserFollowUps', function(userId) {
     return this.getAll(userId, {index: 'followUpers'}).getJoin({to: true, creator: true}).run()
 })

@@ -13,13 +13,6 @@ const Event = thinky.createModel('Event', {
 
 Event.belongsTo(Thing, 'thing', 'thingId', 'id')
 
-const events = {
-    CREATED: 'CREATED',
-    ACCEPTED: 'ACCEPTED'
-}
-
-Event.events = events
-
 Event.ensureIndex('whatsnew', function(doc) {
     return doc('readList')
 }, {multi:true})

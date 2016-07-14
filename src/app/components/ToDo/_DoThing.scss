@@ -39,6 +39,15 @@
     }
   }
 
+  .thing-actions {
+    float: right;
+    width: 100px;
+
+    .thing-done {
+      width: 100%;
+    }
+  }
+
   .thing-row {
     height: 20px;
 

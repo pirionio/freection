@@ -6,19 +6,29 @@ const moment = require('moment')
 const DoThingActions = require('../../actions/do-thing-actions')
 
 class NewNotification extends Component {
-
     constructor(props) {
         super(props)
         this.doThing = this.doThing.bind(this)
+        this.doneActionEnabled = this.doneActionEnabled.bind(this)
     }
 
     doThing() {
         this.props.doThing(this.props.notification)
     }
 
+    doneActionEnabled() {
+        return this.props.notification.type.key !== 'DONE'
+    }
+    
     render () {
         const {notification} = this.props
         const createdAt = moment(notification.createdAt).format('DD-MM-YYYY HH:mm')
+
+        const doneAction = this.doneActionEnabled() ?
+            <div className="notification-do">
+                <button onClick={this.doThing}>Do</button>
+            </div> : ''
+
         return (
             <div className="new-notification">
                 <div className="notification-content">
@@ -29,6 +39,9 @@ class NewNotification extends Component {
                         <div className="notification-subject">
                             {notification.subject}
                         </div>
+                        <div className="notification-type">
+                            ({notification.type.label})
+                        </div>
                         <div className="notification-creation-time">
                             {createdAt}
                         </div>
@@ -38,9 +51,7 @@ class NewNotification extends Component {
                     </div>
                 </div>
                 <div className="notification-actions">
-                    <div className="notification-do">
-                        <button onClick={this.doThing}>Do</button>
-                    </div>
+                    {doneAction}
                 </div>
             </div>
         )

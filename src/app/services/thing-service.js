@@ -11,4 +11,10 @@ function doThing(thing) {
     })
 }
 
-module.exports = {createNewThing, doThing}
+function completeThing(thing) {
+    return ResourceUtil.post('/api/things/done', {
+        thingId: thing.id
+    })
+}
+
+module.exports = {createNewThing, doThing, completeThing}

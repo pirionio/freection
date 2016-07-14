@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const {Thing, User, Event} = require('../../models')
+const EventTypes = require('../../enums/event-types')
 const logger = require('../../utils/logger')
 
 router.post('/', function(request, response) {
@@ -35,7 +36,7 @@ router.post('/', function(request, response) {
         then(thing => {
             return Event.save({
                 thingId: thing.id,
-                type: Event.events.CREATED,
+                type: EventTypes.CREATED.key,
                 createdAt,
                 payload: {},
                 readList: [thing.toUserId]

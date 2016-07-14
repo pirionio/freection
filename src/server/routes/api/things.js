@@ -2,6 +2,7 @@ const router = require('express').Router()
 const {remove, pick} = require('lodash')
 
 const {Event, Thing, User} = require('../../models')
+const EventTypes = require('../../enums/event-types')
 const logger = require('../../utils/logger')
 
 function getUserWhatsNew(user) {
@@ -16,19 +17,37 @@ function getThing(thingId) {
     return Thing.get(thingId).run()
 }
 
+function getFullThing(thingId) {
+    return Thing.getFullThing(thingId)
+}
+
 function doThing(thing, user) {
     thing.doers.push(user.id)
-    remove(thing.followers, followingUserId => followingUserId === user.id)
     return thing.save()
 }
 
-function acceptThing(thing) {
+function completeThing(thing, user) {
+    remove(thing.doers, doerId => doerId === user.id)
+    return thing.save()
+}
+
+function notifyThingAccepted(thing) {
     return Event.save({
         thingId: thing.id,
-        type: Event.events.ACCEPTED,
+        type: EventTypes.ACCEPTED.key,
         createdAt: new Date(),
         payload: {},
         readList: []
+    })
+}
+
+function notifyThingDone(thing) {
+    return Event.save({
+        thingId: thing.id,
+        type: EventTypes.DONE.key,
+        createdAt: new Date(),
+        payload: {},
+        readList: [thing.creator.id]
     })
 }
 
@@ -69,7 +88,8 @@ router.get('/whatsnew', function(request, response) {
                     creator: pick(event.thing.creator, ['id', 'firstName', 'lastName', 'email']),
                     to: pick(event.thing.to, ['id', 'firstName', 'lastName', 'email']),
                     subject: event.thing.subject,
-                    body: event.thing.body
+                    body: event.thing.body,
+                    type: EventTypes[event.type]
                 }
             }))
         }).
@@ -96,7 +116,7 @@ router.post('/do', function(request, response) {
 
     getThing(thingId).
         then(thing => doThing(thing, user)).
-        then(acceptThing).
+        then(notifyThingAccepted).
         then(() => getEvent(eventId)).
         then(event => userReadEvent(event, user)).
         then(() => response.json({})).
@@ -106,6 +126,25 @@ router.post('/do', function(request, response) {
                 response.status(404).send(`Could not find Thing with ID ${thingId}`)
             } else {
                 response.status(500).send(`Could not save user ${user.email} as a doer of thing ${thingId}: ${error.message}`)
+            }
+        }
+    )
+})
+
+router.post('/done', function(request, response) {
+    const user = request.user
+    const {thingId} = request.body
+
+    getFullThing(thingId).
+    then(thing => completeThing(thing, user)).
+    then(notifyThingDone).
+    then(() => response.json({})).
+    catch((error) => {
+            logger.error(`Error while completing thing ${thingId} by user ${user.email}:`, error)
+            if (error && error.name === 'DocumentNotFoundError') {
+                response.status(404).send(`Could not find Thing with ID ${thingId}`)
+            } else {
+                response.status(500).send(`Could not complete thing ${thingId} by user ${user.email}: ${error.message}`)
             }
         }
     )
