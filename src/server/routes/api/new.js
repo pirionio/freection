@@ -28,7 +28,7 @@ router.post('/', function(request, response) {
                 toUserId,
                 body,
                 subject,
-                followers: [creatorUserId],
+                followUpers: [creatorUserId],
                 doers: []
             })
         }).

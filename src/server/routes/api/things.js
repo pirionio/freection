@@ -41,6 +41,21 @@ function getEvent(eventId) {
     return Event.get(eventId).run()
 }
 
+function getUserFollowUps(user) {
+    return Thing.getUserFollowUps(user.id)
+}
+
+function mapThingToDTO(thing) {
+    return {
+        id: thing.id,
+        createdAt: thing.createdAt,
+        creator: pick(thing.creator, ['id', 'firstName', 'lastName', 'email']),
+        to: pick(thing.to, ['id', 'firstName', 'lastName', 'email']),
+        body: thing.body,
+        subject: thing.subject
+    }
+}
+
 router.get('/whatsnew', function(request, response) {
     const user = request.user
     getUser(user.id).
@@ -85,5 +100,15 @@ router.post('/do', function(request, response) {
     )
 })
 
+router.get('/followups', function(request, response) {
+    const user = request.user
+
+    getUserFollowUps(user).
+        then(followUps => response.json(followUps.map(mapThingToDTO))).
+        catch(error => {
+            logger.error(`error while fetching follow ups for user ${user.email}`, error)
+            response.sendStatus(500)
+        })
+})
 
 module.exports = router

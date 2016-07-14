@@ -10,11 +10,18 @@ const Thing = thinky.createModel('Thing', {
     body: type.string(),
     subject: type.string().required(),
     doers:[type.string()],
-    followers: [type.string()]
+    followUpers: [type.string()]
 })
 
 Thing.belongsTo(User, "creator", "creatorUserId", "id")
 Thing.belongsTo(User, "to", "toUserId", "id")
 
+Thing.ensureIndex('followUpers', function(doc) {
+    return doc('followUpers')
+}, {multi:true})
+
+Thing.defineStatic('getUserFollowUps', function(userId) {
+    return this.getAll(userId, {index: 'followUpers'}).getJoin({to: true, creator: true}).run()
+})
 
 module.exports = Thing
