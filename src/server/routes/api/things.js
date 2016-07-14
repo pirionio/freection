@@ -4,12 +4,12 @@ const {remove, pick} = require('lodash')
 const {Event, Thing, User} = require('../../models')
 const logger = require('../../utils/logger')
 
-function getUser(userId) {
-    return User.get(userId).run()
-}
-
 function getUserWhatsNew(user) {
     return Event.getWhatsNew(user.id)
+}
+
+function getUserToDo(user) {
+    return Thing.getUserToDos(user.id)
 }
 
 function getThing(thingId) {
@@ -58,8 +58,8 @@ function mapThingToDTO(thing) {
 
 router.get('/whatsnew', function(request, response) {
     const user = request.user
-    getUser(user.id).
-        then(getUserWhatsNew).
+
+    getUserWhatsNew(user).
         then(events => {
             response.json(events.map(event => {
                 return {
@@ -74,7 +74,18 @@ router.get('/whatsnew', function(request, response) {
             }))
         }).
         catch(error => {
-            logger.error(`error while fetching whats new for user ${user.email}`, e)
+            logger.error(`error while fetching whats new for user ${user.email}`, error)
+            response.sendStatus(500)
+        })
+})
+
+router.get('/do', function(request, response) {
+    const user = request.user
+
+    getUserToDo(user).
+        then(things => response.json(things.map(mapThingToDTO))).
+        catch(error => {
+            logger.error(`error while fetching to do list for user ${user.email}`, error)
             response.sendStatus(500)
         })
 })

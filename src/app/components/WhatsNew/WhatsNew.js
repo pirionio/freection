@@ -11,7 +11,7 @@ const WhatsNewActions = require('../../actions/whats-new-actions')
 class WhatsNew extends Component {
     componentDidMount () {
         this.props.fetchWhatsNew()
-        setInterval(() => {
+        this.fetchInterval = setInterval(() => {
             this.props.fetchWhatsNew()
         }, GeneralConstants.FETCH_INTERVAL_MILLIS)
     }
@@ -26,6 +26,10 @@ class WhatsNew extends Component {
             let node = ReactDOM.findDOMNode(this)
             node.scrollTop = node.scrollHeight
         }
+    }
+
+    componentWillUnmount () {
+        clearInterval(this.fetchInterval)
     }
 
     sortNotificationsByDate () {

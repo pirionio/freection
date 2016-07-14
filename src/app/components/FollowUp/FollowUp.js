@@ -9,9 +9,13 @@ const FollowUpThing = require('./FollowUpThing')
 class FollowUp extends Component {
     componentDidMount () {
         this.props.fetchFollowUps()
-        setInterval(() => {
+        this.fetchInterval = setInterval(() => {
             this.props.fetchFollowUps()
         }, GeneralConstants.FETCH_INTERVAL_MILLIS)
+    }
+
+    componentWillUnmount () {
+        clearInterval(this.fetchInterval)
     }
 
     render() {

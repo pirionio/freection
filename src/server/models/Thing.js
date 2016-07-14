@@ -20,8 +20,16 @@ Thing.ensureIndex('followUpers', function(doc) {
     return doc('followUpers')
 }, {multi:true})
 
+Thing.ensureIndex('doers', function(doc) {
+    return doc('doers')
+}, {multi:true})
+
 Thing.defineStatic('getUserFollowUps', function(userId) {
     return this.getAll(userId, {index: 'followUpers'}).getJoin({to: true, creator: true}).run()
+})
+
+Thing.defineStatic('getUserToDos', function(userId) {
+    return this.getAll(userId, {index: 'doers'}).getJoin({creator: true, to: true}).run()
 })
 
 module.exports = Thing
