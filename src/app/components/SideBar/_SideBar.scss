@@ -1,18 +1,28 @@
 @import '../vars';
 
 .side-bar {
+  $menu-option-height: 40px;
+
   height: calc(100% - #{$top-bar-height});
   width: $side-bar-width;
   float: left;
-  padding: 10px 10px;
+  padding: 10px 0;
   background-color: $side-bar-color;
 
   .side-bar-link {
     color: white;
     display: inline-block;
+    width: 100%;
+    height: $menu-option-height;
+    line-height: $menu-option-height;
+    text-align: center;
 
     &:not(:last-of-type) {
       margin-bottom: 15px;
+    }
+
+    &.active {
+      background-color: $side-bar-active-color;
     }
   }
 }
