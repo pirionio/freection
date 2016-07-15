@@ -14,8 +14,8 @@ class FollowUpThing extends Component {
             <div className="follow-up-thing">
                 <div className="follow-up-thing-content">
                     <div className="follow-up-thing-row">
-                        <div className="follow-up-thing-creator">
-                            {thing.creator.email}
+                        <div className="follow-up-thing-to">
+                            {thing.to.email}
                         </div>
                         <div className="follow-up-thing-subject">
                             {thing.subject}
