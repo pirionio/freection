@@ -79,6 +79,8 @@ passport.use(new GoogleStrategy({
         }).
         catch(err=> {
             if (err === "MissingRefreshToken") {
+                logger.info(
+                    `missing refresh token for new user ${userData.firstName} ${userData.lastName} ${userData.email}`)
                 cb(null, {missingRefreshToken:true})
             } else {
                 cb(err)

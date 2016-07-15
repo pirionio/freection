@@ -1,6 +1,6 @@
 const process = require('process')
 
-const version = '2'
+const version = '3'
 
 if (process.env.NODE_ENV === 'production') {
     module.exports = {secret: 'process.env.TOKEN_SECRET' + version}
