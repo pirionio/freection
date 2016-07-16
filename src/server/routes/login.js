@@ -1,13 +1,11 @@
 const router = require('express').Router()
 const passport = require('passport')
 const GoogleStrategy = require('passport-google-oauth20').Strategy
+const querystring = require('querystring')
 const token = require('../utils/token-strategy')
 const {User} = require('../models')
 const config = require('../config/google-oauth')
 const logger = require('../utils/logger')
-const googleapis = require('googleapis')
-
-var oauth2Client = new googleapis.auth.OAuth2(config.clientID, config.clientSecret, config.callbackURL)
 
 function saveNewUser(userData) {
     return User.save({
@@ -31,19 +29,25 @@ function createUserToken(user) {
 }
 
 function generateOAuth2Url(prompt) {
-    const request = {
+    const oauthUrl = 'https://accounts.google.com/o/oauth2/auth'
+    const scope = [
+        'profile',
+        'email',
+        'https://mail.google.com/']
+
+    const options = {
+        response_type: 'code',
+        client_id: config.clientID,
+        redirect_uri: config.callbackURL,
         access_type: 'offline',
-        scope: [
-            'profile',
-            'email',
-            'https://mail.google.com/']
+        scope: scope.join(' ')
     }
 
     if (prompt) {
-        request.prompt = prompt
+        options.prompt = prompt
     }
 
-    return oauth2Client.generateAuthUrl(request)
+    return oauthUrl + '?' + querystring.stringify(options)
 }
 
 passport.use(new GoogleStrategy({
