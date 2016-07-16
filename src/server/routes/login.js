@@ -69,7 +69,11 @@ passport.use(new GoogleStrategy({
         catch(e=> {
             if (e === "NotFound") {
                 if (userData.refreshToken) {
-                    return saveNewUser(userData)
+                    return saveNewUser(userData).
+                        then(user => {
+                            logger.info(`new user ${user.firstName} ${user.lastName} ${user.email}`)
+                            return user
+                        })
                 } else {
                     throw "MissingRefreshToken"
                 }
@@ -77,10 +81,7 @@ passport.use(new GoogleStrategy({
             else
                 throw e
         }).
-        then(user => {
-            logger.info(`new user ${user.firstName} ${user.lastName} ${user.email}`)
-            cb(null, createUserToken(user))
-        }).
+        then(user => cb(null, createUserToken(user))).
         catch(err=> {
             if (err === "MissingRefreshToken") {
                 logger.info(
