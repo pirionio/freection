@@ -106,7 +106,7 @@ router.get('/google/callback',
             const redirectUrl = generateOAuth2Url('consent')
             response.redirect(302, redirectUrl)
         } else {
-            token.login({ redirect: '/'})(request, response, next)
+            token.login({ redirect: '/', expiresIn: '30 days' })(request, response, next)
         }
     })
 
