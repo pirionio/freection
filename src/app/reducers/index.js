@@ -1,5 +1,4 @@
 const {combineReducers} = require('redux')
-const formReducer = require('redux-form').reducer
 const whatsNew = require('./whats-new-reducer')
 const toDo = require('./to-do-reducer')
 const {newThing, newThingForm} = require('./new-thing-reducer')
@@ -12,6 +11,5 @@ module.exports = combineReducers({
     followUps,
     newThing,
     newThingForm,
-    auth,
-    form: formReducer
+    auth
 })
