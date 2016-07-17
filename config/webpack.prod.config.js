@@ -6,7 +6,8 @@ config.plugins = [
     ...config.plugins,
     new ExtractTextPlugin('style.css'),
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.UglifyJsPlugin()]
+    new webpack.optimize.UglifyJsPlugin(),
+    new webpack.EnvironmentPlugin(['NODE_ENV'])]
 
 config.module.loaders = [
     ...config.module.loaders,

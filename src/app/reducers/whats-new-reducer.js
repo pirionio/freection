@@ -1,6 +1,6 @@
 const WhatsNewActionTypes = require('../actions/types/whats-new-action-types')
 const {ActionStatus} = require('../constants')
-const {filter} = require('lodash')
+const {filter} = require('lodash/core')
 
 const initialState = {
     notifications: []

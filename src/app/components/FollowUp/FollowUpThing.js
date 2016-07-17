@@ -1,6 +1,6 @@
 const React = require('react')
 const {Component, PropTypes} = React
-const moment = require('moment')
+const dateFns = require('date-fns')
 
 class FollowUpThing extends Component {
     constructor(props) {
@@ -9,7 +9,7 @@ class FollowUpThing extends Component {
 
     render () {
         const {thing} = this.props
-        const createdAt = moment(thing.createdAt).format('DD-MM-YYYY HH:mm')
+        const createdAt = dateFns.format(thing.createdAt, 'DD-MM-YYYY HH:mm')
         return (
             <div className="follow-up-thing">
                 <div className="follow-up-thing-content">

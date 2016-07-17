@@ -1,7 +1,7 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
-const moment = require('moment')
+const dateFns = require('date-fns')
 
 const CompleteThingActions = require('../../actions/complete-thing-actions')
 
@@ -17,7 +17,7 @@ class DoThing extends Component {
 
     render () {
         const {thing} = this.props
-        const createdAt = moment(thing.createdAt).format('DD-MM-YYYY HH:mm')
+        const createdAt = dateFns.format(thing.createdAt, 'DD-MM-YYYY HH:mm')
         return (
             <div className="new-thing">
                 <div className="thing-content">

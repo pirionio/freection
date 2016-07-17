@@ -1,6 +1,6 @@
 const ToDoActionTypes = require('../actions/types/to-do-action-types')
 const {ActionStatus} = require('../constants')
-const {filter} = require('lodash')
+const {filter} = require('lodash/core')
 
 const initialState = {
     things: []

@@ -1,7 +1,7 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
-const moment = require('moment')
+const dateFns = require('date-fns')
 
 const DoThingActions = require('../../actions/do-thing-actions')
 
@@ -22,7 +22,7 @@ class NewNotification extends Component {
     
     render () {
         const {notification} = this.props
-        const createdAt = moment(notification.createdAt).format('DD-MM-YYYY HH:mm')
+        const createdAt = dateFns.format(notification.createdAt, 'DD-MM-YYYY HH:mm')
 
         const doneAction = this.doneActionEnabled() ?
             <div className="notification-do">

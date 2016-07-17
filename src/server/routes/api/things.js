@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const {remove, pick} = require('lodash')
+const {remove, pick} = require('lodash/core')
 
 const {Event, Thing, User} = require('../../models')
 const EventTypes = require('../../enums/event-types')

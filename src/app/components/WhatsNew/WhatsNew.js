@@ -1,7 +1,7 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
-const {sortBy} = require('lodash')
+const {sortBy} = require('lodash/core')
 const ReactDOM = require('react-dom')
 
 const {GeneralConstants} = require('../../constants')
