@@ -1,3 +1,4 @@
+const webpack = require('webpack')
 const path = require('path')
 
 module.exports = {
@@ -10,7 +11,7 @@ module.exports = {
         filename: 'bundle.js',
         publicPath: '/'
     },
-    plugins: [],
+    plugins: [new webpack.EnvironmentPlugin(['NODE_ENV'])],
     module: {
         loaders:[] // Loaders are configured in prod/dev files
     }
