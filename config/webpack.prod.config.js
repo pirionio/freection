@@ -1,9 +1,12 @@
+const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const config = require('./webpack.config')
 
 config.plugins = [
     ...config.plugins,
-    new ExtractTextPlugin('style.css')]
+    new ExtractTextPlugin('style.css'),
+    new webpack.optimize.OccurrenceOrderPlugin(),
+    new webpack.optimize.UglifyJsPlugin()]
 
 config.module.loaders = [
     ...config.module.loaders,
