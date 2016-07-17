@@ -46,6 +46,7 @@
     "react-redux": "4.4.5",
     "react-router": "2.5.2",
     "redux": "3.5.2",
+    "react-redux-form": "0.14.1",
     "redux-thunk": "2.1.0",
     "sass-loader": "4.0.0",
     "style-loader": "0.13.1",

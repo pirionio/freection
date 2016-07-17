@@ -1,32 +1,12 @@
-const ThingActionTypes = require('../actions/types/thing-action-types')
-const {ActionStatus} = require('../constants')
+const {modelReducer, formReducer} = require('react-redux-form')
 
 const initialState = {
-    thing: {}
+    to: '',
+    body: '',
+    subject: ''
 }
 
-function createNewThing(state, action) {
-    switch (action.status) {
-        case ActionStatus.START:
-            return {
-                thing: action.thing
-            }
-        case ActionStatus.COMPLETE:
-            return {
-                thing: {}
-            }
-        default:
-            return {
-                thing: {}
-            }
-    }
-}
-
-module.exports = (state = initialState, action) => {
-    switch (action.type) {
-        case ThingActionTypes.NEW_THING:
-            return createNewThing(state, action)
-        default:
-            return state
-    }
+module.exports = {
+    newThing: modelReducer('newThing', initialState),
+    newThingForm: formReducer('newThing', initialState)
 }

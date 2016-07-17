@@ -1,70 +1,53 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
+const {Form, Field} = require('react-redux-form')
 
-const NewThingActions = require('../../actions/new-thing-actions')
+const ThingHelper = require('../../helpers/new-thing-helper')
 
 class NewPanel extends Component {
     constructor(props) {
         super(props)
-        this.state = props.thing
         this.createNewThing = this.createNewThing.bind(this)
-        this.handleRecipientChange = this.handleRecipientChange.bind(this)
-        this.handleBodyChange = this.handleBodyChange.bind(this)
-        this.handleSubjectChange = this.handleSubjectChange.bind(this)
     }
 
     createNewThing() {
-        this.props.createNewThing(this.state)
-        this.setState({to: null, body: null, subject: null})
-    }
-
-    handleRecipientChange(event) {
-        this.setState({to: event.target.value})
-    }
-
-    handleBodyChange(event) {
-        this.setState({body: event.target.value})
-    }
-
-    handleSubjectChange(event) {
-        this.setState({subject: event.target.value})
+        ThingHelper.createNewThing(this.props.dispatch, this.props.newThing)
     }
 
     render () {
-        const {thing} = this.props
+        const {newThing} = this.props
         return (
-            <div className="new-panel">
-                <div className="text-section">
-                    <input className="message-recipients" tabIndex="1" placeholder="to" value={thing.to}
-                           onChange={this.handleRecipientChange} />
-                    <textarea className="message-text" tabIndex="2" placeholder="message" value={thing.body}
-                              onChange={this.handleBodyChange}/>
-                    <input className="message-subject" tabIndex="3" placeholder="subject" value={thing.subject}
-                           onChange={this.handleSubjectChange}/>
+            <Form model="newThing" onSubmit={this.createNewThing}>
+                <div className="new-panel">
+                    <div className="text-section">
+                        <Field model="newThing.to">
+                            <input type="email" className="message-recipients" tabIndex="1" placeholder="to" />
+                        </Field>
+                        <Field model="newThing.body">
+                            <textarea className="message-text" tabIndex="2" placeholder="message"/>
+                        </Field>
+                        <Field model="newThing.subject">
+                            <input type="text" className="message-subject" tabIndex="3" placeholder="subject" />
+                        </Field>
+                    </div>
+                    <div className="send-section">
+                        <button type="submit" tabIndex="4">Send</button>
+                    </div>
                 </div>
-                <div className="send-section">
-                    <button onClick={this.createNewThing}>Send</button>
-                </div>
-            </div>
+            </Form>
         )
     }
 }
 
 NewPanel.propTypes = {
-    thing: PropTypes.object.isRequired
+    newThing: PropTypes.object.isRequired
 }
 
 const mapStateToProps = (state) => {
     return {
-        thing: state.newThing.thing
+        newThing: state.newThing
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        createNewThing: (thing) => dispatch(NewThingActions.createNewThing(thing))
-    }
-}
-
-module.exports = connect(mapStateToProps, mapDispatchToProps)(NewPanel)
+module.exports = connect(mapStateToProps)(NewPanel)
