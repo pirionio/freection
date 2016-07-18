@@ -1,0 +1,76 @@
+.task-container {
+  $task-header-height: 60px;
+
+  height: 100%;
+
+  .task-header {
+    height: $task-header-height;
+    padding-bottom: 10px;
+    margin-bottom: 13px;
+    border-bottom: 1px black dashed;
+
+    .left-side {
+      float: left;
+    }
+
+    .right-side {
+      float: right;
+    }
+
+    .task-title {
+      height: calc(#{$task-header-height} / 2 - 5px)
+    }
+
+    .tasl-subtitle {
+      height: calc(#{$task-header-height} / 2 - 5px)
+    }
+
+    .task-subject {
+      float: left;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .task-status {
+      float: left;
+      margin-left: 5px;
+      margin-top: 2px;
+    }
+
+    .task-creator {
+      float: left;
+      width: 190px;
+      margin-right: 15px;
+      margin-top: 2px;
+      font-style: italic;
+    }
+
+    .task-creation-time {
+      float: right;
+      margin-left: 25px;
+      margin-top: 2px;
+      font-style: italic;
+    }
+  }
+
+  .task-body-container {
+    height: calc(100% - #{$task-header-height});
+    overflow-y: auto;
+
+    .task-body-content {
+      height: 100%;
+    }
+  }
+
+  .task-close {
+    float: right;
+  }
+
+  .task-loading {
+    float: left;
+  }
+
+  .task-error {
+    float: left;
+  }
+}

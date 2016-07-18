@@ -5,7 +5,7 @@ const Thing = require('./Thing')
 const Event = thinky.createModel('Event', {
     id: type.string(),
     thingId: type.string().required(),
-    type: type.string().required(),
+    eventType: type.string().required(),
     createdAt: type.date().required(),
     payload: type.object(),
     readList: [type.string()]

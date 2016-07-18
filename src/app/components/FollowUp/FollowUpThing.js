@@ -1,10 +1,19 @@
 const React = require('react')
 const {Component, PropTypes} = React
+const {withRouter} = require('react-router')
 const dateFns = require('date-fns')
 
 class FollowUpThing extends Component {
     constructor(props) {
         super(props)
+        this.showThing = this.showThing.bind(this)
+    }
+
+    showThing() {
+        this.props.router.push({
+            pathname: `/tasks/${this.props.thing.id}`,
+            query: {from: '/followup'}
+        })
     }
 
     render () {
@@ -18,7 +27,7 @@ class FollowUpThing extends Component {
                             {thing.to.email}
                         </div>
                         <div className="follow-up-thing-subject">
-                            {thing.subject}
+                            <a onClick={this.showThing}>{thing.subject}</a>
                         </div>
                         <div className="follow-up-thing-creation-time">
                             {createdAt}
@@ -37,4 +46,4 @@ FollowUpThing.propTypes = {
     thing: PropTypes.object.isRequired
 }
 
-module.exports = FollowUpThing
+module.exports = withRouter(FollowUpThing)

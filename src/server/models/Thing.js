@@ -9,8 +9,10 @@ const Thing = thinky.createModel('Thing', {
     toUserId: type.string().required(),
     body: type.string(),
     subject: type.string().required(),
-    doers:[type.string()],
-    followUpers: [type.string()]
+    doers: [type.string()],
+    followUpers: [type.string()],
+    payload: type.object(),
+    type: type.string()
 })
 
 Thing.belongsTo(User, "creator", "creatorUserId", "id")

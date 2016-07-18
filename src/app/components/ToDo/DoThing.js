@@ -1,6 +1,7 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
+const {withRouter} = require('react-router')
 const dateFns = require('date-fns')
 
 const CompleteThingActions = require('../../actions/complete-thing-actions')
@@ -9,10 +10,18 @@ class DoThing extends Component {
     constructor(props) {
         super(props)
         this.completeThing = this.completeThing.bind(this)
+        this.showThing = this.showThing.bind(this)
     }
 
     completeThing() {
         this.props.completeThing(this.props.thing)
+    }
+
+    showThing() {
+        this.props.router.push({
+            pathname: `/tasks/${this.props.thing.id}`,
+            query: {from: '/todo'}
+        })
     }
 
     render () {
@@ -26,7 +35,7 @@ class DoThing extends Component {
                             {thing.creator.email}
                         </div>
                         <div className="thing-subject">
-                            {thing.subject}
+                            <a onClick={this.showThing}>{thing.subject}</a>
                         </div>
                         <div className="thing-creation-time">
                             {createdAt}
@@ -56,4 +65,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-module.exports = connect(null, mapDispatchToProps)(DoThing)
+module.exports = connect(null, mapDispatchToProps)(withRouter(DoThing))

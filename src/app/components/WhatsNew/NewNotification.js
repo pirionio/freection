@@ -1,6 +1,7 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
+const {withRouter} = require('react-router')
 const dateFns = require('date-fns')
 
 const DoThingActions = require('../../actions/do-thing-actions')
@@ -10,6 +11,7 @@ class NewNotification extends Component {
         super(props)
         this.doThing = this.doThing.bind(this)
         this.doneActionEnabled = this.doneActionEnabled.bind(this)
+        this.showThing = this.showThing.bind(this)
     }
 
     doThing() {
@@ -17,9 +19,16 @@ class NewNotification extends Component {
     }
 
     doneActionEnabled() {
-        return this.props.notification.type.key !== 'DONE'
+        return this.props.notification.eventType.key !== 'DONE'
     }
-    
+
+    showThing() {
+        this.props.router.push({
+            pathname: `/tasks/${this.props.notification.thingId}`,
+            query: {from: '/whatsnew'}
+        })
+    }
+
     render () {
         const {notification} = this.props
         const createdAt = dateFns.format(notification.createdAt, 'DD-MM-YYYY HH:mm')
@@ -37,10 +46,10 @@ class NewNotification extends Component {
                             {notification.creator.email}
                         </div>
                         <div className="notification-subject">
-                            {notification.subject}
+                            <a onClick={this.showThing}>{notification.subject}</a>
                         </div>
                         <div className="notification-type">
-                            ({notification.type.label})
+                            ({notification.eventType.label})
                         </div>
                         <div className="notification-creation-time">
                             {createdAt}
@@ -68,4 +77,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-module.exports = connect(null, mapDispatchToProps)(NewNotification)
+module.exports = connect(null, mapDispatchToProps)(withRouter(NewNotification))

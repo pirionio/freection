@@ -1,8 +1,10 @@
 const router = require('express').Router()
-const {remove, pick} = require('lodash/core')
+const {remove, pick} = require('lodash')
 
-const {Event, Thing, User} = require('../../models')
+const {Event, Thing} = require('../../models')
 const EventTypes = require('../../enums/event-types')
+const ThingTypes = require('../../enums/thing-types')
+const TaskStatus = require('../../enums/task-status')
 const logger = require('../../utils/logger')
 
 function getUserWhatsNew(user) {
@@ -28,13 +30,14 @@ function doThing(thing, user) {
 
 function completeThing(thing, user) {
     remove(thing.doers, doerId => doerId === user.id)
+    thing.payload.status = TaskStatus.DONE.key
     return thing.save()
 }
 
 function notifyThingAccepted(thing) {
     return Event.save({
         thingId: thing.id,
-        type: EventTypes.ACCEPTED.key,
+        eventType: EventTypes.ACCEPTED.key,
         createdAt: new Date(),
         payload: {},
         readList: []
@@ -44,7 +47,7 @@ function notifyThingAccepted(thing) {
 function notifyThingDone(thing) {
     return Event.save({
         thingId: thing.id,
-        type: EventTypes.DONE.key,
+        eventType: EventTypes.DONE.key,
         createdAt: new Date(),
         payload: {},
         readList: [thing.creator.id]
@@ -71,7 +74,9 @@ function mapThingToDTO(thing) {
         creator: pick(thing.creator, ['id', 'firstName', 'lastName', 'email']),
         to: pick(thing.to, ['id', 'firstName', 'lastName', 'email']),
         body: thing.body,
-        subject: thing.subject
+        subject: thing.subject,
+        payload: thing.payload,
+        type: ThingTypes[thing.type]
     }
 }
 
@@ -89,7 +94,7 @@ router.get('/whatsnew', function(request, response) {
                     to: pick(event.thing.to, ['id', 'firstName', 'lastName', 'email']),
                     subject: event.thing.subject,
                     body: event.thing.body,
-                    type: EventTypes[event.type]
+                    eventType: EventTypes[event.eventType]
                 }
             }))
         }).
