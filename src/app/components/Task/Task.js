@@ -22,6 +22,16 @@ class Task extends Component {
         this.props.hideFullTask(this.props.params.taskId)
     }
 
+    getTaskReferencer() {
+        const {task, currentUser} = this.props
+
+        if (task.creator.email === currentUser.email) {
+            return task.to.email
+        }
+
+        return task.creator.email
+    }
+
     render() {
         const {task, isFetching} = this.props
         const createdAt = dateFns.format(task.createdAt, 'DD-MM-YYYY HH:mm')
@@ -67,8 +77,8 @@ class Task extends Component {
                         </div>
                     </div>
                     <div className="task-subtitle">
-                        <div className="task-creator">
-                            {task.creator ? task.creator.email : ''}
+                        <div className="task-referencer">
+                            {this.getTaskReferencer()}
                         </div>
                         <div className="task-creation-time">
                             {createdAt}
@@ -87,13 +97,15 @@ class Task extends Component {
 
 Task.propTypes = {
     task: PropTypes.object.isRequired,
-    isFetching: PropTypes.bool.isRequired
+    isFetching: PropTypes.bool.isRequired,
+    currentUser: PropTypes.object.isRequired
 }
 
 const mapStateToProps = (state) => {
     return {
         task: state.showTask.task,
-        isFetching: state.showTask.isFetching
+        isFetching: state.showTask.isFetching,
+        currentUser: state.auth
     }
 }
 
