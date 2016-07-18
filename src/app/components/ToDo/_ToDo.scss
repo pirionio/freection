@@ -2,7 +2,7 @@
 
 .to-do-container {
   height: calc(100% - #{$new-panel-height} - 15px);
-  overflow-y: scroll;
+  overflow-y: auto;
 
   .to-do-content {
     height: 100%;
