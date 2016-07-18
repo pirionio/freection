@@ -38,7 +38,7 @@ class WhatsNew extends Component {
 
     render () {
         const rows = this.props.notifications && this.props.notifications.length ?
-            this.sortNotificationsByDate().map(notification => <NewNotification notification={notification} key={notification.eventId} />) :
+            this.sortNotificationsByDate().map(notification => <NewNotification notification={notification} key={notification.id} />) :
             'There are no new Things'
         return (
             <div className="whats-new-container">

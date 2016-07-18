@@ -3,14 +3,20 @@ const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const {withRouter} = require('react-router')
 const dateFns = require('date-fns')
-const {isEmpty} = require('lodash/core')
+const {isEmpty, find} = require('lodash/core')
 
 const TaskActions = require('../../actions/task-actions')
+const DoThingActions = require('../../actions/do-thing-actions')
+const CompleteThingActions = require('../../actions/complete-thing-actions')
+
+const TaskStatus = require('../../../common/enums/task-status')
 
 class Task extends Component {
     constructor(props) {
         super(props)
         this.close = this.close.bind(this)
+        this.doTask = this.doTask.bind(this)
+        this.completeTask = this.completeTask.bind(this)
     }
 
     componentWillMount() {
@@ -30,6 +36,43 @@ class Task extends Component {
         }
 
         return task.creator.email
+    }
+
+    getActions() {
+        const {task, notification} = this.props
+
+        let actions = []
+
+        if (task.payload.status === TaskStatus.NEW.key && !!notification && this.isCurrentUserTheTo()) {
+            actions.push(
+                <div className="task-action" key="action-do">
+                    <button type="text" onClick={this.doTask}>Do</button>
+                </div>
+            )
+        }
+
+        if (task.payload.status === TaskStatus.INPROGRESS.key && this.isCurrentUserTheTo()) {
+            actions.push(
+                <div className="task-action" key="action-complete">
+                    <button type="text" onClick={this.completeTask}>Done</button>
+                </div>
+            )
+        }
+
+        return actions
+    }
+
+    doTask() {
+        console.log(this.props.notification)
+        this.props.doThing(this.props.notification)
+    }
+
+    completeTask() {
+        this.props.completeThing(this.props.task)
+    }
+
+    isCurrentUserTheTo() {
+        return this.props.currentUser.email === this.props.task.to.email
     }
 
     render() {
@@ -62,6 +105,8 @@ class Task extends Component {
             )
         }
 
+        const actions = this.getActions()
+
         return (
             <div className="task-container">
                 <div className="task-header">
@@ -74,6 +119,9 @@ class Task extends Component {
                         </div>
                         <div className="task-close">
                             <button onClick={this.close}>Back</button>
+                        </div>
+                        <div className="task-actions">
+                            {actions}
                         </div>
                     </div>
                     <div className="task-subtitle">
@@ -98,21 +146,26 @@ class Task extends Component {
 Task.propTypes = {
     task: PropTypes.object.isRequired,
     isFetching: PropTypes.bool.isRequired,
-    currentUser: PropTypes.object.isRequired
+    currentUser: PropTypes.object.isRequired,
+    notification: PropTypes.object
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
     return {
         task: state.showTask.task,
         isFetching: state.showTask.isFetching,
-        currentUser: state.auth
+        currentUser: state.auth,
+        notification: props.location.query.notificationId ?
+            find(state.whatsNew.notifications, {id: props.location.query.notificationId}) : {}
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
         showFullTask: (taskId) => dispatch(TaskActions.showFullTask(taskId)),
-        hideFullTask: (taskId) => dispatch(TaskActions.hideFullTask(taskId))
+        hideFullTask: (taskId) => dispatch(TaskActions.hideFullTask(taskId)),
+        doThing: (notification) => dispatch(DoThingActions.doThing(notification)),
+        completeThing: (thing) => dispatch(CompleteThingActions.completeThing(thing))
     }
 }
 

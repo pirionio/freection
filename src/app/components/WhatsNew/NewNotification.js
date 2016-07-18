@@ -24,8 +24,8 @@ class NewNotification extends Component {
 
     showThing() {
         this.props.router.push({
-            pathname: `/tasks/${this.props.notification.thingId}`,
-            query: {from: '/whatsnew'}
+            pathname: `/tasks/${this.props.notification.thing.id}`,
+            query: {from: '/whatsnew', notificationId: this.props.notification.id}
         })
     }
 
@@ -43,10 +43,10 @@ class NewNotification extends Component {
                 <div className="notification-content">
                     <div className="notification-row">
                         <div className="notification-creator">
-                            {notification.creator.email}
+                            {notification.thing.creator.email}
                         </div>
                         <div className="notification-subject">
-                            <a onClick={this.showThing}>{notification.subject}</a>
+                            <a onClick={this.showThing}>{notification.thing.subject}</a>
                         </div>
                         <div className="notification-type">
                             ({notification.eventType.label})
@@ -56,7 +56,7 @@ class NewNotification extends Component {
                         </div>
                     </div>
                     <div className="notification-row notification-body">
-                        {notification.body}
+                        {notification.thing.body}
                     </div>
                 </div>
                 <div className="notification-actions">

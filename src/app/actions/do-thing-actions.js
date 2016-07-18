@@ -29,7 +29,7 @@ function doThingFailed(notification) {
 const doThing = (notification) => {
     return dispatch => {
         dispatch(doThingRequest(notification))
-        ThingService.doThing(notification).
+        ThingService.doThing(notification.thing.id, notification.id).
             then(() => dispatch(doThingComplete(notification))).
             catch(() => dispatch(doThingFailed(notification))
         )

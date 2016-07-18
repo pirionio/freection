@@ -24,7 +24,7 @@ function doThing(state, action) {
     switch (action.status) {
         case ActionStatus.START:
             return {
-                notifications: filter(state.notifications, notification => notification.eventId !== action.notification.eventId)
+                notifications: filter(state.notifications, notification => notification.id !== action.notification.id)
             }
         case ActionStatus.ERROR:
             // If there was an error, since we already removed the notification from the state, we now want to re-add it.

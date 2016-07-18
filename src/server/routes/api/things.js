@@ -1,10 +1,11 @@
 const router = require('express').Router()
-const {remove, pick} = require('lodash')
+const {remove} = require('lodash')
 
 const {Event, Thing} = require('../../models')
-const EventTypes = require('../../enums/event-types')
-const ThingTypes = require('../../enums/thing-types')
-const TaskStatus = require('../../enums/task-status')
+const ThingTransformer = require('../../transformers/thing-transformer')
+const EventTransformer = require('../../transformers/event-transformer')
+const EventTypes = require('../../../common/enums/event-types')
+const TaskStatus = require('../../../common/enums/task-status')
 const logger = require('../../utils/logger')
 
 function getUserWhatsNew(user) {
@@ -25,6 +26,7 @@ function getFullThing(thingId) {
 
 function doThing(thing, user) {
     thing.doers.push(user.id)
+    thing.payload.status = TaskStatus.INPROGRESS.key
     return thing.save()
 }
 
@@ -67,36 +69,12 @@ function getUserFollowUps(user) {
     return Thing.getUserFollowUps(user.id)
 }
 
-function mapThingToDTO(thing) {
-    return {
-        id: thing.id,
-        createdAt: thing.createdAt,
-        creator: pick(thing.creator, ['id', 'firstName', 'lastName', 'email']),
-        to: pick(thing.to, ['id', 'firstName', 'lastName', 'email']),
-        body: thing.body,
-        subject: thing.subject,
-        payload: thing.payload,
-        type: ThingTypes[thing.type]
-    }
-}
-
 router.get('/whatsnew', function(request, response) {
     const user = request.user
 
     getUserWhatsNew(user).
         then(events => {
-            response.json(events.map(event => {
-                return {
-                    eventId: event.id,
-                    thingId: event.thing.id,
-                    createdAt: event.createdAt,
-                    creator: pick(event.thing.creator, ['id', 'firstName', 'lastName', 'email']),
-                    to: pick(event.thing.to, ['id', 'firstName', 'lastName', 'email']),
-                    subject: event.thing.subject,
-                    body: event.thing.body,
-                    eventType: EventTypes[event.eventType]
-                }
-            }))
+            response.json(events.map(EventTransformer.docToDto))
         }).
         catch(error => {
             logger.error(`error while fetching whats new for user ${user.email}`, error)
@@ -108,7 +86,7 @@ router.get('/do', function(request, response) {
     const user = request.user
 
     getUserToDo(user).
-        then(things => response.json(things.map(mapThingToDTO))).
+        then(things => response.json(things.map(ThingTransformer.docToDto))).
         catch(error => {
             logger.error(`error while fetching to do list for user ${user.email}`, error)
             response.sendStatus(500)
@@ -159,7 +137,7 @@ router.get('/followups', function(request, response) {
     const user = request.user
 
     getUserFollowUps(user).
-        then(followUps => response.json(followUps.map(mapThingToDTO))).
+        then(followUps => response.json(followUps.map(ThingTransformer.docToDto))).
         catch(error => {
             logger.error(`error while fetching follow ups for user ${user.email}`, error)
             response.sendStatus(500)

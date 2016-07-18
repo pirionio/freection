@@ -4,10 +4,10 @@ function createNewThing(thing) {
     return ResourceUtil.post('/api/new', thing)
 }
 
-function doThing(thing) {
+function doThing(thingId, eventId) {
     return ResourceUtil.post('/api/things/do', {
-        thingId: thing.thingId,
-        eventId: thing.eventId
+        thingId,
+        eventId
     })
 }
 
