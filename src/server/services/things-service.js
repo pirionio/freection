@@ -33,10 +33,10 @@ function getFollowUps(user) {
 }
 
 function doThing(user, thingId, eventId) {
-    return getThing(thingId)
+    return Thing.get(thingId).run()
         .then(thing => performDoThing(thing, user))
         .then(EventsService.thingAccepted)
-        .then(() => getEvent(eventId))
+        .then(() => Event.get(eventId).run())
         .then(event => EventsService.userHasRead(event, user))
         .catch((error) => {
             logger.error(`error while setting user ${user.email} as doer of thing ${thingId}: ${error}`)
@@ -46,7 +46,7 @@ function doThing(user, thingId, eventId) {
 }
 
 function completeThing(user, thingId) {
-    return getFullThing(thingId)
+    return Thing.getFullThing(thingId)
         .then(thing => completeThing(thing, user))
         .then(EventsService.thingDone)
         .catch((error) => {
@@ -55,22 +55,10 @@ function completeThing(user, thingId) {
         })
 }
 
-function getThing(thingId) {
-    return Thing.get(thingId).run()
-}
-
-function getFullThing(thingId) {
-    return Thing.getFullThing(thingId)
-}
-
 function performDoThing(thing, user) {
     thing.doers.push(user.id)
     thing.payload.status = TaskStatus.INPROGRESS.key
     return thing.save()
-}
-
-function getEvent(eventId) {
-    return Event.get(eventId).run()
 }
 
 module.exports = {
