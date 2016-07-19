@@ -44,6 +44,7 @@ router.post('/', function(request, response) {
                 thingId: thing.id,
                 eventType: EventTypes.CREATED.key,
                 createdAt,
+                creatorUserId,
                 payload: {},
                 readList: [thing.toUserId]
             })

@@ -1,0 +1,23 @@
+@import '../vars';
+
+.comment-container {
+  min-height: $comment-height;
+
+  &:not(:last-of-type) {
+    border-bottom: 1px black dashed;
+    margin-bottom: 15px;
+  }
+
+  .comment-creator {
+    float: left;
+    margin-right: 15px;
+  }
+
+  .comment-message {
+    float: left;
+  }
+
+  .comment-date {
+    float: right;
+  }
+}
