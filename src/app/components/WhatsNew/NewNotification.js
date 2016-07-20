@@ -66,8 +66,10 @@ class NewNotification extends Component {
                         <div className="notification-creator">
                             {notification.creator.email}
                         </div>
-                        <div className="notification-subject">
-                            <a onClick={this.showThing}>{notification.thing.subject}</a>
+                        <div className="notification-title">
+                            <div className="notification-subject">
+                                <a onClick={this.showThing}>{notification.thing.subject}</a>
+                            </div>
                             <div className="notification-type">
                                 ({notification.eventType.label})
                             </div>

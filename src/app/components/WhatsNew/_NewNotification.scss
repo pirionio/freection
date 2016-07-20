@@ -1,13 +1,17 @@
 @import '../vars';
 
 .new-notification {
-  $notification-height: 50px;
+  $notification-height: 60px;
   $actions-width: 100px;
 
   height: $notification-height;
 
   &:not(:first-of-type) {
     margin-top: 15px;
+  }
+
+  &:not(:last-of-type) {
+    border-bottom: 1px black dashed;
   }
 
   .notification-content {
@@ -22,27 +26,32 @@
       font-style: italic;
     }
 
-    .notification-subject {
+    .notification-title {
       float: left;
       max-width: calc(100% - #{$row-user-width} - #{$row-actions-width} - #{$row-date-width});
       min-width: $row-subject-min-width;
       margin: 0 25px 0 15px;
 
-      &:hover {
-        text-decoration: underline;
-      }
-
-      a {
-        float: left;
+      .notification-subject {
+        display: inline-block;
+        max-width: calc(100% - 65px);
         font-size: 18px;
         font-weight: bold;
         cursor: pointer;
-      }
-    }
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
 
-    .notification-type {
-      float: left;
-      margin-left: 5px;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      .notification-type {
+        display: inline-block;
+        width: 65px;
+        margin-left: 5px;
+      }
     }
 
     .notification-creation-time {

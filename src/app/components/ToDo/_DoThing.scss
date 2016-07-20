@@ -1,13 +1,17 @@
 @import '../vars';
 
 .new-thing {
-  $thing-height: 50px;
+  $thing-height: 60px;
   $actions-width: 100px;
 
   height: $thing-height;
 
   &:not(:first-of-type) {
     margin-top: 15px;
+  }
+
+  &:not(:last-of-type) {
+    border-bottom: 1px black dashed;
   }
 
   .thing-content {
@@ -28,16 +32,15 @@
       max-width: calc(100% - #{$row-user-width} - #{$row-actions-width} - #{$row-date-width});
       min-width: $row-subject-min-width;
       margin: 0 25px 0 15px;
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
 
       &:hover {
         text-decoration: underline;
-      }
-
-      a {
-        float: left;
-        font-size: 18px;
-        font-weight: bold;
-        cursor: pointer;
       }
     }
 
