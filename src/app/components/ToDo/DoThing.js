@@ -81,10 +81,12 @@ class DoThing extends Component {
                             {createdAt}
                         </div>
                     </div>
-                    <div className="thing-row thing-body">
-                        {content}
+                    <div className="thing-row">
+                        <div className="thing-text">
+                            {content}
+                        </div>
+                        {unreadCount}
                     </div>
-                    {unreadCount}
                 </div>
                 <div className="thing-actions">
                     <div className="thing-done">

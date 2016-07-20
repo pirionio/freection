@@ -1,3 +1,5 @@
+@import '../vars';
+
 .follow-up-thing {
   $thing-height: 50px;
   $actions-width: 100px;
@@ -15,7 +17,7 @@
 
     .follow-up-thing-to {
       float: left;
-      width: 190px;
+      width: $row-user-width;
       margin-right: 15px;
       margin-top: 2px;
       font-style: italic;
@@ -23,23 +25,30 @@
 
     .follow-up-thing-subject {
       float: left;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
+      max-width: calc(100% - #{$row-user-width} - #{$row-actions-width} - #{$row-date-width});
+      min-width: $row-subject-min-width;
+      margin: 0 25px 0 15px;
 
       &:hover {
         text-decoration: underline;
+      }
+
+      a {
+        float: left;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
       }
     }
 
     .follow-up-thing-creation-time {
       float: left;
-      margin-left: 25px;
+      width: $row-date-width;
       margin-top: 2px;
       font-style: italic;
     }
 
-    .follow-up-thing-body {
+    .follow-up-thing-text {
       max-width: 100%;
       display: inline-block;
       font-size: 17px;
@@ -58,6 +67,7 @@
 
   .follow-up-thing-row {
     height: 20px;
+    line-height: 20px;
 
     &:not(:last-of-type) {
       margin-bottom: 8px;

@@ -74,10 +74,12 @@ class FollowUpThing extends Component {
                             {createdAt}
                         </div>
                     </div>
-                    <div className="follow-up-thing-row follow-up-thing-body">
-                        {content}
+                    <div className="follow-up-thing-row">
+                        <div className="follow-up-thing-text">
+                            {content}
+                        </div>
+                        {unreadCount}
                     </div>
-                    {unreadCount}
                 </div>
             </div>
         )
