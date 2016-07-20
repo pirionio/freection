@@ -24,6 +24,10 @@ Event.ensureIndex('whatsnew', function(doc) {
     return doc('readList')
 }, {multi: true})
 
+Event.defineStatic('getFullEvent', function(eventId) {
+    return this.get(eventId).getJoin({creator: true, thing: true}).run()
+})
+
 Event.defineStatic('getWhatsNew', function(userId) {
     return this.getAll(userId, {index: 'whatsnew'}).
         getJoin({thing: {creator: true, to: true}, creator: true}).

@@ -1,7 +1,9 @@
+@import '../vars';
+
 .task-container {
   $task-header-height: 60px;
 
-  height: 100%;
+  height: calc(100% - #{$new-panel-height} - 15px);
 
   .task-header {
     height: $task-header-height;

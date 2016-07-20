@@ -25,6 +25,10 @@ class Task extends Component {
         this.props.showFullTask(this.props.params.taskId)
     }
 
+    componentWillUnmount() {
+        this.props.hideFullTask(this.props.params.taskId)
+    }
+
     close() {
         this.props.router.push(this.props.location.query.from)
         this.props.hideFullTask(this.props.params.taskId)

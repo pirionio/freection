@@ -4,6 +4,10 @@ function createNewThing(thing) {
     return ResourceUtil.post('/api/new', thing)
 }
 
+function createComment(thingId, commentText) {
+    return ResourceUtil.post(`/api/things/${thingId}/comments`, {commentText})
+}
+
 function doThing(thingId, eventId) {
     return ResourceUtil.post('/api/things/do', {
         thingId,
@@ -17,4 +21,4 @@ function completeThing(thing) {
     })
 }
 
-module.exports = {createNewThing, doThing, completeThing}
+module.exports = {createNewThing, doThing, completeThing, createComment}

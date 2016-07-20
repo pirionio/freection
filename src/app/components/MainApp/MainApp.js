@@ -1,14 +1,14 @@
 const React = require('react')
 const {Component} = React
 
-const NewPanel = require('../NewPanel/NewPanel')
+const MessageBox = require('../MessageBox/MessageBox')
 
 class MainApp extends Component {
     render () {
         return (
             <div className="main-app">
                 {this.props.children}
-                <NewPanel />
+                <MessageBox />
             </div>
         )
     }

@@ -58,4 +58,14 @@ router.get('/followups', function(request, response) {
         .catch(error => response.status(500).send(`Could not fetch Follow Ups for user ${user.email}: ${error.message}`))
 })
 
+router.post('/:thingId/comments', function(request, response) {
+    const user = request.user
+    const {thingId} = request.params
+    const {commentText} = request.body
+
+    ThingsService.createComment(user, thingId, commentText)
+        .then(comment => response.json(comment))
+        .catch(error => response.status(500).send(`Could not comment on thing ${thingId}: ${error.message}`))
+})
+
 module.exports = router

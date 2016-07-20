@@ -1,4 +1,5 @@
 const TaskActionTypes = require('../actions/types/task-action-types')
+const ThingActionTypes = require('../actions/types/thing-action-types')
 const {ActionStatus} = require('../constants')
 
 const initialState = {
@@ -31,12 +32,36 @@ function hideFullTask(state, action) {
     }
 }
 
+function createComment(state, action) {
+    switch (action.status) {
+        case ActionStatus.COMPLETE:
+            return {
+                // Keeping state intact, except adding the new comment to the comments list.
+                task: Object.assign({}, state.task, {
+                    comments: [...state.task.comments, {
+                        id: action.comment.id,
+                        payload: action.comment.payload,
+                        creator: action.comment.creator,
+                        createdAt: action.comment.createdAt
+                    }]
+                }),
+                isFetching: state.isFetching
+            }
+        case ActionStatus.START:
+        case ActionStatus.ERROR:
+        default:
+            return state
+    }
+}
+
 module.exports = (state = initialState, action) => {
     switch (action.type) {
         case TaskActionTypes.SHOW_FULL_TASK:
             return showFullTask(state, action)
         case TaskActionTypes.HIDE_FULL_TASK:
             return hideFullTask(state, action)
+        case ThingActionTypes.CREATE_COMMENT:
+            return createComment(state, action)
         default:
             return state
     }

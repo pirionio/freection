@@ -1,6 +1,9 @@
 @import '../vars';
 
 .comment-container {
+  $creator-width: 200px;
+  $date-width: 120px;
+
   min-height: $comment-height;
 
   &:not(:last-of-type) {
@@ -10,14 +13,23 @@
 
   .comment-creator {
     float: left;
-    margin-right: 15px;
+    width: $creator-width;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .comment-message {
     float: left;
+    width: calc(100% - #{$creator-width} - #{$date-width} - 20px);
+    margin: 0 10px;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .comment-date {
     float: right;
+    width: $date-width;
   }
 }

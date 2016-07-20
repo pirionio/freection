@@ -3,23 +3,38 @@ const {remove} = require('lodash')
 const {Event} = require('../models')
 const EventTypes = require('../../common/enums/event-types')
 
-function thingAccepted(thing) {
+function userAcceptedThing(user, thing) {
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.ACCEPTED.key,
         createdAt: new Date(),
+        creatorUserId: user.id,
         payload: {},
         readList: []
     })
 }
 
-function thingDone(thing) {
+function userCompletedThing(user, thing) {
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.DONE.key,
         createdAt: new Date(),
+        creatorUserId: user.id,
         payload: {},
         readList: [thing.creator.id]
+    })
+}
+
+function userCreatedComment(user, thing, commentText) {
+    return Event.save({
+        thingId: thing.id,
+        eventType: EventTypes.COMMENT.key,
+        createdAt: new Date(),
+        creatorUserId: user.id,
+        payload: {
+            text: commentText
+        },
+        readList: [...thing.followUpers, ...thing.doers]
     })
 }
 
@@ -29,7 +44,8 @@ function userHasRead(event, user) {
 }
 
 module.exports = {
-    thingAccepted,
-    thingDone,
-    userHasRead
+    userAcceptedThing,
+    userCompletedThing,
+    userHasRead,
+    userCreatedComment
 }

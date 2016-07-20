@@ -7,6 +7,6 @@ const initialState = {
 }
 
 module.exports = {
-    newThing: modelReducer('newThing', initialState),
-    newThingForm: formReducer('newThing', initialState)
+    newMessage: modelReducer('newMessage', initialState),
+    newMessageForm: formReducer('newMessage', initialState)
 }

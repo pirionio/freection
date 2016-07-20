@@ -1,3 +1,5 @@
+const {omit} = require('lodash')
+
 const {Event, Thing} = require('../models')
 const EventsService = require('./events-service')
 const EventTransformer = require('../transformers/event-transformer')
@@ -35,7 +37,7 @@ function getFollowUps(user) {
 function doThing(user, thingId, eventId) {
     return Thing.get(thingId).run()
         .then(thing => performDoThing(thing, user))
-        .then(EventsService.thingAccepted)
+        .then(thing => EventsService.userAcceptedThing(user, thing))
         .then(() => Event.get(eventId).run())
         .then(event => EventsService.userHasRead(event, user))
         .catch((error) => {
@@ -48,9 +50,20 @@ function doThing(user, thingId, eventId) {
 function completeThing(user, thingId) {
     return Thing.getFullThing(thingId)
         .then(thing => completeThing(thing, user))
-        .then(EventsService.thingDone)
+        .then(thing => EventsService.userCompletedThing(user, thing))
         .catch((error) => {
             logger.error(`Error while completing thing ${thingId} by user ${user.email}:`, error)
+            throw error
+        })
+}
+
+function createComment(user, thingId, commentText) {
+    return Thing.get(thingId).run()
+        .then(thing => EventsService.userCreatedComment(user, thing, commentText))
+        .then(event => Event.getFullEvent(event.id))
+        .then(event => EventTransformer.docToDto(omit(event, 'thing')))
+        .catch(error => {
+            logger.error(`Could not comment on thing ${thingId} for user ${user.email}`, error)
             throw error
         })
 }
@@ -66,5 +79,6 @@ module.exports = {
     getToDo,
     getFollowUps,
     doThing,
-    completeThing
+    completeThing,
+    createComment
 }
