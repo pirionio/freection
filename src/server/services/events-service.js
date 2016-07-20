@@ -15,13 +15,15 @@ function userAcceptedThing(user, thing) {
 }
 
 function userCompletedThing(user, thing) {
-    return Event.save({
-        thingId: thing.id,
-        eventType: EventTypes.DONE.key,
-        createdAt: new Date(),
-        creatorUserId: user.id,
-        payload: {},
-        readList: [thing.creator.id]
+    return Event.markAllThingEventsAsRead(thing.id).then(() => {
+        return Event.save({
+            thingId: thing.id,
+            eventType: EventTypes.DONE.key,
+            createdAt: new Date(),
+            creatorUserId: user.id,
+            payload: {},
+            readList: [thing.creator.id]
+        })
     })
 }
 
