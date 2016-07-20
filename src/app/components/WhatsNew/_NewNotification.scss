@@ -3,6 +3,7 @@
 .new-notification {
   $notification-height: 60px;
   $actions-width: 100px;
+  $status-width: 65px;
 
   height: $notification-height;
 
@@ -34,7 +35,7 @@
 
       .notification-subject {
         display: inline-block;
-        max-width: calc(100% - 65px);
+        max-width: calc(100% - #{$status-width} - 5px);
         font-size: 18px;
         font-weight: bold;
         cursor: pointer;
@@ -49,7 +50,7 @@
 
       .notification-type {
         display: inline-block;
-        width: 65px;
+        width: $status-width;
         margin-left: 5px;
       }
     }
