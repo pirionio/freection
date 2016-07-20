@@ -5,12 +5,14 @@ const {withRouter} = require('react-router')
 const dateFns = require('date-fns')
 
 const DoThingActions = require('../../actions/do-thing-actions')
+const DismissCommentsActions = require('../../actions/dismiss-comments-actions')
 const EventTypes = require('../../../common/enums/event-types')
 
 class NewNotification extends Component {
     constructor(props) {
         super(props)
         this.doThing = this.doThing.bind(this)
+        this.dismissComments = this.dismissComments.bind(this)
         this.doneActionEnabled = this.doneActionEnabled.bind(this)
         this.showThing = this.showThing.bind(this)
     }
@@ -19,8 +21,16 @@ class NewNotification extends Component {
         this.props.doThing(this.props.notification)
     }
 
+    dismissComments() {
+        this.props.dismissComments(this.props.notification, this.props.currentUser)
+    }
+
     doneActionEnabled() {
         return this.props.notification.eventType.key === EventTypes.CREATED.key
+    }
+    
+    dismissCommentsEnabled() {
+        return this.props.notification.eventType.key === EventTypes.COMMENT.key
     }
 
     showThing() {
@@ -39,6 +49,11 @@ class NewNotification extends Component {
                 <button onClick={this.doThing}>Do</button>
             </div> : ''
 
+        const dismissCommentsAction = this.dismissCommentsEnabled() ?
+            <div className="notification-dismiss-comment">
+                <button onClick={this.dismissComments}>Dismiss</button>
+            </div> : ''
+        
         const commentCount = notification.payload.numOfNewComments > 1 ?
             <div className="notification-count">
                 (+{notification.payload.numOfNewComments - 1})
@@ -70,6 +85,7 @@ class NewNotification extends Component {
                 </div>
                 <div className="notification-actions">
                     {doAction}
+                    {dismissCommentsAction}
                 </div>
             </div>
         )
@@ -77,13 +93,21 @@ class NewNotification extends Component {
 }
 
 NewNotification.propTypes = {
-    notification: PropTypes.object.isRequired
+    notification: PropTypes.object.isRequired,
+    currentUser: PropTypes.object.isRequired
+}
+
+const mapStateToProps = (state) => {
+    return {
+        currentUser: state.auth
+    }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        doThing: (notification) => dispatch(DoThingActions.doThing(notification))
+        doThing: (notification) => dispatch(DoThingActions.doThing(notification)),
+        dismissComments: (notification, currentUser) => dispatch(DismissCommentsActions.dismissComments(notification, currentUser))
     }
 }
 
-module.exports = connect(null, mapDispatchToProps)(withRouter(NewNotification))
+module.exports = connect(mapStateToProps, mapDispatchToProps)(withRouter(NewNotification))

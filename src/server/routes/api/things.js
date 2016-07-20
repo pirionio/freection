@@ -68,4 +68,19 @@ router.post('/:thingId/comments', function(request, response) {
         .catch(error => response.status(500).send(`Could not comment on thing ${thingId}: ${error.message}`))
 })
 
+router.post('/:thingId/dismisscomments', function(request, response) {
+    const user = request.user
+    const {thingId} = request.params
+
+    ThingsService.dismissComments(user, thingId)
+        .then(() => response.json({}))
+        .catch(error => {
+            if (error && error.name === 'DocumentNotFoundError') {
+                response.status(404).send(`Could not find Thing with ID ${thingId}`)
+            } else {
+                response.status(500).send(`Could not dismiss comments unread by user ${user.email} for thing ${thingId}: ${error.message}`)
+            }
+        })
+})
+
 module.exports = router

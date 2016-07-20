@@ -9,7 +9,7 @@ const logger = require('../utils/logger')
 
 function getWhatsNew(user) {
     return Event.getWhatsNew(user.id)
-        .then(events => events.map(EventTransformer.docToDto))
+        .then(events => events.map(event => EventTransformer.docToDto(event, true)))
         .catch(error => {
             logger.error(`error while fetching whats new for user ${user.email}`, error)
             throw error
@@ -74,6 +74,14 @@ function createComment(user, thingId, commentText) {
         })
 }
 
+function dismissComments(user, thingId) {
+    return Event.markUserThingEventsAsRead(thingId, user.id)
+        .catch(error => {
+            // logger.error(`Could not dismiss comments unread by user ${user.email} for thing ${thingId}`, error)
+            throw error
+        })
+}
+
 function performDoThing(thing, user) {
     thing.doers.push(user.id)
     thing.payload.status = TaskStatus.INPROGRESS.key
@@ -92,5 +100,6 @@ module.exports = {
     getFollowUps,
     doThing,
     completeThing,
-    createComment
+    createComment,
+    dismissComments
 }

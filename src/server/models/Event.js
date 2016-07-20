@@ -1,5 +1,6 @@
 const thinky = require('./thinky')
 const type = thinky.type
+
 const Thing = require('./Thing')
 const User = require('./User')
 const EventTypes = require('../../common/enums/event-types')
@@ -34,5 +35,15 @@ Event.defineStatic('getWhatsNew', function(userId) {
 Event.defineStatic('markAllThingEventsAsRead', function(thingId) {
     return this.getAll(thingId, {index: 'thingId'}).update({readList: []}).run()
     })
+
+Event.defineStatic('markUserThingEventsAsRead', function(thingId, userId) {
+    return this.filter(event =>
+        event('readList').contains(userId) && event('thingId').eq(thingId) && event('eventType').eq(EventTypes.COMMENT.key)
+    ).update(event => {
+        return {
+            readList: event("readList").filter(readerUserId => readerUserId.ne(userId))
+        }
+    }).run()
+})
 
 module.exports = Event

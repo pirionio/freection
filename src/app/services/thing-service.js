@@ -21,4 +21,8 @@ function completeThing(thing) {
     })
 }
 
-module.exports = {createNewThing, doThing, completeThing, createComment}
+function dismissComments(notification) {
+    return ResourceUtil.post(`/api/things/${notification.thing.id}/dismisscomments`)
+}
+
+module.exports = {createNewThing, doThing, completeThing, createComment, dismissComments}
