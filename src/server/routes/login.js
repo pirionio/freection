@@ -35,17 +35,13 @@ function generateOAuth2Url(prompt) {
         'email',
         'https://mail.google.com/']
 
-    const options = {
+    const options = Object.assign({
         response_type: 'code',
         client_id: config.clientID,
         redirect_uri: config.callbackURL,
         access_type: 'offline',
         scope: scope.join(' ')
-    }
-
-    if (prompt) {
-        options.prompt = prompt
-    }
+    }, prompt ? { prompt } : {})
 
     return oauthUrl + '?' + querystring.stringify(options)
 }

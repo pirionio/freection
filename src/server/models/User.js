@@ -9,7 +9,8 @@ const User = thinky.createModel('User', {
     firstName: type.string().required(),
     lastName: type.string().required(),
     accessToken: type.string().required(),
-    refreshToken: type.string().required()
+    refreshToken: type.string().required(),
+    lastFetchedEmail: type.number().default('0')
 })
 
 User.ensureIndex('googleId')

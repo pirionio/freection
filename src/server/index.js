@@ -64,3 +64,6 @@ app.set('port', (process.env.PORT || 3000))
 app.listen(app.get('port'), function () {
     logger.info(`Running in ${app.get('env')} mode on port ${app.get('port')}`)
 })
+
+// start mail sync
+require('./mail-sync')

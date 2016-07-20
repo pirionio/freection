@@ -1,3 +1,5 @@
+const thinky = require('./thinky')
+
 const Thing = require('./Thing')
 const User = require('./User')
 const Event = require('./Event')
@@ -10,4 +12,9 @@ Thing.hasMany(Event, 'events', 'id', 'thingId')
 Event.belongsTo(Thing, 'thing', 'thingId', 'id')
 Event.belongsTo(User, 'creator', 'creatorUserId', 'id')
 
-module.exports = {Thing, User, Event}
+function uuid() {
+    return thinky.r.uuid().run()
+}
+
+module.exports = {Thing, User, Event, uuid}
+
