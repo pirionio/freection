@@ -1,7 +1,7 @@
 @import '../vars';
 
 .to-do-container {
-  height: calc(100% - #{$new-panel-height} - 15px);
+  height: calc(100% - #{$message-box-height} - 15px);
   overflow-y: auto;
 
   .to-do-content {

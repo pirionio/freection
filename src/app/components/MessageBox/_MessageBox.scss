@@ -1,9 +1,9 @@
 @import '../vars';
 
-.new-panel {
+.message-box {
   $send-section-width: 60px;
 
-  height: $new-panel-height;
+  height: $message-box-height;
   margin-top: 15px;
 
   .text-section {

@@ -3,7 +3,7 @@
 .task-container {
   $task-header-height: 60px;
 
-  height: calc(100% - #{$new-panel-height} - 15px);
+  height: calc(100% - #{$message-box-height} - 15px);
 
   .task-header {
     height: $task-header-height;
@@ -56,7 +56,7 @@
   }
 
   .task-body-container {
-    height: calc(100% - #{$task-header-height});
+    height: calc(100% - #{$task-header-height} - 13px);
     overflow-y: auto;
 
     .task-body-content {

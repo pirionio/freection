@@ -5,6 +5,7 @@
   $date-width: 120px;
 
   min-height: $comment-height;
+  padding-bottom: 15px;
 
   &:not(:last-of-type) {
     border-bottom: 1px black dashed;
@@ -12,24 +13,23 @@
   }
 
   .comment-creator {
-    float: left;
+    display: inline-block;
     width: $creator-width;
+    vertical-align: top;
     overflow-x: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
 
   .comment-message {
-    float: left;
+    display: inline-block;
     width: calc(100% - #{$creator-width} - #{$date-width} - 20px);
     margin: 0 10px;
-    overflow-x: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
   }
 
   .comment-date {
-    float: right;
+    display: inline-block;
     width: $date-width;
+    vertical-align: top;
   }
 }

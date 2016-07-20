@@ -52,7 +52,7 @@ class NewPanel extends Component {
             )
 
         return (
-            <div className="new-panel">
+            <div className="message-box">
                 <Form model="newMessage" onSubmit={this.createNewThing}>
                     {messageContent}
                     <div className="send-section">
