@@ -46,8 +46,12 @@
     }
 
     .notification-text {
+      width: 100%;
       display: inline-block;
-      font-size: 18px;
+      font-size: 17px;
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .notification-count {
