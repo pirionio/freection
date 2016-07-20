@@ -50,7 +50,7 @@ class NewNotification extends Component {
             </div> : ''
 
         const dismissCommentsAction = this.dismissCommentsEnabled() ?
-            <div className="notification-dismiss-comment">
+            <div className="notification-dismiss-comments">
                 <button onClick={this.dismissComments}>Dismiss</button>
             </div> : ''
         

@@ -46,7 +46,7 @@
     }
 
     .notification-text {
-      width: 100%;
+      max-width: 100%;
       display: inline-block;
       font-size: 17px;
       overflow-x: hidden;
@@ -67,6 +67,10 @@
     width: 100px;
 
     .notification-do {
+      float: right;
+    }
+
+    .notification-dismiss-comments {
       float: right;
     }
   }
