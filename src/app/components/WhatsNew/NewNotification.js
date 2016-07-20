@@ -5,6 +5,7 @@ const {withRouter} = require('react-router')
 const dateFns = require('date-fns')
 
 const DoThingActions = require('../../actions/do-thing-actions')
+const EventTypes = require('../../../common/enums/event-types')
 
 class NewNotification extends Component {
     constructor(props) {
@@ -19,7 +20,7 @@ class NewNotification extends Component {
     }
 
     doneActionEnabled() {
-        return this.props.notification.eventType.key !== 'DONE'
+        return this.props.notification.eventType.key === EventTypes.CREATED.key
     }
 
     showThing() {
@@ -33,7 +34,7 @@ class NewNotification extends Component {
         const {notification} = this.props
         const createdAt = dateFns.format(notification.createdAt, 'DD-MM-YYYY HH:mm')
 
-        const doneAction = this.doneActionEnabled() ?
+        const doAction = this.doneActionEnabled() ?
             <div className="notification-do">
                 <button onClick={this.doThing}>Do</button>
             </div> : ''
@@ -68,7 +69,7 @@ class NewNotification extends Component {
                     </div>
                 </div>
                 <div className="notification-actions">
-                    {doneAction}
+                    {doAction}
                 </div>
             </div>
         )
