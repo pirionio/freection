@@ -1,4 +1,4 @@
-const {omit} = require('lodash')
+const {omit, remove} = require('lodash')
 
 const {Event, Thing} = require('../models')
 const EventsService = require('./events-service')
@@ -49,7 +49,7 @@ function doThing(user, thingId, eventId) {
 
 function completeThing(user, thingId) {
     return Thing.getFullThing(thingId)
-        .then(thing => completeThing(thing, user))
+        .then(thing => performCompleteThing(thing, user))
         .then(thing => EventsService.userCompletedThing(user, thing))
         .catch((error) => {
             logger.error(`Error while completing thing ${thingId} by user ${user.email}:`, error)
@@ -71,6 +71,12 @@ function createComment(user, thingId, commentText) {
 function performDoThing(thing, user) {
     thing.doers.push(user.id)
     thing.payload.status = TaskStatus.INPROGRESS.key
+    return thing.save()
+}
+
+function performCompleteThing(thing, user) {
+    remove(thing.doers, doerId => doerId === user.id)
+    thing.payload.status = TaskStatus.DONE.key
     return thing.save()
 }
 
