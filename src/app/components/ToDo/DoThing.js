@@ -10,10 +10,20 @@ const CompleteThingActions = require('../../actions/complete-thing-actions')
 class DoThing extends Component {
     constructor(props) {
         super(props)
-        
         this.completeThing = this.completeThing.bind(this)
         this.showThing = this.showThing.bind(this)
+        this.initComments = this.initComments.bind(this)
+    }
 
+    componentWillMount() {
+        this.initComments()
+    }
+
+    componentWillUpdate() {
+        this.initComments()
+    }
+
+    initComments() {
         const {thing, currentUser} = this.props
         this.unreadComments = sortBy(thing.comments.filter(comment => includes(comment.readList, currentUser.id)), 'createdAt')
         this.readComments = sortBy(thing.comments.filter(comment => !includes(comment.readList, currentUser.id)), 'createdAt')
