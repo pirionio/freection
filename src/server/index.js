@@ -47,6 +47,7 @@ app.get('*', function (request, response) {
     }
 
     if (auth.isAuthenticated) {
+        auth.id = request.user.id
         auth.firstName = request.user.firstName
         auth.lastName = request.user.lastName
         auth.email = request.user.email

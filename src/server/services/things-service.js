@@ -19,6 +19,9 @@ function getWhatsNew(user) {
 function getToDo(user) {
     return Thing.getUserToDos(user.id)
         .then(things => things.map(ThingTransformer.docToDto))
+        .then(things => things.map(thing => Object.assign(thing, {
+            comments: thing.comments.map(comment => EventTransformer.docToDto(comment, true))
+        })))
         .catch(error => {
             logger.error(`error while fetching to do list for user ${user.email}`, error)
             throw error
@@ -28,6 +31,9 @@ function getToDo(user) {
 function getFollowUps(user) {
     return Thing.getUserFollowUps(user.id)
         .then(followUps => followUps.map(ThingTransformer.docToDto))
+        .then(things => things.map(thing => Object.assign(thing, {
+            comments: thing.comments.map(comment => EventTransformer.docToDto(comment, true))
+        })))
         .catch(error => {
             logger.error(`error while fetching follow ups for user ${user.email}`, error)
             throw error

@@ -14,9 +14,6 @@ const Event = thinky.createModel('Event', {
     readList: [type.string()]
 })
 
-Event.belongsTo(Thing, 'thing', 'thingId', 'id')
-Event.belongsTo(User, 'creator', 'creatorUserId', 'id')
-
 Event.ensureIndex('thingId', {multi: true})
 Event.ensureIndex('eventType', {multi: true})
 
@@ -31,12 +28,6 @@ Event.defineStatic('getFullEvent', function(eventId) {
 Event.defineStatic('getWhatsNew', function(userId) {
     return this.getAll(userId, {index: 'whatsnew'}).
         getJoin({thing: {creator: true, to: true}, creator: true}).
-        run()
-    })
-
-Event.defineStatic('getCommentsForThing', function(thingId) {
-    return this.filter({thingId, eventType: EventTypes.COMMENT.key}).
-        getJoin({creator: true}).
         run()
     })
 

@@ -10,7 +10,8 @@ function docToDto(thing) {
         body: thing.body,
         subject: thing.subject,
         payload: thing.payload,
-        type: ThingTypes[thing.type]
+        type: ThingTypes[thing.type],
+        comments: thing.events || []
     }
 }
 

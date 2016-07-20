@@ -1,12 +1,19 @@
 const React = require('react')
 const {Component, PropTypes} = React
+const {connect} = require('react-redux')
 const {withRouter} = require('react-router')
 const dateFns = require('date-fns')
+const {includes, sortBy, first, last} = require('lodash')
 
 class FollowUpThing extends Component {
     constructor(props) {
         super(props)
+
         this.showThing = this.showThing.bind(this)
+
+        const {thing, currentUser} = this.props
+        this.unreadComments = sortBy(thing.comments.filter(comment => includes(comment.readList, currentUser.id)), 'createdAt')
+        this.readComments = sortBy(thing.comments.filter(comment => !includes(comment.readList, currentUser.id)), 'createdAt')
     }
 
     showThing() {
@@ -16,9 +23,33 @@ class FollowUpThing extends Component {
         })
     }
 
+    getMessagePreview() {
+        const {thing} = this.props
+
+        // If there are unread comments, show the first of them.
+        if (this.unreadComments && this.unreadComments.length) {
+            return first(this.unreadComments).payload.text
+        }
+
+        // If there are only read comments, show the last of them.
+        if (this.readComments && this.readComments.length) {
+            return last(this.readComments).payload.text
+        }
+
+        return thing.body
+    }
+
     render () {
         const {thing} = this.props
+
         const createdAt = dateFns.format(thing.createdAt, 'DD-MM-YYYY HH:mm')
+        const content = this.getMessagePreview()
+
+        const unreadCount = this.unreadComments && this.unreadComments.length > 1 ?
+            <div className="follow-up-thing-unread-count">
+                (+{this.unreadComments.length - 1})
+            </div> : ''
+
         return (
             <div className="follow-up-thing">
                 <div className="follow-up-thing-content">
@@ -34,8 +65,9 @@ class FollowUpThing extends Component {
                         </div>
                     </div>
                     <div className="follow-up-thing-row follow-up-thing-body">
-                        {thing.body}
+                        {content}
                     </div>
+                    {unreadCount}
                 </div>
             </div>
         )
@@ -43,7 +75,14 @@ class FollowUpThing extends Component {
 }
 
 FollowUpThing.propTypes = {
-    thing: PropTypes.object.isRequired
+    thing: PropTypes.object.isRequired,
+    currentUser: PropTypes.object.isRequired
 }
 
-module.exports = withRouter(FollowUpThing)
+const mapStateToProps = (state) => {
+    return {
+        currentUser: state.auth
+    }
+}
+
+module.exports = connect(mapStateToProps)(withRouter(FollowUpThing))

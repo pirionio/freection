@@ -40,7 +40,15 @@
     }
 
     .follow-up-thing-body {
+      display: inline-block;
       font-size: 18px;
+    }
+
+    .follow-up-thing-unread-count {
+      display: inline-block;
+      margin-left: 6px;
+      font-size: 11px;
+      color: darkgray;
     }
   }
 
