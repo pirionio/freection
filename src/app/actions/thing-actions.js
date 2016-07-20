@@ -36,7 +36,7 @@ function createNewThing(thing) {
             body: thing.body,
             subject: thing.subject
         })
-        dispatch(actions.submit('newMessage', promise)).then(() => dispatch(actions.reset('newMessage')))
+        dispatch(actions.submit('messageBox', promise)).then(() => dispatch(actions.reset('messageBox')))
     }
 }
 
@@ -47,7 +47,7 @@ function createComment(thingId, commentText) {
             .catch(error => dispatch(createCommentRequestFailed(thingId)))
 
         // This action takes care of the state of the message box itself.
-        dispatch(actions.submit('newMessage', promise)).then(() => dispatch(actions.reset('newMessage')))
+        dispatch(actions.submit('messageBox', promise)).then(() => dispatch(actions.reset('messageBox')))
 
         // This action takes care of collateral effect of adding a comment (like showing it in the right context).
         dispatch(createCommentRequest(thingId))
