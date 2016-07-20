@@ -34,7 +34,7 @@ function userCreatedComment(user, thing, commentText) {
         payload: {
             text: commentText
         },
-        readList: [...thing.followUpers, ...thing.doers]
+        readList: [...thing.followUpers, ...thing.doers].filter(userId => userId !== user.id)
     })
 }
 

@@ -38,12 +38,17 @@ class NewNotification extends Component {
                 <button onClick={this.doThing}>Do</button>
             </div> : ''
 
+        const commentCount = notification.payload.numOfNewComments > 1 ?
+            <div className="notification-count">
+                (+{notification.payload.numOfNewComments - 1})
+            </div> : ''
+
         return (
             <div className="new-notification">
                 <div className="notification-content">
                     <div className="notification-row">
                         <div className="notification-creator">
-                            {notification.thing.creator.email}
+                            {notification.creator.email}
                         </div>
                         <div className="notification-subject">
                             <a onClick={this.showThing}>{notification.thing.subject}</a>
@@ -55,8 +60,11 @@ class NewNotification extends Component {
                             {createdAt}
                         </div>
                     </div>
-                    <div className="notification-row notification-body">
-                        {notification.thing.body}
+                    <div className="notification-row">
+                        <div className="notification-text">
+                            {notification.payload.text}
+                        </div>
+                        {commentCount}
                     </div>
                 </div>
                 <div className="notification-actions">
