@@ -1,7 +1,7 @@
 @import '../vars';
 
 .follow-up-thing {
-  $thing-height: 60px;
+  $thing-height: 75px;
   $actions-width: 100px;
 
   height: $thing-height;
@@ -42,7 +42,7 @@
     }
 
     .follow-up-thing-creation-time {
-      float: left;
+      float: right;
       width: $row-date-width;
       margin-top: 2px;
       font-style: italic;
@@ -51,6 +51,7 @@
     .follow-up-thing-text {
       max-width: 100%;
       display: inline-block;
+      float: left;
       font-size: 17px;
       overflow-x: hidden;
       text-overflow: ellipsis;
@@ -59,6 +60,7 @@
 
     .follow-up-thing-unread-count {
       display: inline-block;
+      float: left;
       margin-left: 6px;
       font-size: 11px;
       color: darkgray;
@@ -66,8 +68,8 @@
   }
 
   .follow-up-thing-row {
-    height: 20px;
-    line-height: 20px;
+    height: 25px;
+    line-height: 25px;
 
     &:not(:last-of-type) {
       margin-bottom: 8px;

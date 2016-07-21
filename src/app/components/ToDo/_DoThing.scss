@@ -1,7 +1,7 @@
 @import '../vars';
 
 .new-thing {
-  $thing-height: 60px;
+  $thing-height: 75px;
   $actions-width: 100px;
 
   height: $thing-height;
@@ -45,7 +45,7 @@
     }
 
     .thing-creation-time {
-      float: left;
+      float: right;
       width: $row-date-width;
       margin-top: 2px;
       font-style: italic;
@@ -53,6 +53,7 @@
 
     .thing-text {
       max-width: 100%;
+      float: left;
       display: inline-block;
       font-size: 17px;
       overflow-x: hidden;
@@ -62,6 +63,7 @@
 
     .thing-unread-count {
       display: inline-block;
+      float: left;
       margin-left: 6px;
       font-size: 11px;
       color: darkgray;
@@ -78,8 +80,8 @@
   }
 
   .thing-row {
-    height: 20px;
-    line-height: 20px;
+    height: 25px;
+    line-height: 25px;
 
     &:not(:last-of-type) {
       margin-bottom: 8px;
