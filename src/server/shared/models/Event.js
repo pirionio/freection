@@ -1,7 +1,6 @@
 const thinky = require('./thinky')
 const type = thinky.type
 
-const Thing = require('./Thing')
 const User = require('./User')
 const EventTypes = require('../../../common/enums/event-types')
 
@@ -12,14 +11,14 @@ const Event = thinky.createModel('Event', {
     eventType: type.string().required(),
     createdAt: type.date().required(),
     payload: type.object(),
-    readList: [type.string()]
+    showNewList: [type.string()]
 })
 
 Event.ensureIndex('thingId', {multi: true})
 Event.ensureIndex('eventType', {multi: true})
 
 Event.ensureIndex('whatsnew', function(doc) {
-    return doc('readList')
+    return doc('showNewList')
 }, {multi: true})
 
 Event.defineStatic('getFullEvent', function(eventId) {
@@ -33,15 +32,15 @@ Event.defineStatic('getWhatsNew', function(userId) {
     })
 
 Event.defineStatic('markAllThingEventsAsRead', function(thingId) {
-    return this.getAll(thingId, {index: 'thingId'}).update({readList: []}).run()
+    return this.getAll(thingId, {index: 'thingId'}).update({showNewList: []}).run()
     })
 
 Event.defineStatic('markUserThingEventsAsRead', function(thingId, userId) {
     return this.filter(event =>
-        event('readList').contains(userId) && event('thingId').eq(thingId) && event('eventType').eq(EventTypes.COMMENT.key)
+        event('showNewList').contains(userId) && event('thingId').eq(thingId) && event('eventType').eq(EventTypes.COMMENT.key)
     ).update(event => {
         return {
-            readList: event("readList").filter(readerUserId => readerUserId.ne(userId))
+            showNewList: event("showNewList").filter(readerUserId => readerUserId.ne(userId))
         }
     }).run()
 })

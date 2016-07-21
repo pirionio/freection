@@ -47,7 +47,7 @@ router.post('/', function(request, response) {
                 createdAt,
                 creatorUserId,
                 payload: {},
-                readList: [thing.toUserId]
+                showNewList: [thing.toUserId]
             })
         }).
         then(() => {

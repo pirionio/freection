@@ -10,7 +10,7 @@ function userAcceptedThing(user, thing) {
         createdAt: new Date(),
         creatorUserId: user.id,
         payload: {},
-        readList: []
+        showNewList: []
     })
 }
 
@@ -22,7 +22,7 @@ function userCompletedThing(user, thing) {
             createdAt: new Date(),
             creatorUserId: user.id,
             payload: {},
-            readList: [thing.creator.id]
+            showNewList: [thing.creator.id]
         })
     })
 }
@@ -36,12 +36,12 @@ function userCreatedComment(user, thing, commentText) {
         payload: {
             text: commentText
         },
-        readList: [...thing.followUpers, ...thing.doers].filter(userId => userId !== user.id)
+        showNewList: [...thing.followUpers, ...thing.doers].filter(userId => userId !== user.id)
     })
 }
 
 function userHasRead(event, user) {
-    remove(event.readList, readerUserId => readerUserId === user.id)
+    remove(event.showNewList, readerUserId => readerUserId === user.id)
     return event.save()
 }
 

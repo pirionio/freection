@@ -117,7 +117,7 @@ function convertToThingAndEvents(tuple) {
             creatorUserId: fromUser.id,
             eventType: eventTypes.CREATED.key,
             createdAt: message.header.date,
-            readList: [user.id]
+            showNewList: [user.id]
         }
 
         return {thing, events:[event]}

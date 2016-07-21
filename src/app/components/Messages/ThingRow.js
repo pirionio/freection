@@ -21,8 +21,8 @@ class ThingRow extends Component {
 
     initComments() {
         const {thing, currentUser} = this.props
-        this.unreadComments = sortBy(thing.comments.filter(comment => includes(comment.readList, currentUser.id)), 'createdAt')
-        this.readComments = sortBy(thing.comments.filter(comment => !includes(comment.readList, currentUser.id)), 'createdAt')
+        this.unreadComments = sortBy(thing.comments.filter(comment => includes(comment.showNewList, currentUser.id)), 'createdAt')
+        this.readComments = sortBy(thing.comments.filter(comment => !includes(comment.showNewList, currentUser.id)), 'createdAt')
     }
 
     completeThing() {
