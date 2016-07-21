@@ -1,6 +1,7 @@
 const TaskActionTypes = require('../actions/types/task-action-types')
 const ThingActionTypes = require('../actions/types/thing-action-types')
 const {ActionStatus} = require('../constants')
+const {merge} = require('lodash')
 
 const initialState = {
     task: {},
@@ -54,6 +55,31 @@ function createComment(state, action) {
     }
 }
 
+function markCommentAsRead(state, action) {
+    switch(action.status) {
+        case ActionStatus.COMPLETE:
+            return Object.assign({}, state, {
+                task: Object.assign({}, state.task, {
+                    comments: state.task.comments.map(comment => {
+                        if (comment.id === action.comment.id) {
+                            const t = merge({}, comment, {
+                                payload: {
+                                    isRead: true
+                                }
+                            })
+                            return t
+                        } else
+                            return comment
+                    })
+                })
+            })
+        case ActionStatus.START:
+        case ActionStatus.ERROR:
+        default:
+            return state
+    }
+}
+
 module.exports = (state = initialState, action) => {
     switch (action.type) {
         case TaskActionTypes.SHOW_FULL_TASK:
@@ -62,6 +88,8 @@ module.exports = (state = initialState, action) => {
             return hideFullTask(state, action)
         case ThingActionTypes.CREATE_COMMENT:
             return createComment(state, action)
+        case ThingActionTypes.MARK_COMMENT_AS_READ:
+            return markCommentAsRead(state, action)
         default:
             return state
     }

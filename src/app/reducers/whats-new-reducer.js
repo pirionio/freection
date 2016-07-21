@@ -47,8 +47,7 @@ function dismissComments(state, action) {
             return {
                 notifications: reject(state.notifications, notification =>
                     notification.eventType.key === EventTypes.COMMENT.key &&
-                    notification.thing.id === action.notification.thing.id &&
-                    includes(notification.showNewList, action.user.id))
+                    notification.thing.id === action.notification.thing.id)
             }
         case ActionStatus.COMPLETE:
         default:

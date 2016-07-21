@@ -1,5 +1,13 @@
 @import '../vars';
 
+.comment-unread {
+  background-color: #fff0ab;
+}
+
+.comment-read {
+  transition: background-color 1s 1s ease-out;
+}
+
 .comment-container {
   $creator-width: 200px;
   $date-width: 120px;

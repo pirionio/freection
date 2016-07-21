@@ -83,4 +83,19 @@ router.post('/:thingId/dismisscomments', function(request, response) {
         })
 })
 
+router.post('/:commentId/markcommentasread', function(request, response) {
+    const {user} = request
+    const {commentId} = request.params
+
+    ThingsService.markCommentAsRead(user, commentId)
+        .then(() => response.json({}))
+        .catch(error => {
+            if (error && error.name === 'DocumentNotFoundError') {
+                response.status(404).send(`Could not find comment with ID ${commentId}`)
+            } else {
+                response.status(500).send(`Could not mark comment as read by user ${user.email} for comment ${commentId}: ${error.message}`)
+            }
+        })
+})
+
 module.exports = router

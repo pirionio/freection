@@ -1,7 +1,14 @@
 const UserTransformer = require('./user-transformer')
 const ThingTypes = require('../../../common/enums/thing-types')
+const CommentPayloadTransformer = require('./comment-payload-transformer')
 
-function docToDto(thing) {
+function commentToDto(comment, user) {
+    return Object.assign({}, comment, {
+        payload: CommentPayloadTransformer.docToDto(comment.payload, user)
+    })
+}
+
+function docToDto(thing, user) {
     return {
         id: thing.id,
         createdAt: thing.createdAt,
@@ -11,7 +18,7 @@ function docToDto(thing) {
         subject: thing.subject,
         payload: thing.payload,
         type: ThingTypes[thing.type],
-        comments: thing.events || []
+        comments: thing.events ? thing.events.map(comment => commentToDto(comment, user)) : []
     }
 }
 

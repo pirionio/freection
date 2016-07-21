@@ -1,16 +1,17 @@
 const EventTypes = require('../../../common/enums/event-types')
 const ThingTransformer = require('./thing-transformer')
 const UserTransformer = require('./user-transformer')
+const CommentPayloadTransformer = require('./comment-payload-transformer')
 
-function docToDto(event, includeShowNewList = false) {
+function docToDto(event, user, includeShowNewList = false) {
     return {
         id: event.id,
         thing: event.thing && ThingTransformer.docToDto(event.thing),
         createdAt: event.createdAt,
-        payload: event.payload,
+        payload: event.eventType === EventTypes.COMMENT.key ?
+            CommentPayloadTransformer.docToDto(event.payload, user) : event.payload,
         eventType: EventTypes[event.eventType],
-        creator: event.creator && UserTransformer.docToDto(event.creator),
-        showNewList: includeShowNewList ? event.showNewList : undefined
+        creator: event.creator && UserTransformer.docToDto(event.creator)
     }
 }
 

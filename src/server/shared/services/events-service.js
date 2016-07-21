@@ -34,13 +34,14 @@ function userCreatedComment(user, thing, commentText) {
         createdAt: new Date(),
         creatorUserId: user.id,
         payload: {
-            text: commentText
+            text: commentText,
+            readByList: [user.id]
         },
         showNewList: [...thing.followUpers, ...thing.doers].filter(userId => userId !== user.id)
     })
 }
 
-function userHasRead(event, user) {
+function userAck(event, user) {
     remove(event.showNewList, readerUserId => readerUserId === user.id)
     return event.save()
 }
@@ -48,6 +49,6 @@ function userHasRead(event, user) {
 module.exports = {
     userAcceptedThing,
     userCompletedThing,
-    userHasRead,
+    userAck,
     userCreatedComment
 }

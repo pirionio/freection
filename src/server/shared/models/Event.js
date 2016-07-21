@@ -45,4 +45,16 @@ Event.defineStatic('markUserThingEventsAsRead', function(thingId, userId) {
     }).run()
 })
 
+Event.defineStatic('markUserCommentAsRead', function(eventId, userId) {
+    return this.get(eventId)
+        .update(event => {
+            return {
+                payload: {
+                    readByList: event('payload')('readByList').append(userId)
+                }
+            }
+        })
+        .run()
+})
+
 module.exports = Event

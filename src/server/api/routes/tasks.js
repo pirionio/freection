@@ -5,7 +5,7 @@ const TasksService = require('../../shared/services/tasks-service')
 router.get('/:taskId', function(request, response) {
     const {taskId} = request.params
 
-    TasksService.getTask(taskId)
+    TasksService.getTask(taskId, request.user)
         .then(task => response.json(task))
         .catch(error => {
             if (error && error.name === 'DocumentNotFoundError') {

@@ -9,7 +9,7 @@ const logger = require('../utils/logger')
 
 function getWhatsNew(user) {
     return Event.getWhatsNew(user.id)
-        .then(events => events.map(event => EventTransformer.docToDto(event, true)))
+        .then(events => events.map(event => EventTransformer.docToDto(event, user, true)))
         .catch(error => {
             logger.error(`error while fetching whats new for user ${user.email}`, error)
             throw error
@@ -18,9 +18,9 @@ function getWhatsNew(user) {
 
 function getToDo(user) {
     return Thing.getUserToDos(user.id)
-        .then(things => things.map(ThingTransformer.docToDto))
+        .then(things => things.map(thing => ThingTransformer.docToDto(thing, user)))
         .then(things => things.map(thing => Object.assign(thing, {
-            comments: thing.comments.map(comment => EventTransformer.docToDto(comment, true))
+            comments: thing.comments.map(comment => EventTransformer.docToDto(comment, user, true))
         })))
         .catch(error => {
             logger.error(`error while fetching to do list for user ${user.email}`, error)
@@ -30,9 +30,9 @@ function getToDo(user) {
 
 function getFollowUps(user) {
     return Thing.getUserFollowUps(user.id)
-        .then(followUps => followUps.map(ThingTransformer.docToDto))
+        .then(followUps => followUps.map(thing => ThingTransformer.docToDto(thing, user)))
         .then(things => things.map(thing => Object.assign(thing, {
-            comments: thing.comments.map(comment => EventTransformer.docToDto(comment, true))
+            comments: thing.comments.map(comment => EventTransformer.docToDto(comment, user, true))
         })))
         .catch(error => {
             logger.error(`error while fetching follow ups for user ${user.email}`, error)
@@ -45,7 +45,7 @@ function doThing(user, thingId, eventId) {
         .then(thing => performDoThing(thing, user))
         .then(thing => EventsService.userAcceptedThing(user, thing))
         .then(() => Event.get(eventId).run())
-        .then(event => EventsService.userHasRead(event, user))
+        .then(event => EventsService.userAck(event, user))
         .catch((error) => {
             logger.error(`error while setting user ${user.email} as doer of thing ${thingId}: ${error}`)
             throw error
@@ -67,7 +67,7 @@ function createComment(user, thingId, commentText) {
     return Thing.get(thingId).run()
         .then(thing => EventsService.userCreatedComment(user, thing, commentText))
         .then(event => Event.getFullEvent(event.id))
-        .then(event => EventTransformer.docToDto(omit(event, 'thing')))
+        .then(event => EventTransformer.docToDto(omit(event, 'thing'), user))
         .catch(error => {
             logger.error(`Could not comment on thing ${thingId} for user ${user.email}`, error)
             throw error
@@ -78,6 +78,14 @@ function dismissComments(user, thingId) {
     return Event.markUserThingEventsAsRead(thingId, user.id)
         .catch(error => {
             // logger.error(`Could not dismiss comments unread by user ${user.email} for thing ${thingId}`, error)
+            throw error
+        })
+}
+
+function markCommentAsRead(user, commentId) {
+    return Event.markUserCommentAsRead(commentId, user.id)
+        .catch(error => {
+            logger.error(`Could not mark comment as read by user ${user.email} for comment ${commentId}`, error)
             throw error
         })
 }
@@ -101,5 +109,6 @@ module.exports = {
     doThing,
     completeThing,
     createComment,
-    dismissComments
+    dismissComments,
+    markCommentAsRead
 }

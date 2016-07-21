@@ -25,4 +25,8 @@ function dismissComments(notification) {
     return ResourceUtil.post(`/api/things/${notification.thing.id}/dismisscomments`)
 }
 
-module.exports = {createNewThing, doThing, completeThing, createComment, dismissComments}
+function markCommentAsRead(comment) {
+    return ResourceUtil.post(`/api/things/${comment.id}/markcommentasread`)
+}
+
+module.exports = {createNewThing, doThing, completeThing, createComment, dismissComments, markCommentAsRead}
