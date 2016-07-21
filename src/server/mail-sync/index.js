@@ -8,6 +8,7 @@ const promisify = require('../utils/promisify')
 const Connection = require('./Connection')
 const eventTypes = require('../../common/enums/event-types')
 const thingTypes = require('../../common/enums/thing-types')
+const taskStatus = require('../../common/enums/task-status')
 require('../utils/promiseExtensions')
 
 const connections = new Map()
@@ -105,7 +106,9 @@ function convertToThingAndEvents(tuple) {
             doers: [],
             followUpers: [],
             type: thingTypes.TASK.key,
-            payload: {}
+            payload: {
+                status: taskStatus.NEW.key
+            }
         }
 
         const event = {
