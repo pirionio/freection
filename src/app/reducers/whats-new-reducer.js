@@ -57,6 +57,12 @@ function dismissComments(state, action) {
     }
 }
 
+function notificationReceived(state, action) {
+    return {
+        notifications: [...state.notifications, action.notification]
+    }
+}
+
 module.exports = (state = initialState, action) => {
     switch (action.type) {
         case WhatsNewActionTypes.FETCH_WHATS_NEW:
@@ -65,6 +71,8 @@ module.exports = (state = initialState, action) => {
             return doThing(state, action)
         case WhatsNewActionTypes.DISMISS_COMMENTS:
             return dismissComments(state, action)
+        case WhatsNewActionTypes.NOTIFICATION_RECEIVED:
+            return notificationReceived(state, action)
         default:
             return state
     }

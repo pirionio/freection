@@ -24,6 +24,13 @@ function requestWhatsNewFailed() {
     }
 }
 
+function notificationReceivedAction(notification) {
+    return {
+        type: WhatsNewActionTypes.NOTIFICATION_RECEIVED,
+        notification
+    }
+}
+
 const fetchWhatsNew = () => {
     return dispatch => {
         dispatch(requestWhatsNew())
@@ -34,4 +41,10 @@ const fetchWhatsNew = () => {
     }
 }
 
-module.exports = {fetchWhatsNew}
+const notificationReceived = (notification) => {
+    return dispatch => {
+        dispatch(notificationReceivedAction(notification))
+    }
+}
+
+module.exports = {fetchWhatsNew, notificationReceived}

@@ -1,6 +1,9 @@
 const express = require('express')
 const path = require('path')
+const jwt = require('jsonwebtoken')
 
+const tokenConfig = require('../shared/config/token')
+const logger = require('../shared/utils/logger')
 const login = require('./login')
 
 module.exports = (app) => {
@@ -37,10 +40,20 @@ module.exports = (app) => {
             auth.email = request.user.email
         }
 
-        response.render('index', {
-            state: {
-                auth
+        var tokenOptions = request.user.exp ? {} : {expiresIn: '30 days'}
+
+        jwt.sign(request.user, tokenConfig.pushSecret, tokenOptions, (error, pushToken) => {
+            if (error) {
+                logger.error(`Could not sign user ${request.user.email} for the push server token`, error.message)
             }
+
+            auth.pushToken = pushToken
+
+            response.render('index', {
+                state: {
+                    auth
+                }
+            })
         })
     })
 }

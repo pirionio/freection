@@ -2,14 +2,9 @@ const React = require('react')
 const {Component, PropTypes} = React
 const ReactDOM = require('react-dom')
 
-const {GeneralConstants} = require('../../constants')
-
 class MessagesContainer extends Component {
     componentDidMount () {
         this.props.fetchMessages()
-        this.fetchInterval = setInterval(() => {
-            this.props.fetchMessages()
-        }, GeneralConstants.FETCH_INTERVAL_MILLIS)
     }
 
     componentWillUpdate () {
@@ -22,10 +17,6 @@ class MessagesContainer extends Component {
             let node = ReactDOM.findDOMNode(this)
             node.scrollTop = node.scrollHeight
         }
-    }
-
-    componentWillUnmount () {
-        clearInterval(this.fetchInterval)
     }
 
     render () {
