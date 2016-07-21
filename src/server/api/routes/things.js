@@ -1,7 +1,7 @@
 const router = require('express').Router()
 
-const ThingsService = require('../../services/things-service')
-const logger = require('../../utils/logger')
+const ThingsService = require('../../shared/services/things-service')
+const logger = require('../../shared/utils/logger')
 
 router.get('/whatsnew', function(request, response) {
     const user = request.user

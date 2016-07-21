@@ -2,10 +2,11 @@ const router = require('express').Router()
 const passport = require('passport')
 const GoogleStrategy = require('passport-google-oauth20').Strategy
 const querystring = require('querystring')
-const token = require('../utils/token-strategy')
-const {User} = require('../models')
-const config = require('../config/google-oauth')
-const logger = require('../utils/logger')
+
+const {User} = require('../shared/models')
+const config = require('../shared/config/google-oauth')
+const token = require('../shared/utils/token-strategy')
+const logger = require('../shared/utils/logger')
 
 function saveNewUser(userData) {
     return User.save({

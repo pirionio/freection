@@ -3,7 +3,7 @@ const type = thinky.type
 
 const Thing = require('./Thing')
 const User = require('./User')
-const EventTypes = require('../../common/enums/event-types')
+const EventTypes = require('../../../common/enums/event-types')
 
 const Event = thinky.createModel('Event', {
     id: type.string(),

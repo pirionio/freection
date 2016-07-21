@@ -1,15 +1,16 @@
 const OAuth2 = require('google-auth-library/lib/auth/oauth2client')
 const {chain} = require('lodash')
 
-const logger = require('../utils/logger')
-const config = require('../config/google-oauth')
-const {User, Event, Thing, uuid} = require('../models')
-const promisify = require('../utils/promisify')
+const logger = require('../shared/utils/logger')
+const config = require('../shared/config/google-oauth')
+const {User, Event, Thing, uuid} = require('../shared/models')
+const promisify = require('../shared/utils/promisify')
 const Connection = require('./Connection')
 const eventTypes = require('../../common/enums/event-types')
 const thingTypes = require('../../common/enums/thing-types')
 const taskStatus = require('../../common/enums/task-status')
-require('../utils/promiseExtensions')
+
+require('../shared/utils/promiseExtensions')
 
 const connections = new Map()
 
@@ -195,7 +196,9 @@ function syncEmails() {
         .then(() => setTimeout(syncEmails, 60 * 1000))
 }
 
-syncEmails()
+module.exports.start = () => {
+    syncEmails()
+}
 
 
 

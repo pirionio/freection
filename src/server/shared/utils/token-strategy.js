@@ -1,4 +1,5 @@
 'use strict'
+
 const jwt = require('jsonwebtoken')
 const Strategy = require('passport-strategy')
 

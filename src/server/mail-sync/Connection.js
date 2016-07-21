@@ -2,8 +2,8 @@ const imap = require('imap')
 const {MailParser} = require('mailparser')
 const {chain, compact} = require('lodash')
 
-const logger = require('../utils/logger')
-const promisify = require('../utils/promisify')
+const logger = require('../shared/utils/logger')
+const promisify = require('../shared/utils/promisify')
 
 class Connection {
     constructor(config) {

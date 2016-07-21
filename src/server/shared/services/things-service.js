@@ -4,7 +4,7 @@ const {Event, Thing} = require('../models')
 const EventsService = require('./events-service')
 const EventTransformer = require('../transformers/event-transformer')
 const ThingTransformer = require('../transformers/thing-transformer')
-const TaskStatus = require('../../common/enums/task-status')
+const TaskStatus = require('../../../common/enums/task-status')
 const logger = require('../utils/logger')
 
 function getWhatsNew(user) {

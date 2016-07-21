@@ -1,4 +1,4 @@
-const EventTypes = require('../../common/enums/event-types')
+const EventTypes = require('../../../common/enums/event-types')
 const ThingTransformer = require('./thing-transformer')
 const UserTransformer = require('./user-transformer')
 

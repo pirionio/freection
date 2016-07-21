@@ -1,8 +1,8 @@
 const thinky = require('./thinky')
 const type = thinky.type
-const User = require('./User')
 
-const EventTypes = require('../../common/enums/event-types')
+const User = require('./User')
+const EventTypes = require('../../../common/enums/event-types')
 
 const Thing = thinky.createModel('Thing', {
     id: type.string(),

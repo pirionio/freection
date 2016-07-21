@@ -1,6 +1,6 @@
 const router = require('express').Router()
 
-const TasksService = require('../../services/tasks-service')
+const TasksService = require('../../shared/services/tasks-service')
 
 router.get('/:taskId', function(request, response) {
     const {taskId} = request.params

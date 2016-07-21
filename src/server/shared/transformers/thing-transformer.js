@@ -1,5 +1,5 @@
 const UserTransformer = require('./user-transformer')
-const ThingTypes = require('../../common/enums/thing-types')
+const ThingTypes = require('../../../common/enums/thing-types')
 
 function docToDto(thing) {
     return {

@@ -1,9 +1,10 @@
 const router = require('express').Router()
-const {Thing, User, Event} = require('../../models')
+
+const {Thing, User, Event} = require('../../shared/models')
 const EventTypes = require('../../../common/enums/event-types')
 const ThingTypes = require('../../../common/enums/thing-types')
 const TaskStatus = require('../../../common/enums/task-status')
-const logger = require('../../utils/logger')
+const logger = require('../../shared/utils/logger')
 
 router.post('/', function(request, response) {
     const {to, body, subject} = request.body

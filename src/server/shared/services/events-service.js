@@ -1,7 +1,7 @@
 const {remove} = require('lodash')
 
 const {Event} = require('../models')
-const EventTypes = require('../../common/enums/event-types')
+const EventTypes = require('../../../common/enums/event-types')
 
 function userAcceptedThing(user, thing) {
     return Event.save({
