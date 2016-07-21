@@ -1,45 +1,40 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
+const {sortBy} = require('lodash/core')
 
-const {GeneralConstants} = require('../../constants')
+const MessagesContainer = require('../Messages/MessagesContainer')
 const FollowUpsActions = require('../../actions/follow-up-actions')
 const FollowUpThing = require('./FollowUpThing')
 
 class FollowUp extends Component {
-    componentDidMount () {
-        this.props.fetchFollowUps()
-        this.fetchInterval = setInterval(() => {
-            this.props.fetchFollowUps()
-        }, GeneralConstants.FETCH_INTERVAL_MILLIS)
+    constructor(props) {
+        super(props)
+        this.getThingsToFollowUp = this.getThingsToFollowUp.bind(this)
     }
 
-    componentWillUnmount () {
-        clearInterval(this.fetchInterval)
+    getThingsToFollowUp() {
+        return sortBy(this.props.things, 'createdAt').map(thing =>
+            <FollowUpThing thing={thing} key={thing.id} />)
     }
 
     render() {
-        const rows = this.props.followUps && this.props.followUps.length ?
-            this.props.followUps.map(thing => <FollowUpThing thing={thing} key={thing.id} />) :
-            'There are no new Things to followup'
-
         return (
-            <div className="follow-up-container">
-                <div className="follow-up-content">
-                    {rows}
-                </div>
-            </div>
+            <MessagesContainer messages={this.props.things}
+                               fetchMessages={this.props.fetchFollowUps}
+                               getMessageRows={this.getThingsToFollowUp}
+                               noMessagesText="There are no things to follow up" />
         )
     }
 }
 
 FollowUp.propTypes = {
-    followUps: PropTypes.array.isRequired
+    things: PropTypes.array.isRequired
 }
 
 const mapStateToProps = (state) => {
     return {
-        followUps: state.followUps.followUps
+        things: state.followUps.followUps
     }
 }
 

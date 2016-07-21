@@ -2,50 +2,28 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const {sortBy} = require('lodash/core')
-const ReactDOM = require('react-dom')
 
-const {GeneralConstants} = require('../../constants')
+const MessagesContainer = require('../Messages/MessagesContainer')
 const ToDoActions = require('../../actions/to-do-actions')
 const DoThing = require('./DoThing')
 
 class ToDo extends Component {
-    componentDidMount () {
-        this.props.fetchToDo()
-        this.fetchInterval = setInterval(() => {
-            this.props.fetchToDo()
-        }, GeneralConstants.FETCH_INTERVAL_MILLIS)
+    constructor(props) {
+        super(props)
+        this.getThingsToDo = this.getThingsToDo.bind(this)
     }
 
-    componentWillUpdate () {
-        const node = ReactDOM.findDOMNode(this)
-        this.shouldScrollBottom = (node.scrollTop + node.offsetHeight) === node.scrollHeight
+    getThingsToDo() {
+        return sortBy(this.props.things, 'createdAt').map(thing =>
+            <DoThing thing={thing} key={thing.id} />)
     }
 
-    componentDidUpdate () {
-        if (this.shouldScrollBottom) {
-            let node = ReactDOM.findDOMNode(this)
-            node.scrollTop = node.scrollHeight
-        }
-    }
-
-    componentWillUnmount () {
-        clearInterval(this.fetchInterval)
-    }
-
-    sortThingsByDate () {
-        return sortBy(this.props.things, thing => thing.createdAt)
-    }
-
-    render () {
-        const rows = this.props.things && this.props.things.length ?
-            this.sortThingsByDate().map(thing => <DoThing thing={thing} key={thing.id} />) :
-            'There are no Things to do'
+    render() {
         return (
-            <div className="to-do-container">
-                <div className="to-do-content">
-                    {rows}
-                </div>
-            </div>
+            <MessagesContainer messages={this.props.things}
+                               fetchMessages={this.props.fetchToDo}
+                               getMessageRows={this.getThingsToDo}
+                               noMessagesText="There are no things to do" />
         )
     }
 }

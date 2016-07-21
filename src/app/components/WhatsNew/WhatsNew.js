@@ -2,38 +2,19 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const _ = require('lodash')
-const ReactDOM = require('react-dom')
 
-const {GeneralConstants} = require('../../constants')
+const MessagesContainer = require('../Messages/MessagesContainer')
 const NewNotification = require('./NewNotification')
 const WhatsNewActions = require('../../actions/whats-new-actions')
 const EventTypes = require('../../../common/enums/event-types')
 
 class WhatsNew extends Component {
-    componentDidMount () {
-        this.props.fetchWhatsNew()
-        this.fetchInterval = setInterval(() => {
-            this.props.fetchWhatsNew()
-        }, GeneralConstants.FETCH_INTERVAL_MILLIS)
+    constructor(props) {
+        super(props)
+        this.getNotificationRows = this.getNotificationRows.bind(this)
     }
 
-    componentWillUpdate () {
-        const node = ReactDOM.findDOMNode(this)
-        this.shouldScrollBottom = (node.scrollTop + node.offsetHeight) === node.scrollHeight
-    }
-
-    componentDidUpdate () {
-        if (this.shouldScrollBottom) {
-            let node = ReactDOM.findDOMNode(this)
-            node.scrollTop = node.scrollHeight
-        }
-    }
-
-    componentWillUnmount () {
-        clearInterval(this.fetchInterval)
-    }
-
-    getNotificationsToShow() {
+    getNotificationRows() {
         const {notifications} = this.props
         const notificationsByThing = _.groupBy(notifications, notification => notification.thing.id)
 
@@ -77,20 +58,16 @@ class WhatsNew extends Component {
             }))
         })
 
-        return _.sortBy(notificationsToShow, 'createdAt')
+        return _.sortBy(notificationsToShow, 'createdAt').map(notification =>
+            <NewNotification notification={notification} key={notification.id} />)
     }
 
     render () {
-        const notificationsToShow = this.props.notifications && this.props.notifications.length ?
-            this.getNotificationsToShow().map(notification => <NewNotification notification={notification} key={notification.id} />) :
-            'There are no new Things'
-
         return (
-            <div className="whats-new-container">
-                <div className="whats-new-content">
-                    {notificationsToShow}
-                </div>
-            </div>
+            <MessagesContainer messages={this.props.notifications}
+                               fetchMessages={this.props.fetchWhatsNew}
+                               getMessageRows={this.getNotificationRows}
+                               noMessagesText="There are no new things" />
         )
     }
 }

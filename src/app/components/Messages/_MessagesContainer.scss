@@ -1,10 +1,10 @@
 @import '../vars';
 
-.follow-up-container {
+.messages-container {
   height: calc(100% - #{$message-box-height} - 15px);
   overflow-y: auto;
 
-  .follow-up-content {
+  .messages-content {
     height: 100%;
   }
 }
