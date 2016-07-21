@@ -167,8 +167,8 @@ const mapStateToProps = (state, props) => {
         task: state.showTask.task,
         isFetching: state.showTask.isFetching,
         currentUser: state.auth,
-        notification: props.location.query.notificationId ?
-            find(state.whatsNew.notifications, {id: props.location.query.notificationId}) : {}
+        notification: props.location.query.messageId ?
+            find(state.whatsNew.notifications, {id: props.location.query.messageId}) : {}
     }
 }
 

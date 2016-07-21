@@ -1,11 +1,12 @@
 @import '../vars';
 
-.new-notification {
-  $notification-height: 75px;
+.message {
+  $message-height: 75px;
+  $inner-row-height: 25px;
   $actions-width: 100px;
   $status-width: 65px;
 
-  height: $notification-height;
+  height: $message-height;
 
   &:not(:first-of-type) {
     margin-top: 15px;
@@ -15,25 +16,34 @@
     border-bottom: 1px black dashed;
   }
 
-  .notification-content {
+  .message-content {
     float: left;
-    height: $notification-height;
+    height: $message-height;
     width: calc(100% - #{$actions-width});
 
-    .notification-creator {
+    .inner-row {
+      height: $inner-row-height;
+      line-height: $inner-row-height;
+
+      &:not(:last-of-type) {
+        margin-bottom: 8px;
+      }
+    }
+
+    .message-creator {
       float: left;
       width: 190px;
       margin-top: 2px;
       font-style: italic;
     }
 
-    .notification-title {
+    .message-title {
       float: left;
       max-width: calc(100% - #{$row-user-width} - #{$row-actions-width} - #{$row-date-width});
       min-width: $row-subject-min-width;
       margin: 0 25px 0 15px;
 
-      .notification-subject {
+      .message-subject {
         display: inline-block;
         float: left;
         max-width: calc(100% - #{$status-width} - 5px);
@@ -49,7 +59,7 @@
         }
       }
 
-      .notification-type {
+      .message-event-type {
         display: inline-block;
         float: left;
         width: $status-width;
@@ -57,14 +67,14 @@
       }
     }
 
-    .notification-creation-time {
+    .message-creation-time {
       float: right;
       width: $row-date-width;
       margin-top: 2px;
       font-style: italic;
     }
 
-    .notification-text {
+    .message-text {
       max-width: 100%;
       display: inline-block;
       float: left;
@@ -74,7 +84,7 @@
       white-space: nowrap;
     }
 
-    .notification-count {
+    .message-unread-count {
       display: inline-block;
       float: left;
       margin-left: 6px;
@@ -83,25 +93,8 @@
     }
   }
 
-  .notification-actions {
+  .message-actions {
     float: right;
-    width: 100px;
-
-    .notification-do {
-      float: right;
-    }
-
-    .notification-dismiss-comments {
-      float: right;
-    }
-  }
-
-  .notification-row {
-    height: 25px;
-    line-height: 25px;
-
-    &:not(:last-of-type) {
-      margin-bottom: 8px;
-    }
+    width: $actions-width;
   }
 }

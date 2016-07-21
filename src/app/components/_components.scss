@@ -3,9 +3,8 @@
 @import './SideBar/SideBar';
 @import './MainApp/MainApp';
 @import 'Messages/MessagesContainer';
-@import './WhatsNew/NewNotification';
-@import './ToDo/DoThing';
-@import './FollowUp/FollowUpThing';
+@import 'Messages/MessageRow';
+@import 'Messages/Actions';
 @import 'MessageBox/MessageBox';
 @import './Login/Login';
 @import './Task/Task';
