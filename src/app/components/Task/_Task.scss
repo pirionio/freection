@@ -8,7 +8,6 @@
   .task-header {
     height: $task-header-height;
     padding-bottom: 10px;
-    margin-bottom: 13px;
     border-bottom: 1px black dashed;
 
     .left-side {
@@ -56,7 +55,7 @@
   }
 
   .task-body-container {
-    height: calc(100% - #{$task-header-height} - 13px);
+    height: calc(100% - #{$task-header-height});
     overflow-y: auto;
 
     .task-body-content {

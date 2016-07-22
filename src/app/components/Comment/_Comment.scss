@@ -1,23 +1,22 @@
 @import '../vars';
 
-.comment-unread {
-  background-color: #fff0ab;
-}
-
-.comment-read {
-  transition: background-color 1s 1s ease-out;
-}
-
 .comment-container {
   $creator-width: 200px;
   $date-width: 120px;
 
   min-height: $comment-height;
-  padding-bottom: 15px;
+  padding: 15px 0;
 
   &:not(:last-of-type) {
     border-bottom: 1px black dashed;
-    margin-bottom: 15px;
+  }
+
+  &.comment-unread {
+    background-color: $comment-unread-color;
+  }
+
+  &.comment-read {
+    transition: background-color 1s ease 0.5s;
   }
 
   .comment-creator {
