@@ -29,31 +29,39 @@ module.exports = (app) => {
     // Serve the main index file for any request that's not handled specifically,
     // to support URL navigation without hash tags.
     app.get('*', function (request, response) {
-        const auth = {
-            isAuthenticated: request.isAuthenticated(),
-        }
-
-        if (auth.isAuthenticated) {
-            auth.id = request.user.id
-            auth.firstName = request.user.firstName
-            auth.lastName = request.user.lastName
-            auth.email = request.user.email
-        }
-
-        var tokenOptions = request.user.exp ? {} : {expiresIn: '30 days'}
-
-        jwt.sign(request.user, tokenConfig.pushSecret, tokenOptions, (error, pushToken) => {
-            if (error) {
-                logger.error(`Could not sign user ${request.user.email} for the push server token`, error.message)
-            }
-
-            auth.pushToken = pushToken
-
+        fillAuthDetails(request).then(auth => {
             response.render('index', {
                 state: {
                     auth
                 }
             })
+        })
+    })
+}
+
+function fillAuthDetails(request) {
+    return new Promise(resolve => {
+        const auth = {
+            isAuthenticated: request.isAuthenticated()
+        }
+
+        if (!auth.isAuthenticated) {
+            return resolve(auth)
+        }
+
+        auth.id = request.user.id
+        auth.firstName = request.user.firstName
+        auth.lastName = request.user.lastName
+        auth.email = request.user.email
+
+        var tokenOptions = request.user.exp ? {} : {expiresIn: '30 days'}
+        jwt.sign(request.user, tokenConfig.pushSecret, tokenOptions, (error, pushToken) => {
+            if (error) {
+                logger.error(`Failed to sign user ${request.user.email} for a the push service token`, error)
+                return resolve(auth)
+            }
+            auth.pushToken = pushToken
+            resolve(auth)
         })
     })
 }
