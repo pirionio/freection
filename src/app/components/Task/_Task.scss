@@ -56,7 +56,6 @@
 
   .task-body-container {
     height: calc(100% - #{$task-header-height});
-    overflow-y: auto;
 
     .task-body-content {
       height: 100%;

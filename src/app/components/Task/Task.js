@@ -3,9 +3,9 @@ const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const {withRouter} = require('react-router')
 const dateFns = require('date-fns')
-const {isEmpty, find, sortBy} = require('lodash/core')
+const {isEmpty, find} = require('lodash/core')
 
-const Comment = require('../Comment/Comment')
+const CommentList = require('../Comment/CommentList')
 
 const TaskActions = require('../../actions/task-actions')
 const DoThingActions = require('../../actions/do-thing-actions')
@@ -68,11 +68,6 @@ class Task extends Component {
         return actions
     }
 
-    getComments() {
-        return sortBy(this.props.task.comments, comment => comment.createdAt)
-            .map(comment => <Comment comment={comment} key={comment.id}></Comment>)
-    }
-
     doTask() {
         console.log(this.props.notification)
         this.props.doThing(this.props.notification)
@@ -88,6 +83,7 @@ class Task extends Component {
 
     render() {
         const {task, isFetching} = this.props
+        const comments = task.comments
         const createdAt = dateFns.format(task.createdAt, 'DD-MM-YYYY HH:mm')
 
         if (isFetching) {
@@ -117,7 +113,6 @@ class Task extends Component {
         }
 
         const actions = this.getActions()
-        const comments = this.getComments()
 
         return (
             <div className="task-container">
@@ -147,7 +142,7 @@ class Task extends Component {
                 </div>
                 <div className="task-body-container">
                     <div className="task-body-content">
-                        {comments}
+                        <CommentList comments={comments} />
                     </div>
                 </div>
             </div>
