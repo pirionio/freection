@@ -32,19 +32,14 @@ module.exports = (app) => {
     function listenToEventChanges() {
         Event.changes()
             .then(auditNewEvents)
-            .error(error => {
+            .catch(error => {
                 logger.error('Error reading changes from the DB:', error)
             })
-            // .then(listenToEventChanges)
     }
 
     function auditNewEvents(changes) {
-        return new Promise((resolve, reject) => {
-            let promises = []
-            changes.each((error, doc) => {
-                promises.push(getFullEvent(doc, error).then(auditEvent))
-            })
-            Promise.all(promises).then(results => resolve(compact(results)))
+        changes.each((error, doc) => {
+            getFullEvent(doc, error).then(auditEvent)
         })
     }
 
