@@ -3,6 +3,8 @@ const ThingActionTypes = require('../actions/types/thing-action-types')
 const {ActionStatus} = require('../constants')
 const {merge} = require('lodash')
 
+const immutable = require('../util/immutable')
+
 const initialState = {
     task: {},
     isFetching: false
@@ -80,6 +82,17 @@ function markCommentAsRead(state, action) {
     }
 }
 
+function newCommentReceived(state, action) {
+    if (action.comment.thing.id === state.task.id) {
+        return immutable(state)
+            .touch('task')
+            .pushToArray('task.comments', action.comment)
+            .value()
+    } else {
+        return state
+    }
+}
+
 module.exports = (state = initialState, action) => {
     switch (action.type) {
         case TaskActionTypes.SHOW_FULL_TASK:
@@ -90,6 +103,8 @@ module.exports = (state = initialState, action) => {
             return createComment(state, action)
         case ThingActionTypes.MARK_COMMENT_AS_READ:
             return markCommentAsRead(state, action)
+        case ThingActionTypes.NEW_COMMENT_RECEIVED:
+            return newCommentReceived(state, action)
         default:
             return state
     }

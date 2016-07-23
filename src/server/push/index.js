@@ -1,6 +1,6 @@
 const SocketIO = require('socket.io')
 const socketioJwt = require('socketio-jwt')
-const {compact} = require('lodash')
+const {compact, union, pull, omit, merge} = require('lodash')
 
 const tokenConfig = require('../shared/config/token')
 const Event = require('../shared/models/Event')
@@ -8,6 +8,7 @@ const Thing = require('../shared/models/Thing')
 const User = require('../shared/models/User')
 const EventTransformer = require('../shared/transformers/event-transformer')
 const logger = require('../shared/utils/logger')
+const EventTypes = require('../../common/enums/event-types')
 
 module.exports = (app) => {
     const io = SocketIO(app.server, {path: '/push'})
@@ -83,6 +84,30 @@ module.exports = (app) => {
                 }
             })
         }
+
+        // TODO: should we only send new comment to subscribed clients (those with open task page?)
+        if (event && event.eventType === EventTypes.COMMENT.key) {
+            logger.info(`New change to audit: comment on thing ${event.thingId}`)
+
+            const subscribers = pull(union(event.thing.doers,
+                event.thing.followUpers, [event.thing.toUserId, event.thing.creatorUserId]), event.creatorUserId)
+
+            subscribers.forEach(userId => {
+                const socket = sockets[userId]
+                if (socket) {
+                    const user = socket.decoded_token
+                    socket.emit('new-comment',
+                        addThingIdToNewComment(
+                            EventTransformer.docToDto(omit(event,'thing', 'eventType'),  user), event.thingId))
+                }
+            })
+        }
+    }
+
+    function addThingIdToNewComment(comment, thingId) {
+        return merge({}, comment, { thing: {
+            id: thingId
+        }})
     }
 
     function docToObject(doc) {

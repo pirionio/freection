@@ -29,6 +29,13 @@ function createCommentRequestFailed(thingId) {
     }
 }
 
+function newCommentReceivedAction(comment) {
+    return {
+        type: ThingActionTypes.NEW_COMMENT_RECEIVED,
+        comment
+    }
+}
+
 function createNewThing(thing) {
     return dispatch => {
         var promise = ThingService.createNewThing({
@@ -54,4 +61,10 @@ function createComment(thingId, commentText) {
     }
 }
 
-module.exports = {createNewThing, createComment}
+const newCommentReceived = (comment) => {
+    return dispatch => {
+        dispatch(newCommentReceivedAction(comment))
+    }
+}
+
+module.exports = {createNewThing, createComment, newCommentReceived}
