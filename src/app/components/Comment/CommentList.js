@@ -23,7 +23,7 @@ class CommentList extends Component {
     render() {
         const {comments} = this.props
 
-        return (<Scrollable ref={scrollable => this._scrollable = scrollable}>
+        return (<Scrollable stickToBottom={true} ref={scrollable => this._scrollable = scrollable}>
             {
                 sortBy(comments, comment => comment.createdAt)
                     .map(comment => (<Comment key={comment.id} comment={comment} />))

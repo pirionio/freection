@@ -3,6 +3,18 @@ const React = require('react')
 const {Component, PropTypes} = React
 
 class Scrollable extends Component {
+    componentWillUpdate () {
+        const node = ReactDOM.findDOMNode(this)
+        this.shouldScrollBottom = (node.scrollTop + node.offsetHeight) === node.scrollHeight
+    }
+
+    componentDidUpdate () {
+        if (this.shouldScrollBottom && this.props.stickToBottom) {
+            let node = ReactDOM.findDOMNode(this)
+            node.scrollTop = node.scrollHeight
+        }
+    }
+
     scrollTo(id) {
         const element = this.refs[id]
 
@@ -35,7 +47,12 @@ class Scrollable extends Component {
 }
 
 Scrollable.propTypes = {
-    children: PropTypes.node.isRequired
+    children: PropTypes.node.isRequired,
+    stickToBottom: PropTypes.bool
+}
+
+Scrollable.defaultProps = {
+    stickToBottom: false
 }
 
 module.exports = Scrollable
