@@ -38,18 +38,15 @@ function hideFullTask(state, action) {
 function createComment(state, action) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
-            return {
-                // Keeping state intact, except adding the new comment to the comments list.
-                task: Object.assign({}, state.task, {
-                    comments: [...state.task.comments, {
-                        id: action.comment.id,
-                        payload: action.comment.payload,
-                        creator: action.comment.creator,
-                        createdAt: action.comment.createdAt
-                    }]
-                }),
-                isFetching: state.isFetching
-            }
+            return immutable(state)
+                .touch('task')
+                .pushToArray('task.comments', {
+                    id: action.comment.id,
+                    payload: action.comment.payload,
+                    creator: action.comment.creator,
+                    createdAt: action.comment.createdAt
+                })
+                .value()
         case ActionStatus.START:
         case ActionStatus.ERROR:
         default:
@@ -60,21 +57,15 @@ function createComment(state, action) {
 function markCommentAsRead(state, action) {
     switch(action.status) {
         case ActionStatus.COMPLETE:
-            return Object.assign({}, state, {
-                task: Object.assign({}, state.task, {
-                    comments: state.task.comments.map(comment => {
-                        if (comment.id === action.comment.id) {
-                            const t = merge({}, comment, {
-                                payload: {
-                                    isRead: true
-                                }
-                            })
-                            return t
-                        } else
-                            return comment
+            return immutable(state)
+                .touch('task')
+                .mergeInArray('task.comments', comment => comment.id === action.comment.id,
+                    {
+                        payload: {
+                            isRead: true
+                        }
                     })
-                })
-            })
+                .value()
         case ActionStatus.START:
         case ActionStatus.ERROR:
         default:
