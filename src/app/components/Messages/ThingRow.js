@@ -8,38 +8,36 @@ class ThingRow extends Component {
     constructor(props) {
         super(props)
         this.completeThing = this.completeThing.bind(this)
-        this.initComments = this.initComments.bind(this)
     }
 
-    componentWillMount() {
-        this.initComments()
-    }
-
-    componentWillUpdate() {
-        this.initComments()
-    }
-
-    initComments() {
+    getUnreadComments() {
         const {thing} = this.props
-        this.unreadComments = sortBy(thing.comments.filter(comment => !comment.payload.isRead), 'createdAt')
-        this.readComments = sortBy(thing.comments.filter(comment => comment.payload.isRead), 'createdAt')
+
+        return sortBy(thing.comments.filter(comment => !comment.payload.isRead), 'createdAt')
+    }
+
+    getReadComments() {
+        const {thing} = this.props
+
+        return sortBy(thing.comments.filter(comment => comment.payload.isRead), 'createdAt')
     }
 
     completeThing() {
         this.props.completeThing(this.props.thing)
     }
 
-    getMessagePreview() {
-        const {thing} = this.props
+    getMessagePreview() {const {thing} = this.props
+        const unreadComments = this.getUnreadComments()
+        const readComments = this.getReadComments()
 
         // If there are unread comments, show the first of them.
-        if (this.unreadComments && this.unreadComments.length) {
-            return first(this.unreadComments).payload.text
+        if (unreadComments && unreadComments.length) {
+            return first(unreadComments).payload.text
         }
 
         // If there are only read comments, show the last of them.
-        if (this.readComments && this.readComments.length) {
-            return last(this.readComments).payload.text
+        if (readComments && readComments.length) {
+            return last(readComments).payload.text
         }
 
         return thing.body
@@ -47,11 +45,13 @@ class ThingRow extends Component {
 
     getThingViewModel() {
         const {thing} = this.props
+        const unreadComments = this.getUnreadComments()
+
         return Object.assign({}, thing, {
             entityId: thing.id,
             payload: {
                 text: this.getMessagePreview(),
-                numOfNewComments: this.unreadComments.length
+                numOfNewComments: unreadComments.length
             }
         })
     }

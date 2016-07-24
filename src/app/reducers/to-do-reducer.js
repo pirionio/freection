@@ -4,6 +4,8 @@ const ToDoActionTypes = require('../actions/types/to-do-action-types')
 const ThingActionTypes = require('../actions/types/thing-action-types')
 const {ActionStatus} = require('../constants')
 const {filter} = require('lodash/core')
+const immutable = require('../util/immutable')
+const thingReducer = require('./thing-reducer')
 
 const initialState = {
     things: []
@@ -56,6 +58,12 @@ function createdOrAcceptedReceived(state, action) {
     })
 }
 
+function newCommentReceived(state, action) {
+    return immutable(state)
+        .arrayUpdateItem('things', thing => thing.id === action.comment.thing.id, item => thingReducer(item, action))
+        .value()
+}
+
 module.exports = (state = initialState, action) => {
     switch (action.type) {
         case ToDoActionTypes.FETCH_TO_DO:
@@ -65,6 +73,8 @@ module.exports = (state = initialState, action) => {
         case ThingActionTypes.CREATED_RECEIVED:
         case ThingActionTypes.ACCEPTED_RECEIVED:
             return createdOrAcceptedReceived(state, action)
+        case ThingActionTypes.NEW_COMMENT_RECEIVED:
+            return newCommentReceived(state, action)
         default:
             return state
     }
