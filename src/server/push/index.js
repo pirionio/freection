@@ -12,7 +12,6 @@ const EventTypes = require('../../common/enums/event-types')
 
 module.exports = (app) => {
     const io = SocketIO(app.server, {path: '/push'})
-    let sockets = {}
 
     acceptConnections()
     listenToEventChanges()
@@ -22,11 +21,9 @@ module.exports = (app) => {
             secret: tokenConfig.pushSecret,
             timeout: 15000
         })).on('authenticated', socket => {
-            sockets[socket.decoded_token.id] = socket
 
-            socket.on('disconnect', () => {
-                delete sockets[socket.decoded_token.id]
-            })
+            // Join the user to the user id room
+            socket.join(socket.decoded_token.id)
         })
     }
 
@@ -77,11 +74,9 @@ module.exports = (app) => {
         if (event && event.showNewList && event.showNewList.length) {
             logger.info(`New change to audit: event ${event.eventType} on thing ${event.thingId}`)
             event.showNewList.forEach(userId => {
-                const socket = sockets[userId]
-                if (socket) {
-                    const user = socket.decoded_token
-                    socket.emit('whatsnew', EventTransformer.docToDto(event, user))
-                }
+                const user = {id: userId}
+                const dto = EventTransformer.docToDto(event, user)
+                io.to(userId).emit('whatsnew', dto)
             })
         }
 
@@ -93,13 +88,10 @@ module.exports = (app) => {
                 event.thing.followUpers, [event.thing.toUserId, event.thing.creatorUserId]), event.creatorUserId)
 
             subscribers.forEach(userId => {
-                const socket = sockets[userId]
-                if (socket) {
-                    const user = socket.decoded_token
-                    socket.emit('new-comment',
-                        addThingIdToNewComment(
-                            EventTransformer.docToDto(omit(event,'thing', 'eventType'),  user), event.thingId))
-                }
+                const user = {id: userId}
+                const dto = EventTransformer.docToDto(omit(event,'thing', 'eventType'),  user)
+
+                io.to(userId).emit('new-comment', addThingIdToNewComment(dto, event.thingId))
             })
         }
     }
