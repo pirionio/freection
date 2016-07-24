@@ -1,4 +1,7 @@
+const {some} = require('lodash/core')
+
 const ToDoActionTypes = require('../actions/types/to-do-action-types')
+const ThingActionTypes = require('../actions/types/thing-action-types')
 const {ActionStatus} = require('../constants')
 const {filter} = require('lodash/core')
 
@@ -39,12 +42,29 @@ function completeThing(state, action) {
     }
 }
 
+function createdOrAcceptedReceived(state, action) {
+    if (!action.thing.isDoer)
+        return state
+
+    // already exist?
+    if (some(state.things, thing => thing.id === action.thing.id))
+        return state
+
+    // Adding to array
+    return Object.assign({}, state, {
+        things: [...state.things, action.thing]
+    })
+}
+
 module.exports = (state = initialState, action) => {
     switch (action.type) {
         case ToDoActionTypes.FETCH_TO_DO:
             return toDo(state, action)
         case ToDoActionTypes.COMPLETE_THING:
             return completeThing(state, action)
+        case ThingActionTypes.CREATED_RECEIVED:
+        case ThingActionTypes.ACCEPTED_RECEIVED:
+            return createdOrAcceptedReceived(state, action)
         default:
             return state
     }

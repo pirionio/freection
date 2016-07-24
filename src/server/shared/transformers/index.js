@@ -16,7 +16,8 @@ function thingToDto(thing, user, {includeComments = true} = {}) {
         comments: includeComments && thing.events ?
             thing.events.filter(event => event.eventType === EventTypes.COMMENT.key)
             .map(comment => eventToDto(comment, user, {includeThing: false})) : [],
-        isFollowUper: thing.followUpers.includes(user.id)
+        isFollowUper: thing.followUpers.includes(user.id),
+        isDoer: thing.doers.includes(user.id)
     }
 }
 

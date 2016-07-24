@@ -16,6 +16,9 @@ function listenToUpdates(pushToken, dispatch) {
 
         if (event.eventType.key === EventTypes.CREATED.key)
             dispatch(ThingActions.thingCreatedReceived(event.thing))
+
+        if (event.eventType.key === EventTypes.ACCEPTED.key)
+            dispatch(ThingActions.thingAcceptedReceived(event.thing))
     })
 
     socket.on('notification-deleted', event => {

@@ -43,6 +43,13 @@ function thingCreatedReceivedAction(thing) {
     }
 }
 
+function thingAcceptedReceivedAction(thing) {
+    return {
+        type: ThingActionTypes.ACCEPTED_RECEIVED,
+        thing
+    }
+}
+
 function createNewThing(thing) {
     return dispatch => {
         var promise = ThingService.createNewThing({
@@ -80,4 +87,10 @@ const thingCreatedReceived = (thing) => {
     }
 }
 
-module.exports = {createNewThing, createComment, newCommentReceived, thingCreatedReceived}
+const thingAcceptedReceived = (thing) => {
+    return dispatch => {
+        dispatch(thingAcceptedReceivedAction(thing))
+    }
+}
+
+module.exports = {createNewThing, createComment, newCommentReceived, thingCreatedReceived, thingAcceptedReceived}
