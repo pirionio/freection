@@ -9,7 +9,7 @@ function getTask(taskId, user) {
     return Thing.getFullThing(taskId)
         .then(thing => ThingTransformer.docToDto(thing, user))
         .then(task => Object.assign(task, {
-            comments: task.comments.map(comment => EventTransformer.docToDto(omit(comment, 'thing', 'eventType'), user, true))
+            comments: task.comments.map(comment => EventTransformer.docToDto(omit(comment, 'thing', 'eventType'), user))
         }))
         .catch(error => {
             logger.error(`error while fetching task ${taskId}`, error)

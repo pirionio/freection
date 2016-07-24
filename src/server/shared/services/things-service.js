@@ -9,7 +9,7 @@ const logger = require('../utils/logger')
 
 function getWhatsNew(user) {
     return Event.getWhatsNew(user.id)
-        .then(events => events.map(event => EventTransformer.docToDto(event, user, true)))
+        .then(events => events.map(event => EventTransformer.docToDto(event, user)))
         .catch(error => {
             logger.error(`error while fetching whats new for user ${user.email}`, error)
             throw error
@@ -20,7 +20,7 @@ function getToDo(user) {
     return Thing.getUserToDos(user.id)
         .then(things => things.map(thing => ThingTransformer.docToDto(thing, user)))
         .then(things => things.map(thing => Object.assign(thing, {
-            comments: thing.comments.map(comment => EventTransformer.docToDto(comment, user, true))
+            comments: thing.comments.map(comment => EventTransformer.docToDto(comment, user))
         })))
         .catch(error => {
             logger.error(`error while fetching to do list for user ${user.email}`, error)
@@ -32,7 +32,7 @@ function getFollowUps(user) {
     return Thing.getUserFollowUps(user.id)
         .then(followUps => followUps.map(thing => ThingTransformer.docToDto(thing, user)))
         .then(things => things.map(thing => Object.assign(thing, {
-            comments: thing.comments.map(comment => EventTransformer.docToDto(comment, user, true))
+            comments: thing.comments.map(comment => EventTransformer.docToDto(comment, user))
         })))
         .catch(error => {
             logger.error(`error while fetching follow ups for user ${user.email}`, error)

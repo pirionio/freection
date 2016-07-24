@@ -3,7 +3,7 @@ const ThingTransformer = require('./thing-transformer')
 const UserTransformer = require('./user-transformer')
 const CommentPayloadTransformer = require('./comment-payload-transformer')
 
-function docToDto(event, user, includeShowNewList = false) {
+function docToDto(event, user) {
     return {
         id: event.id,
         thing: event.thing && ThingTransformer.docToDto(event.thing),
