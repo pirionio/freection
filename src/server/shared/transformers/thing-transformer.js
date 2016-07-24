@@ -18,7 +18,8 @@ function docToDto(thing, user) {
         subject: thing.subject,
         payload: thing.payload,
         type: ThingTypes[thing.type],
-        comments: thing.events ? thing.events.map(comment => commentToDto(comment, user)) : []
+        comments: thing.events ? thing.events.map(comment => commentToDto(comment, user)) : [],
+        isFollowUper: thing.followUpers.includes(user.id)
     }
 }
 

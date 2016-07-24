@@ -6,7 +6,7 @@ const CommentPayloadTransformer = require('./comment-payload-transformer')
 function docToDto(event, user) {
     return {
         id: event.id,
-        thing: event.thing && ThingTransformer.docToDto(event.thing),
+        thing: event.thing && ThingTransformer.docToDto(event.thing, user),
         createdAt: event.createdAt,
         payload: event.eventType === EventTypes.COMMENT.key ?
             CommentPayloadTransformer.docToDto(event.payload, user) : event.payload,

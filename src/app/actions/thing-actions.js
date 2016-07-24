@@ -36,6 +36,13 @@ function newCommentReceivedAction(comment) {
     }
 }
 
+function thingCreatedReceivedAction(thing) {
+    return {
+        type: ThingActionTypes.CREATED_RECEIVED,
+        thing
+    }
+}
+
 function createNewThing(thing) {
     return dispatch => {
         var promise = ThingService.createNewThing({
@@ -67,4 +74,10 @@ const newCommentReceived = (comment) => {
     }
 }
 
-module.exports = {createNewThing, createComment, newCommentReceived}
+const thingCreatedReceived = (thing) => {
+    return dispatch => {
+        dispatch(thingCreatedReceivedAction(thing))
+    }
+}
+
+module.exports = {createNewThing, createComment, newCommentReceived, thingCreatedReceived}

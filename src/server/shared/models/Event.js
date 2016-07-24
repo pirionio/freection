@@ -22,7 +22,13 @@ Event.ensureIndex('whatsnew', function(doc) {
 }, {multi: true})
 
 Event.defineStatic('getFullEvent', function(eventId) {
-    return this.get(eventId).getJoin({creator: true, thing: true}).run()
+    return this.get(eventId).getJoin({
+        creator: true,
+        thing: {
+            creator:true,
+            to: true
+        }
+    }).run()
 })
 
 Event.defineStatic('getAllChanges', function() {

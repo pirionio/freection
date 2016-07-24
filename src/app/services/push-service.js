@@ -13,6 +13,9 @@ function listenToUpdates(pushToken, dispatch) {
 
         if (event.eventType.key === EventTypes.COMMENT.key)
             dispatch(ThingActions.newCommentReceived(event))
+
+        if (event.eventType.key === EventTypes.CREATED.key)
+            dispatch(ThingActions.thingCreatedReceived(event.thing))
     })
 
     socket.on('notification-deleted', event => {
