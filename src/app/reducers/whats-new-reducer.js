@@ -63,6 +63,12 @@ function notificationReceived(state, action) {
     }
 }
 
+function notificationDeleted(state, action) {
+    return {
+        notifications: reject(state.notification, notification => notification.id === action.notification.id)
+    }
+}
+
 module.exports = (state = initialState, action) => {
     switch (action.type) {
         case WhatsNewActionTypes.FETCH_WHATS_NEW:
@@ -73,6 +79,8 @@ module.exports = (state = initialState, action) => {
             return dismissComments(state, action)
         case WhatsNewActionTypes.NOTIFICATION_RECEIVED:
             return notificationReceived(state, action)
+        case WhatsNewActionTypes.NOTIFICATION_DELETED:
+            return notificationDeleted(state, action)
         default:
             return state
     }

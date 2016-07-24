@@ -11,7 +11,8 @@ function docToDto(event, user) {
         payload: event.eventType === EventTypes.COMMENT.key ?
             CommentPayloadTransformer.docToDto(event.payload, user) : event.payload,
         eventType: EventTypes[event.eventType],
-        creator: event.creator && UserTransformer.docToDto(event.creator)
+        creator: event.creator && UserTransformer.docToDto(event.creator),
+        showNew: event.showNewList.includes(user.id)
     }
 }
 

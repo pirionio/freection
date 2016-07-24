@@ -31,6 +31,13 @@ function notificationReceivedAction(notification) {
     }
 }
 
+function notificationDeletedAction(notification) {
+    return {
+        type: WhatsNewActionTypes.NOTIFICATION_DELETED,
+        notification
+    }
+}
+
 const fetchWhatsNew = () => {
     return dispatch => {
         dispatch(requestWhatsNew())
@@ -47,4 +54,10 @@ const notificationReceived = (notification) => {
     }
 }
 
-module.exports = {fetchWhatsNew, notificationReceived}
+const notificationDeleted = (notification) => {
+    return dispatch => {
+        dispatch(notificationDeletedAction(notification))
+    }
+}
+
+module.exports = {fetchWhatsNew, notificationReceived, notificationDeleted}
