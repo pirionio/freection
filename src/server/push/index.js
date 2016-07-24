@@ -5,7 +5,7 @@ const {union, difference} = require('lodash')
 const tokenConfig = require('../shared/config/token')
 const Event = require('../shared/models/Event')
 const Thing = require('../shared/models/Thing')
-const EventTransformer = require('../shared/transformers/event-transformer')
+const {eventToDto} = require('../shared/transformers')
 const logger = require('../shared/utils/logger')
 
 module.exports = (app) => {
@@ -74,7 +74,7 @@ module.exports = (app) => {
                 // TODO: we are not testing if the room even exist
                 subscribers.forEach(userId => {
                     const user = {id: userId}
-                    const dto = EventTransformer.docToDto(fullEvent, user)
+                    const dto = eventToDto(fullEvent, user)
                     io.to(userId).emit('new-event', dto)
                 })
             })

@@ -1,15 +1,14 @@
-const {omit, remove} = require('lodash')
+const {remove} = require('lodash')
 
 const {Event, Thing} = require('../models')
 const EventsService = require('./events-service')
-const EventTransformer = require('../transformers/event-transformer')
-const ThingTransformer = require('../transformers/thing-transformer')
+const {eventToDto, thingToDto} = require('../transformers')
 const TaskStatus = require('../../../common/enums/task-status')
 const logger = require('../utils/logger')
 
 function getWhatsNew(user) {
     return Event.getWhatsNew(user.id)
-        .then(events => events.map(event => EventTransformer.docToDto(event, user)))
+        .then(events => events.map(event => eventToDto(event, user)))
         .catch(error => {
             logger.error(`error while fetching whats new for user ${user.email}`, error)
             throw error
@@ -18,10 +17,7 @@ function getWhatsNew(user) {
 
 function getToDo(user) {
     return Thing.getUserToDos(user.id)
-        .then(things => things.map(thing => ThingTransformer.docToDto(thing, user)))
-        .then(things => things.map(thing => Object.assign(thing, {
-            comments: thing.comments.map(comment => EventTransformer.docToDto(comment, user))
-        })))
+        .then(things => things.map(thing => thingToDto(thing, user)))
         .catch(error => {
             logger.error(`error while fetching to do list for user ${user.email}`, error)
             throw error
@@ -30,10 +26,7 @@ function getToDo(user) {
 
 function getFollowUps(user) {
     return Thing.getUserFollowUps(user.id)
-        .then(followUps => followUps.map(thing => ThingTransformer.docToDto(thing, user)))
-        .then(things => things.map(thing => Object.assign(thing, {
-            comments: thing.comments.map(comment => EventTransformer.docToDto(comment, user))
-        })))
+        .then(followUps => followUps.map(thing => thingToDto(thing, user)))
         .catch(error => {
             logger.error(`error while fetching follow ups for user ${user.email}`, error)
             throw error
@@ -67,7 +60,7 @@ function createComment(user, thingId, commentText) {
     return Thing.get(thingId).run()
         .then(thing => EventsService.userCreatedComment(user, thing, commentText))
         .then(event => Event.getFullEvent(event.id))
-        .then(event => EventTransformer.docToDto(omit(event, 'thing'), user))
+        .then(event => eventToDto(event, user, {includeThing: false}))
         .catch(error => {
             logger.error(`Could not comment on thing ${thingId} for user ${user.email}`, error)
             throw error
