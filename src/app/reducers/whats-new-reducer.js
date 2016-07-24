@@ -65,7 +65,7 @@ function notificationReceived(state, action) {
 
 function notificationDeleted(state, action) {
     return {
-        notifications: reject(state.notification, notification => notification.id === action.notification.id)
+        notifications: reject(state.notifications, notification => notification.id === action.notification.id)
     }
 }
 
