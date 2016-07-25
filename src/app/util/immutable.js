@@ -25,9 +25,9 @@ class Immutable {
         return this
     }
 
-    arrayMergeItem(path, predicate, value) {
+    arrayMergeItem(path, predicate, updater) {
         const array = _.get(this._object, path)
-        _.set(this._object, path, arraySetOrMergeItem(array, predicate, value, true))
+        _.set(this._object, path, arraySetOrMergeItem(array, predicate, updater, true))
 
         return this
     }

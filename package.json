@@ -7,7 +7,7 @@
     "node": "6.3.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha \"src/**/*.test.js\" --compilers js:babel-register",
     "start": "node src/server/index.js",
     "dev": "forever -f -w --watchDirectory \"src/server\" -c node src/server/index.js",
     "postinstall": "webpack --config ./config/webpack.prod.config.js --progress --colors"
@@ -65,9 +65,11 @@
     "winston-papertrail": "1.0.2"
   },
   "devDependencies": {
+    "chai": "3.5.0",
+    "forever": "0.15.2",
+    "mocha": "2.5.3",
     "react-hot-loader": "1.3.0",
     "webpack-dev-middleware": "1.6.1",
-    "webpack-hot-middleware": "2.12.1",
-    "forever": "0.15.2"
+    "webpack-hot-middleware": "2.12.1"
   }
 }
