@@ -28,14 +28,14 @@ function toDo(state, action) {
 function completeThing(state, action) {
     switch (action.status) {
         case ActionStatus.START:
-            return {
-                things: filter(state.things, thing => thing.id !== action.thing.id)
-            }
+            return immutable(state)
+                .arrayReject('things', thing => thing.id === action.thing.id)
+                .value()
         case ActionStatus.ERROR:
             // If there was an error, since we already removed the thing from the state, we now want to re-add it.
-            return {
-                things: [...state.things, action.thing]
-            }
+            return immutable(state)
+                .arrayPushItem('things', action.thing)
+                .value()
         case ActionStatus.COMPLETE:
         default:
             return {
@@ -53,9 +53,15 @@ function createdOrAcceptedReceived(state, action) {
         return state
 
     // Adding to array
-    return Object.assign({}, state, {
-        things: [...state.things, action.thing]
-    })
+    return immutable(state)
+        .arrayPushItem('things', action.thing)
+        .value()
+}
+
+function doneReceived(state, action) {
+    return immutable(state)
+        .arrayReject('things', thing => thing.id === action.thing.id)
+        .value()
 }
 
 module.exports = (state = initialState, action) => {
@@ -67,6 +73,8 @@ module.exports = (state = initialState, action) => {
         case ThingActionTypes.CREATED_RECEIVED:
         case ThingActionTypes.ACCEPTED_RECEIVED:
             return createdOrAcceptedReceived(state, action)
+        case ThingActionTypes.DONE_RECEIVED:
+            return doneReceived(state, action)
         case ThingActionTypes.NEW_COMMENT_RECEIVED:
         case ThingActionTypes.COMMENT_READ_BY_RECEIVED:
             return immutable(state)

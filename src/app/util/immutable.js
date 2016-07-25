@@ -12,6 +12,13 @@ class Immutable {
         return this
     }
 
+    arrayReject(path, predicate) {
+        const array = _.get(this._object, path)
+        _.set(this._object, path, _.reject(array, predicate))
+
+        return this
+    }
+
     arrayMergeItem(path, predicate, value) {
         const array = _.get(this._object, path)
         _.set(this._object, path, arraySetOrMergeItem(array, predicate, value, true))
