@@ -2,6 +2,7 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const {withRouter} = require('react-router')
+const DocumentTitle = require('react-document-title')
 const dateFns = require('date-fns')
 const {isEmpty, find} = require('lodash/core')
 
@@ -81,6 +82,17 @@ class Task extends Component {
         return this.props.currentUser.email === this.props.task.to.email
     }
 
+    getTitle() {
+        const {task} = this.props
+
+        const unreadComments = task.comments.filter(comment => !comment.payload.isRead)
+
+        if (unreadComments.length > 0)
+            return `(${unreadComments.length}) ${task.subject} - Freection`
+        else
+            return `${task.subject} - Freection`
+    }
+
     render() {
         const {task, isFetching} = this.props
         const comments = task.comments
@@ -115,37 +127,39 @@ class Task extends Component {
         const actions = this.getActions()
 
         return (
-            <div className="task-container">
-                <div className="task-header">
-                    <div className="task-title">
-                        <div className="task-subject">
-                            {task.subject}
+            <DocumentTitle title={this.getTitle()}>
+                <div className="task-container">
+                    <div className="task-header">
+                        <div className="task-title">
+                            <div className="task-subject">
+                                {task.subject}
+                            </div>
+                            <div className="task-status">
+                                ({task.payload ? task.payload.status : ''})
+                            </div>
+                            <div className="task-close">
+                                <button onClick={this.close}>Back</button>
+                            </div>
+                            <div className="task-actions">
+                                {actions}
+                            </div>
                         </div>
-                        <div className="task-status">
-                            ({task.payload ? task.payload.status : ''})
-                        </div>
-                        <div className="task-close">
-                            <button onClick={this.close}>Back</button>
-                        </div>
-                        <div className="task-actions">
-                            {actions}
+                        <div className="task-subtitle">
+                            <div className="task-referencer">
+                                {this.getTaskReferencer()}
+                            </div>
+                            <div className="task-creation-time">
+                                {createdAt}
+                            </div>
                         </div>
                     </div>
-                    <div className="task-subtitle">
-                        <div className="task-referencer">
-                            {this.getTaskReferencer()}
-                        </div>
-                        <div className="task-creation-time">
-                            {createdAt}
+                    <div className="task-body-container">
+                        <div className="task-body-content">
+                            <CommentList comments={comments} />
                         </div>
                     </div>
                 </div>
-                <div className="task-body-container">
-                    <div className="task-body-content">
-                        <CommentList comments={comments} />
-                    </div>
-                </div>
-            </div>
+            </DocumentTitle>
         )
     }
 }

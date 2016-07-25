@@ -1,5 +1,6 @@
 const React = require('react')
 const {Component, PropTypes} = React
+const DocumentTitle = require('react-document-title')
 const {connect} = require('react-redux')
 const {sortBy} = require('lodash/core')
 
@@ -18,12 +19,21 @@ class FollowUp extends Component {
             <FollowUpThing thing={thing} key={thing.id} />)
     }
 
+    getTitle() {
+        if (this.props.things.length > 0)
+            return `Follow Up (${this.props.things.length}) - Freection`
+        else
+            return 'Follow Up - Freection'
+    }
+
     render() {
         return (
-            <MessagesContainer messages={this.props.things}
-                               fetchMessages={this.props.fetchFollowUps}
-                               getMessageRows={this.getThingsToFollowUp}
-                               noMessagesText="There are no things to follow up" />
+            <DocumentTitle title={this.getTitle()}>
+                <MessagesContainer messages={this.props.things}
+                                   fetchMessages={this.props.fetchFollowUps}
+                                   getMessageRows={this.getThingsToFollowUp}
+                                   noMessagesText="There are no things to follow up" />
+            </DocumentTitle>
         )
     }
 }

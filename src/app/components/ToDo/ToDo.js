@@ -1,5 +1,6 @@
 const React = require('react')
 const {Component, PropTypes} = React
+const DocumentTitle = require('react-document-title')
 const {connect} = require('react-redux')
 const {sortBy} = require('lodash/core')
 
@@ -18,12 +19,21 @@ class ToDo extends Component {
             <DoThing thing={thing} key={thing.id} />)
     }
 
+    getTitle() {
+        if (this.props.things.length > 0)
+            return `To Do (${this.props.things.length}) - Freection`
+        else
+            return 'To Do - Freection'
+    }
+
     render() {
         return (
-            <MessagesContainer messages={this.props.things}
-                               fetchMessages={this.props.fetchToDo}
-                               getMessageRows={this.getThingsToDo}
-                               noMessagesText="There are no things to do" />
+            <DocumentTitle title={this.getTitle()}>
+                <MessagesContainer messages={this.props.things}
+                                   fetchMessages={this.props.fetchToDo}
+                                   getMessageRows={this.getThingsToDo}
+                                   noMessagesText="There are no things to do" />
+            </DocumentTitle>
         )
     }
 }

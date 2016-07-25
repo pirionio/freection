@@ -1,6 +1,7 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
+const DocumentTitle = require('react-document-title')
 const _ = require('lodash')
 
 const MessagesContainer = require('../Messages/MessagesContainer')
@@ -62,12 +63,22 @@ class WhatsNew extends Component {
             <NewNotification notification={notification} key={notification.id} />)
     }
 
+    getTitle() {
+        // TODO: should we return the aggregated number instead?
+        if (this.props.notifications.length > 0)
+            return `What's New? (${this.props.notifications.length}) - Freection`
+        else
+            return 'What\'s New? - Freection'
+    }
+
     render () {
         return (
-            <MessagesContainer messages={this.props.notifications}
-                               fetchMessages={this.props.fetchWhatsNew}
-                               getMessageRows={this.getNotificationRows}
-                               noMessagesText="There are no new things" />
+            <DocumentTitle title={this.getTitle()}>
+                <MessagesContainer messages={this.props.notifications}
+                                   fetchMessages={this.props.fetchWhatsNew}
+                                   getMessageRows={this.getNotificationRows}
+                                   noMessagesText="There are no new things" />
+            </DocumentTitle>
         )
     }
 }
