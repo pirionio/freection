@@ -12,6 +12,12 @@ class Immutable {
         return this
     }
 
+    set(path, value) {
+        _.set(this._object, path, value)
+
+        return this
+    }
+
     arrayReject(path, predicate) {
         const array = _.get(this._object, path)
         _.set(this._object, path, _.reject(array, predicate))

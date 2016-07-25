@@ -1,7 +1,7 @@
 const TaskActionTypes = require('../actions/types/task-action-types')
 const ThingActionTypes = require('../actions/types/thing-action-types')
 const {ActionStatus} = require('../constants')
-const {merge} = require('lodash')
+const thingReducer = require('./thing-reducer')
 
 const immutable = require('../util/immutable')
 
@@ -72,17 +72,6 @@ function markCommentAsRead(state, action) {
     }
 }
 
-function newCommentReceived(state, action) {
-    if (action.comment.thing.id === state.task.id) {
-        return immutable(state)
-            .touch('task')
-            .arraySetOrPushItem('task.comments', {id: action.comment.id}, action.comment)
-            .value()
-    } else {
-        return state
-    }
-}
-
 module.exports = (state = initialState, action) => {
     switch (action.type) {
         case TaskActionTypes.SHOW_FULL_TASK:
@@ -94,7 +83,10 @@ module.exports = (state = initialState, action) => {
         case ThingActionTypes.MARK_COMMENT_AS_READ:
             return markCommentAsRead(state, action)
         case ThingActionTypes.NEW_COMMENT_RECEIVED:
-            return newCommentReceived(state, action)
+        case ThingActionTypes.COMMENT_READ_BY_RECEIVED:
+            return immutable(state)
+                .set('task', thingReducer(state.task))
+                .value()
         default:
             return state
     }
