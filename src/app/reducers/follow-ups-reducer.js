@@ -3,6 +3,8 @@ const {some} = require('lodash/core')
 const FollowUpsActionTypes = require('../actions/types/follow-up-action-types')
 const ThingActionTypes = require('../actions/types/thing-action-types')
 const {ActionStatus} = require('../constants')
+const immutable = require('../util/immutable')
+const thingReducer = require('./thing-reducer')
 
 const initialState = {
     followUps: []
@@ -42,6 +44,10 @@ module.exports = (state = initialState, action) => {
             return fetchFollowUps(state, action)
         case ThingActionTypes.CREATED_RECEIVED:
             return createdReceived(state, action)
+        case ThingActionTypes.NEW_COMMENT_RECEIVED:
+            return immutable(state)
+                .arraySetItem('followUps', {id: action.comment.thing.id}, item => thingReducer(item, action))
+                .value()
         default:
             return state
     }
