@@ -38,12 +38,24 @@ function createdReceived(state, action) {
     })
 }
 
+function closedReceived(state, action) {
+    //  If I'm still a followUper for some reason, leave this
+    if (action.thing.isFollowUper)
+        return state
+
+    return immutable(state)
+        .arrayReject('followUps', thing => thing.id === action.thing.id)
+        .value()
+}
+
 module.exports = (state = initialState, action) => {
     switch (action.type) {
         case FollowUpsActionTypes.FETCH_FOLLOW_UPS:
             return fetchFollowUps(state, action)
         case ThingActionTypes.CREATED_RECEIVED:
             return createdReceived(state, action)
+        case ThingActionTypes.CLOSED_RECEIVED:
+            return closedReceived(state, action)
         case ThingActionTypes.NEW_COMMENT_RECEIVED:
         case ThingActionTypes.COMMENT_READ_BY_RECEIVED:
             return immutable(state)

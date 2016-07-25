@@ -82,6 +82,13 @@ const thingDoneReceived = (thing) => {
     }
 }
 
+const thingClosedReceived = (thing) => {
+    return {
+        type: ThingActionTypes.CLOSED_RECEIVED,
+        thing
+    }
+}
+
 const commentReadByReceived = (comment) => {
     return {
         type: ThingActionTypes.COMMENT_READ_BY_RECEIVED,
@@ -90,4 +97,5 @@ const commentReadByReceived = (comment) => {
 }
 
 module.exports = {createNewThing, createComment, newCommentReceived,
-    thingCreatedReceived, thingAcceptedReceived, thingDoneReceived, commentReadByReceived}
+    thingCreatedReceived, thingAcceptedReceived, thingDoneReceived, thingClosedReceived,
+    commentReadByReceived}

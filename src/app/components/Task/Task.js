@@ -11,6 +11,7 @@ const CommentList = require('../Comment/CommentList')
 const TaskActions = require('../../actions/task-actions')
 const DoThingActions = require('../../actions/do-thing-actions')
 const CompleteThingActions = require('../../actions/complete-thing-actions')
+const CloseThingActions = require('../../actions/close-thing-actions')
 
 const TaskStatus = require('../../../common/enums/task-status')
 
@@ -19,20 +20,24 @@ class Task extends Component {
         super(props)
         this.close = this.close.bind(this)
         this.doTask = this.doTask.bind(this)
+        this.closeThing = this.closeThing.bind(this)
         this.completeTask = this.completeTask.bind(this)
     }
 
     componentWillMount() {
-        this.props.showFullTask(this.props.params.taskId)
+        const {dispatch, params} = this.props
+        dispatch(TaskActions.showFullTask(params.taskId))
     }
 
     componentWillUnmount() {
-        this.props.hideFullTask(this.props.params.taskId)
+        const {dispatch, params} = this.props
+        dispatch(TaskActions.hideFullTask(params.taskId))
     }
 
     close() {
         this.props.router.push(this.props.location.query.from)
-        this.props.hideFullTask(this.props.params.taskId)
+        const {dispatch, params} = this.props
+        dispatch(TaskActions.hideFullTask(params.taskId))
     }
 
     getTaskReferencer() {
@@ -66,16 +71,33 @@ class Task extends Component {
             )
         }
 
+        if (task.payload.status == TaskStatus.DONE.key && this.isCurrentUserTheCreator()) {
+            actions.push(
+                <div className="task-action" key="action-close">
+                    <button type="text" onClick={this.closeThing}>Close</button>
+                </div>)
+        }
+
         return actions
     }
 
     doTask() {
-        console.log(this.props.notification)
-        this.props.doThing(this.props.notification)
+        const {dispatch, notification} = this.props
+        dispatch(DoThingActions.doThing(notification))
     }
 
     completeTask() {
-        this.props.completeThing(this.props.task)
+        const {dispatch, task} = this.props
+        dispatch(CompleteThingActions.completeThing(task))
+    }
+
+    closeThing() {
+        const {dispatch, notification} = this.props
+        dispatch(CloseThingActions.closeThing(notification))
+    }
+
+    isCurrentUserTheCreator() {
+        return this.props.currentUser.id === this.props.task.creator.id
     }
 
     isCurrentUserTheTo() {
@@ -171,7 +193,7 @@ Task.propTypes = {
     notification: PropTypes.object
 }
 
-const mapStateToProps = (state, props) => {
+function mapStateToProps(state, props) {
     return {
         task: state.showTask.task,
         isFetching: state.showTask.isFetching,
@@ -181,13 +203,4 @@ const mapStateToProps = (state, props) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        showFullTask: (taskId) => dispatch(TaskActions.showFullTask(taskId)),
-        hideFullTask: (taskId) => dispatch(TaskActions.hideFullTask(taskId)),
-        doThing: (notification) => dispatch(DoThingActions.doThing(notification)),
-        completeThing: (thing) => dispatch(CompleteThingActions.completeThing(thing))
-    }
-}
-
-module.exports = connect(mapStateToProps, mapDispatchToProps)(withRouter(Task))
+module.exports = connect(mapStateToProps)(withRouter(Task))

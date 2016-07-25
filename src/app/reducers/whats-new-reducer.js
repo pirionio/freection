@@ -2,6 +2,7 @@ const WhatsNewActionTypes = require('../actions/types/whats-new-action-types')
 const {ActionStatus} = require('../constants')
 const EventTypes = require('../../common/enums/event-types')
 const {filter, reject, includes} = require('lodash')
+const immutable = require('../util/immutable')
 
 const initialState = {
     notifications: []
@@ -40,6 +41,23 @@ function doThing(state, action) {
     }
 }
 
+function closeThing(state, action) {
+    switch (action.status) {
+        case ActionStatus.START:
+            return immutable(state)
+                .arrayReject('notifications', notification => notification.id === action.notification.id)
+                .value()
+        case ActionStatus.ERROR:
+            // If there was an error, since we already removed the notification from the state, we now want to re-add it.
+            return immutable(state)
+                .arrayPushItem('notifications', action.notification)
+                .value()
+        case ActionStatus.COMPLETE:
+        default:
+            return state
+    }
+}
+
 function dismissComments(state, action) {
     switch (action.status) {
         case ActionStatus.START:
@@ -75,6 +93,8 @@ module.exports = (state = initialState, action) => {
             return fetchWhatsNew(state, action)
         case WhatsNewActionTypes.DO_THING:
             return doThing(state, action)
+        case WhatsNewActionTypes.CLOSE_THING:
+            return closeThing(state, action)
         case WhatsNewActionTypes.DISMISS_COMMENTS:
             return dismissComments(state, action)
         case WhatsNewActionTypes.NOTIFICATION_RECEIVED:

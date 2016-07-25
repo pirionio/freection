@@ -10,5 +10,9 @@ module.exports = {
     DONE: {
         key: 'DONE',
         label: 'Done'
+    },
+    CLOSE: {
+        key: 'CLOSE',
+        label: 'Close'
     }
 }

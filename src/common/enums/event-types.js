@@ -14,5 +14,10 @@ module.exports = {
     COMMENT: {
         key: 'COMMENT',
         label: 'Comment'
+    },
+    CLOSED: {
+        key: 'CLOSED',
+        label: 'Closed'
     }
+
 }

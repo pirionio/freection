@@ -6,6 +6,7 @@ const MessageRow = require('../Messages/MessageRow')
 const Action = require('../Messages/Action')
 
 const DoThingActions = require('../../actions/do-thing-actions')
+const CloseThingActions = require('../../actions/close-thing-actions')
 const DismissCommentsActions = require('../../actions/dismiss-comments-actions')
 const EventTypes = require('../../../common/enums/event-types')
 
@@ -13,20 +14,32 @@ class NewNotification extends Component {
     constructor(props) {
         super(props)
         this.doThing = this.doThing.bind(this)
+        this.closeThing = this.closeThing.bind(this)
         this.dismissComments = this.dismissComments.bind(this)
         this.doActionEnabled = this.doActionEnabled.bind(this)
     }
 
     doThing() {
-        this.props.doThing(this.props.notification)
+        const {dispatch, notification} = this.props
+        dispatch(DoThingActions.doThing(notification))
+    }
+
+    closeThing() {
+        const {dispatch, notification} = this.props
+        dispatch(CloseThingActions.closeThing(notification))
     }
 
     dismissComments() {
-        this.props.dismissComments(this.props.notification, this.props.currentUser)
+        const {dispatch, notification, currentUser} = this.props
+        dispatch(DismissCommentsActions.dismissComments(notification, currentUser))
     }
 
     doActionEnabled() {
         return this.props.notification.eventType.key === EventTypes.CREATED.key
+    }
+
+    closeActionEnabled() {
+        return this.props.notification.eventType.key === EventTypes.DONE.key
     }
     
     dismissCommentsEnabled() {
@@ -49,6 +62,9 @@ class NewNotification extends Component {
         }
         if (this.dismissCommentsEnabled()) {
             actions.push(<Action label="Dismiss" doFunc={this.dismissComments} key="action-Dismiss" />)
+        }
+        if (this.closeActionEnabled()) {
+            actions.push(<Action label="Close" doFunc={this.closeThing} key="action-Close" />)
         }
 
         return actions
@@ -78,11 +94,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        doThing: (notification) => dispatch(DoThingActions.doThing(notification)),
-        dismissComments: (notification, currentUser) => dispatch(DismissCommentsActions.dismissComments(notification, currentUser))
-    }
-}
-
-module.exports = connect(mapStateToProps, mapDispatchToProps)(NewNotification)
+module.exports = connect(mapStateToProps)(NewNotification)

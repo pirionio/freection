@@ -56,6 +56,19 @@ function completeThing(user, thingId) {
         })
 }
 
+function closeThing(user, thingId, eventId) {
+    return Thing.get(thingId).run()
+        .then(thing => performCloseThing(thing, user))
+        .then(thing => EventsService.userClosedThing(user, thing))
+        .then(() => Event.get(eventId).run())
+        .then(event => EventsService.userAck(event, user))
+        .catch((error) => {
+                logger.error(`error while closing thing ${thingId} by user ${user.email}: ${error}`)
+                throw error
+            }
+        )
+}
+
 function createComment(user, thingId, commentText) {
     return Thing.get(thingId).run()
         .then(thing => EventsService.userCreatedComment(user, thing, commentText))
@@ -95,6 +108,12 @@ function performCompleteThing(thing, user) {
     return thing.save()
 }
 
+function performCloseThing(thing, user) {
+    remove(thing.followUpers, followUperId => followUperId === user.id)
+    thing.payload.status = TaskStatus.CLOSE.key
+    return thing.save()
+}
+
 module.exports = {
     getWhatsNew,
     getToDo,
@@ -103,5 +122,6 @@ module.exports = {
     completeThing,
     createComment,
     dismissComments,
-    markCommentAsRead
+    markCommentAsRead,
+    closeThing
 }

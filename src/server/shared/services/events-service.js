@@ -41,6 +41,17 @@ function userCreatedComment(user, thing, commentText) {
     })
 }
 
+function userClosedThing(user, thing) {
+    return Event.save({
+        thingId: thing.id,
+        eventType: EventTypes.CLOSED.key,
+        createdAt: new Date(),
+        creatorUserId: user.id,
+        payload: {},
+        showNewList: []
+    })
+}
+
 function userAck(event, user) {
     remove(event.showNewList, readerUserId => readerUserId === user.id)
     return event.save()
@@ -49,6 +60,7 @@ function userAck(event, user) {
 module.exports = {
     userAcceptedThing,
     userCompletedThing,
+    userClosedThing,
     userAck,
     userCreatedComment
 }

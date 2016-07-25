@@ -50,6 +50,21 @@ router.post('/done', function(request, response) {
     )
 })
 
+router.post('/close', function(request, response) {
+    const {user} = request
+    const {thingId, eventId} = request.body
+
+    ThingsService.closeThing(user, thingId, eventId)
+        .then(() => response.json({}))
+        .catch(error => {
+            if (error && error.name === 'DocumentNotFoundError') {
+                response.status(404).send(`Could not find thing with ID ${thingId}`)
+            } else {
+                response.status(500).send(`Could not close thing ${thingId} by user ${user.email} : ${error.message}`)
+            }
+        })
+})
+
 router.get('/followups', function(request, response) {
     const user = request.user
 
