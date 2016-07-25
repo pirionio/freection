@@ -60,7 +60,7 @@ function createdOrAcceptedReceived(state, action) {
 
 function newCommentReceived(state, action) {
     return immutable(state)
-        .arrayUpdateItem('things', thing => thing.id === action.comment.thing.id, item => thingReducer(item, action))
+        .arraySetItem('things', {id: action.comment.thing.id}, item => thingReducer(item, action))
         .value()
 }
 

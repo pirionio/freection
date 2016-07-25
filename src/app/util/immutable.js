@@ -1,70 +1,45 @@
-const {set, some, get, merge} = require('lodash')
+const _ = require('lodash')
 
 class Immutable {
     constructor(source) {
-        this._object = Object.assign({}, source)
+        this._object = _.clone(source)
     }
 
     touch(path) {
-        const value = Object.assign({}, get(this._object, path))
-        set(this._object, path, value)
+        const value = _.clone(_.get(this._object, path))
+        _.set(this._object, path, value)
 
         return this
     }
 
-    arrayUpdateItem(path, predicate, updater) {
-        const array = get(this._object, path)
-
-        set(this._object, path, array.map(item => {
-            if (predicate(item))
-                return updater(item)
-            else
-                return item
-        }))
+    arrayMergeItem(path, predicate, value) {
+        const array = _.get(this._object, path)
+        _.set(this._object, path, arraySetOrMergeItem(array, predicate, value, true))
 
         return this
     }
 
+    arrayPushItem(path, value) {
+        const array = _.get(this._object, path)
+        _.set(this._object, path, [...array, value])
+
+        return this
+    }
+
+    arraySetItem(path, predicate, updater) {
+        const array = _.get(this._object, path)
+        _.set(this._object, path, arraySetOrMergeItem(array, predicate, updater, false))
+
+        return this
+    }
+    
     arraySetOrPushItem(path, predicate, value) {
-        const array = get(this._object, path)
+        const array = _.get(this._object, path)
 
-        if (some(array, predicate))
-            this.arraySetItem(path, predicate, value)
+        if (_.some(array, predicate))
+            _.set(this._object, path, arraySetOrMergeItem(array, predicate, value, false))
         else
-            this.pushToArray(path, value)
-
-        return this
-    }
-
-    arraySetItem(path, predicate, value) {
-        const array = get(this._object, path)
-
-        set(this._object, path, array.map(item => {
-            if (predicate(item))
-                return value
-            else
-                return item
-        }))
-
-        return this
-    }
-
-    mergeInArray(path, predicate, value) {
-        const array = get(this._object, path)
-
-        set(this._object, path, array.map(item => {
-            if (predicate(item))
-                return merge({}, item, value)
-            else
-                return item
-        }))
-
-        return this
-    }
-
-    pushToArray(path, value) {
-        const array = get(this._object, path)
-        set(this._object, path, [...array, value])
+            _.set(this._object, path, [...array, value])
 
         return this
     }
@@ -72,6 +47,29 @@ class Immutable {
     value() {
         return this._object
     }
+}
+
+function arraySetOrMergeItem(array, predicate, updater, isMerge) {
+    return array.map(item => {
+        if (matchItem(item, predicate)) {
+            const value = getItemValue(item, updater)
+            return isMerge ? _.merge({}, item, value) : value
+        } else {
+            return item
+        }
+    })
+}
+
+function getItemValue(item, updater) {
+    return _.isFunction(updater) ? updater(item) : updater
+}
+
+function matchItem(item, predicate) {
+    if (_.isFunction(predicate)) {
+        return predicate(item)
+    }
+
+    return _.isMatch(item, predicate)
 }
 
 function immutable(source) {

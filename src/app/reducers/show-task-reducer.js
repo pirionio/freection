@@ -40,7 +40,7 @@ function createComment(state, action) {
         case ActionStatus.COMPLETE:
             return immutable(state)
                 .touch('task')
-                .pushToArray('task.comments', {
+                .arraySetOrPushItem('task.comments', {id: action.comment.id}, {
                     id: action.comment.id,
                     payload: action.comment.payload,
                     creator: action.comment.creator,
@@ -59,12 +59,11 @@ function markCommentAsRead(state, action) {
         case ActionStatus.COMPLETE:
             return immutable(state)
                 .touch('task')
-                .mergeInArray('task.comments', comment => comment.id === action.comment.id,
-                    {
-                        payload: {
-                            isRead: true
-                        }
-                    })
+                .arrayMergeItem('task.comments', {id: action.comment.id}, {
+                    payload: {
+                        isRead: true
+                    }
+                })
                 .value()
         case ActionStatus.START:
         case ActionStatus.ERROR:
@@ -77,7 +76,7 @@ function newCommentReceived(state, action) {
     if (action.comment.thing.id === state.task.id) {
         return immutable(state)
             .touch('task')
-            .pushToArray('task.comments', action.comment)
+            .arraySetOrPushItem('task.comments', {id: action.comment.id}, action.comment)
             .value()
     } else {
         return state
