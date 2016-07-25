@@ -2,29 +2,41 @@ const {some} = require('lodash/core')
 
 const FollowUpsActionTypes = require('../actions/types/follow-up-action-types')
 const ThingActionTypes = require('../actions/types/thing-action-types')
-const {ActionStatus} = require('../constants')
+const {ActionStatus, InvalidationStatus} = require('../constants')
 const immutable = require('../util/immutable')
 const thingReducer = require('./thing-reducer')
 
 const initialState = {
-    followUps: []
+    followUps: [],
+    invalidationStatus: InvalidationStatus.INVALIDATED
 }
 
 function fetchFollowUps(state, action) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
             return {
-                followUps: action.followUps
+                followUps: action.followUps,
+                invalidationStatus: InvalidationStatus.FETCHED
             }
         case ActionStatus.START:
+            return {
+                followUps: state.followUps,
+                invalidationStatus: InvalidationStatus.FETCHING
+            }
+        case ActionStatus.ERROR:
         default:
             return {
-                followUps: state.followUps
+                followUps: state.followUps,
+                invalidationStatus: InvalidationStatus.INVALIDATED
             }
     }
 }
 
 function createdReceived(state, action) {
+    // TODO Handle FETCHING state by queuing incoming events
+    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
+        return state
+
     if (!action.thing.isFollowUper)
         return state
 

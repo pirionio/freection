@@ -8,4 +8,10 @@ const GeneralConstants = {
     FETCH_INTERVAL_MILLIS: 10000
 }
 
-module.exports = {ActionStatus, GeneralConstants}
+const InvalidationStatus = {
+    INVALIDATED: 'INVALIDATED',
+    FETCHING: 'FETCHING',
+    FETCHED: 'FETCHED'
+}
+
+module.exports = {ActionStatus, GeneralConstants, InvalidationStatus}

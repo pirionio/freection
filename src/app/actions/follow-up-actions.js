@@ -1,6 +1,6 @@
 const FollowUpActionTypes = require('./types/follow-up-action-types')
 const FollowUpService = require('../services/follow-up-service')
-const {ActionStatus} = require('../constants')
+const {ActionStatus, InvalidationStatus} = require('../constants')
 
 function requestFollowUps() {
     return {
@@ -25,11 +25,14 @@ function requestFollowUpsFailed() {
 }
 
 const fetchFollowUps = () => {
-    return dispatch => {
-        dispatch(requestFollowUps())
-        FollowUpService.getFollowUps().
-        then(followUps => dispatch(requestFollowUpsComplete(followUps))).
-        catch(() => dispatch(requestFollowUpsFailed()))
+    return (dispatch, getState) => {
+        const {followUps} = getState()
+        if (followUps.invalidationStatus === InvalidationStatus.INVALIDATED) {
+            dispatch(requestFollowUps())
+            FollowUpService.getFollowUps().
+                then(followUps => dispatch(requestFollowUpsComplete(followUps))).
+                catch(() => dispatch(requestFollowUpsFailed()))
+        }
     }
 }
 

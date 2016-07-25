@@ -1,6 +1,6 @@
 const WhatsNewActionTypes = require('./types/whats-new-action-types')
 const WhatsNewService = require('../services/whats-new-service')
-const {ActionStatus} = require('../constants')
+const {ActionStatus, InvalidationStatus} = require('../constants')
 
 function requestWhatsNew() {
     return {
@@ -25,12 +25,15 @@ function requestWhatsNewFailed() {
 }
 
 const fetchWhatsNew = () => {
-    return dispatch => {
-        dispatch(requestWhatsNew())
-        WhatsNewService.getNotifications().
-            then(notifications => dispatch(requestWhatsNewCompelte(notifications))).
-            catch(() => dispatch(requestWhatsNewFailed())
-        )
+    return (dispatch, getState) => {
+        const {whatsNew} = getState()
+        if (whatsNew.invalidationStatus === InvalidationStatus.INVALIDATED) {
+            dispatch(requestWhatsNew())
+            WhatsNewService.getNotifications().
+                then(notifications => dispatch(requestWhatsNewCompelte(notifications))).
+                catch(() => dispatch(requestWhatsNewFailed())
+            )
+        }
     }
 }
 

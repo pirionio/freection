@@ -2,25 +2,32 @@ const {some} = require('lodash/core')
 
 const ToDoActionTypes = require('../actions/types/to-do-action-types')
 const ThingActionTypes = require('../actions/types/thing-action-types')
-const {ActionStatus} = require('../constants')
-const {filter} = require('lodash/core')
+const {ActionStatus, InvalidationStatus} = require('../constants')
 const immutable = require('../util/immutable')
 const thingReducer = require('./thing-reducer')
 
 const initialState = {
-    things: []
+    things: [],
+    invalidationStatus: InvalidationStatus.INVALIDATED
 }
 
 function toDo(state, action) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
             return {
-                things: action.things
+                things: action.things,
+                invalidationStatus: InvalidationStatus.FETCHED
             }
         case ActionStatus.START:
+            return {
+                things: state.things,
+                invalidationStatus: InvalidationStatus.FETCHING
+            }
+        case ActionStatus.ERROR:
         default:
             return {
-                things: state.things
+                things: state.things,
+                invalidationStatus: InvalidationStatus.INVALIDATED
             }
     }
 }
@@ -45,6 +52,10 @@ function completeThing(state, action) {
 }
 
 function createdOrAcceptedReceived(state, action) {
+    // TODO Handle FETCHING state by queuing incoming events
+    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
+        return state
+
     if (!action.thing.isDoer)
         return state
 
@@ -59,6 +70,10 @@ function createdOrAcceptedReceived(state, action) {
 }
 
 function doneReceived(state, action) {
+    // TODO Handle FETCHING state by queuing incoming events
+    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
+        return state
+
     return immutable(state)
         .arrayReject('things', thing => thing.id === action.thing.id)
         .value()

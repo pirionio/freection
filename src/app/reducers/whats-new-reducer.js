@@ -1,23 +1,32 @@
 const WhatsNewActionTypes = require('../actions/types/whats-new-action-types')
 const {ActionStatus} = require('../constants')
 const EventTypes = require('../../common/enums/event-types')
-const {filter, reject, includes} = require('lodash')
+const {InvalidationStatus} = require('../constants')
+const {filter, reject} = require('lodash')
 const immutable = require('../util/immutable')
 
 const initialState = {
-    notifications: []
+    notifications: [],
+    invalidationStatus: InvalidationStatus.INVALIDATED
 }
 
 function fetchWhatsNew(state, action) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
             return {
-                notifications: action.notifications
+                notifications: action.notifications,
+                invalidationStatus: InvalidationStatus.FETCHED
             }
         case ActionStatus.START:
+            return {
+                notifications: state.notifications,
+                invalidationStatus: InvalidationStatus.FETCHING
+            }
+        case ActionStatus.ERROR:
         default:
             return {
-                notifications: state.notifications
+                notifications: state.notifications,
+                invalidationStatus: InvalidationStatus.INVALIDATED
             }
     }
 }
@@ -76,12 +85,20 @@ function dismissComments(state, action) {
 }
 
 function notificationReceived(state, action) {
+    // TODO Handle FETCHING state by queuing incoming events
+    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
+        return state
+
     return {
         notifications: [...state.notifications, action.notification]
     }
 }
 
 function notificationDeleted(state, action) {
+    // TODO Handle FETCHING state by queuing incoming events
+    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
+        return state
+
     return {
         notifications: reject(state.notifications, notification => notification.id === action.notification.id)
     }

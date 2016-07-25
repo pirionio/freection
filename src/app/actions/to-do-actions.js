@@ -1,6 +1,6 @@
 const ToDoActionTypes = require('./types/to-do-action-types')
 const ToDoService = require('../services/to-do-service')
-const {ActionStatus} = require('../constants')
+const {ActionStatus, InvalidationStatus} = require('../constants')
 
 function requestToDo() {
     return {
@@ -25,12 +25,14 @@ function requestToDoFailed() {
 }
 
 const fetchToDo = () => {
-    return dispatch => {
-        dispatch(requestToDo())
-        ToDoService.getThingsToDo().
-            then(things => dispatch(requestToDoComplete(things))).
-            catch(() => dispatch(requestToDoFailed())
-        )
+    return (dispatch, getState) => {
+        const {toDo} = getState()
+        if (toDo.invalidationStatus === InvalidationStatus.INVALIDATED) {
+            dispatch(requestToDo())
+            ToDoService.getThingsToDo().
+                then(things => dispatch(requestToDoComplete(things))).
+                catch(() => dispatch(requestToDoFailed()))
+        }
     }
 }
 
