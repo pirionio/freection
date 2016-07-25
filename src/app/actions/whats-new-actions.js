@@ -24,20 +24,6 @@ function requestWhatsNewFailed() {
     }
 }
 
-function notificationReceivedAction(notification) {
-    return {
-        type: WhatsNewActionTypes.NOTIFICATION_RECEIVED,
-        notification
-    }
-}
-
-function notificationDeletedAction(notification) {
-    return {
-        type: WhatsNewActionTypes.NOTIFICATION_DELETED,
-        notification
-    }
-}
-
 const fetchWhatsNew = () => {
     return dispatch => {
         dispatch(requestWhatsNew())
@@ -49,14 +35,16 @@ const fetchWhatsNew = () => {
 }
 
 const notificationReceived = (notification) => {
-    return dispatch => {
-        dispatch(notificationReceivedAction(notification))
+    return {
+        type: WhatsNewActionTypes.NOTIFICATION_RECEIVED,
+        notification
     }
 }
 
 const notificationDeleted = (notification) => {
-    return dispatch => {
-        dispatch(notificationDeletedAction(notification))
+    return {
+        type: WhatsNewActionTypes.NOTIFICATION_DELETED,
+        notification
     }
 }
 

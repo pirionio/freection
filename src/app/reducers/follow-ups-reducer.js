@@ -45,6 +45,7 @@ module.exports = (state = initialState, action) => {
         case ThingActionTypes.CREATED_RECEIVED:
             return createdReceived(state, action)
         case ThingActionTypes.NEW_COMMENT_RECEIVED:
+        case ThingActionTypes.COMMENT_READ_BY_RECEIVED:
             return immutable(state)
                 .arraySetItem('followUps', {id: action.comment.thing.id}, item => thingReducer(item, action))
                 .value()

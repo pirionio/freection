@@ -24,6 +24,10 @@ function listenToUpdates(pushToken, dispatch) {
     socket.on('notification-deleted', event => {
         dispatch(WhatsNewActions.notificationDeleted(event))
     })
+
+    socket.on('comment-read-by', event => {
+        dispatch(ThingActions.commentReadByReceived(event))
+    })
 }
 
 module.exports = {listenToUpdates}

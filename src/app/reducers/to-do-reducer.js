@@ -58,12 +58,6 @@ function createdOrAcceptedReceived(state, action) {
     })
 }
 
-function newCommentReceived(state, action) {
-    return immutable(state)
-        .arraySetItem('things', {id: action.comment.thing.id}, item => thingReducer(item, action))
-        .value()
-}
-
 module.exports = (state = initialState, action) => {
     switch (action.type) {
         case ToDoActionTypes.FETCH_TO_DO:
@@ -74,7 +68,10 @@ module.exports = (state = initialState, action) => {
         case ThingActionTypes.ACCEPTED_RECEIVED:
             return createdOrAcceptedReceived(state, action)
         case ThingActionTypes.NEW_COMMENT_RECEIVED:
-            return newCommentReceived(state, action)
+        case ThingActionTypes.COMMENT_READ_BY_RECEIVED:
+            return immutable(state)
+                .arraySetItem('things', {id: action.comment.thing.id}, item => thingReducer(item, action))
+                .value()
         default:
             return state
     }

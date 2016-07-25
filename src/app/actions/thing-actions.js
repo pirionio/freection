@@ -29,27 +29,6 @@ function createCommentRequestFailed(thingId) {
     }
 }
 
-function newCommentReceivedAction(comment) {
-    return {
-        type: ThingActionTypes.NEW_COMMENT_RECEIVED,
-        comment
-    }
-}
-
-function thingCreatedReceivedAction(thing) {
-    return {
-        type: ThingActionTypes.CREATED_RECEIVED,
-        thing
-    }
-}
-
-function thingAcceptedReceivedAction(thing) {
-    return {
-        type: ThingActionTypes.ACCEPTED_RECEIVED,
-        thing
-    }
-}
-
 function createNewThing(thing) {
     return dispatch => {
         var promise = ThingService.createNewThing({
@@ -76,21 +55,32 @@ function createComment(thingId, commentText) {
 }
 
 const newCommentReceived = (comment) => {
-    return dispatch => {
-        dispatch(newCommentReceivedAction(comment))
+    return {
+        type: ThingActionTypes.NEW_COMMENT_RECEIVED,
+        comment
     }
 }
 
 const thingCreatedReceived = (thing) => {
-    return dispatch => {
-        dispatch(thingCreatedReceivedAction(thing))
+    return {
+        type: ThingActionTypes.CREATED_RECEIVED,
+        thing
     }
 }
 
 const thingAcceptedReceived = (thing) => {
-    return dispatch => {
-        dispatch(thingAcceptedReceivedAction(thing))
+    return {
+        type: ThingActionTypes.ACCEPTED_RECEIVED,
+        thing
     }
 }
 
-module.exports = {createNewThing, createComment, newCommentReceived, thingCreatedReceived, thingAcceptedReceived}
+const commentReadByReceived = (comment) => {
+    return {
+        type: ThingActionTypes.COMMENT_READ_BY_RECEIVED,
+        comment
+    }
+}
+
+module.exports = {createNewThing, createComment, newCommentReceived,
+    thingCreatedReceived, thingAcceptedReceived, commentReadByReceived}

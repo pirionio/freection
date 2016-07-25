@@ -7,6 +7,7 @@ const Event = require('../shared/models/Event')
 const Thing = require('../shared/models/Thing')
 const {eventToDto} = require('../shared/transformers')
 const logger = require('../shared/utils/logger')
+const EventTypes = require('../../common/enums/event-types')
 
 module.exports = (app) => {
     const io = SocketIO(app.server, {path: '/push'})
@@ -54,11 +55,24 @@ module.exports = (app) => {
     }
 
     function auditChangedEvent(oldEvent, event) {
-        const readByUsers = difference(oldEvent.showNewList, event.showNewList)
+        const shownToUsers = difference(oldEvent.showNewList, event.showNewList)
 
-        readByUsers.forEach(userId => {
+        shownToUsers.forEach(userId => {
             io.to(userId).emit('notification-deleted', {id: event.id})
         })
+
+        if (event.eventType === EventTypes.COMMENT.key) {
+            const readByUsers = difference(event.payload.readByList, oldEvent.payload.readByList)
+
+            readByUsers.forEach(userId => {
+                io.to(userId).emit('comment-read-by', {
+                    id: event.id,
+                    thing: {
+                        id: event.thingId
+                    }
+                })
+            })
+        }
     }
 
     function auditNewEvent(event) {
