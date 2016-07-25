@@ -85,7 +85,7 @@ module.exports = (state = initialState, action) => {
         case ThingActionTypes.NEW_COMMENT_RECEIVED:
         case ThingActionTypes.COMMENT_READ_BY_RECEIVED:
             return immutable(state)
-                .set('task', thingReducer(state.task))
+                .set('task', thingReducer(state.task, action))
                 .value()
         default:
             return state
