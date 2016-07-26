@@ -72,6 +72,16 @@ function markCommentAsRead(state, action) {
     }
 }
 
+function commentChangedOrAdded(state, action) {
+    // If no thing is shown right now, or if the action does not carry a comment at all, or if the comment does not belong to the shown thing...
+    if (!state.task || !action.comment || !action.comment.thing || state.task.id !== action.comment.thing.id)
+        return state
+
+    return immutable(state)
+        .set('task', thingReducer(state.task, action))
+        .value()
+}
+
 module.exports = (state = initialState, action) => {
     switch (action.type) {
         case TaskActionTypes.SHOW_FULL_TASK:
@@ -84,9 +94,7 @@ module.exports = (state = initialState, action) => {
             return markCommentAsRead(state, action)
         case ThingActionTypes.NEW_COMMENT_RECEIVED:
         case ThingActionTypes.COMMENT_READ_BY_RECEIVED:
-            return immutable(state)
-                .set('task', thingReducer(state.task, action))
-                .value()
+            return commentChangedOrAdded(state, action)
         default:
             return state
     }
