@@ -1,4 +1,4 @@
-const {some} = require('lodash/core')
+const {some} = require('lodash/some')
 
 const ToDoActionTypes = require('../actions/types/to-do-action-types')
 const ThingActionTypes = require('../actions/types/thing-action-types')
@@ -36,7 +36,7 @@ function completeThing(state, action) {
     switch (action.status) {
         case ActionStatus.START:
             return immutable(state)
-                .arrayReject('things', thing => thing.id === action.thing.id)
+                .arrayReject('things', {id: action.thing.id})
                 .value()
         case ActionStatus.ERROR:
             // If there was an error, since we already removed the thing from the state, we now want to re-add it.
@@ -45,9 +45,7 @@ function completeThing(state, action) {
                 .value()
         case ActionStatus.COMPLETE:
         default:
-            return {
-                things: state.things
-            }
+            return state
     }
 }
 
@@ -60,7 +58,7 @@ function createdOrAcceptedReceived(state, action) {
         return state
 
     // already exist?
-    if (some(state.things, thing => thing.id === action.thing.id))
+    if (some(state.things, {id: action.thing.id}))
         return state
 
     // Adding to array
@@ -75,7 +73,17 @@ function doneReceived(state, action) {
         return state
 
     return immutable(state)
-        .arrayReject('things', thing => thing.id === action.thing.id)
+        .arrayReject('things', {id: action.thing.id})
+        .value()
+}
+
+function commentChangedOrAdded(state, action) {
+    // TODO Handle FETCHING state by queuing incoming events
+    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
+        return state
+
+    return immutable(state)
+        .arraySetItem('things', {id: action.comment.thing.id}, item => thingReducer(item, action))
         .value()
 }
 
@@ -92,9 +100,7 @@ module.exports = (state = initialState, action) => {
             return doneReceived(state, action)
         case ThingActionTypes.NEW_COMMENT_RECEIVED:
         case ThingActionTypes.COMMENT_READ_BY_RECEIVED:
-            return immutable(state)
-                .arraySetItem('things', {id: action.comment.thing.id}, item => thingReducer(item, action))
-                .value()
+            return commentChangedOrAdded(state, action)
         default:
             return state
     }

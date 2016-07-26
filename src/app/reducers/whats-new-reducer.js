@@ -2,7 +2,6 @@ const WhatsNewActionTypes = require('../actions/types/whats-new-action-types')
 const {ActionStatus} = require('../constants')
 const EventTypes = require('../../common/enums/event-types')
 const {InvalidationStatus} = require('../constants')
-const {filter, reject} = require('lodash')
 const immutable = require('../util/immutable')
 
 const initialState = {
@@ -34,19 +33,17 @@ function fetchWhatsNew(state, action) {
 function doThing(state, action) {
     switch (action.status) {
         case ActionStatus.START:
-            return {
-                notifications: filter(state.notifications, notification => notification.id !== action.notification.id)
-            }
+            return immutable(state)
+                .arrayReject('notifications', {id: action.notification.id})
+                .value()
         case ActionStatus.ERROR:
             // If there was an error, since we already removed the notification from the state, we now want to re-add it.
-            return {
-                notifications: [...state.notifications, action.notification]
-            }
+            return immutable(state)
+                .arrayPushItem('notifications', action.notification)
+                .value()
         case ActionStatus.COMPLETE:
         default:
-            return {
-                notifications: state.notifications
-            }
+            return state
     }
 }
 
@@ -70,17 +67,15 @@ function closeThing(state, action) {
 function dismissComments(state, action) {
     switch (action.status) {
         case ActionStatus.START:
-            // Filter out all COMMENT notifications that I should read and that belong to the specific Thing.
-            return {
-                notifications: reject(state.notifications, notification =>
+            // Filter out all COMMENT notifications that belong to the specific Thing.
+            return immutable(state)
+                .arrayReject('notifications', notification =>
                     notification.eventType.key === EventTypes.COMMENT.key &&
                     notification.thing.id === action.notification.thing.id)
-            }
+                .value()
         case ActionStatus.COMPLETE:
         default:
-            return {
-                notifications: state.notifications
-            }
+            return state
     }
 }
 
@@ -89,9 +84,9 @@ function notificationReceived(state, action) {
     if (state.invalidationStatus !== InvalidationStatus.FETCHED)
         return state
 
-    return {
-        notifications: [...state.notifications, action.notification]
-    }
+    return immutable(state)
+        .arrayPushItem('notifications', action.notification)
+        .value()
 }
 
 function notificationDeleted(state, action) {
@@ -99,9 +94,9 @@ function notificationDeleted(state, action) {
     if (state.invalidationStatus !== InvalidationStatus.FETCHED)
         return state
 
-    return {
-        notifications: reject(state.notifications, notification => notification.id === action.notification.id)
-    }
+    return immutable(state)
+        .arrayReject('notifications', {id: action.notification.id})
+        .value()
 }
 
 module.exports = (state = initialState, action) => {

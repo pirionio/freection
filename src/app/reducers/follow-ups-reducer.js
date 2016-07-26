@@ -1,4 +1,4 @@
-const {some} = require('lodash/core')
+const {some} = require('lodash/some')
 
 const FollowUpsActionTypes = require('../actions/types/follow-up-action-types')
 const ThingActionTypes = require('../actions/types/thing-action-types')
@@ -41,22 +41,36 @@ function createdReceived(state, action) {
         return state
 
     // already exist?
-    if (some(state.followUps, thing => thing.id === action.thing.id))
+    if (some(state.followUps, {id: action.thing.id}))
         return state
 
     // Adding to array
-    return Object.assign({}, state, {
-        followUps: [...state.followUps, action.thing]
-    })
+    return immutable(state)
+        .arrayPushItem('followUps', action.thing)
+        .value()
 }
 
 function closedReceived(state, action) {
+    // TODO Handle FETCHING state by queuing incoming events
+    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
+        return state
+
     //  If I'm still a followUper for some reason, leave this
     if (action.thing.isFollowUper)
         return state
 
     return immutable(state)
-        .arrayReject('followUps', thing => thing.id === action.thing.id)
+        .arrayReject('followUps', {id: action.thing.id})
+        .value()
+}
+
+function commentChangedOrAdded(state, action) {
+    // TODO Handle FETCHING state by queuing incoming events
+    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
+        return state
+
+    return immutable(state)
+        .arraySetItem('followUps', {id: action.comment.thing.id}, item => thingReducer(item, action))
         .value()
 }
 
@@ -70,9 +84,7 @@ module.exports = (state = initialState, action) => {
             return closedReceived(state, action)
         case ThingActionTypes.NEW_COMMENT_RECEIVED:
         case ThingActionTypes.COMMENT_READ_BY_RECEIVED:
-            return immutable(state)
-                .arraySetItem('followUps', {id: action.comment.thing.id}, item => thingReducer(item, action))
-                .value()
+            return commentChangedOrAdded(state, action)
         default:
             return state
     }
