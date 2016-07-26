@@ -9,13 +9,16 @@ const PushService = require('../../services/push-service')
 
 class App extends Component {
     componentDidMount() {
-        PushService.listenToUpdates(this.props.pushToken, this.props.dispatch)
+        const {currentUser, dispatch} = this.props
+        if (currentUser.isAuthenticated) {
+            PushService.listenToUpdates(currentUser.pushToken, dispatch)
+        }
     }
 
     render () {
-        const {isAuthenticated} = this.props
+        const {currentUser} = this.props
 
-        if (isAuthenticated) {
+        if (currentUser.isAuthenticated) {
             return (
                 <div className="app-root">
                     <TopBar />
@@ -35,14 +38,12 @@ class App extends Component {
 }
 
 App.propTypes = {
-    isAuthenticated: PropTypes.bool.isRequired,
-    pushToken: PropTypes.string.isRequired
+    currentUser: PropTypes.object.isRequired
 }
 
 const mapStateToProps = (state) => {
     return {
-        isAuthenticated: state.auth.isAuthenticated,
-        pushToken: state.auth.pushToken
+        currentUser: state.auth
     }
 }
 
