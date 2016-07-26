@@ -5,7 +5,7 @@ const {connect} = require('react-redux')
 const ThingRow = require('../Messages/ThingRow')
 const Action = require('../Messages/Action')
 
-const CompleteThingActions = require('../../actions/complete-thing-actions')
+const MarkThingDoneActions = require('../../actions/mark-thing-done-actions')
 
 class DoThing extends Component {
     constructor(props) {
@@ -14,7 +14,8 @@ class DoThing extends Component {
     }
 
     completeThing() {
-        this.props.completeThing(this.props.thing)
+        const {thing, dispatch} = this.props
+        dispatch(MarkThingDoneActions.markThingAsDone(thing))
     }
 
     getActions() {
@@ -40,16 +41,10 @@ DoThing.propTypes = {
     currentUser: PropTypes.object.isRequired
 }
 
-const mapStateToProps = (state) => {
+function mapStateToProps(state) {
     return {
         currentUser: state.auth
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        completeThing: (thing) => dispatch(CompleteThingActions.completeThing(thing))
-    }
-}
-
-module.exports = connect(mapStateToProps, mapDispatchToProps)(DoThing)
+module.exports = connect(mapStateToProps)(DoThing)

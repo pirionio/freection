@@ -1,4 +1,4 @@
-const {some} = require('lodash/some')
+const some = require('lodash/some')
 
 const FollowUpsActionTypes = require('../actions/types/follow-up-action-types')
 const ThingActionTypes = require('../actions/types/thing-action-types')

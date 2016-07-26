@@ -10,7 +10,7 @@ const CommentList = require('../Comment/CommentList')
 
 const TaskActions = require('../../actions/task-actions')
 const DoThingActions = require('../../actions/do-thing-actions')
-const CompleteThingActions = require('../../actions/complete-thing-actions')
+const MarkThingDoneActions = require('../../actions/mark-thing-done-actions')
 const CloseThingActions = require('../../actions/close-thing-actions')
 
 const TaskStatus = require('../../../common/enums/task-status')
@@ -88,7 +88,7 @@ class Task extends Component {
 
     completeTask() {
         const {dispatch, task} = this.props
-        dispatch(CompleteThingActions.completeThing(task))
+        dispatch(MarkThingDoneActions.markThingAsDone(task))
     }
 
     closeThing() {

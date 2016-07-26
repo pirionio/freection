@@ -23,7 +23,7 @@ class ThingRow extends Component {
     }
 
     completeThing() {
-        this.props.completeThing(this.props.thing)
+        this.props.markThingAsDone(this.props.thing)
     }
 
     getMessagePreview() {const {thing} = this.props

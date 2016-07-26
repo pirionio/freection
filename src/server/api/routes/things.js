@@ -34,17 +34,17 @@ router.post('/do', function(request, response) {
         })
 })
 
-router.post('/done', function(request, response) {
+router.post('/:thingId/done', function(request, response) {
     const user = request.user
-    const {thingId} = request.body
+    const {thingId} = request.params
 
-    ThingsService.completeThing(user, thingId)
+    ThingsService.markThingAsDone(user, thingId)
         .then(() => response.json({}))
         .catch(error => {
             if (error && error.name === 'DocumentNotFoundError') {
                 response.status(404).send(`Could not find Thing with ID ${thingId}`)
             } else {
-                response.status(500).send(`Could not complete thing ${thingId} by user ${user.email}: ${error.message}`)
+                response.status(500).send(`Could not mark thing ${thingId} as done by user ${user.email}: ${error.message}`)
             }
         }
     )

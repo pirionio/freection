@@ -14,7 +14,7 @@ function userAcceptedThing(user, thing) {
     })
 }
 
-function userCompletedThing(user, thing) {
+function userMarkedThingAsDone(user, thing) {
     return Event.markAllThingEventsAsRead(thing.id).then(() => {
         return Event.save({
             thingId: thing.id,
@@ -59,7 +59,7 @@ function userAck(event, user) {
 
 module.exports = {
     userAcceptedThing,
-    userCompletedThing,
+    userMarkedThingAsDone,
     userClosedThing,
     userAck,
     userCreatedComment

@@ -22,10 +22,8 @@ function closeThing(thingId, eventId) {
     })
 }
 
-function completeThing(thing) {
-    return ResourceUtil.post('/api/things/done', {
-        thingId: thing.id
-    })
+function markThingAsDone(thing) {
+    return ResourceUtil.post(`/api/things/${thing.id}/done`)
 }
 
 function dismissComments(notification) {
@@ -36,5 +34,5 @@ function markCommentAsRead(comment) {
     return ResourceUtil.post(`/api/things/${comment.id}/markcommentasread`)
 }
 
-module.exports = {createNewThing, doThing, completeThing, closeThing,
+module.exports = {createNewThing, doThing, markThingAsDone, closeThing,
     createComment, dismissComments, markCommentAsRead}

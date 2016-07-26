@@ -46,12 +46,12 @@ function doThing(user, thingId, eventId) {
     )
 }
 
-function completeThing(user, thingId) {
+function markThingAsDone(user, thingId) {
     return Thing.getFullThing(thingId)
-        .then(thing => performCompleteThing(thing, user))
-        .then(thing => EventsService.userCompletedThing(user, thing))
+        .then(thing => performMarkThingAsDone(thing, user))
+        .then(thing => EventsService.userMarkedThingAsDone(user, thing))
         .catch((error) => {
-            logger.error(`Error while completing thing ${thingId} by user ${user.email}:`, error)
+            logger.error(`Error while marking thing ${thingId} as done by user ${user.email}:`, error)
             throw error
         })
 }
@@ -102,7 +102,7 @@ function performDoThing(thing, user) {
     return thing.save()
 }
 
-function performCompleteThing(thing, user) {
+function performMarkThingAsDone(thing, user) {
     remove(thing.doers, doerId => doerId === user.id)
     thing.payload.status = TaskStatus.DONE.key
     return thing.save()
@@ -119,7 +119,7 @@ module.exports = {
     getToDo,
     getFollowUps,
     doThing,
-    completeThing,
+    markThingAsDone,
     createComment,
     dismissComments,
     markCommentAsRead,

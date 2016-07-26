@@ -1,4 +1,4 @@
-const {some} = require('lodash/some')
+const some = require('lodash/some')
 
 const ToDoActionTypes = require('../actions/types/to-do-action-types')
 const ThingActionTypes = require('../actions/types/thing-action-types')
@@ -32,7 +32,7 @@ function toDo(state, action) {
     }
 }
 
-function completeThing(state, action) {
+function markThingAsDone(state, action) {
     switch (action.status) {
         case ActionStatus.START:
             return immutable(state)
@@ -91,8 +91,8 @@ module.exports = (state = initialState, action) => {
     switch (action.type) {
         case ToDoActionTypes.FETCH_TO_DO:
             return toDo(state, action)
-        case ToDoActionTypes.COMPLETE_THING:
-            return completeThing(state, action)
+        case ToDoActionTypes.MARK_THING_AS_DONE:
+            return markThingAsDone(state, action)
         case ThingActionTypes.CREATED_RECEIVED:
         case ThingActionTypes.ACCEPTED_RECEIVED:
             return createdOrAcceptedReceived(state, action)
