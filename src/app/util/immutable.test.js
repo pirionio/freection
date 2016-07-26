@@ -72,6 +72,13 @@ describe('Immutable', () => {
             const result = theImmutable.arrayMergeItem('someArray', {someItemKey: '1'}, {someItemKey: 'replacedValue'}).value()
             expect(result.someArray === original.someArray).to.equal.false
         })
+
+        it('does not change anything if the array does not exist', () => {
+            const result = theImmutable.arrayMergeItem('nonExistingArray', {someItemKey: '1'}, {someNewKey: '4'}).value()
+            original.someArray.forEach((item, index) => {
+                expect(item).to.equal(result.someArray[index])
+            })
+        })
     })
 
     describe('arrayPushItem', () => {
@@ -80,9 +87,24 @@ describe('Immutable', () => {
             expect(result.someArray.length).to.equal(4)
         })
 
+        it('adds a new item to an empty array', () => {
+            original.someArray = []
+            theImmutable = immutable(original)
+            const result = theImmutable.arrayPushItem('someArray', {someItemKey: '4'}).value()
+            expect(result.someArray.length).to.equal(1)
+            expect(result.someArray[0].someItemKey).to.equal('4')
+        })
+
         it('changes the array reference', () => {
             const result = theImmutable.arrayPushItem('someArray', {someItemKey: '4'}).value()
             expect(result.someArray === original.someArray).to.equal.false
+        })
+
+        it('does not change anything if the array does not exist', () => {
+            const result = theImmutable.arrayPushItem('nonExistingArray', {someNewKey: '4'}).value()
+            original.someArray.forEach((item, index) => {
+                expect(item).to.equal(result.someArray[index])
+            })
         })
     })
 
@@ -113,6 +135,13 @@ describe('Immutable', () => {
             const result = theImmutable.arraySetItem('someArray', {someItemKey: '1'}, {someNewKey: 'newValue'}).value()
             expect(result.someArray === original.someArray).to.equal.false
         })
+
+        it('does not change anything if the array does not exist', () => {
+            const result = theImmutable.arraySetItem('nonExistingArray', {someItemKey: '1'}, {someNewKey: 'newValue'}).value()
+            original.someArray.forEach((item, index) => {
+                expect(item).to.equal(result.someArray[index])
+            })
+        })
     })
 
     describe('arraySetOrPushItem', () => {
@@ -142,6 +171,13 @@ describe('Immutable', () => {
         it('changes the array reference', () => {
             const result = theImmutable.arraySetOrPushItem('someArray', {someItemKey: '1'}, {someNewKey: 'newValue'}).value()
             expect(result.someArray === original.someArray).to.equal.false
+        })
+
+        it('does not change anything if the array does not exist', () => {
+            const result = theImmutable.arraySetOrPushItem('nonExistingArray', {someItemKey: '1'}, {someNewKey: 'newValue'}).value()
+            original.someArray.forEach((item, index) => {
+                expect(item).to.equal(result.someArray[index])
+            })
         })
     })
 })

@@ -27,21 +27,30 @@ class Immutable {
 
     arrayMergeItem(path, predicate, updater) {
         const array = _.get(this._object, path)
-        _.set(this._object, path, arraySetOrMergeItem(array, predicate, updater, true))
+
+        if (array) {
+            _.set(this._object, path, arraySetOrMergeItem(array, predicate, updater, true))
+        }
 
         return this
     }
 
     arrayPushItem(path, value) {
         const array = _.get(this._object, path)
-        _.set(this._object, path, [...array, value])
+
+        if (array) {
+            _.set(this._object, path, [...array, value])
+        }
 
         return this
     }
 
     arraySetItem(path, predicate, updater) {
         const array = _.get(this._object, path)
-        _.set(this._object, path, arraySetOrMergeItem(array, predicate, updater, false))
+
+        if (array) {
+            _.set(this._object, path, arraySetOrMergeItem(array, predicate, updater, false))
+        }
 
         return this
     }
@@ -49,10 +58,12 @@ class Immutable {
     arraySetOrPushItem(path, predicate, value) {
         const array = _.get(this._object, path)
 
-        if (_.some(array, predicate))
-            _.set(this._object, path, arraySetOrMergeItem(array, predicate, value, false))
-        else
-            _.set(this._object, path, [...array, value])
+        if (array) {
+            if (_.some(array, predicate))
+                _.set(this._object, path, arraySetOrMergeItem(array, predicate, value, false))
+            else
+                _.set(this._object, path, [...array, value])
+        }
 
         return this
     }
