@@ -80,7 +80,7 @@ function createComment(user, thingId, commentText) {
         })
 }
 
-function dismissComments(user, thingId) {
+function discardComments(user, thingId) {
     return Event.markUserThingEventsAsRead(thingId, user.id)
         .catch(error => {
             // logger.error(`Could not dismiss comments unread by user ${user.email} for thing ${thingId}`, error)
@@ -121,7 +121,7 @@ module.exports = {
     doThing,
     markThingAsDone,
     createComment,
-    dismissComments,
+    discardComments,
     markCommentAsRead,
     closeThing
 }

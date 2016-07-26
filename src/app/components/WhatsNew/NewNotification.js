@@ -7,7 +7,7 @@ const Action = require('../Messages/Action')
 
 const DoThingActions = require('../../actions/do-thing-actions')
 const CloseThingActions = require('../../actions/close-thing-actions')
-const DismissCommentsActions = require('../../actions/dismiss-comments-actions')
+const DiscardCommentsActions = require('../../actions/discard-comments-actions')
 const EventTypes = require('../../../common/enums/event-types')
 
 class NewNotification extends Component {
@@ -15,7 +15,7 @@ class NewNotification extends Component {
         super(props)
         this.doThing = this.doThing.bind(this)
         this.closeThing = this.closeThing.bind(this)
-        this.dismissComments = this.dismissComments.bind(this)
+        this.discardComments = this.discardComments.bind(this)
         this.doActionEnabled = this.doActionEnabled.bind(this)
     }
 
@@ -29,9 +29,9 @@ class NewNotification extends Component {
         dispatch(CloseThingActions.closeThing(notification))
     }
 
-    dismissComments() {
+    discardComments() {
         const {dispatch, notification, currentUser} = this.props
-        dispatch(DismissCommentsActions.dismissComments(notification, currentUser))
+        dispatch(DiscardCommentsActions.discardComments(notification, currentUser))
     }
 
     doActionEnabled() {
@@ -61,7 +61,7 @@ class NewNotification extends Component {
             actions.push(<Action label="Do" doFunc={this.doThing} key="action-Do" />)
         }
         if (this.dismissCommentsEnabled()) {
-            actions.push(<Action label="Dismiss" doFunc={this.dismissComments} key="action-Dismiss" />)
+            actions.push(<Action label="Discard" doFunc={this.discardComments} key="action-Discard" />)
         }
         if (this.closeActionEnabled()) {
             actions.push(<Action label="Close" doFunc={this.closeThing} key="action-Close" />)

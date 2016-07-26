@@ -83,11 +83,11 @@ router.post('/:thingId/comments', function(request, response) {
         .catch(error => response.status(500).send(`Could not comment on thing ${thingId}: ${error.message}`))
 })
 
-router.post('/:thingId/dismisscomments', function(request, response) {
+router.post('/:thingId/discardcomments', function(request, response) {
     const user = request.user
     const {thingId} = request.params
 
-    ThingsService.dismissComments(user, thingId)
+    ThingsService.discardComments(user, thingId)
         .then(() => response.json({}))
         .catch(error => {
             if (error && error.name === 'DocumentNotFoundError') {

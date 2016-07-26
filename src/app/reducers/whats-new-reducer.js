@@ -64,7 +64,7 @@ function closeThing(state, action) {
     }
 }
 
-function dismissComments(state, action) {
+function discardComments(state, action) {
     switch (action.status) {
         case ActionStatus.START:
             // Filter out all COMMENT notifications that belong to the specific Thing.
@@ -107,8 +107,8 @@ module.exports = (state = initialState, action) => {
             return doThing(state, action)
         case WhatsNewActionTypes.CLOSE_THING:
             return closeThing(state, action)
-        case WhatsNewActionTypes.DISMISS_COMMENTS:
-            return dismissComments(state, action)
+        case WhatsNewActionTypes.DISCARD_COMMENTS:
+            return discardComments(state, action)
         case WhatsNewActionTypes.NOTIFICATION_RECEIVED:
             return notificationReceived(state, action)
         case WhatsNewActionTypes.NOTIFICATION_DELETED:
