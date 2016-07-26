@@ -5,25 +5,14 @@ const {includes, sortBy, first, last} = require('lodash')
 const MessageRow = require('../Messages/MessageRow')
 
 class ThingRow extends Component {
-    constructor(props) {
-        super(props)
-        this.completeThing = this.completeThing.bind(this)
-    }
-
     getUnreadComments() {
         const {thing} = this.props
-
         return sortBy(thing.comments.filter(comment => !comment.payload.isRead), 'createdAt')
     }
 
     getReadComments() {
         const {thing} = this.props
-
         return sortBy(thing.comments.filter(comment => comment.payload.isRead), 'createdAt')
-    }
-
-    completeThing() {
-        this.props.markThingAsDone(this.props.thing)
     }
 
     getMessagePreview() {const {thing} = this.props

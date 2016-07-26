@@ -21,7 +21,7 @@ class Task extends Component {
         this.close = this.close.bind(this)
         this.doTask = this.doTask.bind(this)
         this.closeThing = this.closeThing.bind(this)
-        this.completeTask = this.completeTask.bind(this)
+        this.markThingAsDone = this.markThingAsDone.bind(this)
     }
 
     componentWillMount() {
@@ -57,7 +57,7 @@ class Task extends Component {
 
         if (task.payload.status === TaskStatus.NEW.key && !!notification && this.isCurrentUserTheTo()) {
             actions.push(
-                <div className="task-action" key="action-do">
+                <div className="task-action" key="action-Do">
                     <button type="text" onClick={this.doTask}>Do</button>
                 </div>
             )
@@ -65,15 +65,15 @@ class Task extends Component {
 
         if (task.payload.status === TaskStatus.INPROGRESS.key && this.isCurrentUserTheTo()) {
             actions.push(
-                <div className="task-action" key="action-complete">
-                    <button type="text" onClick={this.completeTask}>Done</button>
+                <div className="task-action" key="action-Done">
+                    <button type="text" onClick={this.markThingAsDone}>Done</button>
                 </div>
             )
         }
 
         if (task.payload.status == TaskStatus.DONE.key && this.isCurrentUserTheCreator()) {
             actions.push(
-                <div className="task-action" key="action-close">
+                <div className="task-action" key="action-Close">
                     <button type="text" onClick={this.closeThing}>Close</button>
                 </div>)
         }
@@ -86,7 +86,7 @@ class Task extends Component {
         dispatch(DoThingActions.doThing(notification))
     }
 
-    completeTask() {
+    markThingAsDone() {
         const {dispatch, task} = this.props
         dispatch(MarkThingDoneActions.markThingAsDone(task))
     }

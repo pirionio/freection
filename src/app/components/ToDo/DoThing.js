@@ -10,17 +10,17 @@ const MarkThingDoneActions = require('../../actions/mark-thing-done-actions')
 class DoThing extends Component {
     constructor(props) {
         super(props)
-        this.completeThing = this.completeThing.bind(this)
+        this.markThingAsDone = this.markThingAsDone.bind(this)
     }
 
-    completeThing() {
+    markThingAsDone() {
         const {thing, dispatch} = this.props
         dispatch(MarkThingDoneActions.markThingAsDone(thing))
     }
 
     getActions() {
         return [
-            <Action label="Done" doFunc={this.completeThing} key="action-Done" />
+            <Action label="Done" doFunc={this.markThingAsDone} key="action-Done" />
         ]
     }
 
