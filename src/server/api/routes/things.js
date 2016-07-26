@@ -93,7 +93,7 @@ router.post('/:thingId/discardcomments', function(request, response) {
             if (error && error.name === 'DocumentNotFoundError') {
                 response.status(404).send(`Could not find Thing with ID ${thingId}`)
             } else {
-                response.status(500).send(`Could not dismiss comments unread by user ${user.email} for thing ${thingId}: ${error.message}`)
+                response.status(500).send(`Could not discard comments unread by user ${user.email} for thing ${thingId}: ${error.message}`)
             }
         })
 })

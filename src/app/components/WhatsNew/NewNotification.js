@@ -42,7 +42,7 @@ class NewNotification extends Component {
         return this.props.notification.eventType.key === EventTypes.DONE.key
     }
     
-    dismissCommentsEnabled() {
+    discardCommentsEnabled() {
         return this.props.notification.eventType.key === EventTypes.COMMENT.key
     }
 
@@ -60,7 +60,7 @@ class NewNotification extends Component {
         if (this.doActionEnabled()) {
             actions.push(<Action label="Do" doFunc={this.doThing} key="action-Do" />)
         }
-        if (this.dismissCommentsEnabled()) {
+        if (this.discardCommentsEnabled()) {
             actions.push(<Action label="Discard" doFunc={this.discardComments} key="action-Discard" />)
         }
         if (this.closeActionEnabled()) {

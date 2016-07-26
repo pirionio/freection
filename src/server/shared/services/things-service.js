@@ -83,7 +83,7 @@ function createComment(user, thingId, commentText) {
 function discardComments(user, thingId) {
     return Event.markUserThingEventsAsRead(thingId, user.id)
         .catch(error => {
-            // logger.error(`Could not dismiss comments unread by user ${user.email} for thing ${thingId}`, error)
+            logger.error(`Could not discard comments unread by user ${user.email} for thing ${thingId}`, error)
             throw error
         })
 }
