@@ -95,6 +95,17 @@ function markThingAsDone(user, thingId) {
         })
 }
 
+function pingThing(user, thingId) {
+    return Thing.get(thingId).run()
+        .then(thing => EventsService.userPingedThing(user, thing))
+        .then(event => Event.getFullEvent(event.id))
+        .then(event => eventToDto(event, user, {includeThing: false}))
+        .catch(error => {
+            logger.error(`Error while pinging thing ${thingId} by user ${user.email}`, error)
+            throw error
+        })
+}
+
 function createComment(user, thingId, commentText) {
     return Thing.get(thingId).run()
         .then(thing => EventsService.userCreatedComment(user, thing, commentText))
@@ -163,5 +174,6 @@ module.exports = {
     discardComments,
     markCommentAsRead,
     closeThing,
-    abortThing
+    abortThing,
+    pingThing
 }

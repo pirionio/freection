@@ -4,7 +4,11 @@ const {connect} = require('react-redux')
 const {withRouter} = require('react-router')
 const DocumentTitle = require('react-document-title')
 const dateFns = require('date-fns')
-const {isEmpty, find} = require('lodash/core')
+
+const isEmpty = require('lodash/isEmpty')
+const find = require('lodash/find')
+const includes = require('lodash/includes')
+
 
 const CommentList = require('../Comment/CommentList')
 const Action = require('../Messages/Action')
@@ -15,6 +19,7 @@ const DismissThingActions = require('../../actions/dismiss-thing-actions')
 const MarkThingDoneActions = require('../../actions/mark-thing-done-actions')
 const CloseThingActions = require('../../actions/close-thing-actions')
 const AbortThingActions = require('../../actions/abort-thing-actions')
+const PingThingActions = require('../../actions/ping-thing-actions')
 
 const TaskStatus = require('../../../common/enums/task-status')
 const EventTypes = require('../../../common/enums/event-types')
@@ -28,6 +33,7 @@ class Task extends Component {
         this.closeThing = this.closeThing.bind(this)
         this.abortThing = this.abortThing.bind(this)
         this.markThingAsDone = this.markThingAsDone.bind(this)
+        this.pingThing = this.pingThing.bind(this)
     }
 
     componentWillMount() {
@@ -80,7 +86,7 @@ class Task extends Component {
             )
         }
 
-        if (task.payload.status == TaskStatus.DONE.key && this.isCurrentUserTheCreator()) {
+        if (task.payload.status === TaskStatus.DONE.key && this.isCurrentUserTheCreator()) {
             actions.push(
                 <Action label="Close" doFunc={this.closeThing} key="action-Close" />
             )
@@ -90,6 +96,12 @@ class Task extends Component {
             task.payload.status == TaskStatus.NEW.key) && this.isCurrentUserTheCreator()) {
             actions.push(
                 <Action label="Abort" doFunc={this.abortThing} key="action-Abort" />
+            )
+        }
+
+        if (task.payload.status === TaskStatus.INPROGRESS.key && this.isCurrentUserTheCreator()) {
+            actions.push(
+                <Action label="Ping" doFunc={this.pingThing} key="action-Ping" />
             )
         }
 
@@ -121,6 +133,11 @@ class Task extends Component {
         dispatch(AbortThingActions.abortThing(task))
     }
 
+    pingThing() {
+        const {dispatch, task} = this.props
+        dispatch(PingThingActions.pingThing(task))
+    }
+
     isCurrentUserTheCreator() {
         return this.props.currentUser.id === this.props.task.creator.id
     }
@@ -142,12 +159,16 @@ class Task extends Component {
 
     getAllComments() {
         const {task} = this.props
-        return task.events ? task.events.filter(comment => comment.eventType.key === EventTypes.COMMENT.key) : []
+        return task.events ?
+            task.events.filter(event => includes([EventTypes.COMMENT.key, EventTypes.PING.key], event.eventType.key)) :
+            []
     }
 
     getUnreadComments() {
         const {task} = this.props
-        return task.events ? task.events.filter(comment => !comment.payload.isRead && comment.eventType.key === EventTypes.COMMENT.key) : []
+        return task.events ?
+            task.events.filter(event => includes([EventTypes.COMMENT.key, EventTypes.PING.key], event.eventType.key) && !event.payload.isRead) :
+            []
     }
 
     render() {

@@ -95,6 +95,21 @@ router.post('/:thingId/abort', function(request, response) {
         })
 })
 
+router.post('/:thingId/ping', function(request, response) {
+    const {user} = request
+    const {thingId} = request.params
+
+    ThingsService.pingThing(user, thingId)
+        .then(pingEvent => response.json(pingEvent))
+        .catch(error => {
+            if (error && error.name === 'DocumentNotFoundError') {
+                response.status(404).send(`Could not find thing with ID ${thingId}`)
+            } else {
+                response.status(500).send(`Could not ping thing ${thingId} by user ${user.email} : ${error.message}`)
+            }
+        })
+})
+
 router.get('/followups', function(request, response) {
     const user = request.user
 

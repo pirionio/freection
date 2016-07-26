@@ -16,6 +16,10 @@ function dismissThing(thingId) {
     return ResourceUtil.post(`/api/things/${thingId}/dismiss`)
 }
 
+function pingThing(thingId) {
+    return ResourceUtil.post(`/api/things/${thingId}/ping`)
+}
+
 function closeThing(thingId) {
     return ResourceUtil.post(`/api/things/${thingId}/close`)
 }
@@ -33,4 +37,4 @@ function markCommentAsRead(comment) {
 }
 
 module.exports = {createNewThing, doThing, dismissThing, markThingAsDone, closeThing,
-    createComment, discardComments, markCommentAsRead}
+    pingThing, createComment, discardComments, markCommentAsRead}

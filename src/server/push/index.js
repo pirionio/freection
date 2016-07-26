@@ -61,7 +61,7 @@ module.exports = (app) => {
             io.to(userId).emit('notification-deleted', {id: event.id})
         })
 
-        if (event.eventType === EventTypes.COMMENT.key) {
+        if (event.eventType === EventTypes.COMMENT.key || event.eventType === EventTypes.PING.key) {
             const readByUsers = difference(event.payload.readByList, oldEvent.payload.readByList)
 
             readByUsers.forEach(userId => {

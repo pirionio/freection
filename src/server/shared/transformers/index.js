@@ -24,7 +24,7 @@ function eventToDto(event, user, {includeThing = true} = {}) {
         id: event.id,
         thing: includeThing && event.thing && thingToDto(event.thing, user, {includeEvents: false}),
         createdAt: event.createdAt,
-        payload: event.eventType === EventTypes.COMMENT.key ?
+        payload: event.eventType === EventTypes.COMMENT.key || event.eventType === EventTypes.PING.key ?
             commentPayloadToDto(event.payload, user) : event.payload,
         eventType: EventTypes[event.eventType],
         creator: event.creator && userToDto(event.creator),

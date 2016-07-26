@@ -4,6 +4,7 @@ const {Component, PropTypes} = React
 const sortBy = require('lodash/sortBy')
 const first = require('lodash/first')
 const last = require('lodash/last')
+const includes = require('lodash/includes')
 const chain = require('lodash/core')
 
 const MessageRow = require('../Messages/MessageRow')
@@ -14,7 +15,7 @@ class ThingRow extends Component {
     filterEventsByRead(isRead) {
         const {thing} = this.props
         return chain(thing.events)
-            .filter(comment => comment.payload.isRead === isRead && comment.eventType.key === EventTypes.COMMENT.key)
+            .filter(event => event.payload.isRead === isRead && includes([EventTypes.COMMENT.key, EventTypes.PING.key], event.eventType.key))
             .sortBy('createdAt')
             .value()
     }

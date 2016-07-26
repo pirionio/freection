@@ -32,6 +32,19 @@ function fetchFollowUps(state, action) {
     }
 }
 
+function pingThing(state, action) {
+    switch (action.status) {
+        case ActionStatus.COMPLETE:
+            return immutable(state)
+                .arraySetItem('followUps', {id: action.thing.id}, thing => thingReducer(thing, action))
+                .value()
+        case ActionStatus.START:
+        case ActionStatus.ERROR:
+        default:
+            return state
+    }
+}
+
 function createdReceived(state, action) {
     // TODO Handle FETCHING state by queuing incoming events
     if (state.invalidationStatus !== InvalidationStatus.FETCHED)
@@ -88,6 +101,8 @@ module.exports = (state = initialState, action) => {
     switch (action.type) {
         case FollowUpsActionTypes.FETCH_FOLLOW_UPS:
             return fetchFollowUps(state, action)
+        case ThingActionTypes.PING_THING:
+            return pingThing(state, action)
         case ThingActionTypes.CREATED_RECEIVED:
             return createdReceived(state, action)
         case ThingActionTypes.CLOSED_RECEIVED:

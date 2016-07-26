@@ -78,6 +78,20 @@ function userClosedThing(user, thing) {
     })
 }
 
+function userPingedThing(user, thing) {
+    return Event.save({
+        thingId: thing.id,
+        eventType: EventTypes.PING.key,
+        createdAt: new Date(),
+        creatorUserId: user.id,
+        payload: {
+            text: 'Ping!',
+            readByList: [user.id]
+        },
+        showNewList: [...thing.doers]
+    })
+}
+
 function userAck(event, user) {
     remove(event.showNewList, readerUserId => readerUserId === user.id)
     return event.save()
@@ -90,5 +104,6 @@ module.exports = {
     userClosedThing,
     userAbortedThing,
     userAck,
-    userCreatedComment
+    userCreatedComment,
+    userPingedThing
 }

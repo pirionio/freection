@@ -31,6 +31,9 @@ function listenToUpdates(pushToken, dispatch) {
 
         if (event.eventType.key === EventTypes.ABORTED.key)
             dispatch(ThingActions.thingAbortedReceived(event.thing))
+    
+        if (event.eventType.key === EventTypes.PING.key)
+            dispatch(ThingActions.thingPingReceived(event))
     })
 
     socket.on('notification-deleted', event => {

@@ -49,7 +49,27 @@ function createComment(state, action) {
                     payload: action.comment.payload,
                     creator: action.comment.creator,
                     createdAt: action.comment.createdAt,
-                    eventType: EventTypes.COMMENT
+                    eventType: action.comment.eventType
+                })
+                .value()
+        case ActionStatus.START:
+        case ActionStatus.ERROR:
+        default:
+            return state
+    }
+}
+
+function pingThing(state, action) {
+    switch (action.status) {
+        case ActionStatus.COMPLETE:
+            return immutable(state)
+                .touch('task')
+                .arraySetOrPushItem('task.events', {id: action.pingEvent.id}, {
+                    id: action.pingEvent.id,
+                    payload: action.pingEvent.payload,
+                    creator: action.pingEvent.creator,
+                    createdAt: action.pingEvent.createdAt,
+                    eventType: action.pingEvent.eventType
                 })
                 .value()
         case ActionStatus.START:
@@ -78,8 +98,18 @@ function markCommentAsRead(state, action) {
 }
 
 function commentChangedOrAdded(state, action) {
-    // If no thing is shown right now, or if the action does not carry a comment at all, or if the comment does not belong to the shown thing...
+    // If no thing is shown right now, or if the action does not carry an event at all, or if the event does not belong to the shown thing...
     if (!state.task || !action.comment || !action.comment.thing || state.task.id !== action.comment.thing.id)
+        return state
+
+    return immutable(state)
+        .set('task', thingReducer(state.task, action))
+        .value()
+}
+
+function pingReceived(state, action) {
+    // If no thing is shown right now, or if the action does not carry an event at all, or if the event does not belong to the shown thing...
+    if (!state.task || !action.pingEvent || !action.pingEvent.thing || state.task.id !== action.pingEvent.thing.id)
         return state
 
     return immutable(state)
@@ -143,11 +173,15 @@ module.exports = (state = initialState, action) => {
             return hideFullTask(state, action)
         case ThingActionTypes.CREATE_COMMENT:
             return createComment(state, action)
+        case ThingActionTypes.PING_THING:
+            return pingThing(state, action)
         case ThingActionTypes.MARK_COMMENT_AS_READ:
             return markCommentAsRead(state, action)
         case ThingActionTypes.NEW_COMMENT_RECEIVED:
         case ThingActionTypes.COMMENT_READ_BY_RECEIVED:
             return commentChangedOrAdded(state, action)
+        case ThingActionTypes.PING_RECEIVED:
+            return pingReceived(state, action)
         case ThingActionTypes.ACCEPTED_RECEIVED:
         case ThingActionTypes.DONE_RECEIVED:
         case ThingActionTypes.CLOSED_RECEIVED:

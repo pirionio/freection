@@ -26,6 +26,9 @@ module.exports = {
     ABORTED: {
         key: 'ABORTED',
         label: 'Aborted'
+    },
+    PING: {
+        key: 'PING',
+        label: 'Ping'
     }
-
 }

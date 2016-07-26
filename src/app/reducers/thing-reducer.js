@@ -1,16 +1,21 @@
 const ThingActionTypes = require('../actions/types/thing-action-types')
-const TaskStatus = require('../../common/enums/task-status')
 const immutable = require('../util/immutable')
 
 function newCommentReceived(state, action) {
     return immutable(state)
-        .arraySetOrPushItem('events', comment => comment.id === action.comment.id, action.comment)
+        .arraySetOrPushItem('events', event => event.id === action.comment.id, action.comment)
+        .value()
+}
+
+function pingReceived(state, action) {
+    return immutable(state)
+        .arraySetOrPushItem('events', event => event.id === action.pingEvent.id, action.pingEvent)
         .value()
 }
 
 function commentReadyByReceived(state, action) {
     return immutable(state)
-        .arrayMergeItem('events', comment => comment.id === action.comment.id, {
+        .arrayMergeItem('events', event => event.id === action.comment.id, {
             payload: {
                 isRead: true
             }
@@ -31,6 +36,9 @@ module.exports = (state, action) => {
             return newCommentReceived(state, action)
         case ThingActionTypes.COMMENT_READ_BY_RECEIVED:
             return commentReadyByReceived(state, action)
+        case ThingActionTypes.PING_THING:
+        case ThingActionTypes.PING_RECEIVED:
+            return pingReceived(state, action)
         case ThingActionTypes.ACCEPTED_RECEIVED:
         case ThingActionTypes.DONE_RECEIVED:
         case ThingActionTypes.CLOSED_RECEIVED:

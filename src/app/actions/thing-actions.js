@@ -110,6 +110,13 @@ const thingDimissedReceived = (thing) => {
     }
 }
 
+const thingPingReceived = (pingEvent) => {
+    return {
+        type: ThingActionTypes.PING_RECEIVED,
+        pingEvent
+    }
+}
+
 module.exports = {createNewThing, createComment, newCommentReceived,
     thingCreatedReceived, thingAcceptedReceived, thingDoneReceived, thingClosedReceived,
-    commentReadByReceived, thingDimissedReceived, thingAbortedReceived}
+    commentReadByReceived, thingDimissedReceived, thingAbortedReceived, thingPingReceived}

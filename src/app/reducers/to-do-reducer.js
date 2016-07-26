@@ -96,6 +96,16 @@ function abortedReceived(state, action) {
         .value()
 }
 
+function pingReceived(state, action) {
+    // TODO Handle FETCHING state by queuing incoming events
+    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
+        return state
+
+    return immutable(state)
+        .arraySetItem('things', {id: action.pingEvent.thing.id}, item => thingReducer(item, action))
+        .value()
+}
+
 module.exports = (state = initialState, action) => {
     switch (action.type) {
         case ToDoActionTypes.FETCH_TO_DO:
@@ -113,6 +123,8 @@ module.exports = (state = initialState, action) => {
             return commentChangedOrAdded(state, action)
         case ThingActionTypes.ABORTED_RECEIVED:
             return abortedReceived(state, action)
+        case ThingActionTypes.PING_RECEIVED:
+            return pingReceived(state, action)
         default:
             return state
     }

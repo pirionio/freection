@@ -3,13 +3,32 @@ const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 
 const ThingRow = require('../Messages/ThingRow')
+const Action = require('../Messages/Action')
+
+const PingThingActions = require('../../actions/ping-thing-actions')
 
 class FollowUpThing extends Component {
+    constructor(props) {
+        super(props)
+        this.pingThing = this.pingThing.bind(this)
+    }
+
+    pingThing() {
+        const {thing, dispatch} = this.props
+        dispatch(PingThingActions.pingThing(thing))
+    }
+
+    getActions() {
+        return [
+            <Action label="Ping" doFunc={this.pingThing} key="action-Ping" />
+        ]
+    }
+
     render () {
         return (
             <ThingRow thing={this.props.thing}
                       currentUser={this.props.currentUser}
-                      actions={[]}
+                      actions={this.getActions()}
                       context="/followup" />
         )
     }
@@ -20,7 +39,7 @@ FollowUpThing.propTypes = {
     currentUser: PropTypes.object.isRequired
 }
 
-const mapStateToProps = (state) => {
+function mapStateToProps(state) {
     return {
         currentUser: state.auth
     }
