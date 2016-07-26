@@ -4,13 +4,13 @@ const immutable = require('../util/immutable')
 
 function newCommentReceived(state, action) {
     return immutable(state)
-        .arraySetOrPushItem('comments', comment => comment.id === action.comment.id, action.comment)
+        .arraySetOrPushItem('events', comment => comment.id === action.comment.id, action.comment)
         .value()
 }
 
 function commentReadyByReceived(state, action) {
     return immutable(state)
-        .arrayMergeItem('comments', comment => comment.id === action.comment.id, {
+        .arrayMergeItem('events', comment => comment.id === action.comment.id, {
             payload: {
                 isRead: true
             }

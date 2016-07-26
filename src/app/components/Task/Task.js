@@ -17,6 +17,7 @@ const CloseThingActions = require('../../actions/close-thing-actions')
 const AbortThingActions = require('../../actions/abort-thing-actions')
 
 const TaskStatus = require('../../../common/enums/task-status')
+const EventTypes = require('../../../common/enums/event-types')
 
 class Task extends Component {
     constructor(props) {
@@ -131,7 +132,7 @@ class Task extends Component {
     getTitle() {
         const {task} = this.props
 
-        const unreadComments = task.comments.filter(comment => !comment.payload.isRead)
+        const unreadComments = this.getUnreadComments()
 
         if (unreadComments.length > 0)
             return `(${unreadComments.length}) ${task.subject} - Freection`
@@ -139,9 +140,19 @@ class Task extends Component {
             return `${task.subject} - Freection`
     }
 
+    getAllComments() {
+        const {task} = this.props
+        return task.events ? task.events.filter(comment => comment.eventType.key === EventTypes.COMMENT.key) : []
+    }
+
+    getUnreadComments() {
+        const {task} = this.props
+        return task.events ? task.events.filter(comment => !comment.payload.isRead && comment.eventType.key === EventTypes.COMMENT.key) : []
+    }
+
     render() {
         const {task, isFetching} = this.props
-        const comments = task.comments
+        const comments = this.getAllComments()
         const createdAt = dateFns.format(task.createdAt, 'DD-MM-YYYY HH:mm')
 
         if (isFetching) {

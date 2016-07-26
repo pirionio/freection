@@ -10,8 +10,10 @@ class CommentList extends Component {
         const {comments} = this.props
 
         const firstUnreadMessage = chain(comments)
-            .sortBy(comment => comment.createdAt)
-            .filter(comment => !comment.payload.isRead).head().value()
+            .sortBy('createdAt')
+            .filter({isRead: false})
+            .head()
+            .value()
 
         if (firstUnreadMessage) {
             this._scrollable.scrollTo(firstUnreadMessage.id)

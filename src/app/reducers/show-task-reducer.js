@@ -3,6 +3,7 @@ const ThingActionTypes = require('../actions/types/thing-action-types')
 const WhatsNewActionTypes = require('../actions/types/whats-new-action-types')
 const ToDoActionTypes = require('../actions/types/to-do-action-types.js');
 const TaskStatus = require('../../common/enums/task-status.js');
+const EventTypes = require('../../common/enums/event-types');
 const {ActionStatus} = require('../constants')
 const thingReducer = require('./thing-reducer')
 
@@ -43,11 +44,12 @@ function createComment(state, action) {
         case ActionStatus.COMPLETE:
             return immutable(state)
                 .touch('task')
-                .arraySetOrPushItem('task.comments', {id: action.comment.id}, {
+                .arraySetOrPushItem('task.events', {id: action.comment.id}, {
                     id: action.comment.id,
                     payload: action.comment.payload,
                     creator: action.comment.creator,
-                    createdAt: action.comment.createdAt
+                    createdAt: action.comment.createdAt,
+                    eventType: EventTypes.COMMENT
                 })
                 .value()
         case ActionStatus.START:
@@ -62,7 +64,7 @@ function markCommentAsRead(state, action) {
         case ActionStatus.COMPLETE:
             return immutable(state)
                 .touch('task')
-                .arrayMergeItem('task.comments', {id: action.comment.id}, {
+                .arrayMergeItem('task.events', {id: action.comment.id}, {
                     payload: {
                         isRead: true
                     }

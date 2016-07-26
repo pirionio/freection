@@ -1,32 +1,36 @@
 const React = require('react')
 const {Component, PropTypes} = React
-const {includes, sortBy, first, last} = require('lodash')
+
+const sortBy = require('lodash/sortBy')
+const first = require('lodash/first')
+const last = require('lodash/last')
+const chain = require('lodash/core')
 
 const MessageRow = require('../Messages/MessageRow')
 
-class ThingRow extends Component {
-    getUnreadComments() {
-        const {thing} = this.props
-        return sortBy(thing.comments.filter(comment => !comment.payload.isRead), 'createdAt')
-    }
+const EventTypes = require('../../../common/enums/event-types')
 
-    getReadComments() {
+class ThingRow extends Component {
+    filterEventsByRead(isRead) {
         const {thing} = this.props
-        return sortBy(thing.comments.filter(comment => comment.payload.isRead), 'createdAt')
+        return chain(thing.events)
+            .filter(comment => comment.payload.isRead === isRead && comment.eventType.key === EventTypes.COMMENT.key)
+            .sortBy('createdAt')
+            .value()
     }
 
     getMessagePreview() {const {thing} = this.props
-        const unreadComments = this.getUnreadComments()
-        const readComments = this.getReadComments()
+        const unreadEvents = this.filterEventsByRead(false)
+        const readEvents = this.filterEventsByRead(true)
 
-        // If there are unread comments, show the first of them.
-        if (unreadComments && unreadComments.length) {
-            return first(unreadComments).payload.text
+        // If there are unread events, show the first of them.
+        if (unreadEvents && unreadEvents.length) {
+            return first(unreadEvents).payload.text
         }
 
-        // If there are only read comments, show the last of them.
-        if (readComments && readComments.length) {
-            return last(readComments).payload.text
+        // If there are only read events, show the last of them.
+        if (readEvents && readEvents.length) {
+            return last(readEvents).payload.text
         }
 
         return thing.body
@@ -34,7 +38,7 @@ class ThingRow extends Component {
 
     getThingViewModel() {
         const {thing} = this.props
-        const unreadComments = this.getUnreadComments()
+        const unreadComments = this.filterEventsByRead(false)
 
         return Object.assign({}, thing, {
             entityId: thing.id,
