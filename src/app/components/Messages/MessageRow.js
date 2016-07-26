@@ -18,7 +18,9 @@ class MessageRow extends Component {
 
     getReferencedUser() {
         const {message, currentUser} = this.props
-        return currentUser.id === message.creator.id ? message.to.email : message.creator.email
+        return !message.to ?
+            message.creator.email :
+            currentUser.id === message.creator.id ? message.to.email : message.creator.email
     }
 
     render () {
