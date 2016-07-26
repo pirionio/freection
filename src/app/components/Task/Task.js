@@ -52,11 +52,11 @@ class Task extends Component {
     }
 
     getActions() {
-        const {task, notification} = this.props
+        const {task} = this.props
 
         let actions = []
 
-        if (task.payload.status === TaskStatus.NEW.key && !!notification && this.isCurrentUserTheTo()) {
+        if (task.payload.status === TaskStatus.NEW.key && this.isCurrentUserTheTo()) {
             actions.push(
                 <Action label="Do" doFunc={this.doTask} key="action-Do" />
             )
@@ -78,8 +78,8 @@ class Task extends Component {
     }
 
     doTask() {
-        const {dispatch, notification} = this.props
-        dispatch(DoThingActions.doThing(notification))
+        const {dispatch, task} = this.props
+        dispatch(DoThingActions.doThing(task))
     }
 
     markThingAsDone() {
@@ -88,8 +88,8 @@ class Task extends Component {
     }
 
     closeThing() {
-        const {dispatch, notification} = this.props
-        dispatch(CloseThingActions.closeThing(notification))
+        const {dispatch, task} = this.props
+        dispatch(CloseThingActions.closeThing(task))
     }
 
     isCurrentUserTheCreator() {
@@ -185,17 +185,14 @@ class Task extends Component {
 Task.propTypes = {
     task: PropTypes.object.isRequired,
     isFetching: PropTypes.bool.isRequired,
-    currentUser: PropTypes.object.isRequired,
-    notification: PropTypes.object
+    currentUser: PropTypes.object.isRequired
 }
 
-function mapStateToProps(state, props) {
+function mapStateToProps(state) {
     return {
         task: state.showTask.task,
         isFetching: state.showTask.isFetching,
-        currentUser: state.auth,
-        notification: props.location.query.messageId ?
-            find(state.whatsNew.notifications, {id: props.location.query.messageId}) : {}
+        currentUser: state.auth
     }
 }
 

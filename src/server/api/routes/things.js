@@ -19,11 +19,11 @@ router.get('/do', function(request, response) {
         .catch(error => response.status(500).send(`Could not fetch To Do for user ${user.email}: ${error.message}`))
 })
 
-router.post('/do', function(request, response) {
+router.post('/:thingId/do', function(request, response) {
     const user = request.user
-    const {thingId, eventId} = request.body
+    const {thingId} = request.params
 
-    ThingsService.doThing(user, thingId, eventId)
+    ThingsService.doThing(user, thingId)
         .then(() => response.json({}))
         .catch(error => {
             if (error && error.name === 'DocumentNotFoundError') {
@@ -50,11 +50,11 @@ router.post('/:thingId/done', function(request, response) {
     )
 })
 
-router.post('/close', function(request, response) {
+router.post('/:thingId/close', function(request, response) {
     const {user} = request
-    const {thingId, eventId} = request.body
+    const {thingId} = request.params
 
-    ThingsService.closeThing(user, thingId, eventId)
+    ThingsService.closeThing(user, thingId)
         .then(() => response.json({}))
         .catch(error => {
             if (error && error.name === 'DocumentNotFoundError') {

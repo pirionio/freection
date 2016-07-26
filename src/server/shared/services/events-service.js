@@ -15,7 +15,7 @@ function userAcceptedThing(user, thing) {
 }
 
 function userMarkedThingAsDone(user, thing) {
-    return Event.markAllThingEventsAsRead(thing.id).then(() => {
+    return Event.discardAllUserEvents(thing.id, user.id).then(() => {
         return Event.save({
             thingId: thing.id,
             eventType: EventTypes.DONE.key,

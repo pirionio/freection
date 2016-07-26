@@ -2,36 +2,36 @@ const WhatsNewActionTypes = require('./types/whats-new-action-types')
 const ThingService = require('../services/thing-service')
 const {ActionStatus} = require('../constants')
 
-function closeThingRequest(notification) {
+function closeThingRequest(thing) {
     return {
         type: WhatsNewActionTypes.CLOSE_THING,
         status: ActionStatus.START,
-        notification
+        thing
     }
 }
 
-function closeThingComplete(notification) {
+function closeThingComplete(thing) {
     return {
         type: WhatsNewActionTypes.CLOSE_THING,
         status: ActionStatus.COMPLETE,
-        notification
+        thing
     }
 }
 
-function closeThingFailed(notification) {
+function closeThingFailed(thing) {
     return {
         type: WhatsNewActionTypes.CLOSE_THING,
         status: ActionStatus.ERROR,
-        notification
+        thing
     }
 }
 
-const closeThing = (notification) => {
+const closeThing = (thing) => {
     return dispatch => {
-        dispatch(closeThingRequest(notification))
-        ThingService.closeThing(notification.thing.id, notification.id).
-            then(() => dispatch(closeThingComplete(notification))).
-            catch(() => dispatch(closeThingFailed(notification))
+        dispatch(closeThingRequest(thing))
+        ThingService.closeThing(thing.id).
+            then(() => dispatch(closeThingComplete(thing))).
+            catch(() => dispatch(closeThingFailed(thing))
         )
     }
 }

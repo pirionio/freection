@@ -12,6 +12,11 @@ class MessagesContainer extends Component {
         this.shouldScrollBottom = (node.scrollTop + node.offsetHeight) === node.scrollHeight
     }
 
+    componentWillReceiveProps() {
+        // Will fetch messages only if needed
+        this.props.fetchMessages()
+    }
+
     componentDidUpdate () {
         if (this.shouldScrollBottom) {
             let node = ReactDOM.findDOMNode(this)

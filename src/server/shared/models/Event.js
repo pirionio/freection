@@ -15,7 +15,9 @@ const Event = thinky.createModel('Event', {
 })
 
 Event.ensureIndex('thingId', {multi: true})
-Event.ensureIndex('eventType', {multi: true})
+Event.ensureIndex('thingIdEventType', function(doc) {
+    return [doc('thingId'), doc('eventType')]
+})
 
 Event.ensureIndex('whatsnew', function(doc) {
     return doc('showNewList')
@@ -41,18 +43,22 @@ Event.defineStatic('getWhatsNew', function(userId) {
         run()
     })
 
-Event.defineStatic('markAllThingEventsAsRead', function(thingId) {
-    return this.getAll(thingId, {index: 'thingId'}).update({showNewList: []}).run()
-    })
+Event.defineStatic('discardAllUserEvents', function (thingId, userId) {
+    return this.getAll(thingId, {index: 'thingId'})
+        .update(event => {
+            return {
+                showNewList: event("showNewList").filter(readerUserId => readerUserId.ne(userId))
+            }
+        }).run()
+})
 
-Event.defineStatic('markUserThingEventsAsRead', function(thingId, userId) {
-    return this.filter(event =>
-        event('showNewList').contains(userId) && event('thingId').eq(thingId) && event('eventType').eq(EventTypes.COMMENT.key)
-    ).update(event => {
-        return {
-            showNewList: event("showNewList").filter(readerUserId => readerUserId.ne(userId))
-        }
-    }).run()
+Event.defineStatic('discardUserEventByType', function (thingId, eventType, userId) {
+    return this.getAll([thingId, eventType], {index: 'thingIdEventType'})
+        .update(event => {
+            return {
+                showNewList: event("showNewList").filter(readerUserId => readerUserId.ne(userId))
+            }
+        }).run()
 })
 
 Event.defineStatic('markUserCommentAsRead', function(eventId, userId) {

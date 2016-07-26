@@ -12,7 +12,7 @@ class MessageRow extends Component {
     showThing() {
         this.props.router.push({
             pathname: `/tasks/${this.props.message.entityId}`,
-            query: {from: this.props.context, messageId: this.props.message.id}
+            query: {from: this.props.context}
         })
     }
 

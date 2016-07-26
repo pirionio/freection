@@ -8,18 +8,12 @@ function createComment(thingId, commentText) {
     return ResourceUtil.post(`/api/things/${thingId}/comments`, {commentText})
 }
 
-function doThing(thingId, eventId) {
-    return ResourceUtil.post('/api/things/do', {
-        thingId,
-        eventId
-    })
+function doThing(thingId) {
+    return ResourceUtil.post(`/api/things/${thingId}/do`)
 }
 
-function closeThing(thingId, eventId) {
-    return ResourceUtil.post('/api/things/close', {
-        thingId,
-        eventId
-    })
+function closeThing(thingId) {
+    return ResourceUtil.post(`/api/things/${thingId}/close`)
 }
 
 function markThingAsDone(thing) {

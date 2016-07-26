@@ -1,4 +1,5 @@
 const WhatsNewActionTypes = require('../actions/types/whats-new-action-types')
+const ToDoActionTypes = require('../actions/types/to-do-action-types')
 const {ActionStatus} = require('../constants')
 const EventTypes = require('../../common/enums/event-types')
 const {InvalidationStatus} = require('../constants')
@@ -34,12 +35,32 @@ function doThing(state, action) {
     switch (action.status) {
         case ActionStatus.START:
             return immutable(state)
-                .arrayReject('notifications', {id: action.notification.id})
+                .arrayReject('notifications', notification => notification.thing.id === action.thing.id &&
+                    notification.eventType.key === EventTypes.CREATED.key)
                 .value()
         case ActionStatus.ERROR:
-            // If there was an error, since we already removed the notification from the state, we now want to re-add it.
+            // If there was an error, invalidated entire page so component will re-fetch
             return immutable(state)
-                .arrayPushItem('notifications', action.notification)
+                .set('invalidationStatus', InvalidationStatus.INVALIDATED)
+                .set('notifications', [])
+                .value()
+        case ActionStatus.COMPLETE:
+        default:
+            return state
+    }
+}
+
+function markThingAsDone(state, action) {
+    switch (action.status) {
+        case ActionStatus.START:
+            return immutable(state)
+                .arrayReject('notifications', notification => notification.thing.id === action.thing.id)
+                .value()
+        case ActionStatus.ERROR:
+            // If there was an error, invalidated entire page so component will re-fetch
+            return immutable(state)
+                .set('invalidationStatus', InvalidationStatus.INVALIDATED)
+                .set('notifications', [])
                 .value()
         case ActionStatus.COMPLETE:
         default:
@@ -51,12 +72,13 @@ function closeThing(state, action) {
     switch (action.status) {
         case ActionStatus.START:
             return immutable(state)
-                .arrayReject('notifications', notification => notification.id === action.notification.id)
+                .arrayReject('notifications', notification => notification.thing.id === action.thing.id)
                 .value()
         case ActionStatus.ERROR:
-            // If there was an error, since we already removed the notification from the state, we now want to re-add it.
+            // If there was an error, invalidated entire page so component will re-fetch
             return immutable(state)
-                .arrayPushItem('notifications', action.notification)
+                .set('invalidationStatus', InvalidationStatus.INVALIDATED)
+                .set('notifications', [])
                 .value()
         case ActionStatus.COMPLETE:
         default:
@@ -105,6 +127,8 @@ module.exports = (state = initialState, action) => {
             return fetchWhatsNew(state, action)
         case WhatsNewActionTypes.DO_THING:
             return doThing(state, action)
+        case ToDoActionTypes.MARK_THING_AS_DONE:
+            return markThingAsDone(state, action)
         case WhatsNewActionTypes.CLOSE_THING:
             return closeThing(state, action)
         case WhatsNewActionTypes.DISCARD_COMMENTS:

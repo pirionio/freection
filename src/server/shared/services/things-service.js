@@ -4,7 +4,9 @@ const {Event, Thing} = require('../models')
 const EventsService = require('./events-service')
 const {eventToDto, thingToDto} = require('../transformers')
 const TaskStatus = require('../../../common/enums/task-status')
+const EventTypes = require('../../../common/enums/event-types')
 const logger = require('../utils/logger')
+
 
 function getWhatsNew(user) {
     return Event.getWhatsNew(user.id)
@@ -33,17 +35,30 @@ function getFollowUps(user) {
         })
 }
 
-function doThing(user, thingId, eventId) {
+function doThing(user, thingId) {
     return Thing.get(thingId).run()
         .then(thing => performDoThing(thing, user))
         .then(thing => EventsService.userAcceptedThing(user, thing))
-        .then(() => Event.get(eventId).run())
-        .then(event => EventsService.userAck(event, user))
+        .then(() => Event.discardUserEventByType(thingId, EventTypes.CREATED.key, user.id))
         .catch((error) => {
             logger.error(`error while setting user ${user.email} as doer of thing ${thingId}: ${error}`)
             throw error
         }
     )
+}
+
+function closeThing(user, thingId) {
+    // TODO: check if the if the status is done
+
+    return Thing.get(thingId).run()
+        .then(thing => performCloseThing(thing, user))
+        .then(thing => EventsService.userClosedThing(user, thing))
+        .then(() => Event.discardAllUserEvents(thingId, user.id))
+        .catch((error) => {
+                logger.error(`error while closing thing ${thingId} by user ${user.email}: ${error}`)
+                throw error
+            }
+        )
 }
 
 function markThingAsDone(user, thingId) {
@@ -54,19 +69,6 @@ function markThingAsDone(user, thingId) {
             logger.error(`Error while marking thing ${thingId} as done by user ${user.email}:`, error)
             throw error
         })
-}
-
-function closeThing(user, thingId, eventId) {
-    return Thing.get(thingId).run()
-        .then(thing => performCloseThing(thing, user))
-        .then(thing => EventsService.userClosedThing(user, thing))
-        .then(() => Event.get(eventId).run())
-        .then(event => EventsService.userAck(event, user))
-        .catch((error) => {
-                logger.error(`error while closing thing ${thingId} by user ${user.email}: ${error}`)
-                throw error
-            }
-        )
 }
 
 function createComment(user, thingId, commentText) {
@@ -81,7 +83,7 @@ function createComment(user, thingId, commentText) {
 }
 
 function discardComments(user, thingId) {
-    return Event.markUserThingEventsAsRead(thingId, user.id)
+    return Event.discardUserEventByType(thingId, EventTypes.COMMENT.key, user.id)
         .catch(error => {
             logger.error(`Could not discard comments unread by user ${user.email} for thing ${thingId}`, error)
             throw error

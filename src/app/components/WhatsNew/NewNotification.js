@@ -23,7 +23,7 @@ class NewNotification extends Component {
 
     doThing() {
         const {dispatch, notification} = this.props
-        dispatch(DoThingActions.doThing(notification))
+        dispatch(DoThingActions.doThing(notification.thing))
     }
 
     markThingAsDone() {
@@ -33,7 +33,7 @@ class NewNotification extends Component {
 
     closeThing() {
         const {dispatch, notification} = this.props
-        dispatch(CloseThingActions.closeThing(notification))
+        dispatch(CloseThingActions.closeThing(notification.thing))
     }
 
     discardComments() {
