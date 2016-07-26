@@ -1,6 +1,10 @@
 .action-container {
   float: right;
 
+  &:not(:last-of-type) {
+    margin-left: 8px;
+  }
+
   .action-slot {
     float: right;
   }

@@ -7,6 +7,7 @@ const dateFns = require('date-fns')
 const {isEmpty, find} = require('lodash/core')
 
 const CommentList = require('../Comment/CommentList')
+const Action = require('../Messages/Action')
 
 const TaskActions = require('../../actions/task-actions')
 const DoThingActions = require('../../actions/do-thing-actions')
@@ -57,25 +58,20 @@ class Task extends Component {
 
         if (task.payload.status === TaskStatus.NEW.key && !!notification && this.isCurrentUserTheTo()) {
             actions.push(
-                <div className="task-action" key="action-Do">
-                    <button type="text" onClick={this.doTask}>Do</button>
-                </div>
+                <Action label="Do" doFunc={this.doTask} key="action-Do" />
             )
         }
 
-        if (task.payload.status === TaskStatus.INPROGRESS.key && this.isCurrentUserTheTo()) {
+        if ((task.payload.status === TaskStatus.INPROGRESS.key || task.payload.status === TaskStatus.NEW.key) && this.isCurrentUserTheTo()) {
             actions.push(
-                <div className="task-action" key="action-Done">
-                    <button type="text" onClick={this.markThingAsDone}>Done</button>
-                </div>
+                <Action label="Done" doFunc={this.markThingAsDone} key="action-Done" />
             )
         }
 
         if (task.payload.status == TaskStatus.DONE.key && this.isCurrentUserTheCreator()) {
             actions.push(
-                <div className="task-action" key="action-Close">
-                    <button type="text" onClick={this.closeThing}>Close</button>
-                </div>)
+                <Action label="Close" doFunc={this.closeThing} key="action-Close" />
+            )
         }
 
         return actions

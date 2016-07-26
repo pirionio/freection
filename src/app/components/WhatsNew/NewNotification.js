@@ -6,6 +6,7 @@ const MessageRow = require('../Messages/MessageRow')
 const Action = require('../Messages/Action')
 
 const DoThingActions = require('../../actions/do-thing-actions')
+const MarkThingDoneActions = require('../../actions/mark-thing-done-actions')
 const CloseThingActions = require('../../actions/close-thing-actions')
 const DiscardCommentsActions = require('../../actions/discard-comments-actions')
 const EventTypes = require('../../../common/enums/event-types')
@@ -14,6 +15,7 @@ class NewNotification extends Component {
     constructor(props) {
         super(props)
         this.doThing = this.doThing.bind(this)
+        this.markThingAsDone = this.markThingAsDone.bind(this)
         this.closeThing = this.closeThing.bind(this)
         this.discardComments = this.discardComments.bind(this)
         this.doActionEnabled = this.doActionEnabled.bind(this)
@@ -22,6 +24,11 @@ class NewNotification extends Component {
     doThing() {
         const {dispatch, notification} = this.props
         dispatch(DoThingActions.doThing(notification))
+    }
+
+    markThingAsDone() {
+        const {dispatch, notification} = this.props
+        dispatch(MarkThingDoneActions.markThingAsDone(notification.thing))
     }
 
     closeThing() {
@@ -35,6 +42,10 @@ class NewNotification extends Component {
     }
 
     doActionEnabled() {
+        return this.props.notification.eventType.key === EventTypes.CREATED.key
+    }
+
+    doneActionEnabled() {
         return this.props.notification.eventType.key === EventTypes.CREATED.key
     }
 
@@ -59,6 +70,9 @@ class NewNotification extends Component {
 
         if (this.doActionEnabled()) {
             actions.push(<Action label="Do" doFunc={this.doThing} key="action-Do" />)
+        }
+        if (this.doneActionEnabled()) {
+            actions.push(<Action label="Done" doFunc={this.markThingAsDone} key="action-Done" />)
         }
         if (this.discardCommentsEnabled()) {
             actions.push(<Action label="Discard" doFunc={this.discardComments} key="action-Discard" />)
