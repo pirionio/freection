@@ -72,6 +72,19 @@ function closeThing(user, thingId) {
         )
 }
 
+function abortThing(user, thingId) {
+    // TODO: check if the if the status is done
+
+    return Thing.get(thingId).run()
+        .then(thing => performAbortThing(thing, user))
+        .then(thing => EventsService.userAbortedThing(user, thing))
+        .catch((error) => {
+                logger.error(`error while aborting thing ${thingId} by user ${user.email}: ${error}`)
+                throw error
+            }
+        )
+}
+
 function markThingAsDone(user, thingId) {
     return Thing.getFullThing(thingId)
         .then(thing => performMarkThingAsDone(thing, user))
@@ -133,6 +146,12 @@ function performCloseThing(thing, user) {
     return thing.save()
 }
 
+function performAbortThing(thing, user) {
+    remove(thing.followUpers, followUperId => followUperId === user.id)
+    thing.payload.status = TaskStatus.ABORT.key
+    return thing.save()
+}
+
 module.exports = {
     getWhatsNew,
     getToDo,
@@ -143,5 +162,6 @@ module.exports = {
     createComment,
     discardComments,
     markCommentAsRead,
-    closeThing
+    closeThing,
+    abortThing
 }

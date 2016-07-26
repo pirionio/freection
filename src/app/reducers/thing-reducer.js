@@ -35,6 +35,7 @@ module.exports = (state, action) => {
         case ThingActionTypes.DONE_RECEIVED:
         case ThingActionTypes.CLOSED_RECEIVED:
         case ThingActionTypes.DISMISSED_RECEIVED:
+        case ThingActionTypes.ABORTED_RECEIVED:
             return statusChanged(state, action)
         default:
             return state

@@ -14,6 +14,7 @@ const DoThingActions = require('../../actions/do-thing-actions')
 const DismissThingActions = require('../../actions/dismiss-thing-actions')
 const MarkThingDoneActions = require('../../actions/mark-thing-done-actions')
 const CloseThingActions = require('../../actions/close-thing-actions')
+const AbortThingActions = require('../../actions/abort-thing-actions')
 
 const TaskStatus = require('../../../common/enums/task-status')
 
@@ -24,6 +25,7 @@ class Task extends Component {
         this.doTask = this.doTask.bind(this)
         this.dismissThing = this.dismissThing.bind(this)
         this.closeThing = this.closeThing.bind(this)
+        this.abortThing = this.abortThing.bind(this)
         this.markThingAsDone = this.markThingAsDone.bind(this)
     }
 
@@ -83,6 +85,13 @@ class Task extends Component {
             )
         }
 
+        if ((task.payload.status == TaskStatus.INPROGRESS.key ||
+            task.payload.status == TaskStatus.NEW.key) && this.isCurrentUserTheCreator()) {
+            actions.push(
+                <Action label="Abort" doFunc={this.abortThing} key="action-Abort" />
+            )
+        }
+
         return actions
     }
 
@@ -104,6 +113,11 @@ class Task extends Component {
     closeThing() {
         const {dispatch, task} = this.props
         dispatch(CloseThingActions.closeThing(task))
+    }
+
+    abortThing() {
+        const {dispatch, task} = this.props
+        dispatch(AbortThingActions.abortThing(task))
     }
 
     isCurrentUserTheCreator() {

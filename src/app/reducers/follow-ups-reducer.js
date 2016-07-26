@@ -50,7 +50,7 @@ function createdReceived(state, action) {
         .value()
 }
 
-function closedReceived(state, action) {
+function closedOrAbortedReceived(state, action) {
     // TODO Handle FETCHING state by queuing incoming events
     if (state.invalidationStatus !== InvalidationStatus.FETCHED)
         return state
@@ -91,7 +91,8 @@ module.exports = (state = initialState, action) => {
         case ThingActionTypes.CREATED_RECEIVED:
             return createdReceived(state, action)
         case ThingActionTypes.CLOSED_RECEIVED:
-            return closedReceived(state, action)
+        case ThingActionTypes.ABORTED_RECEIVED:
+            return closedOrAbortedReceived(state, action)
         case ThingActionTypes.NEW_COMMENT_RECEIVED:
         case ThingActionTypes.COMMENT_READ_BY_RECEIVED:
             return commentChangedOrAdded(state, action)

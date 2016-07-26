@@ -110,6 +110,10 @@ function closeThing(state, action) {
     return asyncStatusOperation(state, action, TaskStatus.CLOSE.key)
 }
 
+function abortThing(state, action) {
+    return asyncStatusOperation(state, action, TaskStatus.ABORT.key)
+}
+
 function asyncStatusOperation(state, action, status) {
     if (!state.task || !action.thing || state.task.id !== action.thing.id)
         return state
@@ -146,6 +150,7 @@ module.exports = (state = initialState, action) => {
         case ThingActionTypes.DONE_RECEIVED:
         case ThingActionTypes.CLOSED_RECEIVED:
         case ThingActionTypes.DISMISSED_RECEIVED:
+        case ThingActionTypes.ABORTED_RECEIVED:
             return statusChanged(state, action)
         case WhatsNewActionTypes.DO_THING:
             return doThing(state, action)
@@ -155,6 +160,8 @@ module.exports = (state = initialState, action) => {
             return closeThing(state, action)
         case WhatsNewActionTypes.DISMISS_THING:
             return dismissThing(state, action)
+        case WhatsNewActionTypes.ABORT_THING:
+            return abortThing(state, action)
         default:
             return state
     }

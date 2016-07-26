@@ -18,5 +18,9 @@ module.exports = {
     CLOSE: {
         key: 'CLOSE',
         label: 'Close'
+    },
+    ABORT: {
+        key: 'ABORT',
+        label: 'Abort'
     }
 }

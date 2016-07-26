@@ -86,6 +86,16 @@ function commentChangedOrAdded(state, action) {
         .value()
 }
 
+function abortedReceived(state, action) {
+    // TODO Handle FETCHING state by queuing incoming events
+    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
+        return state
+
+    return immutable(state)
+        .arraySetItem('things', {id: action.thing.id}, item => thingReducer(item, action))
+        .value()
+}
+
 module.exports = (state = initialState, action) => {
     switch (action.type) {
         case ToDoActionTypes.FETCH_TO_DO:
@@ -101,6 +111,8 @@ module.exports = (state = initialState, action) => {
         case ThingActionTypes.NEW_COMMENT_RECEIVED:
         case ThingActionTypes.COMMENT_READ_BY_RECEIVED:
             return commentChangedOrAdded(state, action)
+        case ThingActionTypes.ABORTED_RECEIVED:
+            return abortedReceived(state, action)
         default:
             return state
     }

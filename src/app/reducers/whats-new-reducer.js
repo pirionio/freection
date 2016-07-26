@@ -44,13 +44,12 @@ function doThing(state, action) {
                 .set('invalidationStatus', InvalidationStatus.INVALIDATED)
                 .set('notifications', [])
                 .value()
-        case ActionStatus.COMPLETE:
         default:
             return state
     }
 }
 
-function dismissThing(state, action) {
+function removeNotificationsOfThing(state, action) {
     switch (action.status) {
         case ActionStatus.START:
             return immutable(state)
@@ -62,43 +61,6 @@ function dismissThing(state, action) {
                 .set('invalidationStatus', InvalidationStatus.INVALIDATED)
                 .set('notifications', [])
                 .value()
-        case ActionStatus.COMPLETE:
-        default:
-            return state
-    }
-}
-
-function markThingAsDone(state, action) {
-    switch (action.status) {
-        case ActionStatus.START:
-            return immutable(state)
-                .arrayReject('notifications', notification => notification.thing.id === action.thing.id)
-                .value()
-        case ActionStatus.ERROR:
-            // If there was an error, invalidated entire page so component will re-fetch
-            return immutable(state)
-                .set('invalidationStatus', InvalidationStatus.INVALIDATED)
-                .set('notifications', [])
-                .value()
-        case ActionStatus.COMPLETE:
-        default:
-            return state
-    }
-}
-
-function closeThing(state, action) {
-    switch (action.status) {
-        case ActionStatus.START:
-            return immutable(state)
-                .arrayReject('notifications', notification => notification.thing.id === action.thing.id)
-                .value()
-        case ActionStatus.ERROR:
-            // If there was an error, invalidated entire page so component will re-fetch
-            return immutable(state)
-                .set('invalidationStatus', InvalidationStatus.INVALIDATED)
-                .set('notifications', [])
-                .value()
-        case ActionStatus.COMPLETE:
         default:
             return state
     }
@@ -146,11 +108,10 @@ module.exports = (state = initialState, action) => {
         case WhatsNewActionTypes.DO_THING:
             return doThing(state, action)
         case WhatsNewActionTypes.DISMISS_THING:
-            return dismissThing(state, action)
         case ToDoActionTypes.MARK_THING_AS_DONE:
-            return markThingAsDone(state, action)
         case WhatsNewActionTypes.CLOSE_THING:
-            return closeThing(state, action)
+        case WhatsNewActionTypes.ABORT_THING:
+            return removeNotificationsOfThing(state, action)
         case WhatsNewActionTypes.DISCARD_COMMENTS:
             return discardComments(state, action)
         case WhatsNewActionTypes.NOTIFICATION_RECEIVED:

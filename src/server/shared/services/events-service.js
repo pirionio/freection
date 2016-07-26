@@ -1,4 +1,4 @@
-const {remove} = require('lodash')
+const {remove, union} = require('lodash')
 
 const {Event} = require('../models')
 const EventTypes = require('../../../common/enums/event-types')
@@ -40,6 +40,19 @@ function userMarkedThingAsDone(user, thing) {
     })
 }
 
+function userAbortedThing(user, thing) {
+    return Event.discardAllUserEvents(thing.id, user.id).then(() => {
+        return Event.save({
+            thingId: thing.id,
+            eventType: EventTypes.ABORTED.key,
+            createdAt: new Date(),
+            creatorUserId: user.id,
+            payload: {},
+            showNewList: union([thing.toUserId], thing.doers)
+        })
+    })
+}
+
 function userCreatedComment(user, thing, commentText) {
     return Event.save({
         thingId: thing.id,
@@ -75,6 +88,7 @@ module.exports = {
     userDismissThing,
     userMarkedThingAsDone,
     userClosedThing,
+    userAbortedThing,
     userAck,
     userCreatedComment
 }

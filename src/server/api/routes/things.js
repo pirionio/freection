@@ -80,6 +80,21 @@ router.post('/:thingId/close', function(request, response) {
         })
 })
 
+router.post('/:thingId/abort', function(request, response) {
+    const {user} = request
+    const {thingId} = request.params
+
+    ThingsService.abortThing(user, thingId)
+        .then(() => response.json({}))
+        .catch(error => {
+            if (error && error.name === 'DocumentNotFoundError') {
+                response.status(404).send(`Could not find thing with ID ${thingId}`)
+            } else {
+                response.status(500).send(`Could not abort thing ${thingId} by user ${user.email} : ${error.message}`)
+            }
+        })
+})
+
 router.get('/followups', function(request, response) {
     const user = request.user
 
