@@ -16,6 +16,11 @@ class MessageRow extends Component {
         })
     }
 
+    getReferencedUser() {
+        const {message, currentUser} = this.props
+        return currentUser.id === message.creator.id ? message.to.email : message.creator.email
+    }
+
     render () {
         const {message} = this.props
         const createdAt = dateFns.format(message.createdAt, 'DD-MM-YYYY HH:mm')
@@ -37,7 +42,7 @@ class MessageRow extends Component {
                 <div className="message-content">
                     <div className="inner-row">
                         <div className="message-creator">
-                            {message.creator.email}
+                            {this.getReferencedUser()}
                         </div>
                         <div className="message-title">
                             <div className="message-subject">
