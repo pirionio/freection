@@ -11,6 +11,7 @@ const Action = require('../Messages/Action')
 
 const TaskActions = require('../../actions/task-actions')
 const DoThingActions = require('../../actions/do-thing-actions')
+const DismissThingActions = require('../../actions/dismiss-thing-actions')
 const MarkThingDoneActions = require('../../actions/mark-thing-done-actions')
 const CloseThingActions = require('../../actions/close-thing-actions')
 
@@ -21,6 +22,7 @@ class Task extends Component {
         super(props)
         this.close = this.close.bind(this)
         this.doTask = this.doTask.bind(this)
+        this.dismissThing = this.dismissThing.bind(this)
         this.closeThing = this.closeThing.bind(this)
         this.markThingAsDone = this.markThingAsDone.bind(this)
     }
@@ -62,6 +64,13 @@ class Task extends Component {
             )
         }
 
+        if ((task.payload.status === TaskStatus.NEW.key ||
+            task.payload.status === TaskStatus.INPROGRESS.key) && this.isCurrentUserTheTo()) {
+            actions.push(
+                <Action label="Dismiss" doFunc={this.dismissThing} key="action-Dismiss" />
+            )
+        }
+
         if ((task.payload.status === TaskStatus.INPROGRESS.key || task.payload.status === TaskStatus.NEW.key) && this.isCurrentUserTheTo()) {
             actions.push(
                 <Action label="Done" doFunc={this.markThingAsDone} key="action-Done" />
@@ -80,6 +89,11 @@ class Task extends Component {
     doTask() {
         const {dispatch, task} = this.props
         dispatch(DoThingActions.doThing(task))
+    }
+
+    dismissThing() {
+        const {dispatch, task} = this.props
+        dispatch(DismissThingActions.dismissThing(task))
     }
 
     markThingAsDone() {

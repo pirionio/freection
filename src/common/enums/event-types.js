@@ -7,6 +7,10 @@ module.exports = {
         key: 'ACCEPTED',
         label: 'Accepted'
     },
+    DISMISSED: {
+        key: 'DISMISSED',
+        label: 'Dismissed'
+    },
     DONE: {
         key: 'DONE',
         label: 'Done'

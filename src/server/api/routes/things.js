@@ -34,6 +34,21 @@ router.post('/:thingId/do', function(request, response) {
         })
 })
 
+router.post('/:thingId/dismiss', function(request, response) {
+    const user = request.user
+    const {thingId} = request.params
+
+    ThingsService.dismissThing(user, thingId)
+        .then(() => response.json({}))
+        .catch(error => {
+            if (error && error.name === 'DocumentNotFoundError') {
+                response.status(404).send(`Could not find Thing with ID ${thingId}`)
+            } else {
+                response.status(500).send(`Could not dismiss thing ${thingId} by user ${user.email}: ${error.message}`)
+            }
+        })
+})
+
 router.post('/:thingId/done', function(request, response) {
     const user = request.user
     const {thingId} = request.params

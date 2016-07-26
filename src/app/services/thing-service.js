@@ -12,6 +12,10 @@ function doThing(thingId) {
     return ResourceUtil.post(`/api/things/${thingId}/do`)
 }
 
+function dismissThing(thingId) {
+    return ResourceUtil.post(`/api/things/${thingId}/dismiss`)
+}
+
 function closeThing(thingId) {
     return ResourceUtil.post(`/api/things/${thingId}/close`)
 }
@@ -28,5 +32,5 @@ function markCommentAsRead(comment) {
     return ResourceUtil.post(`/api/things/${comment.id}/markcommentasread`)
 }
 
-module.exports = {createNewThing, doThing, markThingAsDone, closeThing,
+module.exports = {createNewThing, doThing, dismissThing, markThingAsDone, closeThing,
     createComment, discardComments, markCommentAsRead}

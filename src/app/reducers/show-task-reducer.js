@@ -95,44 +95,22 @@ function statusChanged(state, action) {
 }
 
 function doThing(state, action) {
-    if (!state.task || !action.thing || state.task.id !== action.thing.id)
-        return state
+    return asyncStatusOperation(state, action, TaskStatus.INPROGRESS.key)
+}
 
-    switch (action.status) {
-        case ActionStatus.START:
-            return immutable(state)
-                .touch('task')
-                .touch('task.payload')
-                .set('task.payload.status',  TaskStatus.INPROGRESS.key)
-                .value()
-        case ActionStatus.ERROR:
-            // TODO: invalidate the thing to make the page re-fetch
-            return state
-        default:
-            return state
-    }
+function dismissThing(state, action) {
+    return asyncStatusOperation(state, action, TaskStatus.DISMISS.key)
 }
 
 function markThingAsDone(state, action) {
-    if (!state.task || !action.thing || state.task.id !== action.thing.id)
-        return state
-
-    switch (action.status) {
-        case ActionStatus.START:
-            return immutable(state)
-                .touch('task')
-                .touch('task.payload')
-                .set('task.payload.status',  TaskStatus.DONE.key)
-                .value()
-        case ActionStatus.ERROR:
-            // TODO: invalidate the thing to make the page re-fetch
-            return state
-        default:
-            return state
-    }
+    return asyncStatusOperation(state, action, TaskStatus.DONE.key)
 }
 
 function closeThing(state, action) {
+    return asyncStatusOperation(state, action, TaskStatus.CLOSE.key)
+}
+
+function asyncStatusOperation(state, action, status) {
     if (!state.task || !action.thing || state.task.id !== action.thing.id)
         return state
 
@@ -141,7 +119,7 @@ function closeThing(state, action) {
             return immutable(state)
                 .touch('task')
                 .touch('task.payload')
-                .set('task.payload.status',  TaskStatus.CLOSE.key)
+                .set('task.payload.status',  status)
                 .value()
         case ActionStatus.ERROR:
             // TODO: invalidate the thing to make the page re-fetch
@@ -167,6 +145,7 @@ module.exports = (state = initialState, action) => {
         case ThingActionTypes.ACCEPTED_RECEIVED:
         case ThingActionTypes.DONE_RECEIVED:
         case ThingActionTypes.CLOSED_RECEIVED:
+        case ThingActionTypes.DISMISSED_RECEIVED:
             return statusChanged(state, action)
         case WhatsNewActionTypes.DO_THING:
             return doThing(state, action)
@@ -174,6 +153,8 @@ module.exports = (state = initialState, action) => {
             return markThingAsDone(state, action)
         case WhatsNewActionTypes.CLOSE_THING:
             return closeThing(state, action)
+        case WhatsNewActionTypes.DISMISS_THING:
+            return dismissThing(state, action)
         default:
             return state
     }

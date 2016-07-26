@@ -14,6 +14,19 @@ function userAcceptedThing(user, thing) {
     })
 }
 
+function userDismissThing(user, thing) {
+    return Event.discardAllUserEvents(thing.id, user.id).then(() => {
+        return Event.save({
+            thingId: thing.id,
+            eventType: EventTypes.DISMISSED.key,
+            createdAt: new Date(),
+            creatorUserId: user.id,
+            payload: {},
+            showNewList: [thing.creator.id]
+        })
+    })
+}
+
 function userMarkedThingAsDone(user, thing) {
     return Event.discardAllUserEvents(thing.id, user.id).then(() => {
         return Event.save({
@@ -59,6 +72,7 @@ function userAck(event, user) {
 
 module.exports = {
     userAcceptedThing,
+    userDismissThing,
     userMarkedThingAsDone,
     userClosedThing,
     userAck,

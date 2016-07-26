@@ -67,8 +67,7 @@ function createdOrAcceptedReceived(state, action) {
         .value()
 }
 
-function doneReceived(state, action) {
-    // TODO Handle FETCHING state by queuing incoming events
+function doneOrDismissedReceived(state, action) {
     if (state.invalidationStatus !== InvalidationStatus.FETCHED)
         return state
 
@@ -97,7 +96,8 @@ module.exports = (state = initialState, action) => {
         case ThingActionTypes.ACCEPTED_RECEIVED:
             return createdOrAcceptedReceived(state, action)
         case ThingActionTypes.DONE_RECEIVED:
-            return doneReceived(state, action)
+        case ThingActionTypes.DISMISSED_RECEIVED:
+            return doneOrDismissedReceived(state, action)
         case ThingActionTypes.NEW_COMMENT_RECEIVED:
         case ThingActionTypes.COMMENT_READ_BY_RECEIVED:
             return commentChangedOrAdded(state, action)

@@ -97,6 +97,7 @@ module.exports = (state = initialState, action) => {
             return commentChangedOrAdded(state, action)
         case ThingActionTypes.ACCEPTED_RECEIVED:
         case ThingActionTypes.DONE_RECEIVED:
+        case ThingActionTypes.DISMISSED_RECEIVED:
             return statusChanged(state, action)
         default:
             return state

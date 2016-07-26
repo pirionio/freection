@@ -6,6 +6,7 @@ const MessageRow = require('../Messages/MessageRow')
 const Action = require('../Messages/Action')
 
 const DoThingActions = require('../../actions/do-thing-actions')
+const DismissThingActions = require('../../actions/dismiss-thing-actions')
 const MarkThingDoneActions = require('../../actions/mark-thing-done-actions')
 const CloseThingActions = require('../../actions/close-thing-actions')
 const DiscardCommentsActions = require('../../actions/discard-comments-actions')
@@ -15,6 +16,7 @@ class NewNotification extends Component {
     constructor(props) {
         super(props)
         this.doThing = this.doThing.bind(this)
+        this.dismissThing = this.dismissThing.bind(this)
         this.markThingAsDone = this.markThingAsDone.bind(this)
         this.closeThing = this.closeThing.bind(this)
         this.discardComments = this.discardComments.bind(this)
@@ -24,6 +26,11 @@ class NewNotification extends Component {
     doThing() {
         const {dispatch, notification} = this.props
         dispatch(DoThingActions.doThing(notification.thing))
+    }
+
+    dismissThing() {
+        const {dispatch, notification} = this.props
+        dispatch(DismissThingActions.dismissThing(notification.thing))
     }
 
     markThingAsDone() {
@@ -42,6 +49,10 @@ class NewNotification extends Component {
     }
 
     doActionEnabled() {
+        return this.props.notification.eventType.key === EventTypes.CREATED.key
+    }
+
+    dismissEnabled() {
         return this.props.notification.eventType.key === EventTypes.CREATED.key
     }
 
@@ -70,6 +81,9 @@ class NewNotification extends Component {
 
         if (this.doActionEnabled()) {
             actions.push(<Action label="Do" doFunc={this.doThing} key="action-Do" />)
+        }
+        if (this.dismissEnabled()) {
+            actions.push(<Action label="Dismiss" doFunc={this.dismissThing} key="action-Dismiss" />)
         }
         if (this.doneActionEnabled()) {
             actions.push(<Action label="Done" doFunc={this.markThingAsDone} key="action-Done" />)

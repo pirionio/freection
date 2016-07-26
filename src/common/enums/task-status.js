@@ -7,6 +7,10 @@ module.exports = {
         key: 'INPROGRESS',
         label: 'In Progress'
     },
+    DISMISS: {
+        key: 'DISMISS',
+        label: 'Dismiss'
+    },
     DONE: {
         key: 'DONE',
         label: 'Done'

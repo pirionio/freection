@@ -47,6 +47,17 @@ function doThing(user, thingId) {
     )
 }
 
+function dismissThing(user, thingId) {
+    return Thing.getFullThing(thingId)
+        .then(thing => performDismissThing(thing, user))
+        .then(thing => EventsService.userDismissThing(user, thing))
+        .catch((error) => {
+                logger.error(`error while dismissing thing ${thingId} by user ${user.email}: ${error}`)
+                throw error
+            }
+        )
+}
+
 function closeThing(user, thingId) {
     // TODO: check if the if the status is done
 
@@ -104,6 +115,12 @@ function performDoThing(thing, user) {
     return thing.save()
 }
 
+function performDismissThing(thing, user) {
+    remove(thing.doers, doerId => doerId === user.id)
+    thing.payload.status = TaskStatus.DISMISS.key
+    return thing.save()
+}
+
 function performMarkThingAsDone(thing, user) {
     remove(thing.doers, doerId => doerId === user.id)
     thing.payload.status = TaskStatus.DONE.key
@@ -121,6 +138,7 @@ module.exports = {
     getToDo,
     getFollowUps,
     doThing,
+    dismissThing,
     markThingAsDone,
     createComment,
     discardComments,
