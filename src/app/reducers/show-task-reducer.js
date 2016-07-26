@@ -1,5 +1,8 @@
 const TaskActionTypes = require('../actions/types/task-action-types')
 const ThingActionTypes = require('../actions/types/thing-action-types')
+const WhatsNewActionTypes = require('../actions/types/whats-new-action-types')
+const ToDoActionTypes = require('../actions/types/to-do-action-types.js');
+const TaskStatus = require('../../common/enums/task-status.js');
 const {ActionStatus} = require('../constants')
 const thingReducer = require('./thing-reducer')
 
@@ -82,6 +85,72 @@ function commentChangedOrAdded(state, action) {
         .value()
 }
 
+function statusChanged(state, action) {
+    if (!state.task || !action.thing || state.task.id !== action.thing.id)
+        return state
+
+    return immutable(state)
+        .set('task', thingReducer(state.task, action))
+        .value()
+}
+
+function doThing(state, action) {
+    if (!state.task || !action.thing || state.task.id !== action.thing.id)
+        return state
+
+    switch (action.status) {
+        case ActionStatus.START:
+            return immutable(state)
+                .touch('task')
+                .touch('task.payload')
+                .set('task.payload.status',  TaskStatus.INPROGRESS.key)
+                .value()
+        case ActionStatus.ERROR:
+            // TODO: invalidate the thing to make the page re-fetch
+            return state
+        default:
+            return state
+    }
+}
+
+function markThingAsDone(state, action) {
+    if (!state.task || !action.thing || state.task.id !== action.thing.id)
+        return state
+
+    switch (action.status) {
+        case ActionStatus.START:
+            return immutable(state)
+                .touch('task')
+                .touch('task.payload')
+                .set('task.payload.status',  TaskStatus.DONE.key)
+                .value()
+        case ActionStatus.ERROR:
+            // TODO: invalidate the thing to make the page re-fetch
+            return state
+        default:
+            return state
+    }
+}
+
+function closeThing(state, action) {
+    if (!state.task || !action.thing || state.task.id !== action.thing.id)
+        return state
+
+    switch (action.status) {
+        case ActionStatus.START:
+            return immutable(state)
+                .touch('task')
+                .touch('task.payload')
+                .set('task.payload.status',  TaskStatus.CLOSE.key)
+                .value()
+        case ActionStatus.ERROR:
+            // TODO: invalidate the thing to make the page re-fetch
+            return state
+        default:
+            return state
+    }
+}
+
 module.exports = (state = initialState, action) => {
     switch (action.type) {
         case TaskActionTypes.SHOW_FULL_TASK:
@@ -95,6 +164,16 @@ module.exports = (state = initialState, action) => {
         case ThingActionTypes.NEW_COMMENT_RECEIVED:
         case ThingActionTypes.COMMENT_READ_BY_RECEIVED:
             return commentChangedOrAdded(state, action)
+        case ThingActionTypes.ACCEPTED_RECEIVED:
+        case ThingActionTypes.DONE_RECEIVED:
+        case ThingActionTypes.CLOSED_RECEIVED:
+            return statusChanged(state, action)
+        case WhatsNewActionTypes.DO_THING:
+            return doThing(state, action)
+        case ToDoActionTypes.MARK_THING_AS_DONE:
+            return markThingAsDone(state, action)
+        case WhatsNewActionTypes.CLOSE_THING:
+            return closeThing(state, action)
         default:
             return state
     }

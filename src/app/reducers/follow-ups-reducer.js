@@ -74,6 +74,16 @@ function commentChangedOrAdded(state, action) {
         .value()
 }
 
+function statusChanged(state, action) {
+    // TODO Handle FETCHING state by queuing incoming events
+    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
+        return state
+
+    return immutable(state)
+        .arraySetItem('followUps', {id: action.thing.id}, item => thingReducer(item, action))
+        .value()
+}
+
 module.exports = (state = initialState, action) => {
     switch (action.type) {
         case FollowUpsActionTypes.FETCH_FOLLOW_UPS:
@@ -85,6 +95,9 @@ module.exports = (state = initialState, action) => {
         case ThingActionTypes.NEW_COMMENT_RECEIVED:
         case ThingActionTypes.COMMENT_READ_BY_RECEIVED:
             return commentChangedOrAdded(state, action)
+        case ThingActionTypes.ACCEPTED_RECEIVED:
+        case ThingActionTypes.DONE_RECEIVED:
+            return statusChanged(state, action)
         default:
             return state
     }
