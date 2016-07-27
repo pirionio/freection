@@ -39,7 +39,7 @@ function doThing(user, thingId) {
     return Thing.get(thingId).run()
         .then(thing => performDoThing(thing, user))
         .then(thing => EventsService.userAcceptedThing(user, thing))
-        .then(() => Event.discardUserEventByType(thingId, EventTypes.CREATED.key, user.id))
+        .then(() => Event.discardUserEventsByType(thingId, EventTypes.CREATED.key, user.id))
         .catch((error) => {
             logger.error(`error while setting user ${user.email} as doer of thing ${thingId}: ${error}`)
             throw error
@@ -117,14 +117,6 @@ function createComment(user, thingId, commentText) {
         })
 }
 
-function discardComments(user, thingId) {
-    return Event.discardUserEventByType(thingId, EventTypes.COMMENT.key, user.id)
-        .catch(error => {
-            logger.error(`Could not discard comments unread by user ${user.email} for thing ${thingId}`, error)
-            throw error
-        })
-}
-
 function markCommentAsRead(user, commentId) {
     return Event.markUserCommentAsRead(commentId, user.id)
         .catch(error => {
@@ -171,7 +163,6 @@ module.exports = {
     dismissThing,
     markThingAsDone,
     createComment,
-    discardComments,
     markCommentAsRead,
     closeThing,
     abortThing,

@@ -81,6 +81,22 @@ function discardComments(state, action) {
     }
 }
 
+function discardPing(state, action) {
+    switch (action.status) {
+        case ActionStatus.START:
+            return immutable(state)
+                .arrayReject('notifications', {id: action.notification.id})
+                .value()
+        case ActionStatus.ERROR:
+            return immutable(state)
+                .arraySetOrPushItem('notifications', {id: action.notification.id}, action.notification)
+                .value()
+        case ActionStatus.COMPLETE:
+        default:
+            return state
+    }
+}
+
 function notificationReceived(state, action) {
     // TODO Handle FETCHING state by queuing incoming events
     if (state.invalidationStatus !== InvalidationStatus.FETCHED)
@@ -114,6 +130,8 @@ module.exports = (state = initialState, action) => {
             return removeNotificationsOfThing(state, action)
         case WhatsNewActionTypes.DISCARD_COMMENTS:
             return discardComments(state, action)
+        case WhatsNewActionTypes.DISCARD_PING:
+            return discardPing(state, action)
         case WhatsNewActionTypes.NOTIFICATION_RECEIVED:
             return notificationReceived(state, action)
         case WhatsNewActionTypes.NOTIFICATION_DELETED:

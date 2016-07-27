@@ -2,6 +2,7 @@ const {remove, union} = require('lodash')
 
 const {Event} = require('../models')
 const EventTypes = require('../../../common/enums/event-types')
+const logger = require('../utils/logger')
 
 function userAcceptedThing(user, thing) {
     return Event.save({
@@ -96,6 +97,22 @@ function userAck(event, user) {
     return event.save()
 }
 
+function discardUserEventById(user, eventId) {
+    return Event.discardUserEventById(eventId, user.id)
+        .catch(error => {
+            logger.error(`Could not discard event ${eventId} unread by user ${user.email}`, error)
+            throw error
+        })
+}
+
+function discardUserEventsByType(user, thingId, eventType) {
+    return Event.discardUserEventsByType(thingId, eventType, user.id)
+        .catch(error => {
+            logger.error(`Could not discard events of type ${eventType} unread by user ${user.email} for thing ${thingId}`, error)
+            throw error
+        })
+}
+
 module.exports = {
     userAcceptedThing,
     userDismissThing,
@@ -104,5 +121,7 @@ module.exports = {
     userAbortedThing,
     userAck,
     userCreatedComment,
-    userPingedThing
+    userPingedThing,
+    discardUserEventsByType,
+    discardUserEventById
 }

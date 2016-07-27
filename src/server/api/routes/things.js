@@ -1,6 +1,7 @@
 const router = require('express').Router()
 
 const ThingsService = require('../../shared/services/things-service')
+const EventsService = require('../../shared/services/events-service')
 const logger = require('../../shared/utils/logger')
 
 router.get('/whatsnew', function(request, response) {
@@ -128,17 +129,17 @@ router.post('/:thingId/comments', function(request, response) {
         .catch(error => response.status(500).send(`Could not comment on thing ${thingId}: ${error.message}`))
 })
 
-router.post('/:thingId/discardcomments', function(request, response) {
+router.post('/:thingId/discard/:eventType', function(request, response) {
     const user = request.user
-    const {thingId} = request.params
+    const {thingId, eventType} = request.params
 
-    ThingsService.discardComments(user, thingId)
+    EventsService.discardUserEventsByType(user, thingId, eventType)
         .then(() => response.json({}))
         .catch(error => {
             if (error && error.name === 'DocumentNotFoundError') {
                 response.status(404).send(`Could not find Thing with ID ${thingId}`)
             } else {
-                response.status(500).send(`Could not discard comments unread by user ${user.email} for thing ${thingId}: ${error.message}`)
+                response.status(500).send(`Could not discard events of type ${eventType} unread by user ${user.email} for thing ${thingId}: ${error.message}`)
             }
         })
 })

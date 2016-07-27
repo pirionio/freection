@@ -10,6 +10,7 @@ const DismissThingActions = require('../../actions/dismiss-thing-actions')
 const MarkThingDoneActions = require('../../actions/mark-thing-done-actions')
 const CloseThingActions = require('../../actions/close-thing-actions')
 const DiscardCommentsActions = require('../../actions/discard-comments-actions')
+const DiscardPingActions = require('../../actions/discard-ping-actions')
 const EventTypes = require('../../../common/enums/event-types')
 
 class NewNotification extends Component {
@@ -20,6 +21,7 @@ class NewNotification extends Component {
         this.markThingAsDone = this.markThingAsDone.bind(this)
         this.closeThing = this.closeThing.bind(this)
         this.discardComments = this.discardComments.bind(this)
+        this.discardPing = this.discardPing.bind(this)
         this.doActionEnabled = this.doActionEnabled.bind(this)
     }
 
@@ -47,6 +49,11 @@ class NewNotification extends Component {
         const {dispatch, notification, currentUser} = this.props
         dispatch(DiscardCommentsActions.discardComments(notification, currentUser))
     }
+    
+    discardPing() {
+        const {dispatch, notification} = this.props
+        dispatch(DiscardPingActions.discardPing(notification))
+    }
 
     doActionEnabled() {
         return this.props.notification.eventType.key === EventTypes.CREATED.key
@@ -66,6 +73,10 @@ class NewNotification extends Component {
     
     discardCommentsEnabled() {
         return this.props.notification.eventType.key === EventTypes.COMMENT.key
+    }
+
+    discardPingEnabled() {
+        return this.props.notification.eventType.key === EventTypes.PING.key
     }
 
     getNotificationViewModel() {
@@ -90,6 +101,9 @@ class NewNotification extends Component {
         }
         if (this.discardCommentsEnabled()) {
             actions.push(<Action label="Discard" doFunc={this.discardComments} key="action-Discard" />)
+        }
+        if (this.discardPingEnabled()) {
+            actions.push(<Action label="Discard" doFunc={this.discardPing} key="action-Discard" />)
         }
         if (this.closeActionEnabled()) {
             actions.push(<Action label="Close" doFunc={this.closeThing} key="action-Close" />)

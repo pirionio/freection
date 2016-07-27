@@ -52,13 +52,21 @@ Event.defineStatic('discardAllUserEvents', function (thingId, userId) {
         }).run()
 })
 
-Event.defineStatic('discardUserEventByType', function (thingId, eventType, userId) {
+Event.defineStatic('discardUserEventsByType', function (thingId, eventType, userId) {
     return this.getAll([thingId, eventType], {index: 'thingIdEventType'})
         .update(event => {
             return {
                 showNewList: event("showNewList").filter(readerUserId => readerUserId.ne(userId))
             }
         }).run()
+})
+
+Event.defineStatic('discardUserEventById', function (eventId, userId) {
+    return this.get(eventId).update(event => {
+        return {
+            showNewList: event("showNewList").filter(readerUserId => readerUserId.ne(userId))
+        }
+    }).run()
 })
 
 Event.defineStatic('markUserCommentAsRead', function(eventId, userId) {
