@@ -17,16 +17,19 @@ function generateActionsCode(model) {
             return generateActionCode(model.name, action)
     }).join('\r\n')
 
-    const code = generateRequireCode(model.name) + '\r\n' + actionsCode + '\r\n' +
+    const code = generateRequireCode(model) + '\r\n' + actionsCode + '\r\n' +
         generateExportCode(model.actions)
 
     fs.writeFileSync(actionsPath, code)
 }
 
-function generateRequireCode(modelName) {
-    return `const ${getTypesVariable(modelName)} = require('../types/${getTypesFilename(modelName)}')\r\n` +
+function generateRequireCode(model) {
+    const requires = model.requires ? model.requires : []
+
+    return `const ${getTypesVariable(model.name)} = require('../types/${getTypesFilename(model.name)}')\r\n` +
             `const {ActionStatus} = require('../../constants')\r\n` +
-            `const ResourceUtil = require('../../util/resource-util')\r\n`
+            `const ResourceUtil = require('../../util/resource-util')\r\n` +
+            toPairs(requires).map(_require => `const ${_require[0]} = require('${_require[1]}')\r\n`).join('')
 }
 
 function generateExportCode(actions) {

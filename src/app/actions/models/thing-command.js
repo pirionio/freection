@@ -1,5 +1,8 @@
 module.exports = {
     name: 'thing command',
+    requires: {
+        'EventTypes' : '../../../common/enums/event-types'
+    },
     actions: [
         {
             name: 'comment',
@@ -71,5 +74,17 @@ module.exports = {
             type: 'post',
             path: '/api/things/${thing.id}/done'
         },
+        {
+            name: 'discard comments',
+            params: ['notification', 'user'],
+            type: 'post',
+            path: '/api/things/${notification.thing.id}/discard/${EventTypes.COMMENT.key}'
+        },
+        {
+            name: 'discard ping',
+            params: ['notification', 'user'],
+            type: 'post',
+            path: '/api/events/${notification.id}/discard'
+        }
     ]
 }

@@ -1,6 +1,7 @@
 const ThingCommandActionsTypes = require('../types/thing-command-action-types')
 const {ActionStatus} = require('../../constants')
 const ResourceUtil = require('../../util/resource-util')
+const EventTypes = require('../../../common/enums/event-types')
 
 function comment(thingId, commentText) {
     return dispatch => {
@@ -201,6 +202,54 @@ function markAsDone(thing) {
     }
 }
 
+function discardComments(notification, user) {
+    return dispatch => {
+        dispatch({
+            type: ThingCommandActionsTypes.DISCARD_COMMENTS, 
+            status: ActionStatus.START,
+            notification,
+            user
+        })
+        return ResourceUtil.post(`/api/things/${notification.thing.id}/discard/${EventTypes.COMMENT.key}`)
+            .then(result => dispatch({
+                type: ThingCommandActionsTypes.DISCARD_COMMENTS, 
+                status: ActionStatus.COMPLETE,
+                notification,
+                user
+            }))
+            .catch(() => dispatch({
+                type: ThingCommandActionsTypes.DISCARD_COMMENTS, 
+                status: ActionStatus.ERROR,
+                notification,
+                user
+            }))
+    }
+}
+
+function discardPing(notification, user) {
+    return dispatch => {
+        dispatch({
+            type: ThingCommandActionsTypes.DISCARD_PING, 
+            status: ActionStatus.START,
+            notification,
+            user
+        })
+        return ResourceUtil.post(`/api/events/${notification.id}/discard`)
+            .then(result => dispatch({
+                type: ThingCommandActionsTypes.DISCARD_PING, 
+                status: ActionStatus.COMPLETE,
+                notification,
+                user
+            }))
+            .catch(() => dispatch({
+                type: ThingCommandActionsTypes.DISCARD_PING, 
+                status: ActionStatus.ERROR,
+                notification,
+                user
+            }))
+    }
+}
+
 module.exports = {
     comment,
     newThing,
@@ -210,5 +259,7 @@ module.exports = {
     abort,
     close,
     dismiss,
-    markAsDone
+    markAsDone,
+    discardComments,
+    discardPing
 }

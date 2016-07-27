@@ -6,8 +6,6 @@ const MessageRow = require('../Messages/MessageRow')
 const Action = require('../Messages/Action')
 
 const ThingCommandActions = require('../../actions/thing-command-actions')
-const DiscardCommentsActions = require('../../actions/discard-comments-actions')
-const DiscardPingActions = require('../../actions/discard-ping-actions')
 const EventTypes = require('../../../common/enums/event-types')
 
 class NewNotification extends Component {
@@ -44,12 +42,12 @@ class NewNotification extends Component {
 
     discardComments() {
         const {dispatch, notification, currentUser} = this.props
-        dispatch(DiscardCommentsActions.discardComments(notification, currentUser))
+        dispatch(ThingCommandActions.discardComments(notification, currentUser))
     }
     
     discardPing() {
         const {dispatch, notification} = this.props
-        dispatch(DiscardPingActions.discardPing(notification))
+        dispatch(ThingCommandActions.discardPing(notification))
     }
 
     doActionEnabled() {

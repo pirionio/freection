@@ -129,9 +129,9 @@ module.exports = (state = initialState, action) => {
         case ThingCommandActionTypes.CLOSE:
         case ThingCommandActionTypes.ABORT:
             return removeNotificationsOfThing(state, action)
-        case WhatsNewActionTypes.DISCARD_COMMENTS:
+        case ThingCommandActionTypes.DISCARD_COMMENTS:
             return discardComments(state, action)
-        case WhatsNewActionTypes.DISCARD_PING:
+        case ThingCommandActionTypes.DISCARD_PING:
             return discardPing(state, action)
         case WhatsNewActionTypes.NOTIFICATION_RECEIVED:
             return notificationReceived(state, action)
