@@ -21,7 +21,7 @@ function createDismissed(user, thing) {
         createdAt: new Date(),
         creatorUserId: user.id,
         payload: {},
-        showNewList: [thing.creator.id]
+        showNewList: [thing.creatorUserId]
     })
 }
 
@@ -32,7 +32,7 @@ function createDone(user, thing) {
         createdAt: new Date(),
         creatorUserId: user.id,
         payload: {},
-        showNewList: [thing.creator.id]
+        showNewList: [thing.creatorUserId]
     })
 }
 

@@ -56,7 +56,7 @@ function doThing(user, thingId) {
 }
 
 function dismiss(user, thingId) {
-    return Thing.getFullThing(thingId)
+    return Thing.get(thingId).run()
         .then(thing => {
             return performDismiss(thing, user)
                 .then(() => Event.discardAllUserEvents(thingId, user.id))
@@ -97,7 +97,7 @@ function abort(user, thingId) {
 }
 
 function markAsDone(user, thingId) {
-    return Thing.getFullThing(thingId)
+    return Thing.get(thingId).run()
         .then(thing => {
             return performMarkAsDone(thing, user)
                 .then(() => Event.discardAllUserEvents(thingId, user.id))
