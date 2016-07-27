@@ -4,31 +4,6 @@ const ThingActionTypes = require('./types/thing-action-types')
 const {ActionStatus} = require('../constants')
 const ThingService = require('../services/thing-service')
 
-function createCommentRequest(thingId) {
-    return {
-        type: ThingActionTypes.CREATE_COMMENT,
-        status: ActionStatus.START,
-        thingId
-    }
-}
-
-function createCommentRequestComplete(thingId, comment) {
-    return {
-        type: ThingActionTypes.CREATE_COMMENT,
-        status: ActionStatus.COMPLETE,
-        thingId,
-        comment
-    }
-}
-
-function createCommentRequestFailed(thingId) {
-    return {
-        type: ThingActionTypes.CREATE_COMMENT,
-        status: ActionStatus.ERROR,
-        thingId
-    }
-}
-
 function createNewThing(thing) {
     return dispatch => {
         var promise = ThingService.createNewThing({
@@ -37,20 +12,6 @@ function createNewThing(thing) {
             subject: thing.subject
         })
         dispatch(actions.submit('messageBox', promise)).then(() => dispatch(actions.reset('messageBox')))
-    }
-}
-
-function createComment(thingId, commentText) {
-    return dispatch => {
-        var promise = ThingService.createComment(thingId, commentText)
-            .then(comment => dispatch(createCommentRequestComplete(thingId, comment)))
-            .catch(error => dispatch(createCommentRequestFailed(thingId)))
-
-        // This action takes care of the state of the message box itself.
-        dispatch(actions.submit('messageBox', promise)).then(() => dispatch(actions.reset('messageBox')))
-
-        // This action takes care of collateral effect of adding a comment (like showing it in the right context).
-        dispatch(createCommentRequest(thingId))
     }
 }
 
@@ -117,6 +78,6 @@ const thingPingReceived = (pingEvent) => {
     }
 }
 
-module.exports = {createNewThing, createComment, newCommentReceived,
+module.exports = {createNewThing, newCommentReceived,
     thingCreatedReceived, thingAcceptedReceived, thingDoneReceived, thingClosedReceived,
     commentReadByReceived, thingDimissedReceived, thingAbortedReceived, thingPingReceived}

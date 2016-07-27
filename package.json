@@ -10,6 +10,7 @@
     "test": "mocha \"src/**/*.test.js\" --compilers js:babel-register",
     "start": "node src/server/index.js",
     "dev": "forever -f -w --watchDirectory \"src/server\" -c node src/server/index.js",
+    "generate": "node scripts/generate-actions.js",
     "postinstall": "webpack --config ./config/webpack.prod.config.js --progress --colors"
   },
   "repository": {

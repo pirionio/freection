@@ -1,9 +1,10 @@
 const TaskActionTypes = require('../actions/types/task-action-types')
 const ThingActionTypes = require('../actions/types/thing-action-types')
 const WhatsNewActionTypes = require('../actions/types/whats-new-action-types')
-const ToDoActionTypes = require('../actions/types/to-do-action-types.js');
-const TaskStatus = require('../../common/enums/task-status.js');
-const EventTypes = require('../../common/enums/event-types');
+const ToDoActionTypes = require('../actions/types/to-do-action-types.js')
+const TaskStatus = require('../../common/enums/task-status.js')
+const ThingCommandActionTypes = require('../actions/types/thing-command-action-types')
+const EventTypes = require('../../common/enums/event-types')
 const {ActionStatus} = require('../constants')
 const thingReducer = require('./thing-reducer')
 
@@ -39,7 +40,7 @@ function hideFullTask(state, action) {
     }
 }
 
-function createComment(state, action) {
+function comment(state, action) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
             return immutable(state)
@@ -171,8 +172,8 @@ module.exports = (state = initialState, action) => {
             return showFullTask(state, action)
         case TaskActionTypes.HIDE_FULL_TASK:
             return hideFullTask(state, action)
-        case ThingActionTypes.CREATE_COMMENT:
-            return createComment(state, action)
+        case ThingCommandActionTypes.COMMENT:
+            return comment(state, action)
         case ThingActionTypes.PING_THING:
             return pingThing(state, action)
         case ThingActionTypes.MARK_COMMENT_AS_READ:

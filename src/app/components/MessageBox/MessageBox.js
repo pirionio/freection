@@ -6,6 +6,7 @@ const ReactDOM = require('react-dom');
 const {isEmpty} = require('lodash')
 
 const ThingActions = require('../../actions/thing-actions')
+const ThingCommandActions = require('../../actions/thing-command-action')
 
 class NewPanel extends Component {
     constructor(props) {
@@ -17,7 +18,7 @@ class NewPanel extends Component {
         const {messageBox, thingContext} = this.props
 
         if (this.isComment()) {
-            this.props.createComment(thingContext.id, messageBox.message.body)
+            this.props.comment(thingContext.id, messageBox.message.body)
             this.messageBody.focus()
         } else {
             this.props.createNewThing(messageBox.message)
@@ -84,7 +85,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         createNewThing: (newMessage) => dispatch(ThingActions.createNewThing(newMessage)),
-        createComment: (thingId, commentText) => dispatch(ThingActions.createComment(thingId, commentText))
+        comment: (thingId, commentText) => dispatch(ThingCommandActions.comment(thingId, commentText))
     }
 }
 

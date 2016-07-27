@@ -5,10 +5,6 @@ function createNewThing(thing) {
     return ResourceUtil.post('/api/new', thing)
 }
 
-function createComment(thingId, commentText) {
-    return ResourceUtil.post(`/api/things/${thingId}/comments`, {commentText})
-}
-
 function doThing(thingId) {
     return ResourceUtil.post(`/api/things/${thingId}/do`)
 }
@@ -42,4 +38,4 @@ function markCommentAsRead(comment) {
 }
 
 module.exports = {createNewThing, doThing, dismissThing, markThingAsDone, closeThing,
-    pingThing, createComment, discardComments, discardPing, markCommentAsRead}
+    pingThing, discardComments, discardPing, markCommentAsRead}
