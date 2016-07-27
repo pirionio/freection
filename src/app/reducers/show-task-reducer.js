@@ -174,7 +174,7 @@ module.exports = (state = initialState, action) => {
             return hideFullTask(state, action)
         case ThingCommandActionTypes.COMMENT:
             return comment(state, action)
-        case ThingActionTypes.PING_THING:
+        case ThingCommandActionTypes.PING:
             return pingThing(state, action)
         case ThingActionTypes.MARK_COMMENT_AS_READ:
             return markCommentAsRead(state, action)

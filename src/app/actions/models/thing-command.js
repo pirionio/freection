@@ -24,6 +24,16 @@ module.exports = {
                 body: 'thing.body',
                 subject: 'thing.subject'
             }
-        }
+        },
+        {
+            name: 'ping',
+            params: ['thing'],
+            type: 'post',
+            path: '/api/things/${thing.id}/ping',
+            completeParams: {
+                thing: 'thing',
+                pingEvent: 'result'
+            }
+        },
     ]
 }

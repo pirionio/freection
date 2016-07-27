@@ -1,4 +1,5 @@
 const ThingActionTypes = require('../actions/types/thing-action-types')
+const ThingCommandActionTypes = require('../actions/types/thing-command-action-types')
 const immutable = require('../util/immutable')
 
 function newCommentReceived(state, action) {
@@ -41,7 +42,7 @@ module.exports = (state, action) => {
             return newCommentReceived(state, action)
         case ThingActionTypes.COMMENT_READ_BY_RECEIVED:
             return commentReadyByReceived(state, action)
-        case ThingActionTypes.PING_THING:
+        case ThingCommandActionTypes.PING:
         case ThingActionTypes.PING_RECEIVED:
             return pingReceived(state, action)
         case ThingActionTypes.ACCEPTED_RECEIVED:

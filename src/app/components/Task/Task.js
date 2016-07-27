@@ -19,7 +19,7 @@ const DismissThingActions = require('../../actions/dismiss-thing-actions')
 const MarkThingDoneActions = require('../../actions/mark-thing-done-actions')
 const CloseThingActions = require('../../actions/close-thing-actions')
 const AbortThingActions = require('../../actions/abort-thing-actions')
-const PingThingActions = require('../../actions/ping-thing-actions')
+const ThingCommandActions = require('../../actions/thing-command-action')
 
 const TaskStatus = require('../../../common/enums/task-status')
 const EventTypes = require('../../../common/enums/event-types')
@@ -135,7 +135,7 @@ class Task extends Component {
 
     pingThing() {
         const {dispatch, task} = this.props
-        dispatch(PingThingActions.pingThing(task))
+        dispatch(ThingCommandActions.ping(task))
     }
 
     isCurrentUserTheCreator() {

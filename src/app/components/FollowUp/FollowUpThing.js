@@ -5,7 +5,7 @@ const {connect} = require('react-redux')
 const ThingRow = require('../Messages/ThingRow')
 const Action = require('../Messages/Action')
 
-const PingThingActions = require('../../actions/ping-thing-actions')
+const ThingCommandActions = require('../../actions/thing-command-action')
 
 class FollowUpThing extends Component {
     constructor(props) {
@@ -15,7 +15,7 @@ class FollowUpThing extends Component {
 
     pingThing() {
         const {thing, dispatch} = this.props
-        dispatch(PingThingActions.pingThing(thing))
+        dispatch(ThingCommandActions.ping(thing))
     }
 
     getActions() {

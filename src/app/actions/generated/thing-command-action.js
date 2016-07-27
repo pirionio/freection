@@ -53,7 +53,30 @@ function newThing(thing) {
     }
 }
 
+function ping(thing) {
+    return dispatch => {
+        dispatch({
+            type: ThingCommandActionsTypes.PING, 
+            status: ActionStatus.START,
+            thing
+        })
+        return ResourceUtil.post(`/api/things/${thing.id}/ping`)
+            .then(result => dispatch({
+                type: ThingCommandActionsTypes.PING, 
+                status: ActionStatus.COMPLETE,
+                thing: thing,
+                pingEvent: result
+            }))
+            .catch(() => dispatch({
+                type: ThingCommandActionsTypes.PING, 
+                status: ActionStatus.ERROR,
+                thing
+            }))
+    }
+}
+
 module.exports = {
     comment,
-    newThing
+    newThing,
+    ping
 }

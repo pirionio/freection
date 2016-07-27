@@ -3,6 +3,7 @@ const merge = require('lodash/merge')
 
 const FollowUpsActionTypes = require('../actions/types/follow-up-action-types')
 const ThingActionTypes = require('../actions/types/thing-action-types')
+const ThingCommandActionTypes = require('../actions/types/thing-command-action-types')
 const {ActionStatus, InvalidationStatus} = require('../constants')
 const thingReducer = require('./thing-reducer')
 const EventTypes = require('../../common/enums/event-types')
@@ -105,7 +106,7 @@ module.exports = (state = initialState, action) => {
     switch (action.type) {
         case FollowUpsActionTypes.FETCH_FOLLOW_UPS:
             return fetchFollowUps(state, action)
-        case ThingActionTypes.PING_THING:
+        case ThingCommandActionTypes.PING:
             return pingThing(state, action)
         case ThingActionTypes.CREATED_RECEIVED:
             return createdReceived(state, action)
