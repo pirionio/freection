@@ -1,6 +1,7 @@
 const router = require('express').Router()
 
 const ThingService = require('../../shared/application/thing-service')
+const EventService = require('../../shared/application/event-service')
 const EndpointUtil = require('../../shared/utils/endpoint-util')
 
 router.get('/whatsnew', function(request, response) {
@@ -94,7 +95,7 @@ router.post('/:thingId/comment', function(request, response) {
 })
 
 router.post('/:thingId/discard/:eventType', function(request, response) {
-    EndpointUtil.handlePost(request, response, ThingService.discardByType, {
+    EndpointUtil.handlePost(request, response, EventService.discardByType, {
         params: ['thingId', 'eventType'],
         result: false,
         errorTemplates: {
