@@ -1,4 +1,4 @@
-const ThingCommandActions = require('./generated/thing-command-action')
+const ThingCommandActions = require('./generated/thing-command-actions')
 const {actions} = require('react-redux-form')
 
 const commentAction = ThingCommandActions.comment

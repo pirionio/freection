@@ -6,7 +6,7 @@ const {connect} = require('react-redux')
 const classnames = require('classnames')
 
 const EventTypes = require('../../../common/enums/event-types')
-const ThingCommandActions = require('../../actions/thing-command-action')
+const ThingCommandActions = require('../../actions/thing-command-actions')
 
 class Comment extends Component {
     constructor(props) {

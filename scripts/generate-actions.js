@@ -117,7 +117,7 @@ function getTypesFilename(modelName) {
 }
 
 function getActionsFilename(modelName) {
-    return `${kebabCase(modelName)}-action`
+    return `${kebabCase(modelName)}-actions`
 }
 
 function generateTypesCode(model) {

@@ -5,7 +5,7 @@ const {connect} = require('react-redux')
 const ThingRow = require('../Messages/ThingRow')
 const Action = require('../Messages/Action')
 
-const ThingCommandActions = require('../../actions/thing-command-action')
+const ThingCommandActions = require('../../actions/thing-command-actions')
 
 class FollowUpThing extends Component {
     constructor(props) {

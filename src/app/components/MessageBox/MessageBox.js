@@ -5,7 +5,7 @@ const {Form, Field} = require('react-redux-form')
 const ReactDOM = require('react-dom');
 const {isEmpty} = require('lodash')
 
-const ThingCommandActions = require('../../actions/thing-command-action')
+const ThingCommandActions = require('../../actions/thing-command-actions')
 
 class NewPanel extends Component {
     constructor(props) {
