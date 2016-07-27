@@ -4,7 +4,7 @@ const EventService = require('../../shared/application/event-service')
 const EndpointUtil = require('../../shared/utils/endpoint-util')
 
 router.post('/:eventId/discard', function(request, response) {
-    EndpointUtil.handlePost(request, response, EventService.discardById, {
+    EndpointUtil.handlePost(request, response, EventService.discard, {
         params: ['eventId'],
         result: false,
         errorTemplates: {

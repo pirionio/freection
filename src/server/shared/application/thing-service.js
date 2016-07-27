@@ -123,6 +123,14 @@ function comment(user, thingId, commentText) {
         })
 }
 
+function discardEventsByType(user, thingId, eventType) {
+    return Event.discardUserEventsByType(thingId, eventType, user.id)
+        .catch(error => {
+            logger.error(`Could not discard events of type ${eventType} unread by user ${user.email} for thing ${thingId}`, error)
+            throw error
+        })
+}
+
 function performDoThing(thing, user) {
     thing.doers.push(user.id)
     thing.payload.status = TaskStatus.INPROGRESS.key
@@ -163,5 +171,6 @@ module.exports = {
     comment,
     close,
     abort,
-    ping
+    ping,
+    discardEventsByType
 }

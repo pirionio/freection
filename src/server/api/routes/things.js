@@ -95,7 +95,7 @@ router.post('/:thingId/comment', function(request, response) {
 })
 
 router.post('/:thingId/discard/:eventType', function(request, response) {
-    EndpointUtil.handlePost(request, response, EventService.discardByType, {
+    EndpointUtil.handlePost(request, response, ThingService.discardEventsByType, {
         params: ['thingId', 'eventType'],
         result: false,
         errorTemplates: {
