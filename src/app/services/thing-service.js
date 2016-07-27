@@ -1,10 +1,6 @@
 const ResourceUtil = require('../util/resource-util')
 const EventTypes = require('../../common/enums/event-types')
 
-function createNewThing(thing) {
-    return ResourceUtil.post('/api/new', thing)
-}
-
 function doThing(thingId) {
     return ResourceUtil.post(`/api/things/${thingId}/do`)
 }
@@ -37,5 +33,5 @@ function markCommentAsRead(comment) {
     return ResourceUtil.post(`/api/things/${comment.id}/markcommentasread`)
 }
 
-module.exports = {createNewThing, doThing, dismissThing, markThingAsDone, closeThing,
+module.exports = {doThing, dismissThing, markThingAsDone, closeThing,
     pingThing, discardComments, discardPing, markCommentAsRead}

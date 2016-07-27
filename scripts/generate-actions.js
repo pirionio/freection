@@ -93,7 +93,7 @@ function pairsToStrings(params) {
 function generateBody(body, indent) {
     const space = repeat(' ', indent * 4)
     const innerSpace = repeat(' ', (indent+1) * 4)
-    const seperator = `${innerSpace},\r\n`
+    const seperator = `,\r\n${innerSpace}`
 
     return `{\r\n${innerSpace}` +
         pairsToStrings(body).join(seperator) +

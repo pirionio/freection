@@ -4,17 +4,6 @@ const ThingActionTypes = require('./types/thing-action-types')
 const {ActionStatus} = require('../constants')
 const ThingService = require('../services/thing-service')
 
-function createNewThing(thing) {
-    return dispatch => {
-        var promise = ThingService.createNewThing({
-            to: thing.to,
-            body: thing.body,
-            subject: thing.subject
-        })
-        dispatch(actions.submit('messageBox', promise)).then(() => dispatch(actions.reset('messageBox')))
-    }
-}
-
 const newCommentReceived = (comment) => {
     return {
         type: ThingActionTypes.NEW_COMMENT_RECEIVED,
@@ -78,6 +67,6 @@ const thingPingReceived = (pingEvent) => {
     }
 }
 
-module.exports = {createNewThing, newCommentReceived,
+module.exports = {newCommentReceived,
     thingCreatedReceived, thingAcceptedReceived, thingDoneReceived, thingClosedReceived,
     commentReadByReceived, thingDimissedReceived, thingAbortedReceived, thingPingReceived}

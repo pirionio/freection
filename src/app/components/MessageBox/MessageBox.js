@@ -5,7 +5,6 @@ const {Form, Field} = require('react-redux-form')
 const ReactDOM = require('react-dom');
 const {isEmpty} = require('lodash')
 
-const ThingActions = require('../../actions/thing-actions')
 const ThingCommandActions = require('../../actions/thing-command-action')
 
 class NewPanel extends Component {
@@ -21,7 +20,7 @@ class NewPanel extends Component {
             this.props.comment(thingContext.id, messageBox.message.body)
             this.messageBody.focus()
         } else {
-            this.props.createNewThing(messageBox.message)
+            this.props.newThing(messageBox.message)
             this.messageTo.focus()
         }
     }
@@ -84,7 +83,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        createNewThing: (newMessage) => dispatch(ThingActions.createNewThing(newMessage)),
+        newThing: (newMessage) => dispatch(ThingCommandActions.newThing(newMessage)),
         comment: (thingId, commentText) => dispatch(ThingCommandActions.comment(thingId, commentText))
     }
 }

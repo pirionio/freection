@@ -28,6 +28,32 @@ function comment(thingId, commentText) {
     }
 }
 
+function newThing(thing) {
+    return dispatch => {
+        dispatch({
+            type: ThingCommandActionsTypes.NEW_THING, 
+            status: ActionStatus.START,
+            thing
+        })
+        return ResourceUtil.post(`/api/new`, {
+                to: thing.to,
+                body: thing.body,
+                subject: thing.subject
+            })
+            .then(result => dispatch({
+                type: ThingCommandActionsTypes.NEW_THING, 
+                status: ActionStatus.COMPLETE,
+                thing
+            }))
+            .catch(() => dispatch({
+                type: ThingCommandActionsTypes.NEW_THING, 
+                status: ActionStatus.ERROR,
+                thing
+            }))
+    }
+}
+
 module.exports = {
-    comment
+    comment,
+    newThing
 }

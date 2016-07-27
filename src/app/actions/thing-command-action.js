@@ -2,6 +2,7 @@ const ThingCommandActions = require('./generated/thing-command-action')
 const {actions} = require('react-redux-form')
 
 const commentAction = ThingCommandActions.comment
+const newThingAction = ThingCommandActions.newThing
 
 function comment(thingId, commentText) {
     return dispatch => {
@@ -12,5 +13,16 @@ function comment(thingId, commentText) {
     }
 }
 
+function newThing(thing) {
+    return dispatch => {
+        const promise = dispatch(newThingAction(thing))
+
+        dispatch(actions.submit('messageBox', promise)).then(() => dispatch(actions.reset('messageBox')))
+    }
+}
+
+
+
 module.exports = ThingCommandActions
 module.exports.comment = comment
+module.exports.newThing = newThing
