@@ -2,7 +2,7 @@ const some = require('lodash/some')
 const merge = require('lodash/merge')
 
 const ToDoActionTypes = require('../actions/types/to-do-action-types')
-const ThingActionTypes = require('../actions/types/thing-action-types')
+const EventActionTypes = require('../actions/types/event-action-types')
 const {ActionStatus, InvalidationStatus} = require('../constants')
 const EventTypes = require('../../common/enums/event-types')
 const thingReducer = require('./thing-reducer')
@@ -116,18 +116,18 @@ module.exports = (state = initialState, action) => {
             return toDo(state, action)
         case ToDoActionTypes.MARK_THING_AS_DONE:
             return markThingAsDone(state, action)
-        case ThingActionTypes.CREATED_RECEIVED:
-        case ThingActionTypes.ACCEPTED_RECEIVED:
+        case EventActionTypes.CREATED:
+        case EventActionTypes.ACCEPTED:
             return createdOrAcceptedReceived(state, action)
-        case ThingActionTypes.DONE_RECEIVED:
-        case ThingActionTypes.DISMISSED_RECEIVED:
+        case EventActionTypes.MARKED_AS_DONE:
+        case EventActionTypes.DISMISSED:
             return doneOrDismissedReceived(state, action)
-        case ThingActionTypes.NEW_COMMENT_RECEIVED:
-        case ThingActionTypes.COMMENT_READ_BY_RECEIVED:
+        case EventActionTypes.COMMENT_CREATED:
+        case EventActionTypes.COMMENT_READ_BY:
             return commentChangedOrAdded(state, action)
-        case ThingActionTypes.ABORTED_RECEIVED:
+        case EventActionTypes.ABORTED:
             return abortedReceived(state, action)
-        case ThingActionTypes.PING_RECEIVED:
+        case EventActionTypes.PINGED:
             return pingReceived(state, action)
         default:
             return state

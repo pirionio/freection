@@ -1,5 +1,5 @@
 const TaskActionTypes = require('../actions/types/task-action-types')
-const ThingActionTypes = require('../actions/types/thing-action-types')
+const EventActionTypes = require('../actions/types/event-action-types')
 const WhatsNewActionTypes = require('../actions/types/whats-new-action-types')
 const ToDoActionTypes = require('../actions/types/to-do-action-types.js')
 const TaskStatus = require('../../common/enums/task-status.js')
@@ -178,16 +178,16 @@ module.exports = (state = initialState, action) => {
             return pingThing(state, action)
         case ThingCommandActionTypes.MARK_COMMENT_AS_READ:
             return markCommentAsRead(state, action)
-        case ThingActionTypes.NEW_COMMENT_RECEIVED:
-        case ThingActionTypes.COMMENT_READ_BY_RECEIVED:
+        case EventActionTypes.COMMENT_CREATED:
+        case EventActionTypes.COMMENT_READ_BY:
             return commentChangedOrAdded(state, action)
-        case ThingActionTypes.PING_RECEIVED:
+        case EventActionTypes.PINGED:
             return pingReceived(state, action)
-        case ThingActionTypes.ACCEPTED_RECEIVED:
-        case ThingActionTypes.DONE_RECEIVED:
-        case ThingActionTypes.CLOSED_RECEIVED:
-        case ThingActionTypes.DISMISSED_RECEIVED:
-        case ThingActionTypes.ABORTED_RECEIVED:
+        case EventActionTypes.ACCEPTED:
+        case EventActionTypes.MARKED_AS_DONE:
+        case EventActionTypes.CLOSED:
+        case EventActionTypes.DISMISSED:
+        case EventActionTypes.ABORTED:
             return statusChanged(state, action)
         case WhatsNewActionTypes.DO_THING:
             return doThing(state, action)

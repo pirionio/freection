@@ -1,7 +1,7 @@
 const SocketUtil = require('../util/socket-util')
 
 const WhatsNewActions = require('../actions/whats-new-actions')
-const ThingActions = require('../actions/thing-actions')
+const EventActions = require('../actions/event-actions')
 const EventTypes = require('../../common/enums/event-types')
 
 function listenToUpdates(pushToken, dispatch) {
@@ -12,28 +12,28 @@ function listenToUpdates(pushToken, dispatch) {
             dispatch(WhatsNewActions.notificationReceived(event))
 
         if (event.eventType.key === EventTypes.COMMENT.key)
-            dispatch(ThingActions.newCommentReceived(event))
+            dispatch(EventActions.commentCreated(event))
 
         if (event.eventType.key === EventTypes.CREATED.key)
-            dispatch(ThingActions.thingCreatedReceived(event.thing))
+            dispatch(EventActions.created(event.thing))
 
         if (event.eventType.key === EventTypes.ACCEPTED.key)
-            dispatch(ThingActions.thingAcceptedReceived(event.thing))
+            dispatch(EventActions.accepted(event.thing))
 
         if (event.eventType.key === EventTypes.DONE.key)
-            dispatch(ThingActions.thingDoneReceived(event.thing))
+            dispatch(EventActions.markedAsDone(event.thing))
 
         if (event.eventType.key === EventTypes.CLOSED.key)
-            dispatch(ThingActions.thingClosedReceived(event.thing))
+            dispatch(EventActions.closed(event.thing))
 
         if (event.eventType.key === EventTypes.DISMISSED.key)
-            dispatch(ThingActions.thingDimissedReceived(event.thing))
+            dispatch(EventActions.dismissed(event.thing))
 
         if (event.eventType.key === EventTypes.ABORTED.key)
-            dispatch(ThingActions.thingAbortedReceived(event.thing))
+            dispatch(EventActions.aborted(event.thing))
     
         if (event.eventType.key === EventTypes.PING.key)
-            dispatch(ThingActions.thingPingReceived(event))
+            dispatch(EventActions.pinged(event))
     })
 
     socket.on('notification-deleted', event => {
@@ -41,7 +41,7 @@ function listenToUpdates(pushToken, dispatch) {
     })
 
     socket.on('comment-read-by', event => {
-        dispatch(ThingActions.commentReadByReceived(event))
+        dispatch(EventActions.commentReadBy(event))
     })
 }
 
