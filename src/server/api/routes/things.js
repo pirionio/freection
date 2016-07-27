@@ -5,15 +5,28 @@ const EventService = require('../../shared/application/event-service')
 const EndpointUtil = require('../../shared/utils/endpoint-util')
 
 router.get('/whatsnew', function(request, response) {
-    EndpointUtil.handleGet(request, response, ThingService.getWhatsNew, 'What\'s New')
+    EndpointUtil.handleGet(request, response, ThingService.getWhatsNew, {
+        type: 'What\'s New'
+    })
 })
 
 router.get('/do', function(request, response) {
-    EndpointUtil.handleGet(request, response, ThingService.getToDo, 'To Dos')
+    EndpointUtil.handleGet(request, response, ThingService.getToDo, {
+        type: 'To Dos'
+    })
 })
 
 router.get('/followups', function(request, response) {
-    EndpointUtil.handleGet(request, response, ThingService.getFollowUps, 'Follow Ups')
+    EndpointUtil.handleGet(request, response, ThingService.getFollowUps, {
+        type: 'Follow Ups'
+    })
+})
+
+router.get('/:thingId', function(request, response) {
+    EndpointUtil.handleGet(request, response, ThingService.getThing, {
+        type: 'thing',
+        params: ['thingId']
+    })
 })
 
 router.post('/:thingId/do', function(request, response) {

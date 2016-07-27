@@ -16,7 +16,7 @@ const Action = require('../Messages/Action')
 const TaskActions = require('../../actions/task-actions')
 const ThingCommandActions = require('../../actions/thing-command-actions')
 
-const TaskStatus = require('../../../common/enums/task-status')
+const ThingStatus = require('../../../common/enums/thing-status')
 const EventTypes = require('../../../common/enums/event-types')
 
 class Task extends Component {
@@ -62,39 +62,39 @@ class Task extends Component {
 
         let actions = []
 
-        if (task.payload.status === TaskStatus.NEW.key && this.isCurrentUserTheTo()) {
+        if (task.payload.status === ThingStatus.NEW.key && this.isCurrentUserTheTo()) {
             actions.push(
                 <Action label="Do" doFunc={this.doTask} key="action-Do" />
             )
         }
 
-        if ((task.payload.status === TaskStatus.NEW.key ||
-            task.payload.status === TaskStatus.INPROGRESS.key) && this.isCurrentUserTheTo()) {
+        if ((task.payload.status === ThingStatus.NEW.key ||
+            task.payload.status === ThingStatus.INPROGRESS.key) && this.isCurrentUserTheTo()) {
             actions.push(
                 <Action label="Dismiss" doFunc={this.dismissThing} key="action-Dismiss" />
             )
         }
 
-        if ((task.payload.status === TaskStatus.INPROGRESS.key || task.payload.status === TaskStatus.NEW.key) && this.isCurrentUserTheTo()) {
+        if ((task.payload.status === ThingStatus.INPROGRESS.key || task.payload.status === ThingStatus.NEW.key) && this.isCurrentUserTheTo()) {
             actions.push(
                 <Action label="Done" doFunc={this.markThingAsDone} key="action-Done" />
             )
         }
 
-        if (task.payload.status === TaskStatus.DONE.key && this.isCurrentUserTheCreator()) {
+        if (task.payload.status === ThingStatus.DONE.key && this.isCurrentUserTheCreator()) {
             actions.push(
                 <Action label="Close" doFunc={this.closeThing} key="action-Close" />
             )
         }
 
-        if ((task.payload.status == TaskStatus.INPROGRESS.key ||
-            task.payload.status == TaskStatus.NEW.key) && this.isCurrentUserTheCreator()) {
+        if ((task.payload.status == ThingStatus.INPROGRESS.key ||
+            task.payload.status == ThingStatus.NEW.key) && this.isCurrentUserTheCreator()) {
             actions.push(
                 <Action label="Abort" doFunc={this.abortThing} key="action-Abort" />
             )
         }
 
-        if (task.payload.status === TaskStatus.INPROGRESS.key && this.isCurrentUserTheCreator()) {
+        if (task.payload.status === ThingStatus.INPROGRESS.key && this.isCurrentUserTheCreator()) {
             actions.push(
                 <Action label="Ping" doFunc={this.pingThing} key="action-Ping" />
             )

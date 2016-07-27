@@ -3,7 +3,7 @@ const {remove} = require('lodash')
 const {Event, Thing} = require('../models')
 const EventCreator = require('./event-creator')
 const {eventToDto, thingToDto} = require('../transformers')
-const TaskStatus = require('../../../common/enums/task-status')
+const ThingStatus = require('../../../common/enums/thing-status')
 const EventTypes = require('../../../common/enums/event-types')
 const logger = require('../utils/logger')
 
@@ -34,13 +34,22 @@ function getFollowUps(user) {
         })
 }
 
+function getThing(user, thingId) {
+    return Thing.getFullThing(thingId)
+        .then(thing => thingToDto(thing, user))
+        .catch(error => {
+            logger.error(`error while fetching thing ${thingId} for user ${user.email}`, error)
+            throw error
+        })
+}
+
 function doThing(user, thingId) {
     return Thing.get(thingId).run()
         .then(thing => performDoThing(thing, user))
         .then(thing => EventCreator.createAccepted(user, thing))
         .then(() => Event.discardUserEventsByType(thingId, EventTypes.CREATED.key, user.id))
-        .catch((error) => {
-            logger.error(`error while setting user ${user.email} as doer of thing ${thingId}: ${error}`)
+        .catch(error => {
+            logger.error(`error while setting user ${user.email} as doer of thing ${thingId}:`, error)
             throw error
         }
     )
@@ -53,8 +62,8 @@ function dismiss(user, thingId) {
                 .then(() => Event.discardAllUserEvents(thingId, user.id))
                 .then(() => EventCreator.createDismissed(user, thing))
         })
-        .catch((error) => {
-            logger.error(`error while dismissing thing ${thingId} by user ${user.email}: ${error}`)
+        .catch(error => {
+            logger.error(`error while dismissing thing ${thingId} by user ${user.email}`, error)
             throw error
         })
 }
@@ -66,11 +75,10 @@ function close(user, thingId) {
         .then(thing => performClose(thing, user))
         .then(thing => EventCreator.createClosed(user, thing))
         .then(() => Event.discardAllUserEvents(thingId, user.id))
-        .catch((error) => {
-                logger.error(`error while closing thing ${thingId} by user ${user.email}: ${error}`)
-                throw error
-            }
-        )
+        .catch(error => {
+            logger.error(`error while closing thing ${thingId} by user ${user.email}:`, error)
+            throw error
+        })
 }
 
 function abort(user, thingId) {
@@ -82,8 +90,8 @@ function abort(user, thingId) {
                 .then(() => Event.discardAllUserEvents(thingId, user.id))
                 .then(() => EventCreator.createAborted(user, thing))
         })
-        .catch((error) => {
-            logger.error(`error while aborting thing ${thingId} by user ${user.email}: ${error}`)
+        .catch(error => {
+            logger.error(`error while aborting thing ${thingId} by user ${user.email}:`, error)
             throw error
         })
 }
@@ -95,7 +103,7 @@ function markAsDone(user, thingId) {
                 .then(() => Event.discardAllUserEvents(thingId, user.id))
                 .then(() => EventCreator.createDone(user, thing))
         })
-        .catch((error) => {
+        .catch(error => {
             logger.error(`Error while marking thing ${thingId} as done by user ${user.email}:`, error)
             throw error
         })
@@ -133,31 +141,31 @@ function discardEventsByType(user, thingId, eventType) {
 
 function performDoThing(thing, user) {
     thing.doers.push(user.id)
-    thing.payload.status = TaskStatus.INPROGRESS.key
+    thing.payload.status = ThingStatus.INPROGRESS.key
     return thing.save()
 }
 
 function performDismiss(thing, user) {
     remove(thing.doers, doerId => doerId === user.id)
-    thing.payload.status = TaskStatus.DISMISS.key
+    thing.payload.status = ThingStatus.DISMISS.key
     return thing.save()
 }
 
 function performMarkAsDone(thing, user) {
     remove(thing.doers, doerId => doerId === user.id)
-    thing.payload.status = TaskStatus.DONE.key
+    thing.payload.status = ThingStatus.DONE.key
     return thing.save()
 }
 
 function performClose(thing, user) {
     remove(thing.followUpers, followUperId => followUperId === user.id)
-    thing.payload.status = TaskStatus.CLOSE.key
+    thing.payload.status = ThingStatus.CLOSE.key
     return thing.save()
 }
 
 function performAbort(thing, user) {
     remove(thing.followUpers, followUperId => followUperId === user.id)
-    thing.payload.status = TaskStatus.ABORT.key
+    thing.payload.status = ThingStatus.ABORT.key
     return thing.save()
 }
 
@@ -165,6 +173,7 @@ module.exports = {
     getWhatsNew,
     getToDo,
     getFollowUps,
+    getThing,
     doThing,
     dismiss,
     markAsDone,

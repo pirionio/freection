@@ -6,9 +6,9 @@ const config = require('../shared/config/google-oauth')
 const {User, Event, Thing, uuid} = require('../shared/models')
 const promisify = require('../shared/utils/promisify')
 const Connection = require('./Connection')
-const eventTypes = require('../../common/enums/event-types')
-const thingTypes = require('../../common/enums/thing-types')
-const taskStatus = require('../../common/enums/task-status')
+const EventTypes = require('../../common/enums/event-types')
+const ThingTypes = require('../../common/enums/thing-types')
+const ThingStatus = require('../../common/enums/thing-status')
 
 require('../shared/utils/promiseExtensions')
 
@@ -106,16 +106,16 @@ function convertToThingAndEvents(tuple) {
             subject: message.header.subject,
             doers: [],
             followUpers: [],
-            type: thingTypes.TASK.key,
+            type: ThingTypes.TASK.key,
             payload: {
-                status: taskStatus.NEW.key
+                status: ThingStatus.NEW.key
             }
         }
 
         const event = {
             thingId,
             creatorUserId: fromUser.id,
-            eventType: eventTypes.CREATED.key,
+            eventType: EventTypes.CREATED.key,
             createdAt: message.header.date,
             showNewList: [user.id]
         }

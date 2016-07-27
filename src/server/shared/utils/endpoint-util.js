@@ -4,12 +4,14 @@ const merge = require('lodash/merge')
 
 const logger = require('../../shared/utils/logger')
 
-function handleGet(request, response, action, type) {
+function handleGet(request, response, action, options) {
     const user = request.user
 
-    action(user)
+    const params = getParams(request, options)
+
+    action(user, ...params)
         .then(result => response.json(result))
-        .catch(error => response.status(500).send(`Could not fetch ${type} for user ${user.email}: ${error.message}`))
+        .catch(error => response.status(500).send(`Could not find ${options.type} for user ${user.email}: ${error.message}`))
 }
 
 function handlePost(request, response, action, options) {

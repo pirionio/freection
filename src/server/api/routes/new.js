@@ -3,7 +3,7 @@ const router = require('express').Router()
 const {Thing, User, Event} = require('../../shared/models')
 const EventTypes = require('../../../common/enums/event-types')
 const ThingTypes = require('../../../common/enums/thing-types')
-const TaskStatus = require('../../../common/enums/task-status')
+const ThingStatus = require('../../../common/enums/thing-status')
 const logger = require('../../shared/utils/logger')
 
 router.post('/', function(request, response) {
@@ -36,7 +36,7 @@ router.post('/', function(request, response) {
                 doers: [],
                 type: ThingTypes.TASK.key,
                 payload: {
-                    status: TaskStatus.NEW.key
+                    status: ThingStatus.NEW.key
                 }
             })
         }).

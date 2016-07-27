@@ -2,9 +2,9 @@ const TaskActionTypes = require('../actions/types/task-action-types')
 const EventActionTypes = require('../actions/types/event-action-types')
 const WhatsNewActionTypes = require('../actions/types/whats-new-action-types')
 const ToDoActionTypes = require('../actions/types/to-do-action-types.js')
-const TaskStatus = require('../../common/enums/task-status.js')
+const ThingStatus = require('../../common/enums/thing-status.js')
 const ThingCommandActionTypes = require('../actions/types/thing-command-action-types')
-const EventTypes = require('../../common/enums/event-types')
+const ypes = require('../../common/enums/event-types')
 const {ActionStatus} = require('../constants')
 const thingReducer = require('./thing-reducer')
 
@@ -128,23 +128,23 @@ function statusChanged(state, action) {
 }
 
 function doThing(state, action) {
-    return asyncStatusOperation(state, action, TaskStatus.INPROGRESS.key)
+    return asyncStatusOperation(state, action, ThingStatus.INPROGRESS.key)
 }
 
 function dismissThing(state, action) {
-    return asyncStatusOperation(state, action, TaskStatus.DISMISS.key)
+    return asyncStatusOperation(state, action, ThingStatus.DISMISS.key)
 }
 
 function markThingAsDone(state, action) {
-    return asyncStatusOperation(state, action, TaskStatus.DONE.key)
+    return asyncStatusOperation(state, action, ThingStatus.DONE.key)
 }
 
 function closeThing(state, action) {
-    return asyncStatusOperation(state, action, TaskStatus.CLOSE.key)
+    return asyncStatusOperation(state, action, ThingStatus.CLOSE.key)
 }
 
 function abortThing(state, action) {
-    return asyncStatusOperation(state, action, TaskStatus.ABORT.key)
+    return asyncStatusOperation(state, action, ThingStatus.ABORT.key)
 }
 
 function asyncStatusOperation(state, action, status) {
