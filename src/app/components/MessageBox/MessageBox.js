@@ -3,7 +3,7 @@ const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const {Form, Field} = require('react-redux-form')
 const ReactDOM = require('react-dom');
-const {isEmpty} = require('lodash')
+const isEmpty = require('lodash/isEmpty')
 
 const ThingCommandActions = require('../../actions/thing-command-actions')
 

@@ -2,7 +2,7 @@ const React = require('react')
 const {Component, PropTypes} = React
 const DocumentTitle = require('react-document-title')
 const {connect} = require('react-redux')
-const {sortBy} = require('lodash/core')
+const sortBy = require('lodash/sortBy')
 
 const MessagesContainer = require('../Messages/MessagesContainer')
 const FollowUpsActions = require('../../actions/follow-up-actions')

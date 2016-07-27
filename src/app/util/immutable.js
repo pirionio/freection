@@ -1,86 +1,87 @@
-const _ = require('lodash')
+const clone = require('lodash/clone')
+const set = require('lodash/set')
+const get = require('lodash/get')
+const reject = require('lodash/reject')
+const some = require('lodash/some')
+const merge = require('lodash/merge')
+const isFunction = require('lodash/isFunction')
+const isMatch = require('lodash/isMatch')
 
 class Immutable {
     constructor(source) {
-        this._object = _.clone(source)
+        this._object = clone(source)
     }
 
     touch(path) {
-        const value = _.clone(_.get(this._object, path))
-        _.set(this._object, path, value)
+        const value = clone(get(this._object, path))
+        set(this._object, path, value)
 
         return this
     }
 
     set(path, value) {
-        _.set(this._object, path, value)
+        set(this._object, path, value)
 
         return this
     }
 
     arrayReject(path, predicate) {
-        const array = _.get(this._object, path)
-        _.set(this._object, path, _.reject(array, predicate))
+        const array = get(this._object, path)
+        set(this._object, path, reject(array, predicate))
 
         return this
     }
 
     arrayMergeItem(path, predicate, updater) {
-        const array = _.get(this._object, path)
+        const array = get(this._object, path)
 
         if (array) {
-            _.set(this._object, path, arraySetOrMergeItem(array, predicate, updater, true))
+            set(this._object, path, arraySetOrMergeItem(array, predicate, updater, true))
         }
 
         return this
     }
 
     arrayPushItem(path, value) {
-        const array = _.get(this._object, path)
+        const array = get(this._object, path)
 
         if (array) {
-            _.set(this._object, path, [...array, value])
+            set(this._object, path, [...array, value])
         }
 
         return this
     }
 
     arraySetItem(path, predicate, updater) {
-        const array = _.get(this._object, path)
+        const array = get(this._object, path)
 
         if (array) {
-            _.set(this._object, path, arraySetOrMergeItem(array, predicate, updater, false))
+            set(this._object, path, arraySetOrMergeItem(array, predicate, updater, false))
         }
 
         return this
     }
     
     arraySetOrPushItem(path, predicate, value) {
-        const array = _.get(this._object, path)
+        const array = get(this._object, path)
 
         if (array) {
-            if (_.some(array, predicate))
-                _.set(this._object, path, arraySetOrMergeItem(array, predicate, value, false))
+            if (some(array, predicate))
+                set(this._object, path, arraySetOrMergeItem(array, predicate, value, false))
             else
-                _.set(this._object, path, [...array, value])
+                set(this._object, path, [...array, value])
         }
 
         return this
     }
 
     arraySetAll(path, updater) {
-        const array = _.get(this._object, path)
+        const array = get(this._object, path)
         
         if (array) {
-            _.set(this._object, path, arraySetOrMergeItem(array, () => true, updater, false))
+            set(this._object, path, arraySetOrMergeItem(array, () => true, updater, false))
         }
         
-        return this
-    }
-
-    set(path, value) {
-        _.set(this._object, path, value)
-
         return this
     }
 
@@ -93,7 +94,7 @@ function arraySetOrMergeItem(array, predicate, updater, isMerge) {
     return array.map(item => {
         if (matchItem(item, predicate)) {
             const value = getItemValue(item, updater)
-            return isMerge ? _.merge({}, item, value) : value
+            return isMerge ? merge({}, item, value) : value
         } else {
             return item
         }
@@ -101,15 +102,15 @@ function arraySetOrMergeItem(array, predicate, updater, isMerge) {
 }
 
 function getItemValue(item, updater) {
-    return _.isFunction(updater) ? updater(item) : updater
+    return isFunction(updater) ? updater(item) : updater
 }
 
 function matchItem(item, predicate) {
-    if (_.isFunction(predicate)) {
+    if (isFunction(predicate)) {
         return predicate(item)
     }
 
-    return _.isMatch(item, predicate)
+    return isMatch(item, predicate)
 }
 
 function immutable(source) {
