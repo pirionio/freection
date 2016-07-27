@@ -5,10 +5,7 @@ const {connect} = require('react-redux')
 const MessageRow = require('../Messages/MessageRow')
 const Action = require('../Messages/Action')
 
-const DoThingActions = require('../../actions/do-thing-actions')
-const DismissThingActions = require('../../actions/dismiss-thing-actions')
-const MarkThingDoneActions = require('../../actions/mark-thing-done-actions')
-const CloseThingActions = require('../../actions/close-thing-actions')
+const ThingCommandActions = require('../../actions/thing-command-actions')
 const DiscardCommentsActions = require('../../actions/discard-comments-actions')
 const DiscardPingActions = require('../../actions/discard-ping-actions')
 const EventTypes = require('../../../common/enums/event-types')
@@ -27,22 +24,22 @@ class NewNotification extends Component {
 
     doThing() {
         const {dispatch, notification} = this.props
-        dispatch(DoThingActions.doThing(notification.thing))
+        dispatch(ThingCommandActions.doThing(notification.thing))
     }
 
     dismissThing() {
         const {dispatch, notification} = this.props
-        dispatch(DismissThingActions.dismissThing(notification.thing))
+        dispatch(ThingCommandActions.dismiss(notification.thing))
     }
 
     markThingAsDone() {
         const {dispatch, notification} = this.props
-        dispatch(MarkThingDoneActions.markThingAsDone(notification.thing))
+        dispatch(ThingCommandActions.markAsDone(notification.thing))
     }
 
     closeThing() {
         const {dispatch, notification} = this.props
-        dispatch(CloseThingActions.closeThing(notification.thing))
+        dispatch(ThingCommandActions.close(notification.thing))
     }
 
     discardComments() {

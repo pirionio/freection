@@ -114,7 +114,7 @@ module.exports = (state = initialState, action) => {
     switch (action.type) {
         case ToDoActionTypes.FETCH_TO_DO:
             return toDo(state, action)
-        case ToDoActionTypes.MARK_THING_AS_DONE:
+        case ToDoActionTypes.MARK_AS_DONE:
             return markThingAsDone(state, action)
         case EventActionTypes.CREATED:
         case EventActionTypes.ACCEPTED:

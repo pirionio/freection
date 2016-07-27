@@ -1,5 +1,6 @@
 const WhatsNewActionTypes = require('../actions/types/whats-new-action-types')
 const ToDoActionTypes = require('../actions/types/to-do-action-types')
+const ThingCommandActionTypes = require('../actions/types/thing-command-action-types')
 const {ActionStatus} = require('../constants')
 const EventTypes = require('../../common/enums/event-types')
 const {InvalidationStatus} = require('../constants')
@@ -121,12 +122,12 @@ module.exports = (state = initialState, action) => {
     switch (action.type) {
         case WhatsNewActionTypes.FETCH_WHATS_NEW:
             return fetchWhatsNew(state, action)
-        case WhatsNewActionTypes.DO_THING:
+        case ThingCommandActionTypes.DO_THING:
             return doThing(state, action)
-        case WhatsNewActionTypes.DISMISS_THING:
-        case ToDoActionTypes.MARK_THING_AS_DONE:
-        case WhatsNewActionTypes.CLOSE_THING:
-        case WhatsNewActionTypes.ABORT_THING:
+        case ThingCommandActionTypes.DISMISS:
+        case ThingCommandActionTypes.MARK_AS_DONE:
+        case ThingCommandActionTypes.CLOSE:
+        case ThingCommandActionTypes.ABORT:
             return removeNotificationsOfThing(state, action)
         case WhatsNewActionTypes.DISCARD_COMMENTS:
             return discardComments(state, action)

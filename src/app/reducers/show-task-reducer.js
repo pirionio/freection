@@ -189,15 +189,15 @@ module.exports = (state = initialState, action) => {
         case EventActionTypes.DISMISSED:
         case EventActionTypes.ABORTED:
             return statusChanged(state, action)
-        case WhatsNewActionTypes.DO_THING:
+        case ThingCommandActionTypes.DO_THING:
             return doThing(state, action)
-        case ToDoActionTypes.MARK_THING_AS_DONE:
+        case ThingCommandActionTypes.MARK_AS_DONE:
             return markThingAsDone(state, action)
-        case WhatsNewActionTypes.CLOSE_THING:
+        case ThingCommandActionTypes.CLOSE:
             return closeThing(state, action)
-        case WhatsNewActionTypes.DISMISS_THING:
+        case ThingCommandActionTypes.DISMISS:
             return dismissThing(state, action)
-        case WhatsNewActionTypes.ABORT_THING:
+        case ThingCommandActionTypes.ABORT:
             return abortThing(state, action)
         default:
             return state

@@ -96,9 +96,119 @@ function markCommentAsRead(comment) {
     }
 }
 
+function doThing(thing) {
+    return dispatch => {
+        dispatch({
+            type: ThingCommandActionsTypes.DO_THING, 
+            status: ActionStatus.START,
+            thing
+        })
+        return ResourceUtil.post(`/api/things/${thing.id}/do`)
+            .then(result => dispatch({
+                type: ThingCommandActionsTypes.DO_THING, 
+                status: ActionStatus.COMPLETE,
+                thing
+            }))
+            .catch(() => dispatch({
+                type: ThingCommandActionsTypes.DO_THING, 
+                status: ActionStatus.ERROR,
+                thing
+            }))
+    }
+}
+
+function abort(thing) {
+    return dispatch => {
+        dispatch({
+            type: ThingCommandActionsTypes.ABORT, 
+            status: ActionStatus.START,
+            thing
+        })
+        return ResourceUtil.post(`/api/things/${thing.id}/abort`)
+            .then(result => dispatch({
+                type: ThingCommandActionsTypes.ABORT, 
+                status: ActionStatus.COMPLETE,
+                thing
+            }))
+            .catch(() => dispatch({
+                type: ThingCommandActionsTypes.ABORT, 
+                status: ActionStatus.ERROR,
+                thing
+            }))
+    }
+}
+
+function close(thing) {
+    return dispatch => {
+        dispatch({
+            type: ThingCommandActionsTypes.CLOSE, 
+            status: ActionStatus.START,
+            thing
+        })
+        return ResourceUtil.post(`/api/things/${thing.id}/close`)
+            .then(result => dispatch({
+                type: ThingCommandActionsTypes.CLOSE, 
+                status: ActionStatus.COMPLETE,
+                thing
+            }))
+            .catch(() => dispatch({
+                type: ThingCommandActionsTypes.CLOSE, 
+                status: ActionStatus.ERROR,
+                thing
+            }))
+    }
+}
+
+function dismiss(thing) {
+    return dispatch => {
+        dispatch({
+            type: ThingCommandActionsTypes.DISMISS, 
+            status: ActionStatus.START,
+            thing
+        })
+        return ResourceUtil.post(`/api/things/${thing.id}/dismiss`)
+            .then(result => dispatch({
+                type: ThingCommandActionsTypes.DISMISS, 
+                status: ActionStatus.COMPLETE,
+                thing
+            }))
+            .catch(() => dispatch({
+                type: ThingCommandActionsTypes.DISMISS, 
+                status: ActionStatus.ERROR,
+                thing
+            }))
+    }
+}
+
+function markAsDone(thing) {
+    return dispatch => {
+        dispatch({
+            type: ThingCommandActionsTypes.MARK_AS_DONE, 
+            status: ActionStatus.START,
+            thing
+        })
+        return ResourceUtil.post(`/api/things/${thing.id}/done`)
+            .then(result => dispatch({
+                type: ThingCommandActionsTypes.MARK_AS_DONE, 
+                status: ActionStatus.COMPLETE,
+                thing
+            }))
+            .catch(() => dispatch({
+                type: ThingCommandActionsTypes.MARK_AS_DONE, 
+                status: ActionStatus.ERROR,
+                thing
+            }))
+    }
+}
+
 module.exports = {
     comment,
     newThing,
     ping,
-    markCommentAsRead
+    markCommentAsRead,
+    doThing,
+    abort,
+    close,
+    dismiss,
+    markAsDone
 }

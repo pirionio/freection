@@ -5,7 +5,7 @@ const {connect} = require('react-redux')
 const ThingRow = require('../Messages/ThingRow')
 const Action = require('../Messages/Action')
 
-const MarkThingDoneActions = require('../../actions/mark-thing-done-actions')
+const ThingCommandActions = require('../../actions/thing-command-actions')
 
 class DoThing extends Component {
     constructor(props) {
@@ -15,7 +15,7 @@ class DoThing extends Component {
 
     markThingAsDone() {
         const {thing, dispatch} = this.props
-        dispatch(MarkThingDoneActions.markThingAsDone(thing))
+        dispatch(ThingCommandActions.markThingAsDone(thing))
     }
 
     getActions() {

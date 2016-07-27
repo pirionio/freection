@@ -14,11 +14,6 @@ const CommentList = require('../Comment/CommentList')
 const Action = require('../Messages/Action')
 
 const TaskActions = require('../../actions/task-actions')
-const DoThingActions = require('../../actions/do-thing-actions')
-const DismissThingActions = require('../../actions/dismiss-thing-actions')
-const MarkThingDoneActions = require('../../actions/mark-thing-done-actions')
-const CloseThingActions = require('../../actions/close-thing-actions')
-const AbortThingActions = require('../../actions/abort-thing-actions')
 const ThingCommandActions = require('../../actions/thing-command-actions')
 
 const TaskStatus = require('../../../common/enums/task-status')
@@ -110,27 +105,27 @@ class Task extends Component {
 
     doTask() {
         const {dispatch, task} = this.props
-        dispatch(DoThingActions.doThing(task))
+        dispatch(ThingCommandActions.doThing(task))
     }
 
     dismissThing() {
         const {dispatch, task} = this.props
-        dispatch(DismissThingActions.dismissThing(task))
+        dispatch(ThingCommandActions.dismiss(task))
     }
 
     markThingAsDone() {
         const {dispatch, task} = this.props
-        dispatch(MarkThingDoneActions.markThingAsDone(task))
+        dispatch(ThingCommandActions.markAsDone(task))
     }
 
     closeThing() {
         const {dispatch, task} = this.props
-        dispatch(CloseThingActions.closeThing(task))
+        dispatch(ThingCommandActions.close(task))
     }
 
     abortThing() {
         const {dispatch, task} = this.props
-        dispatch(AbortThingActions.abortThing(task))
+        dispatch(ThingCommandActions.abort(task))
     }
 
     pingThing() {

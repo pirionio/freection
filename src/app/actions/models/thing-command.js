@@ -41,5 +41,35 @@ module.exports = {
             type: 'post',
             path: '/api/things/${comment.id}/markcommentasread'
         },
+        {
+            name: 'doThing',
+            params: ['thing'],
+            type: 'post',
+            path: '/api/things/${thing.id}/do'
+        },
+        {
+            name: 'abort',
+            params: ['thing'],
+            type: 'post',
+            path: '/api/things/${thing.id}/abort'
+        },
+        {
+            name: 'close',
+            params: ['thing'],
+            type: 'post',
+            path: '/api/things/${thing.id}/close'
+        },
+        {
+            name: 'dismiss',
+            params: ['thing'],
+            type: 'post',
+            path: '/api/things/${thing.id}/dismiss'
+        },
+        {
+            name: 'mark as done',
+            params: ['thing'],
+            type: 'post',
+            path: '/api/things/${thing.id}/done'
+        },
     ]
 }
