@@ -46,7 +46,7 @@ module.exports = (state, action) => {
         case EventActionTypes.PINGED:
             return pingReceived(state, action)
         case EventActionTypes.ACCEPTED:
-        case EventActionTypes.DONE:
+        case EventActionTypes.MARKED_AS_DONE:
         case EventActionTypes.CLOSED:
         case EventActionTypes.DISMISSED:
         case EventActionTypes.ABORTED:
