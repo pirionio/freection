@@ -1,21 +1,32 @@
 const router = require('express').Router()
 
 const EventService = require('../../shared/application/event-service')
-const logger = require('../../shared/utils/logger')
+const EndpointUtil = require('../../shared/utils/endpoint-util')
 
 router.post('/:eventId/discard', function(request, response) {
-    const user = request.user
-    const {eventId} = request.params
-
-    EventService.discardById(user, eventId)
-        .then(() => response.json({}))
-        .catch(error => {
-            if (error && error.name === 'DocumentNotFoundError') {
-                response.status(404).send(`Could not find Event with ID ${eventId}`)
-            } else {
-                response.status(500).send(`Could not discard event ${eventId} unread by user ${user.email}: ${error.message}`)
-            }
-        })
+    EndpointUtil.handlePost(request, response, EventService.discardById, {
+        params: ['eventId'],
+        result: false,
+        errorTemplates: {
+            notFound: getNotFoundErrorTemplate(),
+            general: 'Could not discard event <%=eventId%> unread by user <%=user%>'
+        }
+    })
 })
+
+router.post('/:eventId/markasread', function(request, response) {
+    EndpointUtil.handlePost(request, response, EventService.markAsRead, {
+        params: ['eventId'],
+        result: true,
+        errorTemplates: {
+            notFound: getNotFoundErrorTemplate(),
+            general: 'Could not mark event <%=eventId%> as read by user <%=user%>'
+        }
+    })
+})
+
+function getNotFoundErrorTemplate() {
+    return 'Could not find event ${eventId}'
+}
 
 module.exports = router

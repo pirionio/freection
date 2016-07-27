@@ -42,7 +42,7 @@ module.exports = {
             name: 'mark comment as read',
             params: ['comment'],
             type: 'post',
-            path: '/api/things/${comment.id}/markcommentasread'
+            path: '/api/events/${comment.id}/markasread'
         },
         {
             name: 'doThing',

@@ -83,7 +83,7 @@ function markCommentAsRead(comment) {
             status: ActionStatus.START,
             comment
         })
-        return ResourceUtil.post(`/api/things/${comment.id}/markcommentasread`)
+        return ResourceUtil.post(`/api/events/${comment.id}/markasread`)
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.MARK_COMMENT_AS_READ, 
                 status: ActionStatus.COMPLETE,

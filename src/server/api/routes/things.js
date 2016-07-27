@@ -1,162 +1,111 @@
 const router = require('express').Router()
 
 const ThingService = require('../../shared/application/thing-service')
-const EventService = require('../../shared/application/event-service')
-const logger = require('../../shared/utils/logger')
+const EndpointUtil = require('../../shared/utils/endpoint-util')
 
 router.get('/whatsnew', function(request, response) {
-    const user = request.user
-
-    ThingService.getWhatsNew(user)
-        .then(events => response.json(events))
-        .catch(error => response.status(500).send(`Could not fetch What's New for user ${user.email}: ${error.message}`))
+    EndpointUtil.handleGet(request, response, ThingService.getWhatsNew, 'What\'s New')
 })
 
 router.get('/do', function(request, response) {
-    const user = request.user
-
-    ThingService.getToDo(user)
-        .then(things => response.json(things))
-        .catch(error => response.status(500).send(`Could not fetch To Do for user ${user.email}: ${error.message}`))
-})
-
-router.post('/:thingId/do', function(request, response) {
-    const user = request.user
-    const {thingId} = request.params
-
-    ThingService.doThing(user, thingId)
-        .then(() => response.json({}))
-        .catch(error => {
-            if (error && error.name === 'DocumentNotFoundError') {
-                response.status(404).send(`Could not find Thing with ID ${thingId}`)
-            } else {
-                response.status(500).send(`Could not save user ${user.email} as a doer of thing ${thingId}: ${error.message}`)
-            }
-        })
-})
-
-router.post('/:thingId/dismiss', function(request, response) {
-    const user = request.user
-    const {thingId} = request.params
-
-    ThingService.dismiss(user, thingId)
-        .then(() => response.json({}))
-        .catch(error => {
-            if (error && error.name === 'DocumentNotFoundError') {
-                response.status(404).send(`Could not find Thing with ID ${thingId}`)
-            } else {
-                response.status(500).send(`Could not dismiss thing ${thingId} by user ${user.email}: ${error.message}`)
-            }
-        })
-})
-
-router.post('/:thingId/done', function(request, response) {
-    const user = request.user
-    const {thingId} = request.params
-
-    ThingService.markAsDone(user, thingId)
-        .then(() => response.json({}))
-        .catch(error => {
-            if (error && error.name === 'DocumentNotFoundError') {
-                response.status(404).send(`Could not find Thing with ID ${thingId}`)
-            } else {
-                response.status(500).send(`Could not mark thing ${thingId} as done by user ${user.email}: ${error.message}`)
-            }
-        }
-    )
-})
-
-router.post('/:thingId/close', function(request, response) {
-    const {user} = request
-    const {thingId} = request.params
-
-    ThingService.close(user, thingId)
-        .then(() => response.json({}))
-        .catch(error => {
-            if (error && error.name === 'DocumentNotFoundError') {
-                response.status(404).send(`Could not find thing with ID ${thingId}`)
-            } else {
-                response.status(500).send(`Could not close thing ${thingId} by user ${user.email} : ${error.message}`)
-            }
-        })
-})
-
-router.post('/:thingId/abort', function(request, response) {
-    const {user} = request
-    const {thingId} = request.params
-
-    ThingService.abort(user, thingId)
-        .then(() => response.json({}))
-        .catch(error => {
-            if (error && error.name === 'DocumentNotFoundError') {
-                response.status(404).send(`Could not find thing with ID ${thingId}`)
-            } else {
-                response.status(500).send(`Could not abort thing ${thingId} by user ${user.email} : ${error.message}`)
-            }
-        })
-})
-
-router.post('/:thingId/ping', function(request, response) {
-    const {user} = request
-    const {thingId} = request.params
-
-    ThingService.ping(user, thingId)
-        .then(pingEvent => response.json(pingEvent))
-        .catch(error => {
-            if (error && error.name === 'DocumentNotFoundError') {
-                response.status(404).send(`Could not find thing with ID ${thingId}`)
-            } else {
-                response.status(500).send(`Could not ping thing ${thingId} by user ${user.email} : ${error.message}`)
-            }
-        })
+    EndpointUtil.handleGet(request, response, ThingService.getToDo, 'To Dos')
 })
 
 router.get('/followups', function(request, response) {
-    const user = request.user
+    EndpointUtil.handleGet(request, response, ThingService.getFollowUps, 'Follow Ups')
+})
 
-    ThingService.getFollowUps(user)
-        .then(things => response.json(things))
-        .catch(error => response.status(500).send(`Could not fetch Follow Ups for user ${user.email}: ${error.message}`))
+router.post('/:thingId/do', function(request, response) {
+    EndpointUtil.handlePost(request, response, ThingService.doThing, {
+        params: ['thingId'],
+        result: false,
+        errorTemplates: {
+            notFound: getNotFoundErrorTemplate(),
+            general: 'Could not save user ${user} as a doer of thing ${thingId}'
+        }
+    })
+})
+
+router.post('/:thingId/dismiss', function(request, response) {
+    EndpointUtil.handlePost(request, response, ThingService.dismiss, {
+        params: ['thingId'],
+        result: false,
+        errorTemplates: {
+            notFound: getNotFoundErrorTemplate(),
+            general: 'Could not dismiss thing ${thingId} by user user ${user}'
+        }
+    })
+})
+
+router.post('/:thingId/done', function(request, response) {
+    EndpointUtil.handlePost(request, response, ThingService.markAsDone, {
+        params: ['thingId'],
+        result: false,
+        errorTemplates: {
+            notFound: getNotFoundErrorTemplate(),
+            general: 'Could not mark thing ${thingId} as done by user user ${user}'
+        }
+    })
+})
+
+router.post('/:thingId/close', function(request, response) {
+    EndpointUtil.handlePost(request, response, ThingService.close, {
+        params: ['thingId'],
+        result: false,
+        errorTemplates: {
+            notFound: getNotFoundErrorTemplate(),
+            general: 'Could not close thing ${thingId} by user user ${user}'
+        }
+    })
+})
+
+router.post('/:thingId/abort', function(request, response) {
+    EndpointUtil.handlePost(request, response, ThingService.abort, {
+        params: ['thingId'],
+        result: false,
+        errorTemplates: {
+            notFound: getNotFoundErrorTemplate(),
+            general: 'Could not abort thing ${thingId} by user user ${user}'
+        }
+    })
+})
+
+router.post('/:thingId/ping', function(request, response) {
+    EndpointUtil.handlePost(request, response, ThingService.ping, {
+        params: ['thingId'],
+        result: true,
+        errorTemplates: {
+            notFound: getNotFoundErrorTemplate(),
+            general: 'Could not ping thing ${thingId} by user user ${user}'
+        }
+    })
 })
 
 router.post('/:thingId/comment', function(request, response) {
-    const user = request.user
-    const {thingId} = request.params
-    const {commentText} = request.body
-
-    ThingService.comment(user, thingId, commentText)
-        .then(comment => response.json(comment))
-        .catch(error => response.status(500).send(`Could not comment on thing ${thingId}: ${error.message}`))
+    EndpointUtil.handlePost(request, response, ThingService.comment, {
+        params: ['thingId'],
+        body: ['commentText'],
+        result: true,
+        errorTemplates: {
+            notFound: getNotFoundErrorTemplate(),
+            general: 'Could not comment on thing ${thingId} by user ${user}'
+        }
+    })
 })
 
 router.post('/:thingId/discard/:eventType', function(request, response) {
-    const user = request.user
-    const {thingId, eventType} = request.params
-
-    EventService.discardByType(user, thingId, eventType)
-        .then(() => response.json({}))
-        .catch(error => {
-            if (error && error.name === 'DocumentNotFoundError') {
-                response.status(404).send(`Could not find Thing with ID ${thingId}`)
-            } else {
-                response.status(500).send(`Could not discard events of type ${eventType} unread by user ${user.email} for thing ${thingId}: ${error.message}`)
-            }
-        })
+    EndpointUtil.handlePost(request, response, ThingService.discardByType, {
+        params: ['thingId', 'eventType'],
+        result: false,
+        errorTemplates: {
+            notFound: getNotFoundErrorTemplate(),
+            general: 'Could not discard events of type ${eventType} unread by user ${user} for thing ${thingId}'
+        }
+    })
 })
 
-router.post('/:commentId/markcommentasread', function(request, response) {
-    const {user} = request
-    const {commentId} = request.params
-
-    EventService.markAsRead(user, commentId)
-        .then(() => response.json({}))
-        .catch(error => {
-            if (error && error.name === 'DocumentNotFoundError') {
-                response.status(404).send(`Could not find event with ID ${commentId}`)
-            } else {
-                response.status(500).send(`Could not mark event ${commentId} as read by user ${user.email}: ${error.message}`)
-            }
-        })
-})
+function getNotFoundErrorTemplate() {
+    return 'Could not find thing ${thingId}'
+}
 
 module.exports = router

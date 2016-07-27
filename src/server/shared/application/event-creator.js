@@ -1,3 +1,5 @@
+const union = require('lodash/union')
+
 const {Event} = require('../models')
 const EventTypes = require('../../../common/enums/event-types')
 
