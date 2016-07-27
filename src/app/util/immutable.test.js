@@ -180,4 +180,27 @@ describe('Immutable', () => {
             })
         })
     })
+
+    describe('arraySetAll', () => {
+        it('sets new items to all of the array', () => {
+            const result = theImmutable.arraySetAll('someArray', {someNewKey: 'newValue'}).value()
+            expect(result.someArray.length).to.equal(3)
+            result.someArray.forEach((item) => {
+                expect(item.someNewKey).to.equal('newValue')
+                expect(item.someItemKey).to.equal(undefined)
+            })
+        })
+
+        it('changes the array reference', () => {
+            const result = theImmutable.arraySetAll('someArray', {someNewKey: 'newValue'}).value()
+            expect(result.someArray === original.someArray).to.equal.false
+        })
+
+        it('does not change anything if the array does not exist', () => {
+            const result = theImmutable.arraySetAll('nonExistingArray', {someNewKey: 'newValue'}).value()
+            original.someArray.forEach((item, index) => {
+                expect(item).to.equal(result.someArray[index])
+            })
+        })
+    })
 })

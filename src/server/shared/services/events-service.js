@@ -85,7 +85,6 @@ function userPingedThing(user, thing) {
         createdAt: new Date(),
         creatorUserId: user.id,
         payload: {
-            text: 'Ping!',
             readByList: [user.id]
         },
         showNewList: [...thing.doers]

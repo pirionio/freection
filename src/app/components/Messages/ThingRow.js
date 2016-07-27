@@ -15,7 +15,7 @@ class ThingRow extends Component {
     filterEventsByRead(isRead) {
         const {thing} = this.props
         return chain(thing.events)
-            .filter(event => event.payload.isRead === isRead && includes([EventTypes.COMMENT.key, EventTypes.PING.key], event.eventType.key))
+            .filter(event => includes([EventTypes.COMMENT.key, EventTypes.PING.key], event.eventType.key) && event.payload.isRead === isRead)
             .sortBy('createdAt')
             .value()
     }

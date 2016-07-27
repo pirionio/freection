@@ -3,13 +3,18 @@ const immutable = require('../util/immutable')
 
 function newCommentReceived(state, action) {
     return immutable(state)
-        .arraySetOrPushItem('events', event => event.id === action.comment.id, action.comment)
+        .arraySetOrPushItem('events', {id: action.comment.id}, action.comment)
         .value()
 }
 
 function pingReceived(state, action) {
     return immutable(state)
-        .arraySetOrPushItem('events', event => event.id === action.pingEvent.id, action.pingEvent)
+        .arraySetOrPushItem('events', {id: action.pingEvent.id}, action.pingEvent)
+        .arrayMergeItem('events', {id: action.pingEvent.id}, {
+            payload: {
+                text: 'Ping!'
+            }
+        })
         .value()
 }
 

@@ -68,6 +68,22 @@ class Immutable {
         return this
     }
 
+    arraySetAll(path, updater) {
+        const array = _.get(this._object, path)
+        
+        if (array) {
+            _.set(this._object, path, arraySetOrMergeItem(array, () => true, updater, false))
+        }
+        
+        return this
+    }
+
+    set(path, value) {
+        _.set(this._object, path, value)
+
+        return this
+    }
+
     value() {
         return this._object
     }

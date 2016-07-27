@@ -6,6 +6,7 @@ const {connect} = require('react-redux')
 const classnames = require('classnames')
 
 const MarkCommentReadActions = require('../../actions/mark-comment-read-actions')
+const EventTypes = require('../../../common/enums/event-types')
 
 class Comment extends Component {
     constructor(props) {
@@ -27,6 +28,11 @@ class Comment extends Component {
         this.props.markAsRead(comment, currentUser)
     }
 
+    getCommentText() {
+        const {comment} = this.props
+        return comment.eventType.key === EventTypes.PING.key ? 'Ping!' : comment.payload.text
+    }
+
     render() {
         const {comment} = this.props
         const createdAt = dateFns.format(comment.createdAt, 'DD-MM-YYYY HH:mm')
@@ -42,7 +48,7 @@ class Comment extends Component {
                     {comment.creator.email} :
                 </div>
                 <div className="comment-message">
-                    {comment.payload.text}
+                    {this.getCommentText()}
                 </div>
                 <div className="comment-date">
                     {createdAt}

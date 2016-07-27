@@ -1,10 +1,12 @@
 const some = require('lodash/some')
+const merge = require('lodash/merge')
 
 const ToDoActionTypes = require('../actions/types/to-do-action-types')
 const ThingActionTypes = require('../actions/types/thing-action-types')
 const {ActionStatus, InvalidationStatus} = require('../constants')
-const immutable = require('../util/immutable')
+const EventTypes = require('../../common/enums/event-types')
 const thingReducer = require('./thing-reducer')
+const immutable = require('../util/immutable')
 
 const initialState = {
     things: [],
@@ -14,21 +16,23 @@ const initialState = {
 function toDo(state, action) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
-            return {
-                things: action.things,
-                invalidationStatus: InvalidationStatus.FETCHED
-            }
+            return immutable(action)
+                .arraySetAll('things', thing => {
+                    return immutable(thing)
+                        .arrayMergeItem('events', {eventType: {key: EventTypes.PING.key}}, {payload: {text: 'Ping!'}})
+                        .value()
+                })
+                .set('invalidationStatus', InvalidationStatus.FETCHED)
+                .value()
         case ActionStatus.START:
-            return {
-                things: state.things,
-                invalidationStatus: InvalidationStatus.FETCHING
-            }
+            return immutable(state)
+                .set('invalidationStatus', InvalidationStatus.FETCHING)
+                .value()
         case ActionStatus.ERROR:
         default:
-            return {
-                things: state.things,
-                invalidationStatus: InvalidationStatus.INVALIDATED
-            }
+            return immutable(state)
+                .set('invalidationStatus', InvalidationStatus.INVALIDATED)
+                .value()
     }
 }
 

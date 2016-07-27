@@ -1,10 +1,12 @@
 const some = require('lodash/some')
+const merge = require('lodash/merge')
 
 const FollowUpsActionTypes = require('../actions/types/follow-up-action-types')
 const ThingActionTypes = require('../actions/types/thing-action-types')
 const {ActionStatus, InvalidationStatus} = require('../constants')
-const immutable = require('../util/immutable')
 const thingReducer = require('./thing-reducer')
+const EventTypes = require('../../common/enums/event-types')
+const immutable = require('../util/immutable')
 
 const initialState = {
     followUps: [],
@@ -14,21 +16,23 @@ const initialState = {
 function fetchFollowUps(state, action) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
-            return {
-                followUps: action.followUps,
-                invalidationStatus: InvalidationStatus.FETCHED
-            }
+            return immutable(action)
+                .arraySetAll('followUps', thing => {
+                    return immutable(thing)
+                        .arrayMergeItem('events', {eventType: {key: EventTypes.PING.key}}, {payload: {text: 'Ping!'}})
+                        .value()
+                })
+                .set('invalidationStatus', InvalidationStatus.FETCHED)
+                .value()
         case ActionStatus.START:
-            return {
-                followUps: state.followUps,
-                invalidationStatus: InvalidationStatus.FETCHING
-            }
+            return immutable(state)
+                .set('invalidationStatus', InvalidationStatus.FETCHING)
+                .value()
         case ActionStatus.ERROR:
         default:
-            return {
-                followUps: state.followUps,
-                invalidationStatus: InvalidationStatus.INVALIDATED
-            }
+            return immutable(state)
+                .set('invalidationStatus', InvalidationStatus.INVALIDATED)
+                .value()
     }
 }
 
