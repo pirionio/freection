@@ -176,7 +176,7 @@ module.exports = (state = initialState, action) => {
             return comment(state, action)
         case ThingCommandActionTypes.PING:
             return pingThing(state, action)
-        case ThingActionTypes.MARK_COMMENT_AS_READ:
+        case ThingCommandActionTypes.MARK_COMMENT_AS_READ:
             return markCommentAsRead(state, action)
         case ThingActionTypes.NEW_COMMENT_RECEIVED:
         case ThingActionTypes.COMMENT_READ_BY_RECEIVED:

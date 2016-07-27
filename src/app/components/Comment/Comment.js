@@ -5,8 +5,8 @@ const VisibilitySensor = require('react-visibility-sensor')
 const {connect} = require('react-redux')
 const classnames = require('classnames')
 
-const MarkCommentReadActions = require('../../actions/mark-comment-read-actions')
 const EventTypes = require('../../../common/enums/event-types')
+const ThingCommandActions = require('../../actions/thing-command-action')
 
 class Comment extends Component {
     constructor(props) {
@@ -25,7 +25,7 @@ class Comment extends Component {
     markAsRead() {
         const {comment, currentUser} = this.props
 
-        this.props.markAsRead(comment, currentUser)
+        this.props.dispatch(ThingCommandActions.markCommentAsRead(comment, currentUser))
     }
 
     getCommentText() {
@@ -70,10 +70,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        markAsRead: (comment,user) => dispatch(MarkCommentReadActions.markCommentAsRead(comment, user))
-    }
-}
-
-module.exports = connect(mapStateToProps, mapDispatchToProps)(Comment)
+module.exports = connect(mapStateToProps)(Comment)

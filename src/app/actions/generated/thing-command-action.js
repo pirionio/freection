@@ -75,8 +75,30 @@ function ping(thing) {
     }
 }
 
+function markCommentAsRead(comment) {
+    return dispatch => {
+        dispatch({
+            type: ThingCommandActionsTypes.MARK_COMMENT_AS_READ, 
+            status: ActionStatus.START,
+            comment
+        })
+        return ResourceUtil.post(`/api/things/${comment.id}/markcommentasread`)
+            .then(result => dispatch({
+                type: ThingCommandActionsTypes.MARK_COMMENT_AS_READ, 
+                status: ActionStatus.COMPLETE,
+                comment
+            }))
+            .catch(() => dispatch({
+                type: ThingCommandActionsTypes.MARK_COMMENT_AS_READ, 
+                status: ActionStatus.ERROR,
+                comment
+            }))
+    }
+}
+
 module.exports = {
     comment,
     newThing,
-    ping
+    ping,
+    markCommentAsRead
 }

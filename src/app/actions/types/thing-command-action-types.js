@@ -1,5 +1,6 @@
 module.exports = {
     COMMENT: 'COMMENT',
     NEW_THING: 'NEW_THING',
-    PING: 'PING'
+    PING: 'PING',
+    MARK_COMMENT_AS_READ: 'MARK_COMMENT_AS_READ'
 }

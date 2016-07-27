@@ -35,5 +35,11 @@ module.exports = {
                 pingEvent: 'result'
             }
         },
+        {
+            name: 'mark comment as read',
+            params: ['comment'],
+            type: 'post',
+            path: '/api/things/${comment.id}/markcommentasread'
+        },
     ]
 }
