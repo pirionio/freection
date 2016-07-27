@@ -1,13 +1,14 @@
 const router = require('express').Router()
 
-const newRouter = require('./new')
-const things = require('./things')
-const events = require('./events')
+const NewRoute = require('./new-route')
+const ThingRoute = require('./thing-route')
+const EventRoute = require('./event-route')
+
 const token = require('../../shared/utils/token-strategy')
 
 router.use('/', token.auth())
-router.use('/new', newRouter)
-router.use('/things', things)
-router.use('/events', events)
+router.use('/new', NewRoute)
+router.use('/things', ThingRoute)
+router.use('/events', EventRoute)
 
 module.exports = router
