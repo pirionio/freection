@@ -1,5 +1,3 @@
-const {omit} = require('lodash')
-
 const {Thing} = require('../models')
 const {thingToDto} = require('../transformers')
 const logger = require('../utils/logger')

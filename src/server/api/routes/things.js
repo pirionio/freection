@@ -1,13 +1,13 @@
 const router = require('express').Router()
 
-const ThingsService = require('../../shared/services/things-service')
-const EventsService = require('../../shared/services/events-service')
+const ThingService = require('../../shared/application/thing-service')
+const EventService = require('../../shared/application/event-service')
 const logger = require('../../shared/utils/logger')
 
 router.get('/whatsnew', function(request, response) {
     const user = request.user
 
-    ThingsService.getWhatsNew(user)
+    ThingService.getWhatsNew(user)
         .then(events => response.json(events))
         .catch(error => response.status(500).send(`Could not fetch What's New for user ${user.email}: ${error.message}`))
 })
@@ -15,7 +15,7 @@ router.get('/whatsnew', function(request, response) {
 router.get('/do', function(request, response) {
     const user = request.user
 
-    ThingsService.getToDo(user)
+    ThingService.getToDo(user)
         .then(things => response.json(things))
         .catch(error => response.status(500).send(`Could not fetch To Do for user ${user.email}: ${error.message}`))
 })
@@ -24,7 +24,7 @@ router.post('/:thingId/do', function(request, response) {
     const user = request.user
     const {thingId} = request.params
 
-    ThingsService.doThing(user, thingId)
+    ThingService.doThing(user, thingId)
         .then(() => response.json({}))
         .catch(error => {
             if (error && error.name === 'DocumentNotFoundError') {
@@ -39,7 +39,7 @@ router.post('/:thingId/dismiss', function(request, response) {
     const user = request.user
     const {thingId} = request.params
 
-    ThingsService.dismissThing(user, thingId)
+    ThingService.dismiss(user, thingId)
         .then(() => response.json({}))
         .catch(error => {
             if (error && error.name === 'DocumentNotFoundError') {
@@ -54,7 +54,7 @@ router.post('/:thingId/done', function(request, response) {
     const user = request.user
     const {thingId} = request.params
 
-    ThingsService.markThingAsDone(user, thingId)
+    ThingService.markAsDone(user, thingId)
         .then(() => response.json({}))
         .catch(error => {
             if (error && error.name === 'DocumentNotFoundError') {
@@ -70,7 +70,7 @@ router.post('/:thingId/close', function(request, response) {
     const {user} = request
     const {thingId} = request.params
 
-    ThingsService.closeThing(user, thingId)
+    ThingService.close(user, thingId)
         .then(() => response.json({}))
         .catch(error => {
             if (error && error.name === 'DocumentNotFoundError') {
@@ -85,7 +85,7 @@ router.post('/:thingId/abort', function(request, response) {
     const {user} = request
     const {thingId} = request.params
 
-    ThingsService.abortThing(user, thingId)
+    ThingService.abort(user, thingId)
         .then(() => response.json({}))
         .catch(error => {
             if (error && error.name === 'DocumentNotFoundError') {
@@ -100,7 +100,7 @@ router.post('/:thingId/ping', function(request, response) {
     const {user} = request
     const {thingId} = request.params
 
-    ThingsService.pingThing(user, thingId)
+    ThingService.ping(user, thingId)
         .then(pingEvent => response.json(pingEvent))
         .catch(error => {
             if (error && error.name === 'DocumentNotFoundError') {
@@ -114,7 +114,7 @@ router.post('/:thingId/ping', function(request, response) {
 router.get('/followups', function(request, response) {
     const user = request.user
 
-    ThingsService.getFollowUps(user)
+    ThingService.getFollowUps(user)
         .then(things => response.json(things))
         .catch(error => response.status(500).send(`Could not fetch Follow Ups for user ${user.email}: ${error.message}`))
 })
@@ -124,7 +124,7 @@ router.post('/:thingId/comment', function(request, response) {
     const {thingId} = request.params
     const {commentText} = request.body
 
-    ThingsService.createComment(user, thingId, commentText)
+    ThingService.comment(user, thingId, commentText)
         .then(comment => response.json(comment))
         .catch(error => response.status(500).send(`Could not comment on thing ${thingId}: ${error.message}`))
 })
@@ -133,7 +133,7 @@ router.post('/:thingId/discard/:eventType', function(request, response) {
     const user = request.user
     const {thingId, eventType} = request.params
 
-    EventsService.discardUserEventsByType(user, thingId, eventType)
+    EventService.discardByType(user, thingId, eventType)
         .then(() => response.json({}))
         .catch(error => {
             if (error && error.name === 'DocumentNotFoundError') {
@@ -148,13 +148,13 @@ router.post('/:commentId/markcommentasread', function(request, response) {
     const {user} = request
     const {commentId} = request.params
 
-    ThingsService.markCommentAsRead(user, commentId)
+    EventService.markAsRead(user, commentId)
         .then(() => response.json({}))
         .catch(error => {
             if (error && error.name === 'DocumentNotFoundError') {
-                response.status(404).send(`Could not find comment with ID ${commentId}`)
+                response.status(404).send(`Could not find event with ID ${commentId}`)
             } else {
-                response.status(500).send(`Could not mark comment as read by user ${user.email} for comment ${commentId}: ${error.message}`)
+                response.status(500).send(`Could not mark event ${commentId} as read by user ${user.email}: ${error.message}`)
             }
         })
 })

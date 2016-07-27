@@ -1,13 +1,13 @@
 const router = require('express').Router()
 
-const EventService = require('../../shared/services/events-service')
+const EventService = require('../../shared/application/event-service')
 const logger = require('../../shared/utils/logger')
 
 router.post('/:eventId/discard', function(request, response) {
     const user = request.user
     const {eventId} = request.params
 
-    EventService.discardUserEventById(user, eventId)
+    EventService.discardById(user, eventId)
         .then(() => response.json({}))
         .catch(error => {
             if (error && error.name === 'DocumentNotFoundError') {

@@ -1,11 +1,11 @@
 const router = require('express').Router()
 
-const TasksService = require('../../shared/services/tasks-service')
+const TaskService = require('../../shared/application/task-service')
 
 router.get('/:taskId', function(request, response) {
     const {taskId} = request.params
 
-    TasksService.getTask(taskId, request.user)
+    TaskService.getTask(taskId, request.user)
         .then(task => response.json(task))
         .catch(error => {
             if (error && error.name === 'DocumentNotFoundError') {

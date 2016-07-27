@@ -1,12 +1,11 @@
 const {remove} = require('lodash')
 
 const {Event, Thing} = require('../models')
-const EventsService = require('./events-service')
+const EventCreator = require('./event-creator')
 const {eventToDto, thingToDto} = require('../transformers')
 const TaskStatus = require('../../../common/enums/task-status')
 const EventTypes = require('../../../common/enums/event-types')
 const logger = require('../utils/logger')
-
 
 function getWhatsNew(user) {
     return Event.getWhatsNew(user.id)
@@ -38,7 +37,7 @@ function getFollowUps(user) {
 function doThing(user, thingId) {
     return Thing.get(thingId).run()
         .then(thing => performDoThing(thing, user))
-        .then(thing => EventsService.userAcceptedThing(user, thing))
+        .then(thing => EventCreator.createAccepted(user, thing))
         .then(() => Event.discardUserEventsByType(thingId, EventTypes.CREATED.key, user.id))
         .catch((error) => {
             logger.error(`error while setting user ${user.email} as doer of thing ${thingId}: ${error}`)
@@ -47,23 +46,25 @@ function doThing(user, thingId) {
     )
 }
 
-function dismissThing(user, thingId) {
+function dismiss(user, thingId) {
     return Thing.getFullThing(thingId)
-        .then(thing => performDismissThing(thing, user))
-        .then(thing => EventsService.userDismissThing(user, thing))
+        .then(thing => {
+            return performDismiss(thing, user)
+                .then(() => Event.discardAllUserEvents(thingId, user.id))
+                .then(() => EventCreator.createDismissed(user, thing))
+        })
         .catch((error) => {
-                logger.error(`error while dismissing thing ${thingId} by user ${user.email}: ${error}`)
-                throw error
-            }
-        )
+            logger.error(`error while dismissing thing ${thingId} by user ${user.email}: ${error}`)
+            throw error
+        })
 }
 
-function closeThing(user, thingId) {
+function close(user, thingId) {
     // TODO: check if the if the status is done
 
     return Thing.get(thingId).run()
-        .then(thing => performCloseThing(thing, user))
-        .then(thing => EventsService.userClosedThing(user, thing))
+        .then(thing => performClose(thing, user))
+        .then(thing => EventCreator.createClosed(user, thing))
         .then(() => Event.discardAllUserEvents(thingId, user.id))
         .catch((error) => {
                 logger.error(`error while closing thing ${thingId} by user ${user.email}: ${error}`)
@@ -72,32 +73,37 @@ function closeThing(user, thingId) {
         )
 }
 
-function abortThing(user, thingId) {
+function abort(user, thingId) {
     // TODO: check if the if the status is done
 
     return Thing.get(thingId).run()
-        .then(thing => performAbortThing(thing, user))
-        .then(thing => EventsService.userAbortedThing(user, thing))
+        .then(thing => {
+            return performAbort(thing, user)
+                .then(() => Event.discardAllUserEvents(thingId, user.id))
+                .then(() => EventCreator.createAborted(user, thing))
+        })
         .catch((error) => {
-                logger.error(`error while aborting thing ${thingId} by user ${user.email}: ${error}`)
-                throw error
-            }
-        )
+            logger.error(`error while aborting thing ${thingId} by user ${user.email}: ${error}`)
+            throw error
+        })
 }
 
-function markThingAsDone(user, thingId) {
+function markAsDone(user, thingId) {
     return Thing.getFullThing(thingId)
-        .then(thing => performMarkThingAsDone(thing, user))
-        .then(thing => EventsService.userMarkedThingAsDone(user, thing))
+        .then(thing => {
+            return performMarkAsDone(thing, user)
+                .then(() => Event.discardAllUserEvents(thingId, user.id))
+                .then(() => EventCreator.createDone(user, thing))
+        })
         .catch((error) => {
             logger.error(`Error while marking thing ${thingId} as done by user ${user.email}:`, error)
             throw error
         })
 }
 
-function pingThing(user, thingId) {
+function ping(user, thingId) {
     return Thing.get(thingId).run()
-        .then(thing => EventsService.userPingedThing(user, thing))
+        .then(thing => EventCreator.createPing(user, thing))
         .then(event => Event.getFullEvent(event.id))
         .then(event => eventToDto(event, user, {includeThing: false}))
         .catch(error => {
@@ -106,21 +112,13 @@ function pingThing(user, thingId) {
         })
 }
 
-function createComment(user, thingId, commentText) {
+function comment(user, thingId, commentText) {
     return Thing.get(thingId).run()
-        .then(thing => EventsService.userCreatedComment(user, thing, commentText))
+        .then(thing => EventCreator.createComment(user, thing, commentText))
         .then(event => Event.getFullEvent(event.id))
         .then(event => eventToDto(event, user, {includeThing: false}))
         .catch(error => {
             logger.error(`Could not comment on thing ${thingId} for user ${user.email}`, error)
-            throw error
-        })
-}
-
-function markCommentAsRead(user, commentId) {
-    return Event.markUserCommentAsRead(commentId, user.id)
-        .catch(error => {
-            logger.error(`Could not mark comment as read by user ${user.email} for comment ${commentId}`, error)
             throw error
         })
 }
@@ -131,25 +129,25 @@ function performDoThing(thing, user) {
     return thing.save()
 }
 
-function performDismissThing(thing, user) {
+function performDismiss(thing, user) {
     remove(thing.doers, doerId => doerId === user.id)
     thing.payload.status = TaskStatus.DISMISS.key
     return thing.save()
 }
 
-function performMarkThingAsDone(thing, user) {
+function performMarkAsDone(thing, user) {
     remove(thing.doers, doerId => doerId === user.id)
     thing.payload.status = TaskStatus.DONE.key
     return thing.save()
 }
 
-function performCloseThing(thing, user) {
+function performClose(thing, user) {
     remove(thing.followUpers, followUperId => followUperId === user.id)
     thing.payload.status = TaskStatus.CLOSE.key
     return thing.save()
 }
 
-function performAbortThing(thing, user) {
+function performAbort(thing, user) {
     remove(thing.followUpers, followUperId => followUperId === user.id)
     thing.payload.status = TaskStatus.ABORT.key
     return thing.save()
@@ -160,11 +158,10 @@ module.exports = {
     getToDo,
     getFollowUps,
     doThing,
-    dismissThing,
-    markThingAsDone,
-    createComment,
-    markCommentAsRead,
-    closeThing,
-    abortThing,
-    pingThing
+    dismiss,
+    markAsDone,
+    comment,
+    close,
+    abort,
+    ping
 }

@@ -2,7 +2,6 @@ const thinky = require('./thinky')
 const type = thinky.type
 
 const User = require('./User')
-const EventTypes = require('../../../common/enums/event-types')
 
 const Event = thinky.createModel('Event', {
     id: type.string(),
@@ -69,16 +68,14 @@ Event.defineStatic('discardUserEventById', function (eventId, userId) {
     }).run()
 })
 
-Event.defineStatic('markUserCommentAsRead', function(eventId, userId) {
-    return this.get(eventId)
-        .update(event => {
-            return {
-                payload: {
-                    readByList: event('payload')('readByList').append(userId)
-                }
+Event.defineStatic('markAsRead', function(eventId, userId) {
+    return this.get(eventId).update(event => {
+        return {
+            payload: {
+                readByList: event('payload')('readByList').append(userId)
             }
-        })
-        .run()
+        }
+    }).run()
 })
 
 module.exports = Event
