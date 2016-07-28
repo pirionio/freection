@@ -77,7 +77,7 @@ NewPanel.propTypes = {
 const mapStateToProps = (state) => {
     return {
         messageBox: state.messageBox,
-        thingContext: state.showTask.task
+        thingContext: state.thingPage.thing
     }
 }
 

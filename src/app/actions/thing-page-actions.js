@@ -1,11 +1,11 @@
 const ThingPageActions = require('./generated/thing-page-actions')
-const {push, goBack} = require('react-router-redux')
+const {push} = require('react-router-redux')
 
 const showAction = ThingPageActions.show
 
 function show(thingId) {
     return dispatch => {
-        dispatch(push(`tasks/${thingId}`))
+        dispatch(push(`things/${thingId}`))
 
         dispatch(showAction(thingId))
     }

@@ -8,7 +8,7 @@ const thingReducer = require('./thing-reducer')
 const immutable = require('../util/immutable')
 
 const initialState = {
-    task: {},
+    thing: {},
     isFetching: false
 }
 
@@ -16,12 +16,12 @@ function get(state, action) {
     switch (action.status) {
         case ActionStatus.START:
             return {
-                task: {},
+                thing: {},
                 isFetching: true
             }
         case ActionStatus.COMPLETE:
             return {
-                task: action.thing,
+                thing: action.thing,
                 isFetching: false
             }
         case ActionStatus.ERROR:
@@ -41,8 +41,8 @@ function comment(state, action) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
             return immutable(state)
-                .touch('task')
-                .arraySetOrPushItem('task.events', {id: action.comment.id}, {
+                .touch('thing')
+                .arraySetOrPushItem('thing.events', {id: action.comment.id}, {
                     id: action.comment.id,
                     payload: action.comment.payload,
                     creator: action.comment.creator,
@@ -61,8 +61,8 @@ function pingThing(state, action) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
             return immutable(state)
-                .touch('task')
-                .arraySetOrPushItem('task.events', {id: action.pingEvent.id}, {
+                .touch('thing')
+                .arraySetOrPushItem('thing.events', {id: action.pingEvent.id}, {
                     id: action.pingEvent.id,
                     payload: action.pingEvent.payload,
                     creator: action.pingEvent.creator,
@@ -81,8 +81,8 @@ function markCommentAsRead(state, action) {
     switch(action.status) {
         case ActionStatus.COMPLETE:
             return immutable(state)
-                .touch('task')
-                .arrayMergeItem('task.events', {id: action.comment.id}, {
+                .touch('thing')
+                .arrayMergeItem('thing.events', {id: action.comment.id}, {
                     payload: {
                         isRead: true
                     }
@@ -97,30 +97,30 @@ function markCommentAsRead(state, action) {
 
 function commentChangedOrAdded(state, action) {
     // If no thing is shown right now, or if the action does not carry an event at all, or if the event does not belong to the shown thing...
-    if (!state.task || !action.comment || !action.comment.thing || state.task.id !== action.comment.thing.id)
+    if (!state.thing || !action.comment || !action.comment.thing || state.thing.id !== action.comment.thing.id)
         return state
 
     return immutable(state)
-        .set('task', thingReducer(state.task, action))
+        .set('thing', thingReducer(state.thing, action))
         .value()
 }
 
 function pingReceived(state, action) {
     // If no thing is shown right now, or if the action does not carry an event at all, or if the event does not belong to the shown thing...
-    if (!state.task || !action.pingEvent || !action.pingEvent.thing || state.task.id !== action.pingEvent.thing.id)
+    if (!state.thing || !action.pingEvent || !action.pingEvent.thing || state.thing.id !== action.pingEvent.thing.id)
         return state
 
     return immutable(state)
-        .set('task', thingReducer(state.task, action))
+        .set('thing', thingReducer(state.thing, action))
         .value()
 }
 
 function statusChanged(state, action) {
-    if (!state.task || !action.thing || state.task.id !== action.thing.id)
+    if (!state.thing || !action.thing || state.thing.id !== action.thing.id)
         return state
 
     return immutable(state)
-        .set('task', thingReducer(state.task, action))
+        .set('thing', thingReducer(state.thing, action))
         .value()
 }
 
@@ -145,15 +145,15 @@ function abortThing(state, action) {
 }
 
 function asyncStatusOperation(state, action, status) {
-    if (!state.task || !action.thing || state.task.id !== action.thing.id)
+    if (!state.thing || !action.thing || state.thing.id !== action.thing.id)
         return state
 
     switch (action.status) {
         case ActionStatus.START:
             return immutable(state)
-                .touch('task')
-                .touch('task.payload')
-                .set('task.payload.status',  status)
+                .touch('thing')
+                .touch('thing.payload')
+                .set('thing.payload.status',  status)
                 .value()
         case ActionStatus.ERROR:
             // TODO: invalidate the thing to make the page re-fetch

@@ -34,7 +34,7 @@ router.post('/', function(request, response) {
                 subject,
                 followUpers: [creatorUserId],
                 doers: [],
-                type: ThingTypes.TASK.key,
+                type: ThingTypes.THING.key,
                 payload: {
                     status: ThingStatus.NEW.key
                 }

@@ -106,7 +106,7 @@ function convertToThingAndEvents(tuple) {
             subject: message.header.subject,
             doers: [],
             followUpers: [],
-            type: ThingTypes.TASK.key,
+            type: ThingTypes.THING.key,
             payload: {
                 status: ThingStatus.NEW.key
             }

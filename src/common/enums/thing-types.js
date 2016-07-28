@@ -1,6 +1,6 @@
 module.exports = {
-    TASK: {
-        key: 'TASK',
-        label: 'Task'
+    THING: {
+        key: 'THING',
+        label: 'Thing'
     }
 }
