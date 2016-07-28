@@ -165,7 +165,7 @@ function saveNewThing(body, subject, creator, to) {
 
     // check if thing is self thing (assigned to creator)
     const isSelfThing = toUserId === creatorUserId
-    const status = isSelfThing ? ThingStatus.INPROGRESS.key : ThingStatus.NEW
+    const status = isSelfThing ? ThingStatus.INPROGRESS.key : ThingStatus.NEW.key
     const followUpers = isSelfThing ? [] : [creatorUserId]
     const doers = isSelfThing ? [creatorUserId] : []
 
