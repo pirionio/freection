@@ -100,7 +100,7 @@ class ActionsBar extends Component {
     showCancel() {
         const {thing, currentUser, cancel} = this.props
         return currentUser.id === thing.creator.id &&
-            includes([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key], thing.payload.status) &&
+            includes([ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key], thing.payload.status) &&
             cancel
     }
 

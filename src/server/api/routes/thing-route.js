@@ -35,6 +35,7 @@ router.post('/:thingId/do', function(request, response) {
         result: false,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
+            IllegalOperation: getIllegalOperationErrorTemplate(),
             general: 'Could not save user ${user} as a doer of thing ${thingId}'
         }
     })
@@ -46,6 +47,7 @@ router.post('/:thingId/dismiss', function(request, response) {
         result: false,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
+            IllegalOperation: getIllegalOperationErrorTemplate(),
             general: 'Could not dismiss thing ${thingId} by user user ${user}'
         }
     })
@@ -57,6 +59,7 @@ router.post('/:thingId/done', function(request, response) {
         result: false,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
+            IllegalOperation: getIllegalOperationErrorTemplate(),
             general: 'Could not mark thing ${thingId} as done by user user ${user}'
         }
     })
@@ -68,6 +71,7 @@ router.post('/:thingId/close', function(request, response) {
         result: false,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
+            IllegalOperation: getIllegalOperationErrorTemplate(),
             general: 'Could not close thing ${thingId} by user user ${user}'
         }
     })
@@ -79,6 +83,7 @@ router.post('/:thingId/cancel', function(request, response) {
         result: false,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
+            IllegalOperation: getIllegalOperationErrorTemplate(),
             general: 'Could not cancel thing ${thingId} by user user ${user}'
         }
     })
@@ -90,6 +95,7 @@ router.post('/:thingId/sendback', function(request, response) {
         result: false,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
+            IllegalOperation: getIllegalOperationErrorTemplate(),
             general: 'Could not send back thing ${thingId} by user user ${user}'
         }
     })
@@ -101,6 +107,7 @@ router.post('/:thingId/ping', function(request, response) {
         result: true,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
+            IllegalOperation: getIllegalOperationErrorTemplate(),
             general: 'Could not ping thing ${thingId} by user user ${user}'
         }
     })
@@ -128,6 +135,10 @@ router.post('/:thingId/discard/:eventType', function(request, response) {
         }
     })
 })
+
+function getIllegalOperationErrorTemplate() {
+    return 'Illegal operation on thing ${thingId}'
+}
 
 function getNotFoundErrorTemplate() {
     return 'Could not find thing ${thingId}'
