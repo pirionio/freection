@@ -1,6 +1,6 @@
 const React = require('react')
-const {Component} = React
-const {Router, Route, browserHistory, IndexRedirect} = require('react-router')
+const {Component, PropTypes} = React
+const {Router, Route, IndexRedirect} = require('react-router')
 
 const App = require('../components/App/App')
 const MainApp = require('../components/MainApp/MainApp')
@@ -12,7 +12,7 @@ const Task = require('../components/Task/Task')
 class AppRouter extends Component {
     render() {
         return (
-            <Router history={browserHistory}>
+            <Router history={this.props.history}>
                 <Route path="/" component={App}>
                     <Route component={MainApp}>
                         <IndexRedirect to="/whatsnew" />
@@ -25,6 +25,9 @@ class AppRouter extends Component {
             </Router>
         )
     }
+}
+AppRouter.propTypes = {
+    history: PropTypes.any.isRequired
 }
 
 module.exports = AppRouter

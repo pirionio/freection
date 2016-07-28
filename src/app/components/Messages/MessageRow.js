@@ -1,6 +1,7 @@
 const React = require('react')
 const {Component, PropTypes} = React
-const {withRouter} = require('react-router')
+const {connect} = require('react-redux')
+const ThingPageActions = require('../../actions/thing-page-actions')
 const dateFns = require('date-fns')
 
 class MessageRow extends Component {
@@ -10,10 +11,7 @@ class MessageRow extends Component {
     }
 
     showThing() {
-        this.props.router.push({
-            pathname: `/tasks/${this.props.message.entityId}`,
-            query: {from: this.props.context}
-        })
+        this.props.dispatch(ThingPageActions.show(this.props.message.entityId))
     }
 
     getReferencedUser() {
@@ -78,4 +76,4 @@ MessageRow.propTypes = {
     context: PropTypes.string.isRequired
 }
 
-module.exports = withRouter(MessageRow)
+module.exports = connect()(MessageRow)

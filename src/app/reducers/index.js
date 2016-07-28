@@ -5,6 +5,7 @@ const {messageBox, messageBoxForm} = require('./message-box-reducer')
 const followUps = require('./follow-ups-reducer')
 const showTask = require('./show-task-reducer')
 const auth = require('./auth')
+const { routerReducer } = require('react-router-redux')
 
 module.exports = combineReducers({
     whatsNew,
@@ -13,5 +14,6 @@ module.exports = combineReducers({
     messageBox,
     messageBoxForm,
     showTask,
-    auth
+    auth,
+    routing: routerReducer
 })

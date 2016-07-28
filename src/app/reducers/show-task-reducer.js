@@ -1,10 +1,7 @@
-const TaskActionTypes = require('../actions/types/task-action-types')
 const EventActionTypes = require('../actions/types/event-action-types')
-const WhatsNewActionTypes = require('../actions/types/whats-new-action-types')
-const ToDoActionTypes = require('../actions/types/to-do-action-types.js')
+const ThingPageActionTypes = require('../actions/types/thing-page-action-types')
 const ThingStatus = require('../../common/enums/thing-status.js')
 const ThingCommandActionTypes = require('../actions/types/thing-command-action-types')
-const ypes = require('../../common/enums/event-types')
 const {ActionStatus} = require('../constants')
 const thingReducer = require('./thing-reducer')
 
@@ -15,7 +12,7 @@ const initialState = {
     isFetching: false
 }
 
-function showFullTask(state, action) {
+function get(state, action) {
     switch (action.status) {
         case ActionStatus.START:
             return {
@@ -24,7 +21,7 @@ function showFullTask(state, action) {
             }
         case ActionStatus.COMPLETE:
             return {
-                task: action.task,
+                task: action.thing,
                 isFetching: false
             }
         case ActionStatus.ERROR:
@@ -33,7 +30,7 @@ function showFullTask(state, action) {
     }
 }
 
-function hideFullTask(state, action) {
+function hide(state, action) {
     switch (action.status) {
         default:
             return initialState
@@ -168,10 +165,10 @@ function asyncStatusOperation(state, action, status) {
 
 module.exports = (state = initialState, action) => {
     switch (action.type) {
-        case TaskActionTypes.SHOW_FULL_TASK:
-            return showFullTask(state, action)
-        case TaskActionTypes.HIDE_FULL_TASK:
-            return hideFullTask(state, action)
+        case ThingPageActionTypes.GET:
+            return get(state, action)
+        case ThingPageActionTypes.HIDE:
+            return hide(state, action)
         case ThingCommandActionTypes.COMMENT:
             return comment(state, action)
         case ThingCommandActionTypes.PING:

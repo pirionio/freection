@@ -1,4 +1,0 @@
-module.exports = {
-    SHOW_FULL_TASK: 'SHOW_FULL_TASK',
-    HIDE_FULL_TASK: 'HIDE_FULL_TASK'
-}

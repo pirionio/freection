@@ -1,9 +1,9 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
-const {withRouter} = require('react-router')
 const DocumentTitle = require('react-document-title')
 const dateFns = require('date-fns')
+const {goBack} = require('react-router-redux')
 
 const isEmpty = require('lodash/isEmpty')
 const find = require('lodash/find')
@@ -13,8 +13,8 @@ const includes = require('lodash/includes')
 const CommentList = require('../Comment/CommentList')
 const Action = require('../Messages/Action')
 
-const TaskActions = require('../../actions/task-actions')
 const ThingCommandActions = require('../../actions/thing-command-actions')
+const ThingPageActions = require('../../actions/thing-page-actions')
 
 const ThingStatus = require('../../../common/enums/thing-status')
 const EventTypes = require('../../../common/enums/event-types')
@@ -33,18 +33,17 @@ class Task extends Component {
 
     componentWillMount() {
         const {dispatch, params} = this.props
-        dispatch(TaskActions.showFullTask(params.taskId))
+        dispatch(ThingPageActions.get(params.taskId))
     }
 
     componentWillUnmount() {
-        const {dispatch, params} = this.props
-        dispatch(TaskActions.hideFullTask(params.taskId))
+        const {dispatch} = this.props
+        dispatch(ThingPageActions.hide())
     }
 
     close() {
-        this.props.router.push(this.props.location.query.from)
-        const {dispatch, params} = this.props
-        dispatch(TaskActions.hideFullTask(params.taskId))
+        const {dispatch} = this.props
+        dispatch(goBack())
     }
 
     getTaskReferencer() {
@@ -251,4 +250,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(withRouter(Task))
+module.exports = connect(mapStateToProps)(Task)
