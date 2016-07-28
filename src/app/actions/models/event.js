@@ -26,6 +26,10 @@ module.exports = {
             params: ['thing']
         },
         {
+            name: 'sent back',
+            params: ['thing']
+        },
+        {
             name: 'pinged',
             params: ['pingEvent']
         },
@@ -36,6 +40,6 @@ module.exports = {
         {
             name: 'comment read by',
             params: ['comment']
-        },
+        }
     ]
 }

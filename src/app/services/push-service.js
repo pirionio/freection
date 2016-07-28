@@ -31,7 +31,10 @@ function listenToUpdates(pushToken, dispatch) {
 
         if (event.eventType.key === EventTypes.ABORTED.key)
             dispatch(EventActions.aborted(event.thing))
-    
+
+        if (event.eventType.key === EventTypes.SENT_BACK.key)
+            dispatch(EventActions.sentBack(event.thing))
+
         if (event.eventType.key === EventTypes.PING.key)
             dispatch(EventActions.pinged(event))
     })

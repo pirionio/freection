@@ -250,6 +250,27 @@ function discardPing(notification, user) {
     }
 }
 
+function sendBack(thing) {
+    return dispatch => {
+        dispatch({
+            type: ThingCommandActionsTypes.SEND_BACK, 
+            status: ActionStatus.START,
+            thing
+        })
+        return ResourceUtil.post(`/api/things/${thing.id}/sendback`)
+            .then(result => dispatch({
+                type: ThingCommandActionsTypes.SEND_BACK, 
+                status: ActionStatus.COMPLETE,
+                thing
+            }))
+            .catch(() => dispatch({
+                type: ThingCommandActionsTypes.SEND_BACK, 
+                status: ActionStatus.ERROR,
+                thing
+            }))
+    }
+}
+
 module.exports = {
     comment,
     newThing,
@@ -261,5 +282,6 @@ module.exports = {
     dismiss,
     markAsDone,
     discardComments,
-    discardPing
+    discardPing,
+    sendBack
 }

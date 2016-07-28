@@ -22,6 +22,7 @@ class ActionsBar extends Component {
         this.close = this.close.bind(this)
         this.discardComments = this.discardComments.bind(this)
         this.discardPing = this.discardPing.bind(this)
+        this.sendBack = this.sendBack.bind(this)
 
         this.showDo = this.showDo.bind(this)
         this.showDone = this.showDone.bind(this)
@@ -31,6 +32,7 @@ class ActionsBar extends Component {
         this.showClose = this.showClose.bind(this)
         this.showDiscardComments = this.showDiscardComments.bind(this)
         this.showDiscardPing = this.showDiscardPing.bind(this)
+        this.showSendBack = this.showSendBack.bind(this)
     }
 
     getActions() {
@@ -60,28 +62,31 @@ class ActionsBar extends Component {
         if (this.showDiscardPing())
             actions.push(<Action label="Discard" doFunc={this.discardPing} key="action-Discard" />)
 
+        if (this.showSendBack())
+            actions.push(<Action label="Send Back" doFunc={this.sendBack} key="action-SendBack" />)
+
         return actions
     }
 
     showDo() {
         const {thing, notification, currentUser} = this.props
         return currentUser.id === thing.to.id &&
-            includes([ThingStatus.NEW.key], thing.payload.status) &&
-            (notification ? includes([EventTypes.CREATED.key], notification.eventType.key) : true)
+            includes([ThingStatus.NEW.key, ThingStatus.REOPENED.key], thing.payload.status) &&
+            (notification ? includes([EventTypes.CREATED.key, EventTypes.SENT_BACK.key], notification.eventType.key) : true)
     }
 
     showDone() {
         const {thing, notification, currentUser} = this.props
         return currentUser.id === thing.to.id &&
-            includes([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key], thing.payload.status) &&
-            (notification ? includes([EventTypes.CREATED.key], notification.eventType.key) : true)
+            includes([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key], thing.payload.status) &&
+            (notification ? includes([EventTypes.CREATED.key, EventTypes.SENT_BACK.key], notification.eventType.key) : true)
     }
 
     showDismiss() {
         const {thing, notification, currentUser} = this.props
         return currentUser.id === thing.to.id &&
-            includes([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key], thing.payload.status) &&
-            (notification ? includes([EventTypes.CREATED.key], notification.eventType.key): true) &&
+            includes([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key], thing.payload.status) &&
+            (notification ? includes([EventTypes.CREATED.key, EventTypes.SENT_BACK.key], notification.eventType.key): true) &&
             !thing.isSelf
     }
 
@@ -115,6 +120,12 @@ class ActionsBar extends Component {
     showDiscardPing() {
         const {notification} = this.props
         return notification && notification.eventType.key === EventTypes.PING.key
+    }
+
+    showSendBack() {
+        const {thing, currentUser} = this.props
+        return currentUser.id === thing.creator.id &&
+            includes([ThingStatus.DONE.key, ThingStatus.DISMISS.key], thing.payload.status)
     }
 
     doThing() {
@@ -155,6 +166,11 @@ class ActionsBar extends Component {
     discardPing() {
         const {dispatch, notification} = this.props
         dispatch(ThingCommandActions.discardPing(notification))
+    }
+
+    sendBack() {
+        const {dispatch, thing} = this.props
+        dispatch(ThingCommandActions.sendBack(thing))
     }
 
     render() {

@@ -30,5 +30,9 @@ module.exports = {
     PING: {
         key: 'PING',
         label: 'Ping'
+    },
+    SENT_BACK: {
+        key: 'SENT_BACK',
+        label: 'Sent back'
     }
 }

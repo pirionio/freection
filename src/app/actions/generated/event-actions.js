@@ -44,6 +44,13 @@ function dismissed(thing) {
     }
 }
 
+function sentBack(thing) {
+    return {
+        type: EventActionsTypes.SENT_BACK,
+        thing
+    }
+}
+
 function pinged(pingEvent) {
     return {
         type: EventActionsTypes.PINGED,
@@ -72,6 +79,7 @@ module.exports = {
     closed,
     aborted,
     dismissed,
+    sentBack,
     pinged,
     commentCreated,
     commentReadBy

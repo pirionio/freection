@@ -22,5 +22,9 @@ module.exports = {
     ABORT: {
         key: 'ABORT',
         label: 'Abort'
+    },
+    REOPENED: {
+        key: 'REOPENED',
+        label: 'Reopened'
     }
 }

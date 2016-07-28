@@ -97,6 +97,17 @@ function createPing(user, thing) {
     })
 }
 
+function createSentBack(user, thing) {
+    return Event.save({
+        thingId: thing.id,
+        eventType: EventTypes.SENT_BACK.key,
+        createdAt: new Date(),
+        creatorUserId: user.id,
+        payload: {},
+        showNewList: filterShowNewList(thing, [...thing.doers, thing.toUserId])
+    })
+}
+
 function filterShowNewList(thing, list) {
     return thing.isSelf() ? [] : list
 }
@@ -109,5 +120,6 @@ module.exports = {
     createAborted,
     createComment,
     createClosed,
-    createPing
+    createPing,
+    createSentBack
 }

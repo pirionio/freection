@@ -85,6 +85,12 @@ module.exports = {
             params: ['notification', 'user'],
             type: 'post',
             path: '/api/events/${notification.id}/discard'
+        },
+        {
+            name: 'send back',
+            params: ['thing'],
+            type: 'post',
+            path: '/api/things/${thing.id}/sendback'
         }
     ]
 }

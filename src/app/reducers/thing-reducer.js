@@ -50,6 +50,7 @@ module.exports = (state, action) => {
         case EventActionTypes.CLOSED:
         case EventActionTypes.DISMISSED:
         case EventActionTypes.ABORTED:
+        case EventActionTypes.SENT_BACK:
             return statusChanged(state, action)
         default:
             return state

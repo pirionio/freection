@@ -84,6 +84,17 @@ router.post('/:thingId/abort', function(request, response) {
     })
 })
 
+router.post('/:thingId/sendback', function(request, response) {
+    EndpointUtil.handlePost(request, response, ThingService.sendBack, {
+        params: ['thingId'],
+        result: false,
+        errorTemplates: {
+            notFound: getNotFoundErrorTemplate(),
+            general: 'Could not send back thing ${thingId} by user user ${user}'
+        }
+    })
+})
+
 router.post('/:thingId/ping', function(request, response) {
     EndpointUtil.handlePost(request, response, ThingService.ping, {
         params: ['thingId'],

@@ -62,7 +62,7 @@ function doThing(user, thingId) {
     return Thing.get(thingId).run()
         .then(thing => performDoThing(thing, user))
         .then(thing => EventCreator.createAccepted(user, thing))
-        .then(() => Event.discardUserEventsByType(thingId, EventTypes.CREATED.key, user.id))
+        .then(() => Event.discardAllUserEvents(thingId, user.id))
         .catch(error => {
             logger.error(`error while setting user ${user.email} as doer of thing ${thingId}:`, error)
             throw error
@@ -125,6 +125,19 @@ function markAsDone(user, thingId) {
         })
         .catch(error => {
             logger.error(`Error while marking thing ${thingId} as done by user ${user.email}:`, error)
+            throw error
+        })
+}
+
+function sendBack(user, thingId) {
+    return Thing.get(thingId).run()
+        .then(thing => {
+            return performSendBack(thing, user)
+                .then(() => Event.discardAllUserEvents(thingId, user.id))
+                .then(() => EventCreator.createSentBack(user, thing))
+        })
+        .catch(error => {
+            logger.error(`Error while sending thing ${thingId} back by user ${user.email}:`, error)
             throw error
         })
 }
@@ -214,6 +227,11 @@ function performAbort(thing, user) {
     return thing.save()
 }
 
+function performSendBack(thing, user) {
+    thing.payload.status = ThingStatus.REOPENED.key
+    return thing.save()
+}
+
 module.exports = {
     getWhatsNew,
     getToDo,
@@ -223,6 +241,7 @@ module.exports = {
     doThing,
     dismiss,
     markAsDone,
+    sendBack,
     comment,
     close,
     abort,
