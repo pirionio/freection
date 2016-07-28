@@ -29,7 +29,7 @@ function createUserToken(user) {
     }
 }
 
-function generateOAuth2Url(prompt) {
+function generateOAuth2Url(prompt, loginHint) {
     const oauthUrl = 'https://accounts.google.com/o/oauth2/auth'
     const scope = [
         'profile',
@@ -42,7 +42,7 @@ function generateOAuth2Url(prompt) {
         redirect_uri: config.callbackURL,
         access_type: 'offline',
         scope: scope.join(' ')
-    }, prompt ? { prompt } : {})
+    }, prompt ? { prompt } : {}, loginHint ? {login_hint: loginHint} : {})
 
     return oauthUrl + '?' + querystring.stringify(options)
 }
@@ -83,7 +83,7 @@ passport.use(new GoogleStrategy({
             if (err === "MissingRefreshToken") {
                 logger.info(
                     `missing refresh token for new user ${userData.firstName} ${userData.lastName} ${userData.email}`)
-                cb(null, {missingRefreshToken:true})
+                cb(null, {missingRefreshToken:true, email: userData.email})
             } else {
                 cb(err)
             }
@@ -100,7 +100,7 @@ router.get('/google', function(request, response) {
 router.get('/google/callback',
     passport.authenticate('google', {session: false, failureRedirect: '/login'}), function(request, response, next) {
         if (request.user.missingRefreshToken) {
-            const redirectUrl = generateOAuth2Url('consent')
+            const redirectUrl = generateOAuth2Url('consent', request.user.email)
             response.redirect(302, redirectUrl)
         } else {
             token.login({ redirect: '/', expiresIn: '30 days' })(request, response, next)
