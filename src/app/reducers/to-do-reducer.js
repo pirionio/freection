@@ -96,6 +96,7 @@ function abortedReceived(state, action) {
         return state
 
     return immutable(state)
+        .arrayReject('things', thing => thing.id === action.thing.id && thing.isSelf)
         .arraySetItem('things', {id: action.thing.id}, item => thingReducer(item, action))
         .value()
 }

@@ -39,4 +39,8 @@ Thing.defineStatic('getUserToDos', function(userId) {
     return this.getAll(userId, {index: 'doers'}).getJoin({creator: true, to: true, events: true}).run()
 })
 
+Thing.define('isSelf', function() {
+    return this.creatorUserId === this.toUserId
+})
+
 module.exports = Thing

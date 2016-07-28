@@ -1,9 +1,10 @@
 const {remove} = require('lodash')
 
-const {Event, Thing} = require('../models')
+const {Event, Thing, User} = require('../models')
 const EventCreator = require('./event-creator')
 const {eventToDto, thingToDto} = require('../transformers')
 const ThingStatus = require('../../../common/enums/thing-status')
+const ThingTypes = require('../../../common/enums/thing-types')
 const EventTypes = require('../../../common/enums/event-types')
 const logger = require('../utils/logger')
 
@@ -40,6 +41,20 @@ function getThing(user, thingId) {
         .catch(error => {
             logger.error(`error while fetching thing ${thingId} for user ${user.email}`, error)
             throw error
+        })
+}
+
+function newThing(user, to, body, subject) {
+    return User.getUserByEmail(to)
+        .then(toUser => saveNewThing(body, subject, user, toUser))
+        .then(thing => {
+            return EventCreator.createCreated(user, thing)
+                .then(() => {
+                    //  if thing assigned to myself let's accept it immediately
+                    if (thing.isSelf()) {
+                        return EventCreator.createAccepted(user, thing)
+                    }
+                })
         })
 }
 
@@ -102,6 +117,11 @@ function markAsDone(user, thingId) {
             return performMarkAsDone(thing, user)
                 .then(() => Event.discardAllUserEvents(thingId, user.id))
                 .then(() => EventCreator.createDone(user, thing))
+                .then(() => {
+                    if (thing.isSelf()) {
+                        return EventCreator.createClosed(user, thing)
+                    }
+                })
         })
         .catch(error => {
             logger.error(`Error while marking thing ${thingId} as done by user ${user.email}:`, error)
@@ -139,6 +159,29 @@ function discardEventsByType(user, thingId, eventType) {
         })
 }
 
+function saveNewThing(body, subject, creator, to) {
+    const toUserId = to.id
+    const creatorUserId = creator.id
+
+    // check if thing is self thing (assigned to creator)
+    const isSelfThing = toUserId === creatorUserId
+    const status = isSelfThing ? ThingStatus.INPROGRESS.key : ThingStatus.NEW
+    const followUpers = isSelfThing ? [] : [creatorUserId]
+    const doers = isSelfThing ? [creatorUserId] : []
+
+    return Thing.save({
+        createdAt: new Date(),
+        creatorUserId,
+        toUserId,
+        body,
+        subject,
+        followUpers,
+        doers,
+        type: ThingTypes.THING.key,
+        payload: { status }
+    })
+}
+
 function performDoThing(thing, user) {
     thing.doers.push(user.id)
     thing.payload.status = ThingStatus.INPROGRESS.key
@@ -153,7 +196,7 @@ function performDismiss(thing, user) {
 
 function performMarkAsDone(thing, user) {
     remove(thing.doers, doerId => doerId === user.id)
-    thing.payload.status = ThingStatus.DONE.key
+    thing.payload.status = thing.isSelf() ? ThingStatus.CLOSE.key : ThingStatus.DONE.key
     return thing.save()
 }
 
@@ -165,6 +208,8 @@ function performClose(thing, user) {
 
 function performAbort(thing, user) {
     remove(thing.followUpers, followUperId => followUperId === user.id)
+    remove(thing.doers, doerUserId => doerUserId === user.id)
+
     thing.payload.status = ThingStatus.ABORT.key
     return thing.save()
 }
@@ -174,6 +219,7 @@ module.exports = {
     getToDo,
     getFollowUps,
     getThing,
+    newThing,
     doThing,
     dismiss,
     markAsDone,

@@ -1,14 +1,12 @@
 const router = require('express').Router()
 
-const {Thing, User, Event} = require('../../shared/models')
-const EventTypes = require('../../../common/enums/event-types')
-const ThingTypes = require('../../../common/enums/thing-types')
-const ThingStatus = require('../../../common/enums/thing-status')
+const EndpointUtil = require('../../shared/utils/endpoint-util')
+const ThingService = require('../../shared/application/thing-service')
 const logger = require('../../shared/utils/logger')
 
 router.post('/', function(request, response) {
     const {to, body, subject} = request.body
-    const {id: creatorUserId, email: creatorEmail} = request.user
+    const {user} = request
 
     if (!to) {
         response.status(400).send("to field is missing")
@@ -20,48 +18,13 @@ router.post('/', function(request, response) {
         return
     }
 
-    const createdAt = new Date()
-
-    User.getUserByEmail(to).
-        then(user => {
-            const toUserId = user.id
-
-            return Thing.save({
-                createdAt,
-                creatorUserId,
-                toUserId,
-                body,
-                subject,
-                followUpers: [creatorUserId],
-                doers: [],
-                type: ThingTypes.THING.key,
-                payload: {
-                    status: ThingStatus.NEW.key
-                }
-            })
-        }).
-        then(thing => {
-            return Event.save({
-                thingId: thing.id,
-                eventType: EventTypes.CREATED.key,
-                createdAt,
-                creatorUserId,
-                payload: {},
-                showNewList: [thing.toUserId]
-            })
-        }).
-        then(() => {
-            logger.info(`new thing from ${creatorEmail} to ${to} subject ${subject}`)
-            response.json({})
-        }).
-        catch(e => {
-            if (e === "NotFound")
-                response.status(404).send(`user ${to} doesn't exist`)
-            else {
-                logger.error("error while saving new thing", e)
-                response.sendStatus(500)
-            }
-        })
+    EndpointUtil.handlePost(request, response, ThingService.newThing, {
+        body: ['to', 'body', 'subject'],
+        result: false,
+        errorTemplates: {
+            general: 'Could not create new thing by user ${user}'
+        }
+    })
 })
 
 module.exports = router

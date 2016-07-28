@@ -15,7 +15,8 @@ function thingToDto(thing, user, {includeEvents = true} = {}) {
         type: ThingTypes[thing.type],
         events: includeEvents && thing.events ? thing.events.map(event => eventToDto(event, user, {includeThing: false})) : [],
         isFollowUper: thing.followUpers.includes(user.id),
-        isDoer: thing.doers.includes(user.id)
+        isDoer: thing.doers.includes(user.id),
+        isSelf: thing.isSelf()
     }
 }
 

@@ -3,6 +3,17 @@ const union = require('lodash/union')
 const {Event} = require('../models')
 const EventTypes = require('../../../common/enums/event-types')
 
+function createCreated(user, thing) {
+    return Event.save({
+        thingId: thing.id,
+        eventType: EventTypes.CREATED.key,
+        createdAt: thing.createdAt,
+        creatorUserId: user.id,
+        payload: {},
+        showNewList: filterShowNewList(thing, [thing.toUserId])
+    })
+}
+
 function createAccepted(user, thing) {
     return Event.save({
         thingId: thing.id,
@@ -21,7 +32,7 @@ function createDismissed(user, thing) {
         createdAt: new Date(),
         creatorUserId: user.id,
         payload: {},
-        showNewList: [thing.creatorUserId]
+        showNewList: filterShowNewList(thing, [thing.creatorUserId])
     })
 }
 
@@ -32,7 +43,7 @@ function createDone(user, thing) {
         createdAt: new Date(),
         creatorUserId: user.id,
         payload: {},
-        showNewList: [thing.creatorUserId]
+        showNewList: filterShowNewList(thing, [thing.creatorUserId])
     })
 }
 
@@ -43,7 +54,7 @@ function createAborted(user, thing) {
         createdAt: new Date(),
         creatorUserId: user.id,
         payload: {},
-        showNewList: union([thing.toUserId], thing.doers)
+        showNewList: filterShowNewList(thing, union([thing.toUserId], thing.doers))
     })
 }
 
@@ -57,7 +68,8 @@ function createComment(user, thing, commentText) {
             text: commentText,
             readByList: [user.id]
         },
-        showNewList: [...thing.followUpers, ...thing.doers].filter(userId => userId !== user.id)
+        showNewList: filterShowNewList(thing,
+            [...thing.followUpers, ...thing.doers].filter(userId => userId !== user.id))
     })
 }
 
@@ -81,11 +93,16 @@ function createPing(user, thing) {
         payload: {
             readByList: [user.id]
         },
-        showNewList: [...thing.doers]
+        showNewList: filterShowNewList(thing, [...thing.doers])
     })
 }
 
+function filterShowNewList(thing, list) {
+    return thing.isSelf() ? [] : list
+}
+
 module.exports = {
+    createCreated,
     createAccepted,
     createDismissed,
     createDone,
