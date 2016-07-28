@@ -10,7 +10,7 @@ class DoThing extends Component {
             <ThingRow thing={this.props.thing}
                       currentUser={this.props.currentUser}
                       context="/todo"
-                      abort={true} />
+                      cancel={true} />
         )
     }
 }

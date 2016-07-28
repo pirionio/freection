@@ -29,8 +29,8 @@ function listenToUpdates(pushToken, dispatch) {
         if (event.eventType.key === EventTypes.DISMISSED.key)
             dispatch(EventActions.dismissed(event.thing))
 
-        if (event.eventType.key === EventTypes.ABORTED.key)
-            dispatch(EventActions.aborted(event.thing))
+        if (event.eventType.key === EventTypes.CANCELED.key)
+            dispatch(EventActions.canceled(event.thing))
 
         if (event.eventType.key === EventTypes.SENT_BACK.key)
             dispatch(EventActions.sentBack(event.thing))

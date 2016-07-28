@@ -73,13 +73,13 @@ router.post('/:thingId/close', function(request, response) {
     })
 })
 
-router.post('/:thingId/abort', function(request, response) {
-    EndpointUtil.handlePost(request, response, ThingService.abort, {
+router.post('/:thingId/cancel', function(request, response) {
+    EndpointUtil.handlePost(request, response, ThingService.cancel, {
         params: ['thingId'],
         result: false,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
-            general: 'Could not abort thing ${thingId} by user user ${user}'
+            general: 'Could not cancel thing ${thingId} by user user ${user}'
         }
     })
 })

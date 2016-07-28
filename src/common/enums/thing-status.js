@@ -19,9 +19,9 @@ module.exports = {
         key: 'CLOSE',
         label: 'Close'
     },
-    ABORT: {
-        key: 'ABORT',
-        label: 'Abort'
+    CANCELED: {
+        key: 'CANCELED',
+        label: 'Cancel'
     },
     REOPENED: {
         key: 'REOPENED',

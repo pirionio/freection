@@ -96,17 +96,17 @@ function close(user, thingId) {
         })
 }
 
-function abort(user, thingId) {
+function cancel(user, thingId) {
     // TODO: check if the if the status is done
 
     return Thing.get(thingId).run()
         .then(thing => {
-            return performAbort(thing, user)
+            return performCancel(thing, user)
                 .then(() => Event.discardAllUserEvents(thingId, user.id))
-                .then(() => EventCreator.createAborted(user, thing))
+                .then(() => EventCreator.createCanceled(user, thing))
         })
         .catch(error => {
-            logger.error(`error while aborting thing ${thingId} by user ${user.email}:`, error)
+            logger.error(`error while canceling thing ${thingId} by user ${user.email}:`, error)
             throw error
         })
 }
@@ -219,11 +219,11 @@ function performClose(thing, user) {
     return thing.save()
 }
 
-function performAbort(thing, user) {
+function performCancel(thing, user) {
     remove(thing.followUpers, followUperId => followUperId === user.id)
     remove(thing.doers, doerUserId => doerUserId === user.id)
 
-    thing.payload.status = ThingStatus.ABORT.key
+    thing.payload.status = ThingStatus.CANCELED.key
     return thing.save()
 }
 
@@ -244,7 +244,7 @@ module.exports = {
     sendBack,
     comment,
     close,
-    abort,
+    cancel,
     ping,
     discardEventsByType
 }

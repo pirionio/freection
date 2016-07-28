@@ -118,21 +118,21 @@ function doThing(thing) {
     }
 }
 
-function abort(thing) {
+function cancel(thing) {
     return dispatch => {
         dispatch({
-            type: ThingCommandActionsTypes.ABORT, 
+            type: ThingCommandActionsTypes.CANCEL, 
             status: ActionStatus.START,
             thing
         })
-        return ResourceUtil.post(`/api/things/${thing.id}/abort`)
+        return ResourceUtil.post(`/api/things/${thing.id}/cancel`)
             .then(result => dispatch({
-                type: ThingCommandActionsTypes.ABORT, 
+                type: ThingCommandActionsTypes.CANCEL, 
                 status: ActionStatus.COMPLETE,
                 thing
             }))
             .catch(() => dispatch({
-                type: ThingCommandActionsTypes.ABORT, 
+                type: ThingCommandActionsTypes.CANCEL, 
                 status: ActionStatus.ERROR,
                 thing
             }))
@@ -277,7 +277,7 @@ module.exports = {
     ping,
     markCommentAsRead,
     doThing,
-    abort,
+    cancel,
     close,
     dismiss,
     markAsDone,

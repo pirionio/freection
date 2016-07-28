@@ -4,7 +4,7 @@ module.exports = {
     PING: 'PING',
     MARK_COMMENT_AS_READ: 'MARK_COMMENT_AS_READ',
     DO_THING: 'DO_THING',
-    ABORT: 'ABORT',
+    CANCEL: 'CANCEL',
     CLOSE: 'CLOSE',
     DISMISS: 'DISMISS',
     MARK_AS_DONE: 'MARK_AS_DONE',

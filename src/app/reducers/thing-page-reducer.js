@@ -140,8 +140,8 @@ function closeThing(state, action) {
     return asyncStatusOperation(state, action, ThingStatus.CLOSE.key)
 }
 
-function abortThing(state, action) {
-    return asyncStatusOperation(state, action, ThingStatus.ABORT.key)
+function cancelThing(state, action) {
+    return asyncStatusOperation(state, action, ThingStatus.CANCELED.key)
 }
 
 function asyncStatusOperation(state, action, status) {
@@ -184,7 +184,7 @@ module.exports = (state = initialState, action) => {
         case EventActionTypes.MARKED_AS_DONE:
         case EventActionTypes.CLOSED:
         case EventActionTypes.DISMISSED:
-        case EventActionTypes.ABORTED:
+        case EventActionTypes.CANCELED:
             return statusChanged(state, action)
         case ThingCommandActionTypes.DO_THING:
             return doThing(state, action)
@@ -194,8 +194,8 @@ module.exports = (state = initialState, action) => {
             return closeThing(state, action)
         case ThingCommandActionTypes.DISMISS:
             return dismissThing(state, action)
-        case ThingCommandActionTypes.ABORT:
-            return abortThing(state, action)
+        case ThingCommandActionTypes.CANCEL:
+            return cancelThing(state, action)
         default:
             return state
     }

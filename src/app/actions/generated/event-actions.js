@@ -30,9 +30,9 @@ function closed(thing) {
     }
 }
 
-function aborted(thing) {
+function canceled(thing) {
     return {
-        type: EventActionsTypes.ABORTED,
+        type: EventActionsTypes.CANCELED,
         thing
     }
 }
@@ -77,7 +77,7 @@ module.exports = {
     accepted,
     markedAsDone,
     closed,
-    aborted,
+    canceled,
     dismissed,
     sentBack,
     pinged,

@@ -57,7 +57,7 @@ class ThingRow extends Component {
             <MessageRow message={thing}
                         currentUser={this.props.currentUser}
                         context={this.props.context}
-                        abort={this.props.abort} />
+                        cancel={this.props.cancel} />
         )
     }
 }
@@ -66,11 +66,11 @@ ThingRow.propTypes = {
     thing: PropTypes.object.isRequired,
     currentUser: PropTypes.object.isRequired,
     context: PropTypes.string.isRequired,
-    abort: PropTypes.bool
+    cancel: PropTypes.bool
 }
 
 ThingRow.defaultProps = {
-    abort: false
+    cancel: false
 }
 
 module.exports = ThingRow

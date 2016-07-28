@@ -18,7 +18,7 @@ module.exports = {
             params: ['thing']
         },
         {
-            name: 'aborted',
+            name: 'canceled',
             params: ['thing']
         },
         {

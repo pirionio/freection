@@ -23,9 +23,9 @@ module.exports = {
         key: 'CLOSED',
         label: 'Closed'
     },
-    ABORTED: {
-        key: 'ABORTED',
-        label: 'Aborted'
+    CANCELED: {
+        key: 'CANCELED',
+        label: 'Canceled'
     },
     PING: {
         key: 'PING',

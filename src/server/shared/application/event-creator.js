@@ -47,10 +47,10 @@ function createDone(user, thing) {
     })
 }
 
-function createAborted(user, thing) {
+function createCanceled(user, thing) {
     return Event.save({
         thingId: thing.id,
-        eventType: EventTypes.ABORTED.key,
+        eventType: EventTypes.CANCELED.key,
         createdAt: new Date(),
         creatorUserId: user.id,
         payload: {},
@@ -117,7 +117,7 @@ module.exports = {
     createAccepted,
     createDismissed,
     createDone,
-    createAborted,
+    createCanceled,
     createComment,
     createClosed,
     createPing,

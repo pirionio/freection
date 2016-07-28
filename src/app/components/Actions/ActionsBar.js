@@ -17,7 +17,7 @@ class ActionsBar extends Component {
         this.doThing = this.doThing.bind(this)
         this.markAsDone = this.markAsDone.bind(this)
         this.dismiss = this.dismiss.bind(this)
-        this.abort = this.abort.bind(this)
+        this.cancel = this.cancel.bind(this)
         this.ping = this.ping.bind(this)
         this.close = this.close.bind(this)
         this.discardComments = this.discardComments.bind(this)
@@ -27,7 +27,7 @@ class ActionsBar extends Component {
         this.showDo = this.showDo.bind(this)
         this.showDone = this.showDone.bind(this)
         this.showDismiss = this.showDismiss.bind(this)
-        this.showAbort = this.showAbort.bind(this)
+        this.showCancel = this.showCancel.bind(this)
         this.showPing = this.showPing.bind(this)
         this.showClose = this.showClose.bind(this)
         this.showDiscardComments = this.showDiscardComments.bind(this)
@@ -47,8 +47,8 @@ class ActionsBar extends Component {
         if (this.showDismiss())
             actions.push(<Action label="Dismiss" doFunc={this.dismiss} key="action-Dismiss" />)
 
-        if (this.showAbort())
-            actions.push(<Action label="Abort" doFunc={this.abort} key="action-Abort" />)
+        if (this.showCancel())
+            actions.push(<Action label="Cancel" doFunc={this.cancel} key="action-Cancel" />)
 
         if (this.showPing())
             actions.push(<Action label="Ping" doFunc={this.ping} key="action-Ping" />)
@@ -97,11 +97,11 @@ class ActionsBar extends Component {
             (notification ? includes([EventTypes.DONE.key, EventTypes.DISMISSED.key], notification.eventType.key) : true)
     }
 
-    showAbort() {
-        const {thing, currentUser, abort} = this.props
+    showCancel() {
+        const {thing, currentUser, cancel} = this.props
         return currentUser.id === thing.creator.id &&
             includes([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key], thing.payload.status) &&
-            abort
+            cancel
     }
 
     showPing() {
@@ -148,9 +148,9 @@ class ActionsBar extends Component {
         dispatch(ThingCommandActions.close(thing))
     }
 
-    abort() {
+    cancel() {
         const {dispatch, thing} = this.props
-        dispatch(ThingCommandActions.abort(thing))
+        dispatch(ThingCommandActions.cancel(thing))
     }
 
     ping() {
@@ -188,12 +188,12 @@ ActionsBar.propTypes = {
     thing: PropTypes.object.isRequired,
     notification: PropTypes.object,
     ping: PropTypes.bool,
-    abort: PropTypes.bool
+    cancel: PropTypes.bool
 }
 
 ActionsBar.defaultProps = {
     ping: true,
-    abort: true
+    cancel: true
 }
 
 function mapStateToProps(state) {

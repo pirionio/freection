@@ -127,7 +127,7 @@ module.exports = (state = initialState, action) => {
         case ThingCommandActionTypes.DISMISS:
         case ThingCommandActionTypes.MARK_AS_DONE:
         case ThingCommandActionTypes.CLOSE:
-        case ThingCommandActionTypes.ABORT:
+        case ThingCommandActionTypes.CANCEL:
         case ThingCommandActionTypes.SEND_BACK:
             return removeNotificationsOfThing(state, action)
         case ThingCommandActionTypes.DISCARD_COMMENTS:

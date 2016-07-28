@@ -38,8 +38,8 @@ class MessageRow extends Component {
             </div> : ''
 
         const actionsBar = message && message.thing ?
-            <ActionsBar thing={message.thing} notification={message} abort={this.props.abort} ping={false} /> :
-            <ActionsBar thing={message} abort={this.props.abort} />
+            <ActionsBar thing={message.thing} notification={message} cancel={this.props.cancel} ping={false} /> :
+            <ActionsBar thing={message} cancel={this.props.cancel} />
 
         return (
             <div className="message">
@@ -77,11 +77,11 @@ MessageRow.propTypes = {
     message: PropTypes.object.isRequired,
     currentUser: PropTypes.object.isRequired,
     context: PropTypes.string.isRequired,
-    abort: PropTypes.bool
+    cancel: PropTypes.bool
 }
 
 MessageRow.defaultProps = {
-    abort: false
+    cancel: false
 }
 
 module.exports = connect()(MessageRow)

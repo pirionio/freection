@@ -90,7 +90,7 @@ function commentChangedOrAdded(state, action) {
         .value()
 }
 
-function abortedReceived(state, action) {
+function canceledReceived(state, action) {
     // TODO Handle FETCHING state by queuing incoming events
     if (state.invalidationStatus !== InvalidationStatus.FETCHED)
         return state
@@ -126,8 +126,8 @@ module.exports = (state = initialState, action) => {
         case EventActionTypes.COMMENT_CREATED:
         case EventActionTypes.COMMENT_READ_BY:
             return commentChangedOrAdded(state, action)
-        case EventActionTypes.ABORTED:
-            return abortedReceived(state, action)
+        case EventActionTypes.CANCELED:
+            return canceledReceived(state, action)
         case EventActionTypes.PINGED:
             return pingReceived(state, action)
         default:
