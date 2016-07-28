@@ -56,7 +56,8 @@ class ThingRow extends Component {
         return (
             <MessageRow message={thing}
                         currentUser={this.props.currentUser}
-                        context={this.props.context} />
+                        context={this.props.context}
+                        abort={this.props.abort} />
         )
     }
 }
@@ -64,7 +65,12 @@ class ThingRow extends Component {
 ThingRow.propTypes = {
     thing: PropTypes.object.isRequired,
     currentUser: PropTypes.object.isRequired,
-    context: PropTypes.string.isRequired
+    context: PropTypes.string.isRequired,
+    abort: PropTypes.bool
+}
+
+ThingRow.defaultProps = {
+    abort: false
 }
 
 module.exports = ThingRow

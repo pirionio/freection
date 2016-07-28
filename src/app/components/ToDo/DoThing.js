@@ -9,7 +9,8 @@ class DoThing extends Component {
         return (
             <ThingRow thing={this.props.thing}
                       currentUser={this.props.currentUser}
-                      context="/todo" />
+                      context="/todo"
+                      abort={true} />
         )
     }
 }
