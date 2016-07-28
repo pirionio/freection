@@ -1,7 +1,6 @@
 const React = require('react')
 const {Component, PropTypes} = React
 
-const sortBy = require('lodash/sortBy')
 const first = require('lodash/first')
 const last = require('lodash/last')
 const includes = require('lodash/includes')
@@ -10,6 +9,7 @@ const chain = require('lodash/core')
 const MessageRow = require('../Messages/MessageRow')
 
 const EventTypes = require('../../../common/enums/event-types')
+const immutable = require('../../util/immutable')
 
 class ThingRow extends Component {
     filterEventsByRead(isRead) {
@@ -41,13 +41,13 @@ class ThingRow extends Component {
         const {thing} = this.props
         const unreadComments = this.filterEventsByRead(false)
 
-        return Object.assign({}, thing, {
-            entityId: thing.id,
-            payload: {
+        return immutable(thing)
+            .set('entityId', thing.id)
+            .merge('payload', {
                 text: this.getMessagePreview(),
                 numOfNewComments: unreadComments.length
-            }
-        })
+            })
+            .value()
     }
 
     render () {
@@ -56,7 +56,6 @@ class ThingRow extends Component {
         return (
             <MessageRow message={thing}
                         currentUser={this.props.currentUser}
-                        actions={this.props.actions}
                         context={this.props.context} />
         )
     }
@@ -65,7 +64,6 @@ class ThingRow extends Component {
 ThingRow.propTypes = {
     thing: PropTypes.object.isRequired,
     currentUser: PropTypes.object.isRequired,
-    actions: PropTypes.array.isRequired,
     context: PropTypes.string.isRequired
 }
 

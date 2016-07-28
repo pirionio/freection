@@ -24,6 +24,13 @@ class Immutable {
 
         return this
     }
+    
+    merge(path, value) {
+        const existingValue = get(this._object, path)
+        set(this._object, path, merge(clone(existingValue), value))
+        
+        return this
+    }
 
     arrayReject(path, predicate) {
         const array = get(this._object, path)

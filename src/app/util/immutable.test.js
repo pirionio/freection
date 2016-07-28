@@ -203,4 +203,19 @@ describe('Immutable', () => {
             })
         })
     })
+
+    describe('merge', () => {
+        it('changes only part of an existing object', () => {
+            const result = theImmutable.merge('someObj', {someNewKey: 'newValue'}).value()
+            expect(result.someObj.someKey).to.equal('a')
+            expect(result.someObj.someNewKey).to.equal('newValue')
+            expect(original.someObj.someNewKey).to.equal(undefined)
+        })
+
+        it('does not change anything of path does not exist', () => {
+            const result = theImmutable.merge('nonExistingObj', {someNewKey: 'newValue'}).value()
+            expect(result.nonExistingObject).to.equal(undefined)
+
+        })
+    })
 })

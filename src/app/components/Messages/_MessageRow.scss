@@ -3,7 +3,7 @@
 .message {
   $message-height: 75px;
   $inner-row-height: 25px;
-  $actions-width: 170px;
+  $actions-bar-width: 170px;
   $status-width: 65px;
 
   height: $message-height;
@@ -19,7 +19,7 @@
   .message-content {
     float: left;
     height: $message-height;
-    width: calc(100% - #{$actions-width});
+    width: calc(100% - #{$actions-bar-width});
 
     .inner-row {
       height: $inner-row-height;
@@ -95,6 +95,6 @@
 
   .message-actions {
     float: right;
-    width: $actions-width;
+    width: $actions-bar-width;
   }
 }

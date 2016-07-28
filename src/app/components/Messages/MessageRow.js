@@ -4,6 +4,8 @@ const {connect} = require('react-redux')
 const ThingPageActions = require('../../actions/thing-page-actions')
 const dateFns = require('date-fns')
 
+const ActionsBar = require('../Actions/ActionsBar')
+
 class MessageRow extends Component {
     constructor(props) {
         super(props)
@@ -35,7 +37,9 @@ class MessageRow extends Component {
                 (+{message.payload.numOfNewComments - 1})
             </div> : ''
 
-        const actions = this.props.actions || ''
+        const actionsBar = message && message.thing ?
+            <ActionsBar thing={message.thing} notification={message} abort={false} ping={false} /> :
+            <ActionsBar thing={message} abort={false} />
 
         return (
             <div className="message">
@@ -62,7 +66,7 @@ class MessageRow extends Component {
                     </div>
                 </div>
                 <div className="message-actions">
-                    {actions}
+                    {actionsBar}
                 </div>
             </div>
         )
@@ -72,7 +76,6 @@ class MessageRow extends Component {
 MessageRow.propTypes = {
     message: PropTypes.object.isRequired,
     currentUser: PropTypes.object.isRequired,
-    actions: PropTypes.array.isRequired,
     context: PropTypes.string.isRequired
 }
 

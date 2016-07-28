@@ -9,26 +9,17 @@ const isEmpty = require('lodash/isEmpty')
 const find = require('lodash/find')
 const includes = require('lodash/includes')
 
-
 const CommentList = require('../Comment/CommentList')
-const Action = require('../Messages/Action')
+const ActionsBar = require('../Actions/ActionsBar')
 
-const ThingCommandActions = require('../../actions/thing-command-actions')
 const ThingPageActions = require('../../actions/thing-page-actions')
 
-const ThingStatus = require('../../../common/enums/thing-status')
 const EventTypes = require('../../../common/enums/event-types')
 
 class Thing extends Component {
     constructor(props) {
         super(props)
         this.close = this.close.bind(this)
-        this.doThing = this.doThing.bind(this)
-        this.dismissThing = this.dismissThing.bind(this)
-        this.closeThing = this.closeThing.bind(this)
-        this.abortThing = this.abortThing.bind(this)
-        this.markThingAsDone = this.markThingAsDone.bind(this)
-        this.pingThing = this.pingThing.bind(this)
     }
 
     componentWillMount() {
@@ -54,90 +45,6 @@ class Thing extends Component {
         }
 
         return thing.creator.email
-    }
-
-    getActions() {
-        const {thing} = this.props
-
-        let actions = []
-
-        if (thing.payload.status === ThingStatus.NEW.key && this.isCurrentUserTheTo()) {
-            actions.push(
-                <Action label="Do" doFunc={this.doThing} key="action-Do" />
-            )
-        }
-
-        if ((thing.payload.status === ThingStatus.NEW.key ||
-            thing.payload.status === ThingStatus.INPROGRESS.key) && this.isCurrentUserTheTo()) {
-            actions.push(
-                <Action label="Dismiss" doFunc={this.dismissThing} key="action-Dismiss" />
-            )
-        }
-
-        if ((thing.payload.status === ThingStatus.INPROGRESS.key || thing.payload.status === ThingStatus.NEW.key) && this.isCurrentUserTheTo()) {
-            actions.push(
-                <Action label="Done" doFunc={this.markThingAsDone} key="action-Done" />
-            )
-        }
-
-        if (thing.payload.status === ThingStatus.DONE.key && this.isCurrentUserTheCreator()) {
-            actions.push(
-                <Action label="Close" doFunc={this.closeThing} key="action-Close" />
-            )
-        }
-
-        if ((thing.payload.status == ThingStatus.INPROGRESS.key ||
-            thing.payload.status == ThingStatus.NEW.key) && this.isCurrentUserTheCreator()) {
-            actions.push(
-                <Action label="Abort" doFunc={this.abortThing} key="action-Abort" />
-            )
-        }
-
-        if (thing.payload.status === ThingStatus.INPROGRESS.key && this.isCurrentUserTheCreator()) {
-            actions.push(
-                <Action label="Ping" doFunc={this.pingThing} key="action-Ping" />
-            )
-        }
-
-        return actions
-    }
-
-    doThing() {
-        const {dispatch, thing} = this.props
-        dispatch(ThingCommandActions.doThing(thing))
-    }
-
-    dismissThing() {
-        const {dispatch, thing} = this.props
-        dispatch(ThingCommandActions.dismiss(thing))
-    }
-
-    markThingAsDone() {
-        const {dispatch, thing} = this.props
-        dispatch(ThingCommandActions.markAsDone(thing))
-    }
-
-    closeThing() {
-        const {dispatch, thing} = this.props
-        dispatch(ThingCommandActions.close(thing))
-    }
-
-    abortThing() {
-        const {dispatch, thing} = this.props
-        dispatch(ThingCommandActions.abort(thing))
-    }
-
-    pingThing() {
-        const {dispatch, thing} = this.props
-        dispatch(ThingCommandActions.ping(thing))
-    }
-
-    isCurrentUserTheCreator() {
-        return this.props.currentUser.id === this.props.thing.creator.id
-    }
-
-    isCurrentUserTheTo() {
-        return this.props.currentUser.email === this.props.thing.to.email
     }
 
     getTitle() {
@@ -196,8 +103,6 @@ class Thing extends Component {
             )
         }
 
-        const actions = this.getActions()
-
         return (
             <DocumentTitle title={this.getTitle()}>
                 <div className="thing-container">
@@ -213,7 +118,7 @@ class Thing extends Component {
                                 <button onClick={this.close}>Back</button>
                             </div>
                             <div className="thing-actions">
-                                {actions}
+                                <ActionsBar thing={thing} ping={false} />
                             </div>
                         </div>
                         <div className="thing-subtitle">
