@@ -108,6 +108,17 @@ function createSentBack(user, thing) {
     })
 }
 
+function createCancelAck(user, thing) {
+    return Event.save({
+        thingId: thing.id,
+        eventType: EventTypes.CANCEL_ACKED.key,
+        createdAt: new Date(),
+        creatorUserId: user.id,
+        payload: {},
+        showNewList: []
+    })
+}
+
 function filterShowNewList(thing, list) {
     return thing.isSelf() ? [] : list
 }
@@ -118,6 +129,7 @@ module.exports = {
     createDismissed,
     createDone,
     createCanceled,
+    createCancelAck,
     createComment,
     createClosed,
     createPing,

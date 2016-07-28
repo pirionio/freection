@@ -139,6 +139,27 @@ function cancel(thing) {
     }
 }
 
+function cancelAck(thing) {
+    return dispatch => {
+        dispatch({
+            type: ThingCommandActionsTypes.CANCEL_ACK, 
+            status: ActionStatus.START,
+            thing
+        })
+        return ResourceUtil.post(`/api/things/${thing.id}/cancelack`)
+            .then(result => dispatch({
+                type: ThingCommandActionsTypes.CANCEL_ACK, 
+                status: ActionStatus.COMPLETE,
+                thing
+            }))
+            .catch(() => dispatch({
+                type: ThingCommandActionsTypes.CANCEL_ACK, 
+                status: ActionStatus.ERROR,
+                thing
+            }))
+    }
+}
+
 function close(thing) {
     return dispatch => {
         dispatch({
@@ -278,6 +299,7 @@ module.exports = {
     markCommentAsRead,
     doThing,
     cancel,
+    cancelAck,
     close,
     dismiss,
     markAsDone,

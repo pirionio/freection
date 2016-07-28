@@ -23,6 +23,7 @@ class ActionsBar extends Component {
         this.discardComments = this.discardComments.bind(this)
         this.discardPing = this.discardPing.bind(this)
         this.sendBack = this.sendBack.bind(this)
+        this.cancelAck = this.cancelAck.bind(this)
 
         this.showDo = this.showDo.bind(this)
         this.showDone = this.showDone.bind(this)
@@ -33,6 +34,7 @@ class ActionsBar extends Component {
         this.showDiscardComments = this.showDiscardComments.bind(this)
         this.showDiscardPing = this.showDiscardPing.bind(this)
         this.showSendBack = this.showSendBack.bind(this)
+        this.showCancelAck = this.showCancelAck.bind(this)
     }
 
     getActions() {
@@ -64,6 +66,9 @@ class ActionsBar extends Component {
 
         if (this.showSendBack())
             actions.push(<Action label="Send Back" doFunc={this.sendBack} key="action-SendBack" />)
+
+        if (this.showCancelAck())
+            actions.push(<Action label="Stop doing" doFunc={this.cancelAck} key="action-StopDoing" />)
 
         return actions
     }
@@ -128,6 +133,11 @@ class ActionsBar extends Component {
             includes([ThingStatus.DONE.key, ThingStatus.DISMISS.key], thing.payload.status)
     }
 
+    showCancelAck() {
+        const {notification} = this.props
+        return notification && notification.eventType.key === EventTypes.CANCELED.key
+    }
+
     doThing() {
         const {dispatch, thing} = this.props
         dispatch(ThingCommandActions.doThing(thing))
@@ -171,6 +181,11 @@ class ActionsBar extends Component {
     sendBack() {
         const {dispatch, thing} = this.props
         dispatch(ThingCommandActions.sendBack(thing))
+    }
+
+    cancelAck() {
+        const {dispatch, thing} = this.props
+        dispatch(ThingCommandActions.cancelAck(thing))
     }
 
     render() {

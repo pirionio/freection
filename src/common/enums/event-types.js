@@ -27,6 +27,10 @@ module.exports = {
         key: 'CANCELED',
         label: 'Canceled'
     },
+    CANCEL_ACKED: {
+        key: 'CANCEL_ACKED',
+        label: 'Cancel accepted'
+    },
     PING: {
         key: 'PING',
         label: 'Ping'

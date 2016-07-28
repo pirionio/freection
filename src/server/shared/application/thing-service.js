@@ -116,6 +116,19 @@ function cancel(user, thingId) {
         })
 }
 
+function cancelAck(user, thingId) {
+    return Thing.get(thingId).run()
+        .then(thing => {
+            return performCancelAck(thing, user)
+                .then(() => Event.discardUserEventsByType(thingId, EventTypes.CANCELED.key, user.id))
+                .then(() => EventCreator.createCancelAck(user, thing))
+        })
+        .catch(error => {
+            logger.error(`error while accepting cancellation of thing ${thingId} by user ${user.email}:`, error)
+            throw error
+        })
+}
+
 function markAsDone(user, thingId) {
     return Thing.get(thingId).run()
         .then(thing => validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key]))
@@ -139,7 +152,7 @@ function sendBack(user, thingId) {
     return Thing.get(thingId).run()
         .then(thing => validateStatus(thing, [ThingStatus.DONE.key, ThingStatus.DISMISS.key]))
         .then(thing => {
-            return performSendBack(thing, user)
+            return performSendBack(thing)
                 .then(() => Event.discardUserEvents(thingId, user.id))
                 .then(() => EventCreator.createSentBack(user, thing))
         })
@@ -235,8 +248,13 @@ function performCancel(thing, user) {
     return thing.save()
 }
 
-function performSendBack(thing, user) {
+function performSendBack(thing) {
     thing.payload.status = ThingStatus.REOPENED.key
+    return thing.save()
+}
+
+function performCancelAck(thing, user) {
+    remove(thing.doers, doerUserId => doerUserId === user.id)
     return thing.save()
 }
 
@@ -260,6 +278,7 @@ module.exports = {
     comment,
     close,
     cancel,
+    cancelAck,
     ping,
     discardEventsByType
 }

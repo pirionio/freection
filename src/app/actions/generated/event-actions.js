@@ -37,6 +37,13 @@ function canceled(thing) {
     }
 }
 
+function cancelAcked(thing) {
+    return {
+        type: EventActionsTypes.CANCEL_ACKED,
+        thing
+    }
+}
+
 function dismissed(thing) {
     return {
         type: EventActionsTypes.DISMISSED,
@@ -78,6 +85,7 @@ module.exports = {
     markedAsDone,
     closed,
     canceled,
+    cancelAcked,
     dismissed,
     sentBack,
     pinged,

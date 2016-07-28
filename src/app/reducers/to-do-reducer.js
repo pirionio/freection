@@ -2,6 +2,7 @@ const some = require('lodash/some')
 const merge = require('lodash/merge')
 
 const ToDoActionTypes = require('../actions/types/to-do-action-types')
+const ThingCommandActionTypes = require('../actions/types/thing-command-action-types')
 const EventActionTypes = require('../actions/types/event-action-types')
 const {ActionStatus, InvalidationStatus} = require('../constants')
 const EventTypes = require('../../common/enums/event-types')
@@ -36,7 +37,7 @@ function toDo(state, action) {
     }
 }
 
-function markThingAsDone(state, action) {
+function actionDoneOnThing(state, action) {
     switch (action.status) {
         case ActionStatus.START:
             return immutable(state)
@@ -101,6 +102,16 @@ function canceledReceived(state, action) {
         .value()
 }
 
+function cancelAckReceived(state, action) {
+    // TODO Handle FETCHING state by queuing incoming events
+    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
+        return state
+
+    return immutable(state)
+        .arrayReject('things', {id: action.thing.id})
+        .value()
+}
+
 function pingReceived(state, action) {
     // TODO Handle FETCHING state by queuing incoming events
     if (state.invalidationStatus !== InvalidationStatus.FETCHED)
@@ -115,8 +126,10 @@ module.exports = (state = initialState, action) => {
     switch (action.type) {
         case ToDoActionTypes.FETCH_TO_DO:
             return toDo(state, action)
-        case ToDoActionTypes.MARK_AS_DONE:
-            return markThingAsDone(state, action)
+        case ThingCommandActionTypes.MARK_AS_DONE:
+        case ThingCommandActionTypes.DISMISS:
+        case ThingCommandActionTypes.CANCEL_ACK:
+            return actionDoneOnThing(state, action)
         case EventActionTypes.CREATED:
         case EventActionTypes.ACCEPTED:
             return createdOrAcceptedReceived(state, action)
@@ -128,6 +141,8 @@ module.exports = (state = initialState, action) => {
             return commentChangedOrAdded(state, action)
         case EventActionTypes.CANCELED:
             return canceledReceived(state, action)
+        case EventActionTypes.CANCEL_ACKED:
+            return cancelAckReceived(state, action)
         case EventActionTypes.PINGED:
             return pingReceived(state, action)
         default:

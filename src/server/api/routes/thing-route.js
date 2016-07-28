@@ -89,6 +89,17 @@ router.post('/:thingId/cancel', function(request, response) {
     })
 })
 
+router.post('/:thingId/cancelack', function(request, response) {
+    EndpointUtil.handlePost(request, response, ThingService.cancelAck, {
+        params: ['thingId'],
+        result: false,
+        errorTemplates: {
+            notFound: getNotFoundErrorTemplate(),
+            general: 'Could not accept cancellation of thing ${thingId} by user user ${user}'
+        }
+    })
+})
+
 router.post('/:thingId/sendback', function(request, response) {
     EndpointUtil.handlePost(request, response, ThingService.sendBack, {
         params: ['thingId'],

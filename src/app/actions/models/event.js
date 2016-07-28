@@ -22,6 +22,10 @@ module.exports = {
             params: ['thing']
         },
         {
+            name: 'cancel acked',
+            params: ['thing']
+        },
+        {
             name: 'dismissed',
             params: ['thing']
         },
