@@ -42,7 +42,7 @@ Event.defineStatic('getWhatsNew', function(userId) {
         run()
     })
 
-Event.defineStatic('discardAllUserEvents', function (thingId, userId) {
+Event.defineStatic('discardUserEvents', function (thingId, userId) {
     return this.getAll(thingId, {index: 'thingId'})
         .update(event => {
             return {

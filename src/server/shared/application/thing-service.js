@@ -62,7 +62,7 @@ function doThing(user, thingId) {
     return Thing.get(thingId).run()
         .then(thing => performDoThing(thing, user))
         .then(thing => EventCreator.createAccepted(user, thing))
-        .then(() => Event.discardAllUserEvents(thingId, user.id))
+        .then(() => Event.discardUserEvents(thingId, user.id))
         .catch(error => {
             logger.error(`error while setting user ${user.email} as doer of thing ${thingId}:`, error)
             throw error
@@ -74,7 +74,7 @@ function dismiss(user, thingId) {
     return Thing.get(thingId).run()
         .then(thing => {
             return performDismiss(thing, user)
-                .then(() => Event.discardAllUserEvents(thingId, user.id))
+                .then(() => Event.discardUserEvents(thingId, user.id))
                 .then(() => EventCreator.createDismissed(user, thing))
         })
         .catch(error => {
@@ -89,7 +89,7 @@ function close(user, thingId) {
     return Thing.get(thingId).run()
         .then(thing => performClose(thing, user))
         .then(thing => EventCreator.createClosed(user, thing))
-        .then(() => Event.discardAllUserEvents(thingId, user.id))
+        .then(() => Event.discardUserEvents(thingId, user.id))
         .catch(error => {
             logger.error(`error while closing thing ${thingId} by user ${user.email}:`, error)
             throw error
@@ -102,7 +102,7 @@ function cancel(user, thingId) {
     return Thing.get(thingId).run()
         .then(thing => {
             return performCancel(thing, user)
-                .then(() => Event.discardAllUserEvents(thingId, user.id))
+                .then(() => Event.discardUserEvents(thingId, user.id))
                 .then(() => EventCreator.createCanceled(user, thing))
         })
         .catch(error => {
@@ -115,7 +115,7 @@ function markAsDone(user, thingId) {
     return Thing.get(thingId).run()
         .then(thing => {
             return performMarkAsDone(thing, user)
-                .then(() => Event.discardAllUserEvents(thingId, user.id))
+                .then(() => Event.discardUserEvents(thingId, user.id))
                 .then(() => EventCreator.createDone(user, thing))
                 .then(() => {
                     if (thing.isSelf()) {
@@ -133,7 +133,7 @@ function sendBack(user, thingId) {
     return Thing.get(thingId).run()
         .then(thing => {
             return performSendBack(thing, user)
-                .then(() => Event.discardAllUserEvents(thingId, user.id))
+                .then(() => Event.discardUserEvents(thingId, user.id))
                 .then(() => EventCreator.createSentBack(user, thing))
         })
         .catch(error => {
