@@ -51,6 +51,15 @@ Event.defineStatic('discardUserEvents', function (thingId, userId) {
         }).run()
 })
 
+Event.defineStatic('discardThingEvents', function (thingId) {
+    return this.getAll(thingId, {index: 'thingId'})
+        .update(event => {
+            return {
+                showNewList: []
+            }
+        }).run()
+})
+
 Event.defineStatic('discardUserEventsByType', function (thingId, eventType, userId) {
     return this.getAll([thingId, eventType], {index: 'thingIdEventType'})
         .update(event => {

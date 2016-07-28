@@ -102,7 +102,7 @@ function cancel(user, thingId) {
     return Thing.get(thingId).run()
         .then(thing => {
             return performCancel(thing, user)
-                .then(() => Event.discardUserEvents(thingId, user.id))
+                .then(() => Event.discardThingEvents(thingId, user.id))
                 .then(() => EventCreator.createCanceled(user, thing))
         })
         .catch(error => {
