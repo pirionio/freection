@@ -4,7 +4,7 @@ const {Event, Thing, User} = require('../models')
 const EventCreator = require('./event-creator')
 const {eventToDto, thingToDto} = require('../transformers')
 const ThingStatus = require('../../../common/enums/thing-status')
-const ThingTypes = require('../../../common/enums/thing-types')
+const EntityTypes = require('../../../common/enums/entity-types')
 const EventTypes = require('../../../common/enums/event-types')
 const logger = require('../utils/logger')
 
@@ -211,7 +211,7 @@ function saveNewThing(body, subject, creator, to) {
         subject,
         followUpers,
         doers,
-        type: ThingTypes.THING.key,
+        type: EntityTypes.THING.key,
         payload: { status }
     })
 }

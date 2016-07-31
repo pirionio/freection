@@ -68,36 +68,50 @@ class ImapConnection {
         })
     }
 
-    getUnseenMessages(since, options = {}) {
+    fetchByUids(uids, options) {
         return new Promise((resolve, reject) => {
             const promises = []
 
-            const criteria = compact(['UNSEEN', since > 0 ? ['UID', ` ${since+1}:*`] : null])
+            if (uids.length == 0) {
+                resolve([])
+                return
+            }
 
-            this._connection.searchAsync(criteria)
-                .then(results => {
-                    if (results.length == 0) {
-                        resolve([])
-                    } else {
-                        const fetch = this._connection.fetch(results, {
-                            envelope: true,
-                            bodies: [options.includeBodies ? '' : 'HEADER']
-                        })
-                        fetch.on('message', rawMessage => {
-                            const promise = this.parseRawMessage(rawMessage, options)
-                            promises.push(promise)
-                        })
-                        fetch.once('end', () => {
-                            Promise.all(promises).then(messages => resolve(messages))
-                        })
-                        fetch.once('error', error => reject(error))
-                    }
-                })
-                .catch(err => {
-                    console.log(err)
-                    throw err
-                })
+            const fetch = this._connection.fetch(uids, {
+                envelope: true,
+                bodies: [options.includeBodies ? '' : 'HEADER']
+            })
+
+            fetch.on('message', rawMessage => {
+                const promise = this.parseRawMessage(rawMessage, options)
+                promises.push(promise)
+            })
+            fetch.once('end', () => {
+                Promise.all(promises).then(messages => resolve(messages))
+            })
+            fetch.once('error', error => reject(error))
         })
+    }
+
+    getUnseenMessages(since, options = {}) {
+        const criteria = compact(['UNSEEN', since > 0 ? ['UID', ` ${since+1}:*`] : null])
+        return this._connection.searchAsync(criteria)
+            .then(results => this.fetchByUids(results, options))
+            .catch(error => {
+                logger.error(`Could not find unread emails since UID ${since}`, error)
+                throw error
+            })
+    }
+    
+    getThreadMessages(threadId) {
+        const criteria = ['ALL', ['X-GM-THRID', threadId]]
+        console.log('search criteria:', criteria)
+        return this._connection.searchAsync(criteria)
+            .then(results => this.fetchByUids(results, {includeBodies: true}))
+            .catch(error => {
+                logger.error(`Could not find thread ${threadId}`, error)
+                throw error
+            })
     }
 
     convertEnvelopeUser(user) {

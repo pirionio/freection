@@ -2,19 +2,26 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const ThingPageActions = require('../../actions/thing-page-actions')
+const EmailPageActions = require('../../actions/email-page-actions')
 const dateFns = require('date-fns')
 const classnames = require('classnames')
 
 const ActionsBar = require('../Actions/ActionsBar')
+const EntityTypes = require('../../../common/enums/entity-types')
 
 class MessageRow extends Component {
     constructor(props) {
         super(props)
-        this.showThing = this.showThing.bind(this)
+        this.show = this.show.bind(this)
     }
 
-    showThing() {
-        this.props.dispatch(ThingPageActions.show(this.props.message.entityId))
+    show() {
+        const {message} = this.props
+        
+        if (message.type.key === EntityTypes.EMAIL.key)
+            this.props.dispatch(EmailPageActions.show(message.entityId))
+        else
+            this.props.dispatch(ThingPageActions.show(message.entityId))
     }
 
     getReferencedUser() {
@@ -55,7 +62,7 @@ class MessageRow extends Component {
                         </div>
                         <div className="message-title">
                             <div className={messageSubjectClass}>
-                                <a onClick={this.showThing}>{message.subject}</a>
+                                <a onClick={this.show}>{message.subject}</a>
                             </div>
                             {messageEventType}
                         </div>

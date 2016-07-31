@@ -30,7 +30,7 @@ class Comment extends Component {
 
     getCommentText() {
         const {comment} = this.props
-        return comment.eventType.key === EventTypes.PING.key ? 'Ping!' : comment.payload.text
+        return comment.eventType && comment.eventType.key === EventTypes.PING.key ? 'Ping!' : comment.payload.text
     }
 
     render() {

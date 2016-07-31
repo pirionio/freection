@@ -1,6 +1,6 @@
-const {pick, chain} = require('lodash/core')
+const {pick} = require('lodash/core')
 
-const ThingTypes = require('../../../common/enums/thing-types')
+const EntityTypes = require('../../../common/enums/entity-types')
 const EventTypes = require('../../../common/enums/event-types')
 
 function thingToDto(thing, user, {includeEvents = true} = {}) {
@@ -12,7 +12,7 @@ function thingToDto(thing, user, {includeEvents = true} = {}) {
         body: thing.body,
         subject: thing.subject,
         payload: thing.payload,
-        type: ThingTypes[thing.type],
+        type: EntityTypes[thing.type],
         events: includeEvents && thing.events ? thing.events.map(event => eventToDto(event, user, {includeThing: false})) : [],
         isFollowUper: thing.followUpers.includes(user.id),
         isDoer: thing.doers.includes(user.id),
@@ -52,17 +52,18 @@ function emailToDto(email) {
             email: `${email.header.from.username }@${email.header.from.organization}`
         },
         to: email.header.to.map(to => {
-                return {
-                    email: `${to.username}@${to.organization}`
-                }
-            }),
+            return {
+                email: `${to.username}@${to.organization}`
+            }
+        }),
         subject: email.header.subject,
         payload: {
-            text: email.text,
+            text: email.body,
             threadId: email.header.gmailThreadId,
             gmailId: email.header.gmailId,
             messageId: email.header.messageId
-        }
+        },
+        type: EntityTypes.EMAIL
     }
 }
 

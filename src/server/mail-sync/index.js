@@ -5,7 +5,7 @@ const {User, Event, Thing, uuid} = require('../shared/models')
 const promisify = require('../shared/utils/promisify')
 const ImapConnectionPool = require('../shared/utils/imap/imap-connection-pool')
 const EventTypes = require('../../common/enums/event-types')
-const ThingTypes = require('../../common/enums/thing-types')
+const EntityTypes = require('../../common/enums/entity-types')
 const ThingStatus = require('../../common/enums/thing-status')
 
 require('../shared/utils/promiseExtensions')
@@ -72,7 +72,7 @@ function convertToThingAndEvents(tuple) {
             subject: message.header.subject,
             doers: [],
             followUpers: [],
-            type: ThingTypes.THING.key,
+            type: EntityTypes.THING.key,
             payload: {
                 status: ThingStatus.NEW.key
             }
