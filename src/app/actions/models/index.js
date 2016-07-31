@@ -5,6 +5,6 @@ module.exports = [
     require('./to-do'),
     require('./whats-new'),
     require('./thing-page'),
-    require('./emails'),
+    require('./email'),
     require('./github')
 ]
