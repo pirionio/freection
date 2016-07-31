@@ -10,7 +10,14 @@ const User = thinky.createModel('User', {
     lastName: type.string().required(),
     accessToken: type.string().required(),
     refreshToken: type.string().required(),
-    lastFetchedEmail: type.number().default('0')
+    lastFetchedEmail: type.number().default('0'),
+        integrations: {
+        github: {
+            active: type.boolean(),
+            accessToken: type.string(),
+            repositories: [type.number()]
+        }
+    }
 })
 
 User.ensureIndex('googleId')
@@ -32,6 +39,30 @@ User.defineStatic('getUserByEmail', function(email) {
 
         return users[0]
     })
+})
+
+User.defineStatic('appendGithubRepository', function (userId, repositoryId) {
+    return this.get(userId).update(user => {
+        return {
+            integrations: {
+                github: {
+                    repositories: user('integrations')('github')('repositories').append(repositoryId)
+                }
+            }
+        }
+    }).run()
+})
+
+User.defineStatic('removeGithubRepository', function (userId, repositoryId) {
+    return this.get(userId).update(user => {
+        return {
+            integrations: {
+                github: {
+                    repositories: user('integrations')('github')('repositories').filter(repository => repository.ne(repositoryId))
+                }
+            }
+        }
+    }).run()
 })
 
 module.exports = User
