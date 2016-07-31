@@ -44,6 +44,7 @@
     "mailparser": "0.6.1",
     "node-fetch": "1.5.3",
     "node-sass": "3.8.0",
+    "parse-reply": "0.0.4",
     "passport": "0.3.2",
     "passport-google-oauth20": "1.0.0",
     "passport-strategy": "1.0.0",

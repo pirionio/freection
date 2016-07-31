@@ -55,7 +55,6 @@ module.exports = app => {
     app.get('/emails/api/:emailThreadId', (request, response) => {
         const user = request.user
         const {emailThreadId} = request.params
-        console.log('user:', user)
         fetchFullThread(user, emailThreadId).then(thread => response.json(thread))
     })
 }

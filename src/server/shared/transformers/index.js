@@ -1,3 +1,4 @@
+const parseReply = require('parse-reply')
 const {pick} = require('lodash/core')
 
 const EntityTypes = require('../../../common/enums/entity-types')
@@ -59,7 +60,7 @@ function emailToDto(email) {
         }),
         subject: email.header.subject,
         payload: {
-            text: email.body,
+            text: parseReply(email.body),
             threadId: email.header.gmailThreadId,
             gmailId: email.header.gmailId,
             messageId: email.header.messageId

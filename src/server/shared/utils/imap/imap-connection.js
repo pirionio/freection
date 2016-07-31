@@ -105,7 +105,6 @@ class ImapConnection {
     
     getThreadMessages(threadId) {
         const criteria = ['ALL', ['X-GM-THRID', threadId]]
-        console.log('search criteria:', criteria)
         return this._connection.searchAsync(criteria)
             .then(results => this.fetchByUids(results, {includeBodies: true}))
             .catch(error => {
