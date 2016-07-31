@@ -1,55 +1,21 @@
-const OAuth2 = require('google-auth-library/lib/auth/oauth2client')
 const {chain} = require('lodash')
 
 const logger = require('../shared/utils/logger')
-const config = require('../shared/config/google-oauth')
 const {User, Event, Thing, uuid} = require('../shared/models')
 const promisify = require('../shared/utils/promisify')
-const Connection = require('./Connection')
+const ImapConnectionPool = require('../shared/utils/imap/imap-connection-pool')
 const EventTypes = require('../../common/enums/event-types')
 const ThingTypes = require('../../common/enums/thing-types')
 const ThingStatus = require('../../common/enums/thing-status')
 
 require('../shared/utils/promiseExtensions')
 
-const connections = new Map()
-
-function getConection(user) {
-    if (connections.has(user.id))
-        return Promise.resolve(connections.get(user.id))
-    else {
-        return getNewAccessToken(user)
-            .then(accessToken => createNewConnection(accessToken, user))
-            .then(connection => {
-                connections.set(user.id, connection)
-                return connection
-            })
-    }
-}
-
-function getNewAccessToken(user) {
-    const oauth2 = new OAuth2(config.clientID, config.clientSecret)
-    promisify(oauth2, ['getAccessToken'])
-    oauth2.setCredentials({refresh_token: user.refreshToken})
-    return oauth2.getAccessTokenAsync()
-}
-
-function createNewConnection(accessToken, user) {
-    const char1 = String.fromCharCode(1)
-    const xoauth2 = `user=${user.email}${char1}auth=Bearer ${accessToken}${char1}${char1}`
-
-    const connection = new Connection({
-        host: 'imap.gmail.com',
-        port: 993,
-        tls: true,
-        xoauth2: new Buffer(xoauth2).toString('base64')
-    })
-
-    return connection.connect()
-        .then(() => connection)
-        .catch(err => {
-            logger.error(`error while connecting to mailbox of ${user.email}`, err)
-            throw err
+function createConnection(user) {
+    return ImapConnectionPool.getConnection(user)
+        .then(connection => connection.connect())
+        .catch(error => {
+            logger.error(`error while connecting to mailbox of ${user.email}`, error)
+            throw error
         })
 }
 
@@ -185,7 +151,7 @@ function syncEmails() {
     User.run()
         .then(users => {
             return users.map(user => {
-                return getConection(user)
+                return createConnection(user)
                     .then(connection => fetchUserEmails(connection, user))
             })
         })

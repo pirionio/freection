@@ -4,6 +4,7 @@ const toDo = require('./to-do-reducer')
 const {messageBox, messageBoxForm} = require('./message-box-reducer')
 const followUps = require('./follow-ups-reducer')
 const thingPage = require('./thing-page-reducer')
+const unreadEmails = require('./unread-emails-reducer')
 const auth = require('./auth')
 const { routerReducer } = require('react-router-redux')
 
@@ -14,6 +15,7 @@ module.exports = combineReducers({
     messageBox,
     messageBoxForm,
     thingPage,
+    unreadEmails,
     auth,
     routing: routerReducer
 })

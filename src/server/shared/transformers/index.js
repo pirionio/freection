@@ -1,4 +1,4 @@
-const {pick} = require('lodash/core')
+const {pick, chain} = require('lodash/core')
 
 const ThingTypes = require('../../../common/enums/thing-types')
 const EventTypes = require('../../../common/enums/event-types')
@@ -44,4 +44,26 @@ function commentPayloadToDto(payload, user) {
     })
 }
 
-module.exports = {thingToDto, eventToDto, userToDto}
+function emailToDto(email) {
+    return {
+        id: email.header.uid,
+        createdAt: email.header.date,
+        creator: {
+            email: `${email.header.from.username }@${email.header.from.organization}`
+        },
+        to: email.header.to.map(to => {
+                return {
+                    email: `${to.username}@${to.organization}`
+                }
+            }),
+        subject: email.header.subject,
+        payload: {
+            text: email.text,
+            threadId: email.header.gmailThreadId,
+            gmailId: email.header.gmailId,
+            messageId: email.header.messageId
+        }
+    }
+}
+
+module.exports = {thingToDto, eventToDto, userToDto, emailToDto}

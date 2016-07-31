@@ -2,10 +2,10 @@ const imap = require('imap')
 const {MailParser} = require('mailparser')
 const {chain, compact} = require('lodash')
 
-const logger = require('../shared/utils/logger')
-const promisify = require('../shared/utils/promisify')
+const logger = require('../logger')
+const promisify = require('../promisify')
 
-class Connection {
+class ImapConnection {
     constructor(config) {
         this._connection = new imap(config)
         promisify(this._connection, ['openBox', 'search'])
@@ -15,7 +15,7 @@ class Connection {
         return new Promise((resolve, reject) => {
             this._connection.once('ready', () => {
                 this._connection.openBoxAsync('INBOX', true)
-                    .then(() => resolve())
+                    .then(() => resolve(this))
                     .catch(error => reject(error))
             })
 
@@ -25,7 +25,11 @@ class Connection {
         })
     }
 
-    parseRawMessage(rawMessage) {
+    onDisconnect(callback) {
+        this._connection && this._connection.once('end', () => callback(this))
+    }
+
+    parseRawMessage(rawMessage, options) {
         return new Promise((resolve, reject) => {
             const message = {}
             const parser = new MailParser()
@@ -50,17 +54,21 @@ class Connection {
                 }
             })
 
-            rawMessage.on('body', (stream, info) => {
-                stream.on('data', chunk => {
-                    parser.write(chunk)
+            if (options.includeBodies) {
+                rawMessage.on('body', (stream, info) => {
+                    stream.on('data', chunk => {
+                        parser.write(chunk)
+                    })
                 })
-            })
+            }
 
-            rawMessage.once('end', () => parser.end())
+            rawMessage.once('end', () => {
+                options.includeBodies ? parser.end() : resolve(message)
+            })
         })
     }
 
-    getUnseenMessages(since) {
+    getUnseenMessages(since, options = {}) {
         return new Promise((resolve, reject) => {
             const promises = []
 
@@ -73,10 +81,10 @@ class Connection {
                     } else {
                         const fetch = this._connection.fetch(results, {
                             envelope: true,
-                            bodies: ['']
+                            bodies: [options.includeBodies ? '' : 'HEADER']
                         })
                         fetch.on('message', rawMessage => {
-                            const promise = this.parseRawMessage(rawMessage)
+                            const promise = this.parseRawMessage(rawMessage, options)
                             promises.push(promise)
                         })
                         fetch.once('end', () => {
@@ -101,4 +109,4 @@ class Connection {
     }
 }
 
-module.exports = Connection
+module.exports = ImapConnection
