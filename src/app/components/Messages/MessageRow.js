@@ -3,6 +3,7 @@ const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const ThingPageActions = require('../../actions/thing-page-actions')
 const dateFns = require('date-fns')
+const classnames = require('classnames')
 
 const ActionsBar = require('../Actions/ActionsBar')
 
@@ -27,6 +28,10 @@ class MessageRow extends Component {
         const {message} = this.props
         const createdAt = dateFns.format(message.createdAt, 'DD-MM-YYYY HH:mm')
 
+        const messageSubjectClass = classnames('message-subject', {
+            'with-status': !!message.eventType
+        })
+
         const messageEventType = message.eventType ?
             <div className="message-event-type">
                 ({message.eventType.label})
@@ -49,7 +54,7 @@ class MessageRow extends Component {
                             {this.getReferencedUser()}
                         </div>
                         <div className="message-title">
-                            <div className="message-subject">
+                            <div className={messageSubjectClass}>
                                 <a onClick={this.showThing}>{message.subject}</a>
                             </div>
                             {messageEventType}

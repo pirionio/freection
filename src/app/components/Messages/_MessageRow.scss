@@ -46,13 +46,17 @@
       .message-subject {
         display: inline-block;
         float: left;
-        max-width: calc(100% - #{$status-width} - 5px);
+        max-width: 100%;
         font-size: 18px;
         font-weight: bold;
         cursor: pointer;
         overflow-x: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+
+        &.with-status {
+          max-width: calc(100% - #{$status-width} - 5px);
+        }
 
         &:hover {
           text-decoration: underline;
