@@ -11,15 +11,15 @@ module.exports = {
         },
         {
             name: 'enableRepository',
-            params: ['repositoryId'],
+            params: ['fullName'],
             type: 'post',
-            path: '/api/github/enablerepository/${repositoryId}'
+            path: '/api/github/enablerepository/${fullName}'
         },
         {
             name: 'disableRepository',
-            params: ['repositoryId'],
+            params: ['fullName'],
             type: 'post',
-            path: '/api/github/disablerepository/${repositoryId}'
+            path: '/api/github/disablerepository/${fullName}'
         },
     ]
 }

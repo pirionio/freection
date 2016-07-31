@@ -34,7 +34,7 @@ class Github extends Component {
                 </div>)
         }
 
-        const rows = repositories.map(repository => <Repository key={repository.id} repository={repository} />)
+        const rows = repositories.map(repository => <Repository key={repository.fullName} repository={repository} />)
 
         return (
             <div className="github-container">

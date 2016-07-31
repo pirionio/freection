@@ -21,44 +21,44 @@ function fetchGithub() {
     }
 }
 
-function enableRepository(repositoryId) {
+function enableRepository(fullName) {
     return dispatch => {
         dispatch({
             type: GithubActionsTypes.ENABLE_REPOSITORY, 
             status: ActionStatus.START,
-            repositoryId
+            fullName
         })
-        return ResourceUtil.post(`/api/github/enablerepository/${repositoryId}`)
+        return ResourceUtil.post(`/api/github/enablerepository/${fullName}`)
             .then(result => dispatch({
                 type: GithubActionsTypes.ENABLE_REPOSITORY, 
                 status: ActionStatus.COMPLETE,
-                repositoryId
+                fullName
             }))
             .catch(() => dispatch({
                 type: GithubActionsTypes.ENABLE_REPOSITORY, 
                 status: ActionStatus.ERROR,
-                repositoryId
+                fullName
             }))
     }
 }
 
-function disableRepository(repositoryId) {
+function disableRepository(fullName) {
     return dispatch => {
         dispatch({
             type: GithubActionsTypes.DISABLE_REPOSITORY, 
             status: ActionStatus.START,
-            repositoryId
+            fullName
         })
-        return ResourceUtil.post(`/api/github/disablerepository/${repositoryId}`)
+        return ResourceUtil.post(`/api/github/disablerepository/${fullName}`)
             .then(result => dispatch({
                 type: GithubActionsTypes.DISABLE_REPOSITORY, 
                 status: ActionStatus.COMPLETE,
-                repositoryId
+                fullName
             }))
             .catch(() => dispatch({
                 type: GithubActionsTypes.DISABLE_REPOSITORY, 
                 status: ActionStatus.ERROR,
-                repositoryId
+                fullName
             }))
     }
 }

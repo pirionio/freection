@@ -10,12 +10,12 @@ class Repository extends Component {
         super(props)
     }
 
-    toggleRepository(id, checked) {
+    toggleRepository(fullName, checked) {
         if (checked != this.props.repository.enabled) {
             if (checked)
-                this.props.dispatch(GithubActions.enableRepository(id))
+                this.props.dispatch(GithubActions.enableRepository(fullName))
             else
-                this.props.dispatch(GithubActions.disableRepository(id))
+                this.props.dispatch(GithubActions.disableRepository(fullName))
         }
     }
 
@@ -26,7 +26,7 @@ class Repository extends Component {
             <div>
                 <label>
                     <input type="checkbox" disabled={repository.posting}
-                           onChange={event => this.toggleRepository(repository.id, event.target.checked)} checked={repository.enabled} />{repository.fullName}
+                           onChange={event => this.toggleRepository(repository.fullName, event.target.checked)} checked={repository.enabled} />{repository.fullName}
                 </label>
                 {repository.posting ? 'In progress' : null}
             </div>)

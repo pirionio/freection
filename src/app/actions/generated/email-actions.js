@@ -15,8 +15,8 @@ function fetchUnread() {
                 emails: result
             }))
             .catch(() => dispatch({
-                type: EmailActionsTypes.FETCH_UNREAD,
-                status: ActionStatus.ERROR
+                type: EmailActionsTypes.FETCH_UNREAD, 
+                status: ActionStatus.ERROR                
             }))
     }
 }

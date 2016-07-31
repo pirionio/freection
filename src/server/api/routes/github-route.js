@@ -1,7 +1,6 @@
 const router = require('express').Router()
 const querystring = require('querystring')
 const fetch = require('node-fetch')
-const {toNumber} = require('lodash')
 
 const { User } = require('../../shared/models')
 const logger = require('../../shared/utils/logger')
@@ -59,11 +58,15 @@ router.get('/callback', function (request, response) {
         })
 })
 
-router.post('/enableRepository/:repositoryId', function(request, response) {
+router.post('/enableRepository/:owner/:name', function(request, response) {
     const {user} = request
-    const repositoryId = toNumber(request.params.repositoryId)
+    const {owner, name} = request.params
+    const fullName = `${owner}/${name}`
 
-    User.appendGithubRepository(user.id, repositoryId)
+    User.appendGithubRepository(user.id, fullName)
+        .then(() => {
+
+        })
         .then(() => response.json({}))
         .catch(error => {
             logger.error(`error while enabling github repository for user ${user.email}`, error)
@@ -71,11 +74,12 @@ router.post('/enableRepository/:repositoryId', function(request, response) {
         })
 })
 
-router.post('/disableRepository/:repositoryId', function(request, response) {
+router.post('/disableRepository/:owner/:name', function(request, response) {
     const {user} = request
-    const repositoryId = toNumber(request.params.repositoryId)
+    const {owner, name} = request.params
+    const fullName = `${owner}/${name}`
 
-    User.removeGithubRepository(user.id, repositoryId)
+    User.removeGithubRepository(user.id, fullName)
         .then(() => response.json({}))
         .catch(error => {
             logger.error(`error while disabling github repository for user ${user.email}`, error)
@@ -137,9 +141,13 @@ function activateGithubForUser(userId, githubUserId, accessToken) {
         .run()
 }
 
-function getUserId(access_token) {
-    return githubRequest(access_token, 'GET', 'user')
-        .then(json => json.id)
+function repositoryToDTO(repository, userRepositories) {
+    return {
+        fullName: repository.full_name,
+        name: repository.name,
+        owner: repository.owner.login,
+        enabled: userRepositories.includes(repository.full_name)
+    }
 }
 
 function checkGithubActivated(user) {
@@ -149,18 +157,17 @@ function checkGithubActivated(user) {
         throw "GithubNotActivated"
 }
 
+function getUserId(access_token) {
+    return githubRequest(access_token, 'GET', 'user')
+        .then(json => json.id)
+}
+
 function getRepos(access_token) {
     return githubRequest(access_token, 'GET', 'user/repos')
 }
 
-function repositoryToDTO(repository, userRepositories) {
-    return {
-        id: repository.id,
-        fullName: repository.full_name,
-        name: repository.name,
-        owner: repository.owner.login,
-        enabled: userRepositories.includes(repository.id)
-    }
+function writeHook(owner, repository) {
+    return githubRequest(access_token, 'POST', `repos/${owner}/${repository}`)
 }
 
 function githubRequest(access_token, method, path, body) {

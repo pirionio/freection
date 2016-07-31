@@ -34,11 +34,11 @@ function enableRepository(state, action) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
             return immutable(state)
-                .arrayMergeItem('repositories', {id: action.repositoryId}, {enabled: true, posting: false})
+                .arrayMergeItem('repositories', {fullName: action.fullName}, {enabled: true, posting: false})
                 .value()
         case ActionStatus.START:
             return immutable(state)
-                .arrayMergeItem('repositories', {id: action.repositoryId}, {posting: true})
+                .arrayMergeItem('repositories', {fullName: action.fullName}, {posting: true})
                 .value()
         default:
             return state
@@ -49,11 +49,11 @@ function disableRepository(state, action) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
             return immutable(state)
-                .arrayMergeItem('repositories', {id: action.repositoryId}, {enabled: false, posting: false})
+                .arrayMergeItem('repositories', {fullName: action.fullName}, {enabled: false, posting: false})
                 .value()
         case ActionStatus.START:
             return immutable(state)
-                .arrayMergeItem('repositories', {id: action.repositoryId}, {posting: true})
+                .arrayMergeItem('repositories', {fullName: action.fullName}, {posting: true})
                 .value()
         default:
             return state

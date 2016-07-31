@@ -15,7 +15,7 @@ const User = thinky.createModel('User', {
         github: {
             active: type.boolean(),
             accessToken: type.string(),
-            repositories: [type.number()]
+            repositories: [type.string()]
         }
     }
 })
@@ -41,24 +41,24 @@ User.defineStatic('getUserByEmail', function(email) {
     })
 })
 
-User.defineStatic('appendGithubRepository', function (userId, repositoryId) {
+User.defineStatic('appendGithubRepository', function (userId, fullName) {
     return this.get(userId).update(user => {
         return {
             integrations: {
                 github: {
-                    repositories: user('integrations')('github')('repositories').append(repositoryId)
+                    repositories: user('integrations')('github')('repositories').append(fullName)
                 }
             }
         }
     }).run()
 })
 
-User.defineStatic('removeGithubRepository', function (userId, repositoryId) {
+User.defineStatic('removeGithubRepository', function (userId, fullName) {
     return this.get(userId).update(user => {
         return {
             integrations: {
                 github: {
-                    repositories: user('integrations')('github')('repositories').filter(repository => repository.ne(repositoryId))
+                    repositories: user('integrations')('github')('repositories').filter(repository => repository.ne(fullName))
                 }
             }
         }
