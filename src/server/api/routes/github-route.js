@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const querystring = require('querystring')
 const fetch = require('node-fetch')
+const {chain, toString} = require('lodash')
 
 const { User } = require('../../shared/models')
 const logger = require('../../shared/utils/logger')
@@ -16,7 +17,7 @@ router.get('/', function(request, response) {
         .then(user => {
             return getRepos(user.integrations.github.accessToken)
                 .then(repositories => {
-                    const userRepositories = user.integrations.github.repositories || []
+                    const userRepositories = (user.integrations.github.repositories || []).map(repository => repository.fullName)
 
                     response.json({
                         active: true,
@@ -59,36 +60,47 @@ router.get('/callback', function (request, response) {
 })
 
 router.post('/enableRepository/:owner/:name', function(request, response) {
-    const {user} = request
     const {owner, name} = request.params
     const fullName = `${owner}/${name}`
 
-    User.appendGithubRepository(user.id, fullName)
-        .then(() => {
-
+    User.get(request.user.id).run()
+        .then(checkGithubActivated)
+        .then(user => {
+            return writeHook(user.integrations.github.accessToken, fullName)
+                .then(hookId => {
+                    User.appendGithubRepository(user.id, fullName, hookId)
+                })
         })
+        .then(() => logger.info(`user ${request.user.email} enabled github repository ${fullName}`))
         .then(() => response.json({}))
         .catch(error => {
-            logger.error(`error while enabling github repository for user ${user.email}`, error)
+            logger.error(`error while enabling github repository for user ${request.user.email}`, error)
             response.status(500).send('error while enabling github repository')
         })
 })
 
 router.post('/disableRepository/:owner/:name', function(request, response) {
-    const {user} = request
     const {owner, name} = request.params
     const fullName = `${owner}/${name}`
 
-    User.removeGithubRepository(user.id, fullName)
+    User.get(request.user.id).run()
+        .then(checkGithubActivated)
+        .then(user => {
+            const repository = chain(user.integrations.github.repositories).filter({fullName}).head().value()
+
+            if (repository) {
+                return deleteHook(user.integrations.github.accessToken, fullName, repository.hookId)
+            } else {
+                throw 'RepositoryNotFound'
+            }
+        })
+        .then(() => User.removeGithubRepository(request.user.id, fullName))
+        .then(() => logger.info(`user ${request.user.email} disabled github repository ${fullName}`))
         .then(() => response.json({}))
         .catch(error => {
-            logger.error(`error while disabling github repository for user ${user.email}`, error)
+            logger.error(`error while disabling github repository for user ${request.user.email}`, error)
             response.status(500).send('error while enabling github repository')
         })
-})
-
-router.post('/webhook', function(request, response) {
-    response.sendStatus(200)
 })
 
 function generateOAuth2Url() {
@@ -132,7 +144,7 @@ function activateGithubForUser(userId, githubUserId, accessToken) {
             {
                 github: {
                     active: true,
-                    userId: githubUserId,
+                    userId: toString(githubUserId),
                     accessToken: accessToken,
                     repositories: []
                 }
@@ -159,15 +171,31 @@ function checkGithubActivated(user) {
 
 function getUserId(access_token) {
     return githubRequest(access_token, 'GET', 'user')
+        .then(response => response.json())
         .then(json => json.id)
 }
 
 function getRepos(access_token) {
     return githubRequest(access_token, 'GET', 'user/repos')
+        .then(response => response.json())
 }
 
-function writeHook(owner, repository) {
-    return githubRequest(access_token, 'POST', `repos/${owner}/${repository}`)
+function writeHook(access_token, fullName) {
+    return githubRequest(access_token, 'POST', `repos/${fullName}/hooks`, {
+        active: true,
+        name: 'web',
+        events: ['issues', 'issue_comment'],
+        config: {
+            url: config.webhookURL,
+            content_type: 'json'
+        }
+    })
+        .then(response => response.json())
+        .then(json => json.id)
+}
+
+function deleteHook(access_token, fullName, hookId) {
+    return githubRequest(access_token, 'DELETE', `repos/${fullName}/hooks/${hookId}`)
 }
 
 function githubRequest(access_token, method, path, body) {
@@ -178,15 +206,18 @@ function githubRequest(access_token, method, path, body) {
             'Content-Type': 'application/json',
             'Authorization': `token ${access_token}`
         },
-        body
+        body: JSON.stringify(body)
     })
         .then(response => {
             if (response.status >= 200 && response.status < 400)
-                return response.json()
+                return response
             else {
-                const error = new Error(response.statusText)
-                error.response = response
-                throw error
+                return response.text().then(text => {
+                    logger.error(text)
+                    const error = new Error(response.statusText)
+                    error.response = text
+                    throw error
+                })
             }
         })
 }

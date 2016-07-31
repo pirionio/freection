@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === 'production') {
         clientID: 'fe93a66bc0e3c42ba053',
         clientSecret: 'ce239add720ddbfbf5d7505e1035ba85e06e4f5a',
         callbackURL: 'http://localhost:3000/api/github/callback',
-        webhookURL: 'https://db381289.ngrok.io/api/github/webhook'
+        webhookURL: 'https://db381289.ngrok.io/webhook/github'
     }
 }
 

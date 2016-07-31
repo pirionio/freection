@@ -1,6 +1,7 @@
 const thinky = require('./thinky')
 const type = thinky.type
 
+
 const User = thinky.createModel('User', {
     id: type.string(),
     createdAt: type.date().required(),
@@ -11,17 +12,24 @@ const User = thinky.createModel('User', {
     accessToken: type.string().required(),
     refreshToken: type.string().required(),
     lastFetchedEmail: type.number().default('0'),
-        integrations: {
+    integrations: {
         github: {
             active: type.boolean(),
             accessToken: type.string(),
-            repositories: [type.string()]
+            userId: type.string(),
+            repositories: [{
+                fullName: type.string(),
+                hookId: type.number()
+            }]
         }
     }
 })
 
 User.ensureIndex('googleId')
 User.ensureIndex('email')
+User.ensureIndex('githubUserId', function(doc) {
+    return doc('integrations')('github')('userId')
+})
 
 User.defineStatic('getUserByGoogleId', function(googleId) {
   return this.getAll(googleId, {index: 'googleId'}).run().then(users => {
@@ -41,12 +49,16 @@ User.defineStatic('getUserByEmail', function(email) {
     })
 })
 
-User.defineStatic('appendGithubRepository', function (userId, fullName) {
+User.defineStatic('appendGithubRepository', function (userId, fullName, hookId) {
     return this.get(userId).update(user => {
         return {
             integrations: {
                 github: {
-                    repositories: user('integrations')('github')('repositories').append(fullName)
+                    repositories: user('integrations')('github')('repositories')
+                        .append({
+                            fullName: fullName,
+                            hookId: hookId
+                        })
                 }
             }
         }
@@ -58,11 +70,21 @@ User.defineStatic('removeGithubRepository', function (userId, fullName) {
         return {
             integrations: {
                 github: {
-                    repositories: user('integrations')('github')('repositories').filter(repository => repository.ne(fullName))
+                    repositories: user('integrations')('github')('repositories')
+                        .filter(repository => repository('fullName').ne(fullName))
                 }
             }
         }
     }).run()
+})
+
+User.defineStatic('getUserByGithubId', function(githubId) {
+    return this.getAll(githubId, {index:'githubUserId'}).run().then(users => {
+        if (users.length == 0)
+            throw "NotFound"
+
+        return users[0]
+    })
 })
 
 module.exports = User
