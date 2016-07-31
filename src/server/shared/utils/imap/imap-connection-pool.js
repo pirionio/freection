@@ -11,7 +11,7 @@ class ImapConnectionPool {
         this.getConnection = this.getConnection.bind(this)
         this.createConnection = this.createConnection.bind(this)
         this.getNewAccessToken = this.getNewAccessToken.bind(this)
-        this.disconnect = this.disconnect.bind(this)
+        this.removeConnection = this.removeConnection.bind(this)
     }
 
     getConnection(user) {
@@ -30,7 +30,7 @@ class ImapConnectionPool {
         return this.getNewAccessToken(user)
             .then(accessToken => {
                 const connection = new GoogleImapConnection(accessToken, user.email)
-                connection.onDisconnect(() => this.disconnect(user))
+                connection.onDisconnect(() => this.removeConnection(user))
                 return connection
             })
     }
@@ -42,7 +42,7 @@ class ImapConnectionPool {
         return oauth2.getAccessTokenAsync()
     }
 
-    disconnect(user) {
+    removeConnection(user) {
         delete this.connectionsMap[user.id]
     }
 }
@@ -53,4 +53,11 @@ function getConnection(user) {
     return pool.getConnection(user)
 }
 
-module.exports = {getConnection}
+function removeConnection(user) {
+    return pool.removeConnection(user)
+}
+
+module.exports = {
+    getConnection,
+    removeConnection
+}

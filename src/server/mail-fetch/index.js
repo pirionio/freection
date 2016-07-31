@@ -15,12 +15,25 @@ function getFullUser(userId) {
 }
 
 function createConnection(user) {
-    return ImapConnectionPool.getConnection(user)
-        .then(connection => connection.connect())
+    return connect(user)
         .catch(error => {
-            logger.error(`error while connecting to mailbox of ${user.email}`, error)
+            logger.error(`Error while connecting to mailbox of ${user.email}`, error)
+            return reEstablishConnection(user)
+        })
+        .catch(error => {
+            logger.error(`Error after trying to re-establish connection to mailbox of ${user.email}`, error)
             throw error
         })
+}
+
+function connect(user) {
+    return ImapConnectionPool.getConnection(user).then(connection => connection.connect())
+}
+
+function reEstablishConnection(user) {
+    logger.info(`Re-establishing IMAP connection for user ${user.email}`)
+    ImapConnectionPool.removeConnection(user)
+    return connect(user)
 }
 
 function fetchUnreadMessages(connection) {
