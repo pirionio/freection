@@ -13,9 +13,23 @@ class GithubActionBar extends Component {
             (notification ? notification.eventType.key === EventTypes.CREATED.key : true)
     }
 
+    showDismiss() {
+        const {thing, notification} = this.props
+        return [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key].includes(thing.payload.status) &&
+            (notification ? notification.eventType.key === EventTypes.CREATED.key : true)
+    }
+
+    showClose() {
+        const {thing, notification} = this.props
+        return thing.payload.status === ThingStatus.DONE.key &&
+            (notification ? notification.eventType.key === EventTypes.DONE.key : true)
+    }
+
     getAllowedActions() {
         return {
-            doAction: this.showDo()
+            doAction: this.showDo(),
+            dismiss: this.showDismiss(),
+            close: this.showClose()
         }
     }
 

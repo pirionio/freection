@@ -104,7 +104,7 @@ function doThing(thing) {
             status: ActionStatus.START,
             thing
         })
-        return ResourceUtil.post(`/api/things/${thing.id}/do`)
+        return ResourceUtil.post(`/api/things/${thing.type.key}/${thing.id}/do`)
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.DO_THING, 
                 status: ActionStatus.COMPLETE,
@@ -167,7 +167,7 @@ function close(thing) {
             status: ActionStatus.START,
             thing
         })
-        return ResourceUtil.post(`/api/things/${thing.id}/close`)
+        return ResourceUtil.post(`/api/things/${thing.type.key}/${thing.id}/close`)
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.CLOSE, 
                 status: ActionStatus.COMPLETE,
@@ -188,7 +188,7 @@ function dismiss(thing) {
             status: ActionStatus.START,
             thing
         })
-        return ResourceUtil.post(`/api/things/${thing.id}/dismiss`)
+        return ResourceUtil.post(`/api/things/${thing.type.key}/${thing.id}/dismiss`)
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.DISMISS, 
                 status: ActionStatus.COMPLETE,

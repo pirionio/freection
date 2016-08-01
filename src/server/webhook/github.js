@@ -2,7 +2,8 @@ const router = require('express').Router()
 const {toString} = require('lodash')
 
 const GithubThingService = require('../shared/application/github-thing-service')
-const {User} = require('./../shared/models')
+const ThingStatus = require('../../common/enums/thing-status')
+const {User, Thing} = require('./../shared/models')
 const logger = require('../shared/utils/logger')
 
 router.post('/', function(request, response) {
@@ -25,14 +26,45 @@ function handleIssues(payload) {
     logger.info(`Github webook issue event arrived with action ${action}`)
 
     if (action === 'assigned') {
-        const {title, body, number, html_url, id} = payload.issue
-        const githubUserId = toString(payload.assignee.id)
-        const fullName = payload.repository.full_name
+        handleAssigned(payload)
+    } else if (action === 'closed') {
+        handleClosed(payload)
+    }
+}
 
-        User.getUserByGithubId(githubUserId)
-            .then(user => {
-                if (user.integrations.github.active &&
-                    user.integrations.github.repositories.map(repo => repo.fullName).includes(fullName)) {
+function handleClosed(payload) {
+    const { id, number} = payload.issue
+    const fullName = payload.repository.full_name
+
+    Thing.getThingsByGithubIssueId(id)
+        .then(things => {
+            things.forEach(thing => {
+                if (thing.payload.status === ThingStatus.INPROGRESS.key) {
+                    logger.info(`marking thing as done by github ${fullName}/${number}`)
+                    GithubThingService.markAsDone(thing)
+                } else if ((thing.payload.status === ThingStatus.NEW.key)) {
+                    logger.info(`closing thing by github ${fullName}/${number}`)
+                    GithubThingService.closeByGithub(thing)
+                }
+            })
+        })
+}
+
+function handleAssigned(payload) {
+    const {title, body, number, html_url, id, state} = payload.issue
+    const githubUserId = toString(payload.assignee.id)
+    const fullName = payload.repository.full_name
+
+    // We only handle issues with state set to open
+    if (state != 'open')
+        return
+
+    User.getUserByGithubId(githubUserId)
+        .then(user => isRepositoryEnabled(user, fullName))
+        .then(user => {
+            return Thing.getThingsByGithubIssueId(id)
+                .then(things => isNewThing(user, things))
+                .then(() => {
                     logger.info(`creating new thing for issue ${fullName}/${number}`)
 
                     const creator = {
@@ -48,17 +80,31 @@ function handleIssues(payload) {
                     }
 
                     return GithubThingService.newThing(creator, assigner, user, title, body, id, number, html_url)
-                }
-            })
-            .catch(error => {
-                if (error !== 'NotFound') {
-                    logger.error('error while handling webhook event from github', error)
-                }
-                else {
-                    logger.info(`user ${githubUserId} is not integrated with freection`)
-                }
-            })
-    }
+                })
+        })
+        .catch(error => {
+            if (error === 'NotFound')
+                logger.info(`user ${githubUserId} is not integrated with freection`)
+            else if (error === 'ThingAlreadyExist')
+                logger.info(`Thing for issue ${fullName}/#${number} already exist`, error)
+            else if (error === 'RepositoryNotEnabled')
+                logger.info(`Repository ${fullName} is not enabled`, error)
+            else
+                logger.error('error while handling webhook event from github', error)
+        })
+}
+
+function isRepositoryEnabled(user, fullName) {
+    if (!(user.integrations.github.active &&
+        user.integrations.github.repositories.map(repo => repo.fullName).includes(fullName)))
+        throw 'RepositoryNotEnabled'
+
+    return user
+}
+
+function isNewThing(user, things) {
+    if (things.map(thing => thing.toUserId).includes(user.id))
+        throw 'ThingAlreadyExist'
 }
 
 module.exports = router

@@ -6,6 +6,7 @@ const ThingCommandActionTypes = require('../actions/types/thing-command-action-t
 const EventActionTypes = require('../actions/types/event-action-types')
 const {ActionStatus, InvalidationStatus} = require('../constants')
 const EventTypes = require('../../common/enums/event-types')
+const EntityTypes = require('../../common/enums/entity-types')
 const thingReducer = require('./thing-reducer')
 const immutable = require('../util/immutable')
 
@@ -72,12 +73,27 @@ function createdOrAcceptedReceived(state, action) {
         .value()
 }
 
-function doneOrDismissedReceived(state, action) {
+function doneReceived(state, action) {
+    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
+        return state
+
+    if (action.thing.type.key === EntityTypes.GITHUB.key) {
+        return immutable(state)
+            .arraySetItem('things', {id: action.thing.id}, item => thingReducer(item, action))
+            .value()
+    } else {
+        return immutable(state)
+            .arrayReject('things', {id: action.thing.id})
+            .value()
+    }
+}
+
+function dismissedOrClosedReceived(state, action) {
     if (state.invalidationStatus !== InvalidationStatus.FETCHED)
         return state
 
     return immutable(state)
-        .arrayReject('things', {id: action.thing.id})
+        .arrayReject('things', { id: action.thing.id })
         .value()
 }
 
@@ -134,8 +150,10 @@ module.exports = (state = initialState, action) => {
         case EventActionTypes.ACCEPTED:
             return createdOrAcceptedReceived(state, action)
         case EventActionTypes.MARKED_AS_DONE:
+            return doneReceived(state, action)
         case EventActionTypes.DISMISSED:
-            return doneOrDismissedReceived(state, action)
+        case EventActionTypes.CLOSED:
+            return dismissedOrClosedReceived(state, action)
         case EventActionTypes.COMMENT_CREATED:
         case EventActionTypes.COMMENT_READ_BY:
             return commentChangedOrAdded(state, action)

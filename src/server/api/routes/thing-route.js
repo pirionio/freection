@@ -1,8 +1,10 @@
 const router = require('express').Router()
 
 const ThingService = require('../../shared/application/thing-service')
+const GithubThingService = require('../../shared/application/github-thing-service')
 const EventService = require('../../shared/application/event-service')
 const EndpointUtil = require('../../shared/utils/endpoint-util')
+const EntityTypes = require('../../../common/enums/entity-types')
 
 router.get('/whatsnew', function(request, response) {
     EndpointUtil.handleGet(request, response, ThingService.getWhatsNew, {
@@ -29,8 +31,8 @@ router.get('/:thingId', function(request, response) {
     })
 })
 
-router.post('/:thingId/do', function(request, response) {
-    EndpointUtil.handlePost(request, response, ThingService.doThing, {
+router.post('/:type/:thingId/do', function(request, response) {
+    EndpointUtil.handlePost(request, response, getServiceByType(request).doThing, {
         params: ['thingId'],
         result: false,
         errorTemplates: {
@@ -41,8 +43,8 @@ router.post('/:thingId/do', function(request, response) {
     })
 })
 
-router.post('/:thingId/dismiss', function(request, response) {
-    EndpointUtil.handlePost(request, response, ThingService.dismiss, {
+router.post('/:type/:thingId/dismiss', function(request, response) {
+    EndpointUtil.handlePost(request, response, getServiceByType(request).dismiss, {
         params: ['thingId'],
         result: false,
         errorTemplates: {
@@ -65,8 +67,8 @@ router.post('/:thingId/done', function(request, response) {
     })
 })
 
-router.post('/:thingId/close', function(request, response) {
-    EndpointUtil.handlePost(request, response, ThingService.close, {
+router.post('/:type/:thingId/close', function(request, response) {
+    EndpointUtil.handlePost(request, response, getServiceByType(request).close, {
         params: ['thingId'],
         result: false,
         errorTemplates: {
@@ -153,6 +155,15 @@ function getIllegalOperationErrorTemplate() {
 
 function getNotFoundErrorTemplate() {
     return 'Could not find thing ${thingId}'
+}
+
+function getServiceByType(request) {
+    const type = request.params.type.toUpperCase()
+
+    if (type === EntityTypes.GITHUB.key)
+        return GithubThingService
+    else
+        return ThingService
 }
 
 module.exports = router

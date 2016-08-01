@@ -29,7 +29,7 @@ function get(emailThreadId) {
                 thread: result
             }))
             .catch(() => dispatch({
-                type: EmailPageActionsTypes.GET,
+                type: EmailPageActionsTypes.GET, 
                 status: ActionStatus.ERROR,
                 emailThreadId
             }))

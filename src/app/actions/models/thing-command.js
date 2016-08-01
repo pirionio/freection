@@ -48,7 +48,7 @@ module.exports = {
             name: 'doThing',
             params: ['thing'],
             type: 'post',
-            path: '/api/things/${thing.id}/do'
+            path: '/api/things/${thing.type.key}/${thing.id}/do'
         },
         {
             name: 'cancel',
@@ -66,13 +66,13 @@ module.exports = {
             name: 'close',
             params: ['thing'],
             type: 'post',
-            path: '/api/things/${thing.id}/close'
+            path: '/api/things/${thing.type.key}/${thing.id}/close'
         },
         {
             name: 'dismiss',
             params: ['thing'],
             type: 'post',
-            path: '/api/things/${thing.id}/dismiss'
+            path: '/api/things/${thing.type.key}/${thing.id}/dismiss'
         },
         {
             name: 'mark as done',

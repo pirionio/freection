@@ -61,6 +61,7 @@ function newThing(user, to, body, subject) {
 function doThing(user, thingId) {
 
     return Thing.get(thingId).run()
+        .then(validateType)
         .then(thing => validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key]))
         .then(thing => performDoThing(thing, user))
         .then(thing => EventCreator.createAccepted(user, thing, getShowNewList))
@@ -74,6 +75,7 @@ function doThing(user, thingId) {
 
 function dismiss(user, thingId) {
     return Thing.get(thingId).run()
+        .then(validateType)
         .then(thing => validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key ]))
         .then(thing => {
             return performDismiss(thing, user)
@@ -87,9 +89,8 @@ function dismiss(user, thingId) {
 }
 
 function close(user, thingId) {
-    // TODO: check if the if the status is done
-
     return Thing.get(thingId).run()
+        .then(validateType)
         .then(thing => validateStatus(thing, [ThingStatus.DONE.key, ThingStatus.DISMISS.key]))
         .then(thing => performClose(thing, user))
         .then(thing => EventCreator.createClosed(user, thing, getShowNewList))
@@ -101,8 +102,6 @@ function close(user, thingId) {
 }
 
 function cancel(user, thingId) {
-    // TODO: check if the if the status is done
-
     return Thing.get(thingId).run()
         .then(thing => validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key]))
         .then(thing => {
@@ -287,6 +286,13 @@ function performCancelAck(thing, user) {
 function validateStatus(thing, allowedStatuses) {
     if (!castArray(allowedStatuses).includes(thing.payload.status))
         throw "IllegalOperation"
+
+    return thing
+}
+
+function validateType(thing) {
+    if (thing.type !== EntityTypes.THING.key)
+        throw 'InvalidEntityType'
 
     return thing
 }
