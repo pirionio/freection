@@ -26,9 +26,27 @@ class MessageRow extends Component {
 
     getReferencedUser() {
         const {message, currentUser} = this.props
+
+        const thing = message.thing ? message.thing : message
+
+        if (thing.type.key === EntityTypes.GITHUB.key) {
+            return thing.payload.creator.username
+        }
+
         return !message.to ?
             message.creator.email :
             currentUser.id === message.creator.id ? message.to.email : message.creator.email
+    }
+
+    getThingLink() {
+        const {message} = this.props
+        const thing = message.thing ? message.thing : message
+
+        if (thing.type.key === EntityTypes.GITHUB.key) {
+            return (<a href={thing.payload.url} target="blank">{message.subject}</a>)
+        }
+
+        return (<a onClick={this.show}>{message.subject}</a>)
     }
 
     render () {
@@ -62,7 +80,7 @@ class MessageRow extends Component {
                         </div>
                         <div className="message-title">
                             <div className={messageSubjectClass}>
-                                <a onClick={this.show}>{message.subject}</a>
+                                {this.getThingLink()}
                             </div>
                             {messageEventType}
                         </div>

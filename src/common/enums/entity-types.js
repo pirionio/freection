@@ -6,5 +6,9 @@ module.exports = {
     EMAIL: {
         key: 'EMAIL',
         label: 'Email'
+    },
+    GITHUB: {
+        key: 'GITHUB',
+        label: 'Github'
     }
 }

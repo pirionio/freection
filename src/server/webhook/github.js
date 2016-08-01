@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const {toString} = require('lodash')
 
-const ThingService = require('../shared/application/thing-service')
+const GithubThingService = require('../shared/application/github-thing-service')
 const {User} = require('./../shared/models')
 const logger = require('../shared/utils/logger')
 
@@ -25,7 +25,7 @@ function handleIssues(payload) {
     logger.info(`Github webook issue event arrived with action ${action}`)
 
     if (action === 'assigned') {
-        const {title, body, number} = payload.issue
+        const {title, body, number, html_url, id} = payload.issue
         const githubUserId = toString(payload.assignee.id)
         const fullName = payload.repository.full_name
 
@@ -34,7 +34,20 @@ function handleIssues(payload) {
                 if (user.integrations.github.active &&
                     user.integrations.github.repositories.map(repo => repo.fullName).includes(fullName)) {
                     logger.info(`creating new thing for issue ${fullName}/${number}`)
-                    return ThingService.newThing(user, user.email, title, body)
+
+                    const creator = {
+                        username: payload.issue.user.login,
+                        avatarUrl: payload.issue.user.avatar_url,
+                        url: payload.issue.user.html_url
+                    }
+
+                    const assigner = {
+                        username: payload.sender.login,
+                        avatarUrl: payload.sender.avatar_url,
+                        url: payload.sender.html_url
+                    }
+
+                    return GithubThingService.newThing(creator, assigner, user, title, body, id, number, html_url)
                 }
             })
             .catch(error => {

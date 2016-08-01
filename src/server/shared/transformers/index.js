@@ -4,6 +4,7 @@ const EntityTypes = require('../../../common/enums/entity-types')
 const EventTypes = require('../../../common/enums/event-types')
 
 function thingToDto(thing, user, {includeEvents = true} = {}) {
+
     return {
         id: thing.id,
         createdAt: thing.createdAt,

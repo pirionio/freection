@@ -195,7 +195,7 @@ function discardEventsByType(user, thingId, eventType) {
 
 function saveNewThing(body, subject, creator, to) {
     const toUserId = to.id
-    const creatorUserId = creator.id
+    const creatorUserId = creator ? creator.id : null
 
     // check if thing is self thing (assigned to creator)
     const isSelfThing = toUserId === creatorUserId
