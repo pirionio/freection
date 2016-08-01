@@ -12,6 +12,12 @@ module.exports = {
     },
     plugins: [],
     module: {
-        loaders:[] // Loaders are configured in prod/dev files
+        loaders:[ // Loaders are configured in prod/dev files
+            {
+                // Needed for the sanitize-html module which loads JSONs
+                test: /\.json$/,
+                loader: 'json'
+            }
+        ]
     }
 }

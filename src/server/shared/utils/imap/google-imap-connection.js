@@ -5,7 +5,7 @@ class GoogleImapConnection extends ImapConnection {
         const char1 = String.fromCharCode(1)
         const xoauth2 = `user=${username}${char1}auth=Bearer ${accessToken}${char1}${char1}`
 
-        super({
+        super('google', {
             host: 'imap.gmail.com',
             port: 993,
             tls: true,

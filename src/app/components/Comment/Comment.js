@@ -4,6 +4,8 @@ const dateFns = require('date-fns')
 const VisibilitySensor = require('react-visibility-sensor')
 const {connect} = require('react-redux')
 const classnames = require('classnames')
+const sanitizeHtml = require('sanitize-html')
+const cheerio = require('cheerio')
 
 const EventTypes = require('../../../common/enums/event-types')
 const ThingCommandActions = require('../../actions/thing-command-actions')
@@ -30,7 +32,21 @@ class Comment extends Component {
 
     getCommentText() {
         const {comment} = this.props
-        return comment.eventType && comment.eventType.key === EventTypes.PING.key ? 'Ping!' : comment.payload.text
+
+        if (comment.eventType && comment.eventType.key === EventTypes.PING.key)
+            return 'Ping!'
+
+        if (comment.payload.html)
+            return this.parseEmailHtml(comment.payload.html)
+
+        return comment.payload.text
+    }
+
+    parseEmailHtml(html) {
+        // const $ = cheerio.load(safeHtml(html))
+        const $ = cheerio.load(html)
+        $('.gmail_quote').remove()
+        return <div dangerouslySetInnerHTML={{__html: sanitizeHtml($.html())}}></div>
     }
 
     render() {

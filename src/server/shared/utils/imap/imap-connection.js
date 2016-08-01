@@ -4,9 +4,11 @@ const {chain, compact} = require('lodash')
 
 const logger = require('../logger')
 const promisify = require('../promisify')
+const {IMAP} = require('../../constants')
 
 class ImapConnection {
-    constructor(config) {
+    constructor(type, config) {
+        this.type = type
         this._connection = new imap(config)
         promisify(this._connection, ['openBox', 'search'])
     }
@@ -14,7 +16,7 @@ class ImapConnection {
     connect() {
         return new Promise((resolve, reject) => {
             this._connection.once('ready', () => {
-                this._connection.openBoxAsync('INBOX', true)
+                this._connection.openBoxAsync(IMAP[this.type].ALL_MAILBOX, true)
                     .then(() => resolve(this))
                     .catch(error => reject(error))
             })
@@ -36,6 +38,7 @@ class ImapConnection {
 
             parser.once('end', mail => {
                 message.body = mail.text
+                message.html = mail.html
                 resolve(message)
             })
 
@@ -59,7 +62,7 @@ class ImapConnection {
                     stream.on('data', chunk => {
                         parser.write(chunk)
                     })
-                })
+                }) 
             }
 
             rawMessage.once('end', () => {
@@ -94,7 +97,7 @@ class ImapConnection {
     }
 
     getUnseenMessages(since, options = {}) {
-        const criteria = compact(['UNSEEN', since > 0 ? ['UID', ` ${since+1}:*`] : null])
+        const criteria = compact(['UNSEEN', [IMAP[this.type].LABEL_FIELD, 'Inbox'], since > 0 ? ['UID', ` ${since+1}:*`] : null])
         return this._connection.searchAsync(criteria)
             .then(results => this.fetchByUids(results, options))
             .catch(error => {
@@ -104,9 +107,11 @@ class ImapConnection {
     }
     
     getThreadMessages(threadId) {
-        const criteria = ['ALL', ['X-GM-THRID', threadId]]
+        const criteria = ['ALL', [IMAP[this.type].THREAD_FIELD, threadId]]
         return this._connection.searchAsync(criteria)
-            .then(results => this.fetchByUids(results, {includeBodies: true}))
+            .then(results => {
+                return this.fetchByUids(results, {includeBodies: true})
+            })
             .catch(error => {
                 logger.error(`Could not find thread ${threadId}`, error)
                 throw error

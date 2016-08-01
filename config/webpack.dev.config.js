@@ -1,7 +1,7 @@
 const webpack = require('webpack')
 const config = require('./webpack.config')
 
-config.devtool = 'source-map'
+config.devtool = 'cheap-eval-source-map'
 config.entry = [
     'webpack-hot-middleware/client',
     ...config.entry]

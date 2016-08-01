@@ -61,6 +61,7 @@ function emailToDto(email) {
         subject: email.header.subject,
         payload: {
             text: parseReply(email.body),
+            html: email.html,
             threadId: email.header.gmailThreadId,
             gmailId: email.header.gmailId,
             messageId: email.header.messageId
