@@ -9,6 +9,7 @@ const sortBy = require('lodash/sortBy')
 const forOwn = require('lodash/forOwn')
 const merge = require('lodash/merge')
 const clone = require('lodash/clone')
+const map = require('lodash/map')
 
 const EmailActions = require('../../actions/email-actions')
 
@@ -43,7 +44,10 @@ class UnreadEmails extends Component {
         forOwn(emailsByThreadId, (threadEmails) => {
             const lastEmail = chain(threadEmails).sortBy('createdAt').head().clone().value()
             emailRows.push(merge(lastEmail, {
-                entityId: lastEmail.payload.threadId
+                entityId: lastEmail.payload.threadId,
+                payload: {
+                    emailIds: map(threadEmails, 'id')
+                }
             }))
         })
 

@@ -10,13 +10,13 @@ class ImapConnection {
     constructor(type, config) {
         this.type = type
         this._connection = new imap(config)
-        promisify(this._connection, ['openBox', 'search'])
+        promisify(this._connection, ['openBox', 'search', 'setFlags'])
     }
 
     connect() {
         return new Promise((resolve, reject) => {
             this._connection.once('ready', () => {
-                this._connection.openBoxAsync(IMAP[this.type].ALL_MAILBOX, true)
+                this._connection.openBoxAsync(IMAP[this.type].ALL_MAILBOX)
                     .then(() => resolve(this))
                     .catch(error => reject(error))
             })
@@ -114,6 +114,14 @@ class ImapConnection {
             })
             .catch(error => {
                 logger.error(`Could not find thread ${threadId}`, error)
+                throw error
+            })
+    }
+
+    markAsRead(emailIds) {
+        return this._connection.setFlagsAsync(emailIds, IMAP[this.type].SEEN_FLAG)
+            .catch(error => {
+                logger.error('Could not mark emails as read', error)
                 throw error
             })
     }

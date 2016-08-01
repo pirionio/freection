@@ -47,6 +47,11 @@ function commentPayloadToDto(payload, user) {
 }
 
 function emailToDto(email) {
+    // TODO We don't know how differ the read status of a comment, and the discard of new email notifications.
+    // Our app has these two different options, while a regular mail has only a single state (the \\Seen flag).
+    // We decided for the meantime to set this flag in the discard flow, meaning that in the comments list - emails will
+    // always appear as read.
+
     return {
         id: email.header.uid,
         createdAt: email.header.date,
@@ -64,7 +69,8 @@ function emailToDto(email) {
             html: email.html,
             threadId: email.header.gmailThreadId,
             gmailId: email.header.gmailId,
-            messageId: email.header.messageId
+            messageId: email.header.messageId,
+            isRead: true
         },
         type: EntityTypes.EMAIL
     }

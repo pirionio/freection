@@ -4,6 +4,7 @@ const {Component, PropTypes} = React
 const EntityTypes = require('../../../common/enums/entity-types')
 const ThingActionBar = require('./ThingActionBar')
 const GithubActionBar = require('./GithubActionBar')
+const EmailActionBar = require('./EmailActionBar')
 
 class ActionsBar extends Component {
     render() {
@@ -14,8 +15,10 @@ class ActionsBar extends Component {
                 return <ThingActionBar thing={thing} notification={notification} ping={ping} cancel={cancel} />
             case EntityTypes.GITHUB.key:
                 return <GithubActionBar thing={thing} notification={notification} />
+            case EntityTypes.EMAIL.key:
+                return <EmailActionBar thread={thing} notification={notification} />
             default:
-                throw "UnknownEntityType"
+                return <div></div>
         }
     }
 }

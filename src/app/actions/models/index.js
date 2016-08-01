@@ -7,5 +7,6 @@ module.exports = [
     require('./thing-page'),
     require('./email'),
     require('./email-page'),
+    require('./email-command'),
     require('./github')
 ]

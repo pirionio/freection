@@ -3,6 +3,7 @@ const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 
 const ThingCommandActions = require('../../actions/thing-command-actions')
+const EmailCommandActions = require('../../actions/email-command-actions')
 const Action = require('./Action')
 
 class BaseActionsBar extends Component {
@@ -17,6 +18,7 @@ class BaseActionsBar extends Component {
         this.close = this.close.bind(this)
         this.discardComments = this.discardComments.bind(this)
         this.discardPing = this.discardPing.bind(this)
+        this.discardEmails = this.discardEmails.bind(this)
         this.sendBack = this.sendBack.bind(this)
         this.cancelAck = this.cancelAck.bind(this)
     }
@@ -45,6 +47,9 @@ class BaseActionsBar extends Component {
 
         if (allowedActions.discardComments)
             actions.push(<Action label="Discard" doFunc={this.discardComments} key="action-Discard" />)
+
+        if (allowedActions.discardEmails)
+            actions.push(<Action label="Discard" doFunc={this.discardEmails} key="action-Discard" />)
 
         if (allowedActions.discardPing)
             actions.push(<Action label="Discard" doFunc={this.discardPing} key="action-Discard" />)
@@ -96,6 +101,11 @@ class BaseActionsBar extends Component {
     discardPing() {
         const {dispatch, notification} = this.props
         dispatch(ThingCommandActions.discardPing(notification))
+    }
+
+    discardEmails() {
+        const {dispatch, thing} = this.props
+        dispatch(EmailCommandActions.markAsRead(thing.payload.emailIds))
     }
 
     sendBack() {

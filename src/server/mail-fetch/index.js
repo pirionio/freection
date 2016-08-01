@@ -44,6 +44,11 @@ function prepareThread(emails) {
     return threadDto
 }
 
+function markAsRead(user, emailIds) {
+    return establishConnection(user)
+        .then(connection => connection.markAsRead(emailIds))
+}
+
 module.exports = app => {
     // TODO Add auth
 
@@ -56,5 +61,11 @@ module.exports = app => {
         const user = request.user
         const {emailThreadId} = request.params
         fetchFullThread(user, emailThreadId).then(thread => response.json(thread))
+    })
+
+    app.post('/emails/api/markasread', (request, response) => {
+        const user = request.user
+        const {emailIds} = request.body
+        markAsRead(user, emailIds).then(() => response.json({}))
     })
 }
