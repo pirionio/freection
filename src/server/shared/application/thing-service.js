@@ -1,4 +1,4 @@
-const {remove, castArray} = require('lodash')
+const {remove, castArray, union} = require('lodash')
 
 const {Event, Thing, User} = require('../models')
 const EventCreator = require('./event-creator')
@@ -48,11 +48,11 @@ function newThing(user, to, body, subject) {
     return User.getUserByEmail(to)
         .then(toUser => saveNewThing(body, subject, user, toUser))
         .then(thing => {
-            return EventCreator.createCreated(user, thing)
+            return EventCreator.createCreated(user, thing, getShowNewList)
                 .then(() => {
                     //  if thing assigned to myself let's accept it immediately
                     if (thing.isSelf()) {
-                        return EventCreator.createAccepted(user, thing)
+                        return EventCreator.createAccepted(user, thing, getShowNewList)
                     }
                 })
         })
@@ -63,7 +63,7 @@ function doThing(user, thingId) {
     return Thing.get(thingId).run()
         .then(thing => validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key]))
         .then(thing => performDoThing(thing, user))
-        .then(thing => EventCreator.createAccepted(user, thing))
+        .then(thing => EventCreator.createAccepted(user, thing, getShowNewList))
         .then(() => Event.discardUserEvents(thingId, user.id))
         .catch(error => {
             logger.error(`error while setting user ${user.email} as doer of thing ${thingId}:`, error)
@@ -78,7 +78,7 @@ function dismiss(user, thingId) {
         .then(thing => {
             return performDismiss(thing, user)
                 .then(() => Event.discardUserEvents(thingId, user.id))
-                .then(() => EventCreator.createDismissed(user, thing))
+                .then(() => EventCreator.createDismissed(user, thing, getShowNewList))
         })
         .catch(error => {
             logger.error(`error while dismissing thing ${thingId} by user ${user.email}`, error)
@@ -92,7 +92,7 @@ function close(user, thingId) {
     return Thing.get(thingId).run()
         .then(thing => validateStatus(thing, [ThingStatus.DONE.key, ThingStatus.DISMISS.key]))
         .then(thing => performClose(thing, user))
-        .then(thing => EventCreator.createClosed(user, thing))
+        .then(thing => EventCreator.createClosed(user, thing, getShowNewList))
         .then(() => Event.discardUserEvents(thingId, user.id))
         .catch(error => {
             logger.error(`error while closing thing ${thingId} by user ${user.email}:`, error)
@@ -108,7 +108,7 @@ function cancel(user, thingId) {
         .then(thing => {
             return performCancel(thing, user)
                 .then(() => Event.discardThingEvents(thingId, user.id))
-                .then(() => EventCreator.createCanceled(user, thing))
+                .then(() => EventCreator.createCanceled(user, thing, getShowNewList))
         })
         .catch(error => {
             logger.error(`error while canceling thing ${thingId} by user ${user.email}:`, error)
@@ -121,7 +121,7 @@ function cancelAck(user, thingId) {
         .then(thing => {
             return performCancelAck(thing, user)
                 .then(() => Event.discardUserEventsByType(thingId, EventTypes.CANCELED.key, user.id))
-                .then(() => EventCreator.createCancelAck(user, thing))
+                .then(() => EventCreator.createCancelAck(user, thing, getShowNewList))
         })
         .catch(error => {
             logger.error(`error while accepting cancellation of thing ${thingId} by user ${user.email}:`, error)
@@ -135,10 +135,10 @@ function markAsDone(user, thingId) {
         .then(thing => {
             return performMarkAsDone(thing, user)
                 .then(() => Event.discardUserEvents(thingId, user.id))
-                .then(() => EventCreator.createDone(user, thing))
+                .then(() => EventCreator.createDone(user, thing, getShowNewList))
                 .then(() => {
                     if (thing.isSelf()) {
-                        return EventCreator.createClosed(user, thing)
+                        return EventCreator.createClosed(user, thing, getShowNewList)
                     }
                 })
         })
@@ -154,7 +154,7 @@ function sendBack(user, thingId) {
         .then(thing => {
             return performSendBack(thing)
                 .then(() => Event.discardUserEvents(thingId, user.id))
-                .then(() => EventCreator.createSentBack(user, thing))
+                .then(() => EventCreator.createSentBack(user, thing, getShowNewList))
         })
         .catch(error => {
             logger.error(`Error while sending thing ${thingId} back by user ${user.email}:`, error)
@@ -165,7 +165,7 @@ function sendBack(user, thingId) {
 function ping(user, thingId) {
     return Thing.get(thingId).run()
         .then(thing => validateStatus(thing, ThingStatus.INPROGRESS.key))
-        .then(thing => EventCreator.createPing(user, thing))
+        .then(thing => EventCreator.createPing(user, thing, getShowNewList))
         .then(event => Event.getFullEvent(event.id))
         .then(event => eventToDto(event, user, {includeThing: false}))
         .catch(error => {
@@ -176,7 +176,7 @@ function ping(user, thingId) {
 
 function comment(user, thingId, commentText) {
     return Thing.get(thingId).run()
-        .then(thing => EventCreator.createComment(user, thing, commentText))
+        .then(thing => EventCreator.createComment(user, thing, getShowNewList, commentText))
         .then(event => Event.getFullEvent(event.id))
         .then(event => eventToDto(event, user, {includeThing: false}))
         .catch(error => {
@@ -214,6 +214,32 @@ function saveNewThing(body, subject, creator, to) {
         type: EntityTypes.THING.key,
         payload: { status }
     })
+}
+
+function getShowNewList(user, thing, eventType) {
+    if (thing.isSelf())
+        return []
+
+    switch (eventType) {
+        case EventTypes.CREATED.key:
+            return [thing.toUserId]
+        case EventTypes.DISMISSED.key:
+        case EventTypes.DONE.key:
+            return [thing.creatorUserId]
+        case EventTypes.CANCELED.key:
+        case EventTypes.SENT_BACK.key:
+            return union(thing.doers, [thing.toUserId])
+        case EventTypes.COMMENT.key:
+            return union(thing.followUpers, thing.doers, [thing.creatorUserId]).filter(userId => userId !== user.id)
+        case EventTypes.PING.key:
+            return  [...thing.doers]
+        case EventTypes.ACCEPTED.key:
+        case EventTypes.CLOSED.key:
+        case EventTypes.CANCEL_ACKED.key:
+            return []
+        default:
+            throw "UnknownEventType"
+    }
 }
 
 function performDoThing(thing, user) {
