@@ -10,6 +10,7 @@ class SideBar extends Component {
                 <Link to="/todo" className="side-bar-link" activeClassName="active">To Do</Link>
                 <Link to="/followup" className="side-bar-link" activeClassName="active">Follow Up</Link>
                 <Link to="/emails/unread" className="side-bar-link" activeClassName="active">Unread Emails</Link>
+                <Link to="/integrations/github" className="side-bar-link" activeClassName="active">Github</Link>
             </div>
         )
     }
