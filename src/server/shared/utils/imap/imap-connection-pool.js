@@ -1,4 +1,6 @@
 const OAuth2 = require('google-auth-library/lib/auth/oauth2client')
+const Pool = require('generic-pool').Pool
+
 const promisify = require('../promisify')
 
 const GoogleImapConnection = require('./google-imap-connection')
@@ -8,41 +10,72 @@ const User = require('../../models/User')
 
 class ImapConnectionPool {
     constructor() {
-        this.connectionsMap = {}
+        this.userToConnectionPoolMap = {}
 
         this.getConnection = this.getConnection.bind(this)
-        this.prepareConnection = this.prepareConnection.bind(this)
+        this.createUserPool = this.createUserPool.bind(this)
+        this.establishConnection = this.establishConnection.bind(this)
         this.createConnection = this.createConnection.bind(this)
+        this.connect = this.connect.bind(this)
         this.getFullUser = this.getFullUser.bind(this)
         this.getNewAccessToken = this.getNewAccessToken.bind(this)
-        this.removeConnection = this.removeConnection.bind(this)
+        this.closeConnection = this.closeConnection.bind(this)
     }
 
     getConnection(user) {
-        if (!this.connectionsMap[user.id]) {
-            return this.prepareConnection(user)
-                .then(connection => {
-                    this.connectionsMap[user.id] = connection
-                    return connection
-                })
-        }
+        return new Promise((resolve, reject) => {
+            if (!this.userToConnectionPoolMap[user.id]) {
+                this.userToConnectionPoolMap[user.id] = this.createUserPool(user)
+            }
 
-        return Promise.resolve(this.connectionsMap[user.id])
+            const pool = this.userToConnectionPoolMap[user.id]
+            pool.acquire((error, connection) => {
+                if (error)
+                    reject(error)
+                else
+                    resolve(connection)
+            })
+        })
     }
 
-    prepareConnection(user) {
+    createUserPool(user) {
+        return new Pool({
+            name: user.id,
+            create: callback => {
+                this.establishConnection(user).then(connection => callback(null, connection))
+            },
+            max: 1,
+            idleTimeoutMillis: 1000 * 60 * 30
+        })
+    }
+
+    establishConnection(user) {
         if (user.refreshToken) {
-            return this.getNewAccessToken(user).then(accessToken => this.createConnection(user, accessToken))
+            return this.createConnection(user)
         }
 
-        return this.getFullUser(user.id)
-            .then(fullUser => this.getNewAccessToken(fullUser).then(accessToken => this.createConnection(fullUser, accessToken)))
+        return this.getFullUser(user.id).then(this.createConnection)
     }
 
-    createConnection(user, accessToken) {
-        const connection = new GoogleImapConnection(accessToken, user.email)
-        connection.onDisconnect(() => this.removeConnection(user))
-        return connection
+    createConnection(user) {
+        return this.getNewAccessToken(user)
+            .then(accessToken => new GoogleImapConnection(accessToken, user.email))
+            .then(connection => {
+                connection.onDisconnect(() => {
+                    console.log('onDisconnect')
+                    this.closeConnection(user, connection)
+                })
+                return connection
+            })
+            .then(connection => this.connect(user, connection))
+    }
+
+    connect(user, connection) {
+        return connection.connect()
+            .catch(error => {
+                logger.error(`Error while connecting to imap of user ${user.email}:`, error)
+                throw error
+            })
     }
 
     getFullUser(userId) {
@@ -56,8 +89,18 @@ class ImapConnectionPool {
         return oauth2.getAccessTokenAsync()
     }
 
-    removeConnection(user) {
-        delete this.connectionsMap[user.id]
+    releaseConnection(user, connection) {
+        const imapPool = this.userToConnectionPoolMap[user.id]
+        if (imapPool) {
+            imapPool.release(connection)
+        }
+    }
+
+    closeConnection(user, connection) {
+        const imapPool = this.userToConnectionPoolMap[user.id]
+        if (imapPool) {
+            imapPool.destroy(connection)
+        }
     }
 }
 
@@ -67,11 +110,16 @@ function getConnection(user) {
     return pool.getConnection(user)
 }
 
-function removeConnection(user) {
-    return pool.removeConnection(user)
+function closeConnection(user) {
+    return pool.closeConnection(user)
+}
+
+function releaseConnection(user, connection) {
+    return pool.releaseConnection(user, connection)
 }
 
 module.exports = {
     getConnection,
-    removeConnection
+    closeConnection,
+    releaseConnection
 }

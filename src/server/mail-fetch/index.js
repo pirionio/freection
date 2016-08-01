@@ -1,39 +1,32 @@
 const {chain} = require('lodash/core')
 
 const ImapConnectionPool = require('../shared/utils/imap/imap-connection-pool')
-const logger = require('../shared/utils/logger')
 const {emailToDto} = require('../shared/transformers')
 
 function establishConnection(user) {
-    return connect(user)
-        .catch(error => {
-            logger.error(`Error while connecting to mailbox of ${user.email}`, error)
-            return reEstablishConnection(user)
-        })
-        .catch(error => {
-            logger.error(`Error after trying to re-establish connection to mailbox of ${user.email}`, error)
-            throw error
-        })
-}
-
-function connect(user) {
-    return ImapConnectionPool.getConnection(user).then(connection => connection.connect())
-}
-
-function reEstablishConnection(user) {
-    logger.info(`Re-establishing IMAP connection for user ${user.email}`)
-    ImapConnectionPool.removeConnection(user)
-    return connect(user)
+    return ImapConnectionPool.getConnection(user)
 }
 
 function fetchUnreadMessages(user) {
     return establishConnection(user)
-        .then(connection => connection.getUnseenMessages())
+        .then(connection => {
+            return connection.getUnseenMessages()
+                .then(emails => {
+                    ImapConnectionPool.releaseConnection(user, connection)
+                    return emails
+                })
+        })
 }
 
 function fetchFullThread(user, emailThreadId) {
     return establishConnection(user)
-        .then(connection => connection.getThreadMessages(emailThreadId))
+        .then(connection => {
+            return connection.getThreadMessages(emailThreadId)
+                .then(emails => {
+                    ImapConnectionPool.releaseConnection(user, connection)
+                    return emails
+                })
+        })
         .then(prepareThread)
 }
 
@@ -46,7 +39,9 @@ function prepareThread(emails) {
 
 function markAsRead(user, emailIds) {
     return establishConnection(user)
-        .then(connection => connection.markAsRead(emailIds))
+        .then(connection => {
+            return connection.markAsRead(emailIds).then(() => ImapConnectionPool.releaseConnection(user, connection))
+        })
 }
 
 module.exports = app => {
