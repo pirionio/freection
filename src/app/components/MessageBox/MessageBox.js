@@ -2,12 +2,11 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const {Form, Field} = require('react-redux-form')
-const ReactDOM = require('react-dom');
 const isEmpty = require('lodash/isEmpty')
 
 const ThingCommandActions = require('../../actions/thing-command-actions')
 
-class NewPanel extends Component {
+class MessageBox extends Component {
     constructor(props) {
         super(props)
         this.send = this.send.bind(this)
@@ -69,7 +68,7 @@ class NewPanel extends Component {
     }
 }
 
-NewPanel.propTypes = {
+MessageBox.propTypes = {
     messageBox: PropTypes.object.isRequired,
     thingContext: PropTypes.object.isRequired
 }
@@ -77,7 +76,7 @@ NewPanel.propTypes = {
 const mapStateToProps = (state) => {
     return {
         messageBox: state.messageBox,
-        thingContext: state.thingPage.thing
+        thingContext: state.thingPage.thing || {}
     }
 }
 
@@ -88,4 +87,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(NewPanel)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(MessageBox)
