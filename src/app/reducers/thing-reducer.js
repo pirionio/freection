@@ -33,6 +33,8 @@ function statusChanged(state, action) {
     return immutable(state)
         .touch('payload')
         .set('payload.status', action.thing.payload.status)
+        .set('isDoer', action.thing.isDoer)
+        .set('isFollowUper', action.thing.isFollowUper)
         .value()
 }
 

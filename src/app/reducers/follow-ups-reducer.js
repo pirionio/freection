@@ -50,38 +50,6 @@ function pingThing(state, action) {
     }
 }
 
-function createdReceived(state, action) {
-    // TODO Handle FETCHING state by queuing incoming events
-    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
-        return state
-
-    if (!action.thing.isFollowUper)
-        return state
-
-    // already exist?
-    if (some(state.followUps, {id: action.thing.id}))
-        return state
-
-    // Adding to array
-    return immutable(state)
-        .arrayPushItem('followUps', action.thing)
-        .value()
-}
-
-function closedOrCanceledReceived(state, action) {
-    // TODO Handle FETCHING state by queuing incoming events
-    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
-        return state
-
-    //  If I'm still a followUper for some reason, leave this
-    if (action.thing.isFollowUper)
-        return state
-
-    return immutable(state)
-        .arrayReject('followUps', {id: action.thing.id})
-        .value()
-}
-
 function commentChangedOrAdded(state, action) {
     // TODO Handle FETCHING state by queuing incoming events
     if (state.invalidationStatus !== InvalidationStatus.FETCHED)
@@ -92,35 +60,41 @@ function commentChangedOrAdded(state, action) {
         .value()
 }
 
-function statusChanged(state, action) {
-    // TODO Handle FETCHING state by queuing incoming events
+function statusChangedReceived(state, action) {
     if (state.invalidationStatus !== InvalidationStatus.FETCHED)
         return state
 
-    return immutable(state)
-        .arraySetItem('followUps', {id: action.thing.id}, item => thingReducer(item, action))
-        .value()
+    // If followup and not exist, lets add it
+    if (action.thing.isFollowUper && !some(state.things, {id: action.thing.id})) {
+        return immutable(state)
+            .arrayPushItem('things', action.thing)
+            .value()
+    } else {
+        return immutable(state)
+            .arraySetItem('things', {id: action.thing.id}, item => thingReducer(item, action))
+            .arrayReject('things', {isFollowUper: false})
+            .value()
+    }
 }
 
 module.exports = (state = initialState, action) => {
     switch (action.type) {
         case FollowUpsActionTypes.FETCH_FOLLOW_UPS:
             return fetchFollowUps(state, action)
-        case ThingCommandActionTypes.PING:
-            return pingThing(state, action)
-        case EventActionTypes.CREATED:
-            return createdReceived(state, action)
-        case EventActionTypes.CLOSED:
-        case EventActionTypes.CANCELED:
-            return closedOrCanceledReceived(state, action)
         case EventActionTypes.COMMENT_CREATED:
         case EventActionTypes.COMMENT_READ_BY:
             return commentChangedOrAdded(state, action)
+        case ThingCommandActionTypes.PING:
+            return pingThing(state, action)
+        case EventActionTypes.CREATED:
         case EventActionTypes.ACCEPTED:
         case EventActionTypes.MARKED_AS_DONE:
         case EventActionTypes.DISMISSED:
+        case EventActionTypes.CLOSED:
+        case EventActionTypes.CANCELED:
+        case EventActionTypes.CANCEL_ACKED:
         case EventActionTypes.SENT_BACK:
-            return statusChanged(state, action)
+            return statusChangedReceived(state, action)
         default:
             return state
     }

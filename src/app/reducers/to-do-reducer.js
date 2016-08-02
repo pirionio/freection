@@ -6,7 +6,6 @@ const ThingCommandActionTypes = require('../actions/types/thing-command-action-t
 const EventActionTypes = require('../actions/types/event-action-types')
 const {ActionStatus, InvalidationStatus} = require('../constants')
 const EventTypes = require('../../common/enums/event-types')
-const EntityTypes = require('../../common/enums/entity-types')
 const thingReducer = require('./thing-reducer')
 const immutable = require('../util/immutable')
 
@@ -55,48 +54,6 @@ function actionDoneOnThing(state, action) {
     }
 }
 
-function createdOrAcceptedReceived(state, action) {
-    // TODO Handle FETCHING state by queuing incoming events
-    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
-        return state
-
-    if (!action.thing.isDoer)
-        return state
-
-    // already exist?
-    if (some(state.things, {id: action.thing.id}))
-        return state
-
-    // Adding to array
-    return immutable(state)
-        .arrayPushItem('things', action.thing)
-        .value()
-}
-
-function doneReceived(state, action) {
-    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
-        return state
-
-    if (action.thing.type.key === EntityTypes.GITHUB.key) {
-        return immutable(state)
-            .arraySetItem('things', {id: action.thing.id}, item => thingReducer(item, action))
-            .value()
-    } else {
-        return immutable(state)
-            .arrayReject('things', {id: action.thing.id})
-            .value()
-    }
-}
-
-function dismissedOrClosedReceived(state, action) {
-    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
-        return state
-
-    return immutable(state)
-        .arrayReject('things', { id: action.thing.id })
-        .value()
-}
-
 function commentChangedOrAdded(state, action) {
     // TODO Handle FETCHING state by queuing incoming events
     if (state.invalidationStatus !== InvalidationStatus.FETCHED)
@@ -104,27 +61,6 @@ function commentChangedOrAdded(state, action) {
 
     return immutable(state)
         .arraySetItem('things', {id: action.comment.thing.id}, item => thingReducer(item, action))
-        .value()
-}
-
-function canceledReceived(state, action) {
-    // TODO Handle FETCHING state by queuing incoming events
-    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
-        return state
-
-    return immutable(state)
-        .arrayReject('things', thing => thing.id === action.thing.id && thing.isSelf)
-        .arraySetItem('things', {id: action.thing.id}, item => thingReducer(item, action))
-        .value()
-}
-
-function cancelAckReceived(state, action) {
-    // TODO Handle FETCHING state by queuing incoming events
-    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
-        return state
-
-    return immutable(state)
-        .arrayReject('things', {id: action.thing.id})
         .value()
 }
 
@@ -138,6 +74,23 @@ function pingReceived(state, action) {
         .value()
 }
 
+function statusChangedReceived(state, action) {
+    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
+        return state
+
+    // If doer and not exist, lets add it
+    if (action.thing.isDoer && !some(state.things, {id: action.thing.id})) {
+        return immutable(state)
+            .arrayPushItem('things', action.thing)
+            .value()
+    } else {
+        return immutable(state)
+            .arraySetItem('things', {id: action.thing.id}, item => thingReducer(item, action))
+            .arrayReject('things', {isDoer: false})
+            .value()
+    }
+}
+
 module.exports = (state = initialState, action) => {
     switch (action.type) {
         case ToDoActionTypes.FETCH_TO_DO:
@@ -146,23 +99,20 @@ module.exports = (state = initialState, action) => {
         case ThingCommandActionTypes.DISMISS:
         case ThingCommandActionTypes.CANCEL_ACK:
             return actionDoneOnThing(state, action)
-        case EventActionTypes.CREATED:
-        case EventActionTypes.ACCEPTED:
-            return createdOrAcceptedReceived(state, action)
-        case EventActionTypes.MARKED_AS_DONE:
-            return doneReceived(state, action)
-        case EventActionTypes.DISMISSED:
-        case EventActionTypes.CLOSED:
-            return dismissedOrClosedReceived(state, action)
         case EventActionTypes.COMMENT_CREATED:
         case EventActionTypes.COMMENT_READ_BY:
             return commentChangedOrAdded(state, action)
-        case EventActionTypes.CANCELED:
-            return canceledReceived(state, action)
-        case EventActionTypes.CANCEL_ACKED:
-            return cancelAckReceived(state, action)
         case EventActionTypes.PINGED:
             return pingReceived(state, action)
+        case EventActionTypes.CREATED:
+        case EventActionTypes.ACCEPTED:
+        case EventActionTypes.MARKED_AS_DONE:
+        case EventActionTypes.DISMISSED:
+        case EventActionTypes.CLOSED:
+        case EventActionTypes.CANCELED:
+        case EventActionTypes.CANCEL_ACKED:
+        case EventActionTypes.SENT_BACK:
+            return statusChangedReceived(state, action)
         default:
             return state
     }
