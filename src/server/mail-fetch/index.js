@@ -1,6 +1,7 @@
 const EmailRoute = require('./email-route')
+const token = require('../shared/utils/token-strategy')
 
 module.exports = app => {
-    // TODO Add auth
+    app.use('/emails/api', token.auth())
     app.use('/emails/api', EmailRoute)
 }
