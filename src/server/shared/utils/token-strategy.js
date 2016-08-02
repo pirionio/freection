@@ -168,10 +168,10 @@ class Token {
  *
  * @api public
  */
-exports = module.exports = new Token()
+module.exports = module.exports = new Token()
 
 /**
  * Expose classes.
  */
-exports.Token = Token
-exports.Strategy = TokenStrategy
+module.exports.Token = Token
+module.exports.Strategy = TokenStrategy
