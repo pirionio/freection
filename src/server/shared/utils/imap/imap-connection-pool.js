@@ -1,34 +1,32 @@
 const OAuth2 = require('google-auth-library/lib/auth/oauth2client')
 const Pool = require('generic-pool').Pool
+const autobind = require('class-autobind').default
 
 const promisify = require('../promisify')
+const logger = require('../logger')
 
 const GoogleImapConnection = require('./google-imap-connection')
 const config = require('../../config/google-oauth')
+const {IMAP} = require('../../constants')
 
 const User = require('../../models/User')
 
 class ImapConnectionPool {
     constructor() {
-        this.userToConnectionPoolMap = {}
-
-        this.getConnection = this.getConnection.bind(this)
-        this.createUserPool = this.createUserPool.bind(this)
-        this.establishConnection = this.establishConnection.bind(this)
-        this.createConnection = this.createConnection.bind(this)
-        this.connect = this.connect.bind(this)
-        this.getFullUser = this.getFullUser.bind(this)
-        this.getNewAccessToken = this.getNewAccessToken.bind(this)
-        this.closeConnection = this.closeConnection.bind(this)
+        this.userConnectionPools = {}
+        autobind(this)
     }
 
     getConnection(user) {
         return new Promise((resolve, reject) => {
-            if (!this.userToConnectionPoolMap[user.id]) {
-                this.userToConnectionPoolMap[user.id] = this.createUserPool(user)
+            if (!this.userConnectionPools[user.id]) {
+                this.userConnectionPools[user.id] = {
+                    pool: this.createUserPool(user),
+                    retries: 0
+                }
             }
 
-            const pool = this.userToConnectionPoolMap[user.id]
+            const pool = this.userConnectionPools[user.id].pool
             pool.acquire((error, connection) => {
                 if (error)
                     reject(error)
@@ -45,41 +43,43 @@ class ImapConnectionPool {
                 this.establishConnection(user).then(connection => callback(null, connection))
             },
             max: 1,
-            idleTimeoutMillis: 1000 * 60 * 30
+            idleTimeoutMillis: IMAP.CONNECTION_ALLOWED_IDLE_MILLIS
         })
     }
 
     establishConnection(user) {
-        if (user.refreshToken) {
-            return this.createConnection(user)
-        }
-
-        return this.getFullUser(user.id).then(this.createConnection)
+        return this.getFullUser(user).then(fullUser => {
+            return this.getNewAccessToken(fullUser).then(accessToken => this.createConnection(user, accessToken))
+        })
     }
 
-    createConnection(user) {
-        return this.getNewAccessToken(user)
-            .then(accessToken => new GoogleImapConnection(accessToken, user.email))
-            .then(connection => {
-                connection.onDisconnect(() => {
-                    console.log('onDisconnect')
-                    this.closeConnection(user, connection)
-                })
+    createConnection(user, accessToken) {
+        const connection = new GoogleImapConnection(accessToken, user.email)
+        connection.onDisconnect(() => this.closeConnection(user, connection))
+        return connection.connect()
+            .then(() => {
+                this.initRetries(user)
                 return connection
             })
-            .then(connection => this.connect(user, connection))
+            .catch(error => this.retryConnecting(user, accessToken, error))
     }
 
-    connect(user, connection) {
-        return connection.connect()
-            .catch(error => {
-                logger.error(`Error while connecting to imap of user ${user.email}:`, error)
-                throw error
-            })
+    retryConnecting(user, accessToken, connectionError) {
+        logger.error(`Error while creating IMAP connection for user ${user.email}`, connectionError)
+        if (this.getNumOfTries(user) >= IMAP.MAX_RETRIES) {
+            throw connectionError
+        }
+
+        this.addRetry(user)
+        this.closeConnection(user, connection)
+        return this.createConnection(user, accessToken)
     }
 
-    getFullUser(userId) {
-        return User.get(userId).run()
+    getFullUser(user) {
+        if (user.refreshToken)
+            return Promise.resolve(user)
+        else
+            return User.get(user.id).run()
     }
 
     getNewAccessToken(user) {
@@ -89,17 +89,29 @@ class ImapConnectionPool {
         return oauth2.getAccessTokenAsync()
     }
 
+    getNumOfTries(user) {
+        return this.userConnectionPools[user.id] ? this.userConnectionPools[user.id].retries : 0
+    }
+
+    addRetry(user) {
+        this.userConnectionPools[user.id].retries++
+    }
+
+    initRetries(user) {
+        this.userConnectionPools[user.id].retries = 0
+    }
+
     releaseConnection(user, connection) {
-        const imapPool = this.userToConnectionPoolMap[user.id]
-        if (imapPool) {
-            imapPool.release(connection)
+        const userPool = this.userConnectionPools[user.id]
+        if (userPool && userPool.pool) {
+            userPool.pool.release(connection)
         }
     }
 
     closeConnection(user, connection) {
-        const imapPool = this.userToConnectionPoolMap[user.id]
-        if (imapPool) {
-            imapPool.destroy(connection)
+        const userPool = this.userConnectionPools[user.id]
+        if (userPool && userPool.pool) {
+            userPool.pool.destroy(connection)
         }
     }
 }

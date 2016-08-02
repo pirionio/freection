@@ -12,7 +12,6 @@ require('../shared/utils/promiseExtensions')
 
 function createConnection(user) {
     return ImapConnectionPool.getConnection(user)
-        .then(connection => connection.connect())
         .catch(error => {
             logger.error(`error while connecting to mailbox of ${user.email}`, error)
             throw error
@@ -152,7 +151,12 @@ function syncEmails() {
         .then(users => {
             return users.map(user => {
                 return createConnection(user)
-                    .then(connection => fetchUserEmails(connection, user))
+                    .then(connection => {
+                        return fetchUserEmails(connection, user).then(result => {
+                            ImapConnectionPool.releaseConnection(user, connection)
+                            return result
+                        })
+                    })
             })
         })
         .then(promises => Promise.compact(promises))

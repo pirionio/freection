@@ -1,6 +1,7 @@
 const imap = require('imap')
 const {MailParser} = require('mailparser')
 const {chain, compact} = require('lodash')
+const autobind = require('class-autobind').default
 
 const logger = require('../logger')
 const promisify = require('../promisify')
@@ -10,7 +11,10 @@ class ImapConnection {
     constructor(type, config) {
         this.type = type
         this._connection = new imap(config)
+        this._onDisconnect = null
+
         promisify(this._connection, ['openBox', 'search', 'setFlags'])
+        autobind(this, ImapConnection.prototype)
     }
 
     connect() {
@@ -23,12 +27,16 @@ class ImapConnection {
 
             this._connection.once('error', error => reject(error))
 
+            this._connection.once('end', () => {
+                this._onDisconnect && this._onDisconnect(this._connection)
+            })
+
             this._connection.connect()
         })
     }
 
     onDisconnect(callback) {
-        this._connection && this._connection.once('end', () => callback(this))
+        this._onDisconnect = callback
     }
 
     parseRawMessage(rawMessage, options) {
