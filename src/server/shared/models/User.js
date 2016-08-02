@@ -18,8 +18,7 @@ const User = thinky.createModel('User', {
             accessToken: type.string(),
             userId: type.string(),
             repositories: [{
-                fullName: type.string(),
-                hookId: type.number()
+                fullName: type.string()
             }]
         }
     }
@@ -49,15 +48,14 @@ User.defineStatic('getUserByEmail', function(email) {
     })
 })
 
-User.defineStatic('appendGithubRepository', function (userId, fullName, hookId) {
+User.defineStatic('appendGithubRepository', function (userId, fullName) {
     return this.get(userId).update(user => {
         return {
             integrations: {
                 github: {
                     repositories: user('integrations')('github')('repositories')
                         .append({
-                            fullName: fullName,
-                            hookId: hookId
+                            fullName: fullName
                         })
                 }
             }

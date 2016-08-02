@@ -67,10 +67,12 @@ router.post('/enableRepository/:owner/:name', function(request, response) {
         .then(checkGithubActivated)
         .then(user => {
             return writeHook(user.integrations.github.accessToken, fullName)
-                .then(hookId => {
-                    User.appendGithubRepository(user.id, fullName, hookId)
+                .catch(error => {
+                    if (error.status != 422) // We ignore hook is already created
+                        throw error
                 })
         })
+        .then(() => User.appendGithubRepository(request.user.id, fullName))
         .then(() => logger.info(`user ${request.user.email} enabled github repository ${fullName}`))
         .then(() => response.json({}))
         .catch(error => {
@@ -83,18 +85,7 @@ router.post('/disableRepository/:owner/:name', function(request, response) {
     const {owner, name} = request.params
     const fullName = `${owner}/${name}`
 
-    User.get(request.user.id).run()
-        .then(checkGithubActivated)
-        .then(user => {
-            const repository = chain(user.integrations.github.repositories).filter({fullName}).head().value()
-
-            if (repository) {
-                return deleteHook(user.integrations.github.accessToken, fullName, repository.hookId)
-            } else {
-                throw 'RepositoryNotFound'
-            }
-        })
-        .then(() => User.removeGithubRepository(request.user.id, fullName))
+    User.removeGithubRepository(request.user.id, fullName)
         .then(() => logger.info(`user ${request.user.email} disabled github repository ${fullName}`))
         .then(() => response.json({}))
         .catch(error => {
@@ -194,10 +185,6 @@ function writeHook(access_token, fullName) {
         .then(json => json.id)
 }
 
-function deleteHook(access_token, fullName, hookId) {
-    return githubRequest(access_token, 'DELETE', `repos/${fullName}/hooks/${hookId}`)
-}
-
 function githubRequest(access_token, method, path, body) {
     return fetch(`${githubAPIUrl}/${path}`, {
         method: method,
@@ -213,9 +200,9 @@ function githubRequest(access_token, method, path, body) {
                 return response
             else {
                 return response.text().then(text => {
-                    logger.error(text)
                     const error = new Error(response.statusText)
                     error.response = text
+                    error.status = response.status
                     throw error
                 })
             }
