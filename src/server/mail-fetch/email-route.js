@@ -48,7 +48,7 @@ function establishConnection(user) {
 function fetchUnreadMessages(user) {
     return establishConnection(user)
         .then(connection => {
-            return connection.getUnseenMessages()
+            return connection.getUnseenMessages(0, {includeBodies: true})
                 .then(emails => {
                     ImapConnectionPool.releaseConnection(user, connection)
                     return emails
