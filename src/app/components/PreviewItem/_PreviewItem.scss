@@ -1,0 +1,63 @@
+@import '../vars';
+
+.preview-item {
+  $preview-item-height: 75px;
+  $row-height: 25px;
+  $actions-bar-width: 170px;
+
+  height: $preview-item-height;
+
+  &:not(:first-of-type) {
+    margin-top: 15px;
+  }
+
+  &:not(:last-of-type) {
+    border-bottom: 1px black dashed;
+  }
+
+  .preview-item-content {
+    float: left;
+    height: $preview-item-height;
+    width: calc(100% - #{$actions-bar-width});
+
+    .row {
+      height: $row-height;
+      line-height: $row-height;
+
+      &:not(:last-of-type) {
+        margin-bottom: 8px;
+      }
+    }
+
+    .preview-item-user {
+      float: left;
+      width: 190px;
+      margin-top: 2px;
+      font-style: italic;
+    }
+
+    .preview-item-title {
+      float: left;
+      max-width: calc(100% - #{$row-user-width} - #{$row-actions-width} - #{$row-date-width});
+      min-width: $row-subject-min-width;
+      margin: 0 25px 0 15px;
+    }
+
+    .preview-item-date {
+      float: right;
+      width: $row-date-width;
+      margin-top: 2px;
+      font-style: italic;
+    }
+
+    .preview-item-text {
+      max-width: 100%;
+      float: left;
+    }
+  }
+
+  .preview-item-actions {
+    float: right;
+    width: $actions-bar-width;
+  }
+}

@@ -2,7 +2,7 @@ const React = require('react')
 const {Component, PropTypes} = React
 
 const EntityTypes = require('../../../common/enums/entity-types')
-const ThingActionBar = require('./ThingActionBar')
+const ThingActionsBar = require('./ThingActionsBar')
 const GithubActionBar = require('./GithubActionBar')
 const EmailActionBar = require('./EmailActionBar')
 
@@ -12,7 +12,7 @@ class ActionsBar extends Component {
 
         switch (thing.type.key) {
             case EntityTypes.THING.key:
-                return <ThingActionBar thing={thing} notification={notification} ping={ping} cancel={cancel} />
+                return <ThingActionsBar thing={thing} notification={notification} ping={ping} cancel={cancel} />
             case EntityTypes.GITHUB.key:
                 return <GithubActionBar thing={thing} notification={notification} />
             case EntityTypes.EMAIL.key:

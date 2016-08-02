@@ -15,7 +15,7 @@ const clone = require('lodash/clone')
 const {chain} = require('lodash/core')
 
 const MessagesContainer = require('../Messages/MessagesContainer')
-const NewNotification = require('./NewNotification')
+const NotificationPreviewItem = require('./NotificationPreviewItem')
 const WhatsNewActions = require('../../actions/whats-new-actions')
 const EventTypes = require('../../../common/enums/event-types')
 
@@ -70,7 +70,7 @@ class WhatsNew extends Component {
         })
 
         return sortBy(notificationsToShow, 'createdAt').map(notification =>
-            <NewNotification notification={notification} key={notification.id} />)
+            <NotificationPreviewItem notification={notification} key={notification.id} />)
     }
 
     getTitle() {
