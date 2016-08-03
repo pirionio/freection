@@ -1,28 +1,12 @@
 const React = require('react')
 const {Component, PropTypes} = React
-const {getChildOfType} = require('../../util/children-util')
+const {getChildOfType, createSlots} = require('../../util/component-util')
 const dateFns = require('date-fns')
 
-const PreviewItemTitle = ({children}) => {
-    return React.Children.only(children)
-}
+const slots = createSlots('PreviewItemUser', 'PreviewItemTitle', 'PreviewItemText', 'PreviewItemActions')
 
 const PreviewItemDate = ({date}) => {
     return <span>{dateFns.format(date, 'DD-MM-YYYY HH:mm')}</span>
-}
-
-const PreviewItemText = ({children}) => {
-    console.log(children)
-    console.log(React.Children.only(children))
-    return React.Children.only(children)
-}
-
-const PreviewItemUser = ({children}) => {
-    return React.Children.only(children)
-}
-
-const PreviewItemActions = ({children}) => {
-    return React.Children.only(children)
 }
 
 PreviewItemDate.propTypes = {
@@ -32,11 +16,11 @@ PreviewItemDate.propTypes = {
 class PreviewItem extends Component {
 
     getUser() {
-        return getChildOfType(this.props.children, PreviewItemUser)
+        return getChildOfType(this.props.children, slots.PreviewItemUser)
     }
 
     getTitle() {
-        return getChildOfType(this.props.children, PreviewItemTitle)
+        return getChildOfType(this.props.children, slots.PreviewItemTitle)
     }
 
     getDate() {
@@ -44,11 +28,11 @@ class PreviewItem extends Component {
     }
 
     getPreviewText() {
-        return getChildOfType(this.props.children, PreviewItemText)
+        return getChildOfType(this.props.children, slots.PreviewItemText)
     }
 
     getActions() {
-        return getChildOfType(this.props.children, PreviewItemActions)
+        return getChildOfType(this.props.children, slots.PreviewItemActions)
     }
 
     render() {
@@ -83,4 +67,7 @@ class PreviewItem extends Component {
 PreviewItem.propTypes = {
 }
 
-module.exports = {PreviewItem, PreviewItemUser, PreviewItemTitle, PreviewItemDate, PreviewItemText, PreviewItemActions}
+module.exports = Object.assign({
+    PreviewItem,
+    PreviewItemDate
+}, slots)
