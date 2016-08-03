@@ -14,7 +14,7 @@ const forOwn = require('lodash/forOwn')
 const clone = require('lodash/clone')
 const {chain} = require('lodash/core')
 
-const MessagesContainer = require('../Messages/MessagesContainer')
+const PreviewsContainer = require('../Preview/PreviewsContainer')
 const NotificationPreviewItem = require('./NotificationPreviewItem')
 const WhatsNewActions = require('../../actions/whats-new-actions')
 const EventTypes = require('../../../common/enums/event-types')
@@ -84,10 +84,9 @@ class WhatsNew extends Component {
     render () {
         return (
             <DocumentTitle title={this.getTitle()}>
-                <MessagesContainer messages={this.props.notifications}
-                                   fetchMessages={this.props.fetchWhatsNew}
-                                   getMessageRows={this.getNotificationRows}
-                                   noMessagesText="There are no new things" />
+                <PreviewsContainer previewItems={this.getNotificationRows()}
+                                   fetchPreviews={this.props.fetchWhatsNew}
+                                   noPreviewsText="There are no new things" />
             </DocumentTitle>
         )
     }

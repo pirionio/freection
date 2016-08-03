@@ -1,10 +1,10 @@
 @import '../vars';
 
-.messages-container {
+.previews-container {
   height: calc(100% - #{$message-box-height} - 15px);
   overflow-y: auto;
 
-  .messages-content {
+  .previews-content {
     height: 100%;
   }
 }

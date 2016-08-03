@@ -13,7 +13,7 @@ const map = require('lodash/map')
 
 const EmailActions = require('../../actions/email-actions')
 
-const MessagesContainer = require('../Messages/MessagesContainer')
+const PreviewsContainer = require('../Preview/PreviewsContainer')
 const EmailPreviewItem = require('./EmailPreviewItem')
 
 class UnreadEmails extends Component {
@@ -59,10 +59,9 @@ class UnreadEmails extends Component {
     render() {
         return (
             <DocumentTitle title={this.getTitle()}>
-                <MessagesContainer messages={this.props.emails}
-                                   fetchMessages={this.fetchUnreadEmails}
-                                   getMessageRows={this.getEmailRows}
-                                   noMessagesText="There are no new emails" />
+                <PreviewsContainer previewItems={this.getEmailRows()}
+                                   fetchPreviews={this.fetchUnreadEmails}
+                                   noPreviewsText="There are no new emails" />
             </DocumentTitle>
         )
     }

@@ -4,7 +4,7 @@ const DocumentTitle = require('react-document-title')
 const {connect} = require('react-redux')
 const sortBy = require('lodash/sortBy')
 
-const MessagesContainer = require('../Messages/MessagesContainer')
+const PreviewsContainer = require('../Preview/PreviewsContainer')
 const ToDoActions = require('../../actions/to-do-actions')
 const ToDoPreviewItem = require('./ToDoPreviewItem')
 
@@ -29,10 +29,9 @@ class ToDo extends Component {
     render() {
         return (
             <DocumentTitle title={this.getTitle()}>
-                <MessagesContainer messages={this.props.things}
-                                   fetchMessages={this.props.fetchToDo}
-                                   getMessageRows={this.getThingsToDo}
-                                   noMessagesText="There are no things to do" />
+                <PreviewsContainer previewItems={this.getThingsToDo()}
+                                   fetchPreviews={this.props.fetchToDo}
+                                   noPreviewsText="There are no things to do" />
             </DocumentTitle>
         )
     }
