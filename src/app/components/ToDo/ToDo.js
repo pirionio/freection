@@ -6,7 +6,7 @@ const sortBy = require('lodash/sortBy')
 
 const MessagesContainer = require('../Messages/MessagesContainer')
 const ToDoActions = require('../../actions/to-do-actions')
-const DoThing = require('./DoThing')
+const ToDoPreviewItem = require('./ToDoPreviewItem')
 
 class ToDo extends Component {
     constructor(props) {
@@ -16,7 +16,7 @@ class ToDo extends Component {
 
     getThingsToDo() {
         return sortBy(this.props.things, 'createdAt').map(thing =>
-            <DoThing thing={thing} key={thing.id} />)
+            <ToDoPreviewItem thing={thing} key={thing.id} />)
     }
 
     getTitle() {

@@ -19,7 +19,10 @@ const CommentPreviewText = ({comment, numOfNewComments}) => {
 
 CommentPreviewText.propTypes = {
     comment: PropTypes.string.isRequired,
-    numOfNewComments: PropTypes.number.isRequired
+    numOfNewComments: PropTypes.number
+}
+CommentPreviewText.defaultProps = {
+    numOfNewComments: 0
 }
 
 module.exports = CommentPreviewText
