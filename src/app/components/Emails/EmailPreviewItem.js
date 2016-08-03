@@ -2,7 +2,7 @@ const React = require('react')
 const {PropTypes} = React
 const {connect} = require('react-redux')
 
-const EmailActionBar = require('../Actions/EmailActionBar')
+const EmailPreviewActionBar = require('./EmailPreviewActionsBar')
 const EmailPageActions = require('../../actions/email-page-actions')
 const {PreviewItem, PreviewItemUser, PreviewItemTitle, PreviewItemDate, PreviewItemText, PreviewItemActions} =
     require('../Preview/PreviewItem')
@@ -21,7 +21,7 @@ const EmailPreviewItem = ({email, dispatch}) => {
                 <div className="email-preview-text">{email.payload.text}</div>
             </PreviewItemText>
             <PreviewItemActions>
-                <EmailActionBar thread={email} />
+                <EmailPreviewActionBar emailIds={email.payload.emailIds} />
             </PreviewItemActions>
         </PreviewItem>
     )
