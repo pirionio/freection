@@ -61,10 +61,10 @@ class ImapConnectionPool {
                 this.initRetries(user)
                 return connection
             })
-            .catch(error => this.retryConnecting(user, accessToken, error))
+            .catch(error => this.retryConnecting(user, accessToken, connection, error))
     }
 
-    retryConnecting(user, accessToken, connectionError) {
+    retryConnecting(user, accessToken, connection, connectionError) {
         logger.error(`Error while creating IMAP connection for user ${user.email}`, connectionError)
         if (this.getNumOfTries(user) >= IMAP.MAX_RETRIES) {
             throw connectionError
