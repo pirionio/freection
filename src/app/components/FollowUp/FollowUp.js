@@ -6,7 +6,7 @@ const sortBy = require('lodash/sortBy')
 
 const MessagesContainer = require('../Messages/MessagesContainer')
 const FollowUpsActions = require('../../actions/follow-up-actions')
-const FollowUpThing = require('./FollowUpThing')
+const FollowUpPreviewItem = require('./FollowUpPreviewItem')
 
 class FollowUp extends Component {
     constructor(props) {
@@ -16,7 +16,7 @@ class FollowUp extends Component {
 
     getThingsToFollowUp() {
         return sortBy(this.props.things, 'createdAt').map(thing =>
-            <FollowUpThing thing={thing} key={thing.id} />)
+            <FollowUpPreviewItem thing={thing} key={thing.id} />)
     }
 
     getTitle() {
