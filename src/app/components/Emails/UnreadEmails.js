@@ -27,9 +27,9 @@ class UnreadEmails extends Component {
     getTitle() {
         // TODO: should we return the aggregated number instead?
         if (this.props.emails.length > 0)
-            return `Unread Emails (${this.props.emails.length}) - Freection`
+            return `Freection (${this.props.emails.length}) - Unread Emails`
         else
-            return 'Unread Emails - Freection'
+            return 'Freection - Unread Emails'
     }
 
     fetchUnreadEmails() {

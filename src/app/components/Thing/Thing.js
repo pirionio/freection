@@ -53,9 +53,9 @@ class Thing extends Component {
         const unreadComments = this.getUnreadComments()
 
         if (unreadComments.length > 0)
-            return `(${unreadComments.length}) ${thing.subject} - Freection`
+            return `Freection (${unreadComments.length}) - ${thing.subject}`
         else
-            return `${thing.subject} - Freection`
+            return `Freection - ${thing.subject}`
     }
 
     getAllComments() {

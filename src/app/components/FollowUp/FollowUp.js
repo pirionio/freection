@@ -21,9 +21,9 @@ class FollowUp extends Component {
 
     getTitle() {
         if (this.props.things.length > 0)
-            return `Follow Up (${this.props.things.length}) - Freection`
+            return `Freection (${this.props.things.length}) - Follow Up`
         else
-            return 'Follow Up - Freection'
+            return 'Freection - Follow Up'
     }
 
     render() {

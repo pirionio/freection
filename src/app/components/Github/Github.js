@@ -1,7 +1,6 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
-const DocumentTitle = require('react-document-title')
 
 const GithubActions = require('../../actions/github-actions')
 const {InvalidationStatus} = require('../../constants')

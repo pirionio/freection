@@ -45,9 +45,9 @@ class EmailThread extends Component {
         const unreadComments = this.getUnreadComments()
 
         if (unreadComments.length > 0)
-            return `(${unreadComments.length}) ${thread.subject} - Freection`
+            return `Freection (${unreadComments.length}) - ${thread.subject}`
         else
-            return `${thread.subject} - Freection`
+            return `Freection - ${thread.subject}`
     }
 
     getAllComments() {

@@ -76,9 +76,9 @@ class WhatsNew extends Component {
     getTitle() {
         // TODO: should we return the aggregated number instead?
         if (this.props.notifications.length > 0)
-            return `What's New? (${this.props.notifications.length}) - Freection`
+            return `Freection (${this.props.notifications.length}) - What's New?`
         else
-            return 'What\'s New? - Freection'
+            return 'Freection - What\'s New?'
     }
 
     render () {

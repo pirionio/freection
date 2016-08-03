@@ -21,9 +21,9 @@ class ToDo extends Component {
 
     getTitle() {
         if (this.props.things.length > 0)
-            return `To Do (${this.props.things.length}) - Freection`
+            return `Freection (${this.props.things.length}) - To Do`
         else
-            return 'To Do - Freection'
+            return 'Freection - To Do'
     }
 
     render() {
