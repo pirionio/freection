@@ -65,14 +65,14 @@ function statusChangedReceived(state, action) {
         return state
 
     // If followup and not exist, lets add it
-    if (action.thing.isFollowUper && !some(state.things, {id: action.thing.id})) {
+    if (action.thing.isFollowUper && !some(state.followUps, {id: action.thing.id})) {
         return immutable(state)
-            .arrayPushItem('things', action.thing)
+            .arrayPushItem('followUps', action.thing)
             .value()
     } else {
         return immutable(state)
-            .arraySetItem('things', {id: action.thing.id}, item => thingReducer(item, action))
-            .arrayReject('things', {isFollowUper: false})
+            .arraySetItem('followUps', {id: action.thing.id}, item => thingReducer(item, action))
+            .arrayReject('followUps', {isFollowUper: false})
             .value()
     }
 }
