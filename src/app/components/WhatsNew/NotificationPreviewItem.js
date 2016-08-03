@@ -3,9 +3,8 @@ const {Component, PropTypes} = React
 
 const EventTypes = require('../../../common/enums/event-types')
 const {PreviewItem, PreviewItemUser, PreviewItemTitle, PreviewItemDate, PreviewItemText, PreviewItemActions} =
-    require('../PreviewItem/PreviewItem')
-const CommentPreviewText = require('../PreviewItem/CommentPreviewText')
-const PingPreviewText = require('../PreviewItem/PingPreviewText')
+    require('../Preview/PreviewItem')
+const {CommentPreviewText, PingPreviewText} = require('../Preview/Thing')
 const ThingActionsBar = require('../Actions/ThingActionsBar')
 
 const StatusPreviewText = ({notification}) => {

@@ -2,10 +2,8 @@ const React = require('react')
 const {PropTypes} = React
 
 const {PreviewItem, PreviewItemUser, PreviewItemTitle, PreviewItemDate, PreviewItemText, PreviewItemActions} =
-    require('../PreviewItem/PreviewItem')
-
-const ThingPreviewTitle = require('../PreviewItem/ThingPreviewTitle')
-const ThingPreviewText = require('../PreviewItem/ThingPreviewText')
+    require('../Preview/PreviewItem')
+const {ThingPreviewText, ThingPreviewTitle}= require('../Preview/Thing')
 const ThingActionsBar = require('../Actions/ThingActionsBar')
 
 const FollowUpPreviewItem = ({thing}) => {

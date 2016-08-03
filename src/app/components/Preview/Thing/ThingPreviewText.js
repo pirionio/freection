@@ -5,7 +5,7 @@ const last = require('lodash/last')
 const includes = require('lodash/includes')
 const chain = require('lodash/core')
 
-const EventTypes = require('../../../common/enums/event-types')
+const EventTypes = require('../../../../common/enums/event-types')
 const CommentPreviewText = require('./CommentPreviewText')
 const PingPreviewText = require('./PingPreviewText')
 const BodyPreviewText = require('./BodyPreviewText')
