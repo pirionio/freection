@@ -2,9 +2,9 @@ const React = require('react')
 const {Component, PropTypes} = React
 const ReactDOM = require('react-dom')
 
-class MessagesContainer extends Component {
+class PreviewsContainer extends Component {
     componentDidMount () {
-        this.props.fetchMessages()
+        this.props.fetchPreviews()
     }
 
     componentWillUpdate () {
@@ -14,7 +14,7 @@ class MessagesContainer extends Component {
 
     componentWillReceiveProps() {
         // Will fetch messages only if needed
-        this.props.fetchMessages()
+        this.props.fetchPreviews()
     }
 
     componentDidUpdate () {
@@ -25,24 +25,22 @@ class MessagesContainer extends Component {
     }
 
     render () {
-        const messagesToShow = this.props.messages && this.props.messages.length ?
-            this.props.getMessageRows() : this.props.noMessagesText
+        const {previewItems, noPreviewsText} = this.props
 
         return (
-            <div className="messages-container">
-                <div className="messages-content">
-                    {messagesToShow}
+            <div className="previews-container">
+                <div className="previews-content">
+                    {previewItems && previewItems.length ? previewItems : noPreviewsText}
                 </div>
             </div>
         )
     }
 }
 
-MessagesContainer.propTypes = {
-    messages: PropTypes.array.isRequired,
-    fetchMessages: PropTypes.func.isRequired,
-    getMessageRows: PropTypes.func.isRequired,
-    noMessagesText: PropTypes.string.isRequired
+PreviewsContainer.propTypes = {
+    previewItems: PropTypes.array.isRequired,
+    fetchPreviews: PropTypes.func.isRequired,
+    noPreviewsText: PropTypes.string.isRequired
 }
 
-module.exports = MessagesContainer
+module.exports = PreviewsContainer

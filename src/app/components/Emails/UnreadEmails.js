@@ -13,8 +13,8 @@ const map = require('lodash/map')
 
 const EmailActions = require('../../actions/email-actions')
 
-const MessagesContainer = require('../Messages/MessagesContainer')
-const EmailRow = require('./EmailRow')
+const PreviewsContainer = require('../Preview/PreviewsContainer')
+const EmailPreviewItem = require('./EmailPreviewItem')
 
 class UnreadEmails extends Component {
     constructor(props) {
@@ -52,17 +52,16 @@ class UnreadEmails extends Component {
         })
 
         return sortBy(emailRows, 'createdAt').map(email =>
-            <EmailRow email={email} currentUser={this.props.currentUser} key={email.id} />
+            <EmailPreviewItem email={email} currentUser={this.props.currentUser} key={email.id} />
         )
     }
 
     render() {
         return (
             <DocumentTitle title={this.getTitle()}>
-                <MessagesContainer messages={this.props.emails}
-                                   fetchMessages={this.fetchUnreadEmails}
-                                   getMessageRows={this.getEmailRows}
-                                   noMessagesText="There are no new emails" />
+                <PreviewsContainer previewItems={this.getEmailRows()}
+                                   fetchPreviews={this.fetchUnreadEmails}
+                                   noPreviewsText="There are no new emails" />
             </DocumentTitle>
         )
     }

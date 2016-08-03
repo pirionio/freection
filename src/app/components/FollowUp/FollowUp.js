@@ -4,7 +4,7 @@ const DocumentTitle = require('react-document-title')
 const {connect} = require('react-redux')
 const sortBy = require('lodash/sortBy')
 
-const MessagesContainer = require('../Messages/MessagesContainer')
+const PreviewsContainer = require('../Preview/PreviewsContainer')
 const FollowUpsActions = require('../../actions/follow-up-actions')
 const FollowUpPreviewItem = require('./FollowUpPreviewItem')
 
@@ -29,10 +29,9 @@ class FollowUp extends Component {
     render() {
         return (
             <DocumentTitle title={this.getTitle()}>
-                <MessagesContainer messages={this.props.things}
-                                   fetchMessages={this.props.fetchFollowUps}
-                                   getMessageRows={this.getThingsToFollowUp}
-                                   noMessagesText="There are no things to follow up" />
+                <PreviewsContainer previewItems={this.getThingsToFollowUp()}
+                                   fetchPreviews={this.props.fetchFollowUps}
+                                   noPreviewsText="There are no things to follow up" />
             </DocumentTitle>
         )
     }

@@ -2,8 +2,7 @@
 @import './TopBar/TopBar';
 @import './SideBar/SideBar';
 @import './MainApp/MainApp';
-@import './Messages/MessagesContainer';
-@import './Messages/MessageRow';
+@import './Preview/PreviewsContainer.scss';
 @import './MessageBox/MessageBox';
 @import './Actions/ActionsBar';
 @import './Actions/Action';
@@ -13,3 +12,4 @@
 @import './Preview/Thing/CommentPreviewText';
 @import './Github/Github';
 @import './Preview/PreviewItem';
+@import './Emails/EmailPreviewItem';
