@@ -82,13 +82,13 @@ module.exports = {
         },
         {
             name: 'discard comments',
-            params: ['notification', 'user'],
+            params: ['notification'],
             type: 'post',
             path: '/api/things/${notification.thing.id}/discard/${EventTypes.COMMENT.key}'
         },
         {
             name: 'discard ping',
-            params: ['notification', 'user'],
+            params: ['notification'],
             type: 'post',
             path: '/api/events/${notification.id}/discard'
         },

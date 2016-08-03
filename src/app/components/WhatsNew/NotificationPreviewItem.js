@@ -5,7 +5,7 @@ const EventTypes = require('../../../common/enums/event-types')
 const {PreviewItem, PreviewItemUser, PreviewItemTitle, PreviewItemDate, PreviewItemText, PreviewItemActions} =
     require('../Preview/PreviewItem')
 const {CommentPreviewText, PingPreviewText} = require('../Preview/Thing')
-const ThingActionsBar = require('../Actions/ThingActionsBar')
+const NotificationActionsBar = require('../Actions/NotificationActionsBar')
 
 const StatusPreviewText = ({notification}) => {
     return <span>{notification.thing.payload.status}</span>
@@ -42,7 +42,7 @@ class NotificationPreviewItem extends Component {
                 {this.getTextElement()}
             </PreviewItemText>
             <PreviewItemActions>
-                <ThingActionsBar thing={notification.thing} notification={notification} ping={false} cancel={false} />
+                <NotificationActionsBar notification={notification} />
             </PreviewItemActions>
         </PreviewItem>)
     }

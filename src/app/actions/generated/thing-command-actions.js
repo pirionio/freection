@@ -223,50 +223,44 @@ function markAsDone(thing) {
     }
 }
 
-function discardComments(notification, user) {
+function discardComments(notification) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.DISCARD_COMMENTS, 
             status: ActionStatus.START,
-            notification,
-            user
+            notification
         })
         return ResourceUtil.post(`/api/things/${notification.thing.id}/discard/${EventTypes.COMMENT.key}`)
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.DISCARD_COMMENTS, 
                 status: ActionStatus.COMPLETE,
-                notification,
-                user
+                notification
             }))
             .catch(() => dispatch({
                 type: ThingCommandActionsTypes.DISCARD_COMMENTS, 
                 status: ActionStatus.ERROR,
-                notification,
-                user
+                notification
             }))
     }
 }
 
-function discardPing(notification, user) {
+function discardPing(notification) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.DISCARD_PING, 
             status: ActionStatus.START,
-            notification,
-            user
+            notification
         })
         return ResourceUtil.post(`/api/events/${notification.id}/discard`)
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.DISCARD_PING, 
                 status: ActionStatus.COMPLETE,
-                notification,
-                user
+                notification
             }))
             .catch(() => dispatch({
                 type: ThingCommandActionsTypes.DISCARD_PING, 
                 status: ActionStatus.ERROR,
-                notification,
-                user
+                notification
             }))
     }
 }
