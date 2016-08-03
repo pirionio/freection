@@ -27,7 +27,7 @@ class Action extends Component {
 
 Action.propTypes = {
     label: PropTypes.string.isRequired,
-    item: PropTypes.object.isRequired,
+    item: PropTypes.any.isRequired,
     doFunc: PropTypes.func.isRequired
 }
 

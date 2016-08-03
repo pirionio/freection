@@ -4,7 +4,7 @@ const {PropTypes} = React
 const {PreviewItem, PreviewItemUser, PreviewItemTitle, PreviewItemDate, PreviewItemText, PreviewItemActions} =
     require('../Preview/PreviewItem')
 const {ThingPreviewText, ThingPreviewTitle}= require('../Preview/Thing')
-const ThingActionsBar = require('../Actions/ThingActionsBar')
+const FollowUpActionsBar = require('./FollowUpActionsBar')
 
 const FollowUpPreviewItem = ({thing}) => {
     return (
@@ -20,7 +20,7 @@ const FollowUpPreviewItem = ({thing}) => {
                 <ThingPreviewText thing={thing} />
             </PreviewItemText>
             <PreviewItemActions>
-                <ThingActionsBar thing={thing} ping={true} cancel={false} />
+                <FollowUpActionsBar thing={thing} />
             </PreviewItemActions>
         </PreviewItem>
     )

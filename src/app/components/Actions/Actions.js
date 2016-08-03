@@ -1,87 +1,94 @@
 const React = require('react')
-const includes = require('lodash/includes')
 
 const ThingCommandActions = require('../../actions/thing-command-actions')
+const EmailCommandActions = require('../../actions/email-command-actions')
 const Action = require('./Action')
 const ThingStatus = require('../../../common/enums/thing-status')
 const EventTypes = require('../../../common/enums/event-types')
 
-const DoAction = {
-    getComponent: (thing) => <Action label="Do" doFunc={ThingCommandActions.doThing} item={thing} key="action-Do" />,
-    shouldShow: (thing, currentUser) => {
-        return currentUser.id === thing.to.id &&
-            includes([ThingStatus.NEW.key, ThingStatus.REOPENED.key], thing.payload.status)
+function DoAction(thing, currentUser) {
+    return {
+        component: <Action label="Do" doFunc={ThingCommandActions.doThing} item={thing} key="action-Do" />,
+        show: currentUser.id === thing.to.id &&
+            [ThingStatus.NEW.key, ThingStatus.REOPENED.key].includes(thing.payload.status)
     }
 }
 
-const DoneAction = {
-    getComponent: (thing) => <Action label="Done" doFunc={ThingCommandActions.markAsDone} item={thing} key="action-Done" />,
-    shouldShow: (thing, currentUser) => {
-        return currentUser.id === thing.to.id &&
-            includes([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key], thing.payload.status)
+function DoneAction(thing, currentUser) {
+    return {
+        component: <Action label="Done" doFunc={ThingCommandActions.markAsDone} item={thing} key="action-Done" />,
+        show: currentUser.id === thing.to.id &&
+            [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status)
     }
 }
 
-const DismissAction = {
-    getComponent: (thing) => <Action label="Dismiss" doFunc={ThingCommandActions.dismiss} item={thing} key="action-Dismiss" />,
-    shouldShow: (thing, currentUser) => {
-        return currentUser.id === thing.to.id &&
-            includes([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key], thing.payload.status) &&
+function DismissAction(thing, currentUser) {
+    return {
+        component: <Action label="Dismiss" doFunc={ThingCommandActions.dismiss} item={thing} key="action-Dismiss" />,
+        show: currentUser.id === thing.to.id &&
+            [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status) &&
             !thing.isSelf
     }
 }
 
-const CloseAction = {
-    getComponent: (thing) => <Action label="Close" doFunc={ThingCommandActions.close} item={thing} key="action-Close" />,
-    shouldShow: (thing, currentUser) => {
-        return currentUser.id === thing.creator.id &&
-            includes([ThingStatus.DONE.key, ThingStatus.DISMISS.key], thing.payload.status)
+function CloseAction(thing, currentUser) {
+    return {
+        component: <Action label="Close" doFunc={ThingCommandActions.close} item={thing} key="action-Close" />,
+        show: currentUser.id === thing.creator.id &&
+            [ThingStatus.DONE.key, ThingStatus.DISMISS.key].includes(thing.payload.status)
     }
 }
 
-const CancelAction = {
-    getComponent: (thing) => <Action label="Cancel" doFunc={ThingCommandActions.cancel} item={thing} key="action-Cancel" />,
-    shouldShow: (thing, currentUser) => {
-        return currentUser.id === thing.creator.id &&
-            includes([ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key], thing.payload.status)
+function CancelAction(thing, currentUser) {
+    return {
+        component: <Action label="Cancel" doFunc={ThingCommandActions.cancel} item={thing} key="action-Cancel" />,
+        show: currentUser.id === thing.creator.id &&
+            [ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key].includes(thing.payload.status)
     }
 }
 
-const PingAction = {
-    getComponent: (thing) => <Action label="Ping" doFunc={ThingCommandActions.ping} item={thing} key="action-Ping" />,
-    shouldShow: (thing, currentUser) => {
-        return currentUser.id === thing.creator.id &&
-            includes([ThingStatus.INPROGRESS.key], thing.payload.status) &&
+function SendBackAction(thing, currentUser) {
+    return {
+        component: <Action label="SendBack" doFunc={ThingCommandActions.sendBack} item={thing} key="action-SendBack" />,
+        show: currentUser.id === thing.creator.id &&
+            [ThingStatus.DONE.key, ThingStatus.DISMISS.key].includes(thing.payload.status)
+    }
+}
+
+function PingAction(thing, currentUser) {
+    return {
+        component: <Action label="Ping" doFunc={ThingCommandActions.ping} item={thing} key="action-Ping" />,
+        show: currentUser.id === thing.creator.id &&
+            [ThingStatus.INPROGRESS.key].includes(thing.payload.status) &&
             !thing.isSelf
     }
 }
 
-const SendBacAction = {
-    getComponent: (thing) => <Action label="Send Back" doFunc={ThingCommandActions.sendBack} item={thing} key="action-SendBack" />,
-    shouldShow: (thing, currentUser) => {
-        return currentUser.id === thing.creator.id &&
-            includes([ThingStatus.DONE.key, ThingStatus.DISMISS.key], thing.payload.status)
+function DiscardCommentsAction(notification) {
+    return {
+        component: <Action label="Discard" doFunc={ThingCommandActions.discardComments} item={notification} key="action-Discard" />,
+        show: notification.eventType.key === EventTypes.COMMENT.key
     }
 }
 
-const DiscardCommentsAction = {
-    getComponent: (notification) => <Action label="Discard" doFunc={ThingCommandActions.discardComments} item={notification} key="action-Discard" />,
-    shouldShow: (notification) => {
-        return notification.eventType.key === EventTypes.COMMENT.key
+function DiscardPingAction(notification) {
+    return {
+        component: <Action label="Discard" doFunc={ThingCommandActions.discardPing} item={notification} key="action-Discard" />,
+        show: notification.eventType.key === EventTypes.PING.key
     }
 }
 
-const DiscardPingAction = {
-    getComponent: (notification) => <Action label="Discard" doFunc={ThingCommandActions.discardPing} item={notification} key="action-Discard" />,
-    shouldShow: (notification) => {
-        return notification.eventType.key === EventTypes.PING.key
+function CancelAckAction(notification) {
+    return {
+        component: <Action label="Stop doing" doFunc={ThingCommandActions.cancelAck} item={notification.thing} key="action-StopDoing" />,
+        show: notification.eventType.key === EventTypes.CANCELED.key
     }
 }
 
-const CancelAckAction = {
-    getComponent: (thing) => <Action label="Stop doing" doFunc={ThingCommandActions.cancelAck} item={thing} key="action-StopDoing" />,
-    shouldShow: (notification) => {
-        return notification.eventType.key === EventTypes.CANCELED.key
+function DiscardEmails(emailIds) {
+    return {
+        component: <Action label="Discard" doFunc={EmailCommandActions.markAsRead} item={emailIds} key="action-Discard" />,
+        show: true
     }
 }
 
@@ -92,8 +99,9 @@ module.exports = {
     CloseAction,
     CancelAction,
     PingAction,
-    SendBacAction,
+    SendBackAction,
     DiscardCommentsAction,
     DiscardPingAction,
-    CancelAckAction
+    CancelAckAction,
+    DiscardEmails
 }

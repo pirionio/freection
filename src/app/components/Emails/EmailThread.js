@@ -10,7 +10,6 @@ const find = require('lodash/find')
 const includes = require('lodash/includes')
 
 const CommentList = require('../Comment/CommentList')
-const ActionsBar = require('../Actions/ActionsBar')
 
 const EmailPageActions = require('../../actions/email-page-actions')
 
@@ -107,9 +106,6 @@ class EmailThread extends Component {
                             </div>
                             <div className="thing-close">
                                 <button onClick={this.close}>Back</button>
-                            </div>
-                            <div className="thing-actions">
-                                <ActionsBar thing={thread} />
                             </div>
                         </div>
                         <div className="thing-subtitle">

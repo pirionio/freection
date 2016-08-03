@@ -10,7 +10,7 @@ const find = require('lodash/find')
 const includes = require('lodash/includes')
 
 const CommentList = require('../Comment/CommentList')
-const ActionsBar = require('../Actions/ActionsBar')
+const ThingPageActionsBar = require('./ThingPageActionsBar')
 
 const ThingPageActions = require('../../actions/thing-page-actions')
 
@@ -118,7 +118,7 @@ class Thing extends Component {
                                 <button onClick={this.close}>Back</button>
                             </div>
                             <div className="thing-actions">
-                                <ActionsBar thing={thing} ping={false} />
+                                <ThingPageActionsBar thing={thing} />
                             </div>
                         </div>
                         <div className="thing-subtitle">

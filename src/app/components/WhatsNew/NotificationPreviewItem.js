@@ -5,7 +5,7 @@ const EventTypes = require('../../../common/enums/event-types')
 const {PreviewItem, PreviewItemUser, PreviewItemTitle, PreviewItemDate, PreviewItemText, PreviewItemActions} =
     require('../Preview/PreviewItem')
 const {CommentPreviewText, PingPreviewText} = require('../Preview/Thing')
-const NotificationActionsBar = require('../Actions/NotificationActionsBar')
+const NotificationActionsBar = require('./NotificationActionsBar')
 
 const StatusPreviewText = ({notification}) => {
     return <span>{notification.thing.payload.status}</span>

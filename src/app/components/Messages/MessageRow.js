@@ -6,7 +6,7 @@ const EmailPageActions = require('../../actions/email-page-actions')
 const dateFns = require('date-fns')
 const classnames = require('classnames')
 
-const ActionsBar = require('../Actions/ActionsBar')
+const EmailPreviewActionsBar = require('../Emails/EmailPreviewActionsBar')
 const EntityTypes = require('../../../common/enums/entity-types')
 
 class MessageRow extends Component {
@@ -67,9 +67,9 @@ class MessageRow extends Component {
                 (+{message.payload.numOfNewComments - 1})
             </div> : ''
 
-        const actionsBar = message && message.thing ?
-            <ActionsBar thing={message.thing} notification={message} cancel={this.props.cancel} ping={false} /> :
-            <ActionsBar thing={message} cancel={this.props.cancel} />
+        const actionsBar = message.payload && message.payload.emailIds ?
+            <EmailPreviewActionsBar emailIds={message.payload.emailIds} /> :
+            ''
 
         return (
             <div className="message">
