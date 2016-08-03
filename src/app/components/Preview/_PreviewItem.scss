@@ -41,6 +41,20 @@
       max-width: calc(100% - #{$row-user-width} - #{$row-actions-width} - #{$row-date-width});
       min-width: $row-subject-min-width;
       margin: 0 25px 0 15px;
+
+      a {
+        max-width: 100%;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
 
     .preview-item-date {
