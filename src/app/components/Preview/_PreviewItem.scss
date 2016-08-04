@@ -21,6 +21,8 @@
     width: calc(100% - #{$actions-bar-width});
 
     .row {
+      display: flex;
+      flex-direction: row;
       height: $row-height;
       line-height: $row-height;
 
@@ -30,26 +32,26 @@
     }
 
     .preview-item-user {
-      float: left;
-      width: 190px;
-      margin-top: 2px;
+      width: $row-user-width;
       font-style: italic;
+      text-overflow: ellipsis;
+      overflow-x: hidden;
+      white-space: nowrap;
     }
 
     .preview-item-title {
-      float: left;
-      max-width: calc(100% - #{$row-user-width} - #{$row-actions-width} - #{$row-date-width});
-      min-width: $row-subject-min-width;
+      flex-grow: 1;
+      width: $row-subject-min-width;
       margin: 0 25px 0 15px;
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
 
       a {
         max-width: 100%;
         font-size: 18px;
         font-weight: bold;
         cursor: pointer;
-        overflow-x: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
       }
 
       &:hover {
@@ -57,16 +59,21 @@
       }
     }
 
+    .preview-item-status {
+      width: $row-status-width;
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-style: italic;
+    }
+
     .preview-item-date {
-      float: right;
       width: $row-date-width;
-      margin-top: 2px;
       font-style: italic;
     }
 
     .preview-item-text {
       max-width: 100%;
-      float: left;
     }
   }
 

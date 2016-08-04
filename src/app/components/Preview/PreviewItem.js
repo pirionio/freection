@@ -3,14 +3,24 @@ const {Component, PropTypes} = React
 const {getChildOfType, createSlots} = require('../../util/component-util')
 const dateFns = require('date-fns')
 
+const ThingStatus = require('../../../common/enums/thing-status')
+
 const slots = createSlots('PreviewItemUser', 'PreviewItemTitle', 'PreviewItemText', 'PreviewItemActions')
 
 const PreviewItemDate = ({date}) => {
     return <span>{dateFns.format(date, 'DD-MM-YYYY HH:mm')}</span>
 }
 
+const PreviewItemStatus = ({status}) => {
+    return <span>{ThingStatus[status].label}</span>
+}
+
 PreviewItemDate.propTypes = {
     date: PropTypes.any.isRequired
+}
+
+PreviewItemStatus.propTypes = {
+    status: PropTypes.string.isRequired
 }
 
 class PreviewItem extends Component {
@@ -35,7 +45,14 @@ class PreviewItem extends Component {
         return getChildOfType(this.props.children, slots.PreviewItemActions)
     }
 
+    getStatus() {
+        return getChildOfType(this.props.children, PreviewItemStatus)
+    }
+
     render() {
+        const statusPreview = this.getStatus()
+        console.log(statusPreview)
+
         return (
             <div className="preview-item">
                 <div className="preview-item-content">
@@ -46,6 +63,7 @@ class PreviewItem extends Component {
                         <div className="preview-item-title">
                             {this.getTitle()}
                         </div>
+                        {statusPreview ? <div className="preview-item-status">{statusPreview}</div> : null}
                         <div className="preview-item-date">
                             {this.getDate()}
                         </div>
@@ -69,5 +87,6 @@ PreviewItem.propTypes = {
 
 module.exports = Object.assign({
     PreviewItem,
-    PreviewItemDate
+    PreviewItemDate,
+    PreviewItemStatus
 }, slots)

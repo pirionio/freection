@@ -1,7 +1,7 @@
 const React = require('react')
 const {PropTypes} = React
 
-const {PreviewItem, PreviewItemUser, PreviewItemTitle, PreviewItemDate, PreviewItemText, PreviewItemActions} =
+const {PreviewItem, PreviewItemUser, PreviewItemTitle, PreviewItemStatus, PreviewItemDate, PreviewItemText, PreviewItemActions} =
     require('../Preview/PreviewItem')
 const {ThingPreviewText, ThingPreviewTitle}= require('../Preview/Thing')
 const FollowUpActionsBar = require('./FollowUpActionsBar')
@@ -15,6 +15,7 @@ const FollowUpPreviewItem = ({thing}) => {
             <PreviewItemTitle>
                 <ThingPreviewTitle thing={thing} />
             </PreviewItemTitle>
+            <PreviewItemStatus status={thing.payload.status} />
             <PreviewItemDate date={thing.createdAt}/>
             <PreviewItemText>
                 <ThingPreviewText thing={thing} />
