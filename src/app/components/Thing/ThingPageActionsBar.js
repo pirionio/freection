@@ -5,7 +5,7 @@ const {connect} = require('react-redux')
 const ActionsBar = require('../Actions/ActionsBar')
 const {DoAction, DoneAction, DismissAction, CloseAction, CancelAction, SendBackAction} = require('../Actions/Actions')
 
-class ToDoActionsBar extends Component {
+class ThingPageActionsBar extends Component {
     render() {
         const {thing, currentUser} = this.props
 
@@ -26,7 +26,7 @@ class ToDoActionsBar extends Component {
     }
 }
 
-ToDoActionsBar.propTypes = {
+ThingPageActionsBar.propTypes = {
     thing: PropTypes.object.isRequired,
     currentUser: PropTypes.object.isRequired
 }
@@ -37,4 +37,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(ToDoActionsBar)
+module.exports = connect(mapStateToProps)(ThingPageActionsBar)
