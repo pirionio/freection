@@ -3,23 +3,24 @@ const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const {Form, Field} = require('react-redux-form')
 const isEmpty = require('lodash/isEmpty')
+const classAutobind = require('class-autobind').default
 
 const ThingCommandActions = require('../../actions/thing-command-actions')
 
 class MessageBox extends Component {
     constructor(props) {
         super(props)
-        this.send = this.send.bind(this)
+        classAutobind(this)
     }
 
     send() {
-        const {messageBox, thingContext} = this.props
+        const {dispatch, messageBox, thingContext} = this.props
 
         if (this.isComment()) {
-            this.props.comment(thingContext.id, messageBox.message.body)
+            dispatch(ThingCommandActions.comment(thingContext.id, messageBox.message.body))
             this.messageBody.focus()
         } else {
-            this.props.newThing(messageBox.message)
+            dispatch(ThingCommandActions.newThing(messageBox.message))
             this.messageTo.focus()
         }
     }
@@ -73,18 +74,11 @@ MessageBox.propTypes = {
     thingContext: PropTypes.object.isRequired
 }
 
-const mapStateToProps = (state) => {
+function mapStateToProps(state) {
     return {
         messageBox: state.messageBox,
         thingContext: state.thingPage.thing || {}
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        newThing: (newMessage) => dispatch(ThingCommandActions.newThing(newMessage)),
-        comment: (thingId, commentText) => dispatch(ThingCommandActions.comment(thingId, commentText))
-    }
-}
-
-module.exports = connect(mapStateToProps, mapDispatchToProps)(MessageBox)
+module.exports = connect(mapStateToProps)(MessageBox)
