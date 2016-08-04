@@ -6,58 +6,58 @@ const Action = require('./Action')
 const ThingStatus = require('../../../common/enums/thing-status')
 const EventTypes = require('../../../common/enums/event-types')
 
-function DoAction(thing, currentUser) {
+function DoAction(thing, currentUser, disabled) {
     return {
-        component: <Action label="Do" doFunc={ThingCommandActions.doThing} item={thing} key="action-Do" />,
+        component: <Action label="Do" doFunc={ThingCommandActions.doThing} item={thing} disabled={disabled} key="action-Do" />,
         show: currentUser.id === thing.to.id &&
             [ThingStatus.NEW.key, ThingStatus.REOPENED.key].includes(thing.payload.status)
     }
 }
 
-function DoneAction(thing, currentUser) {
+function DoneAction(thing, currentUser, disabled) {
     return {
-        component: <Action label="Done" doFunc={ThingCommandActions.markAsDone} item={thing} key="action-Done" />,
+        component: <Action label="Done" doFunc={ThingCommandActions.markAsDone} item={thing} disabled={disabled} key="action-Done" />,
         show: currentUser.id === thing.to.id &&
             [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status)
     }
 }
 
-function DismissAction(thing, currentUser) {
+function DismissAction(thing, currentUser, disabled) {
     return {
-        component: <Action label="Dismiss" doFunc={ThingCommandActions.dismiss} item={thing} key="action-Dismiss" />,
+        component: <Action label="Dismiss" doFunc={ThingCommandActions.dismiss} item={thing} disabled={disabled} key="action-Dismiss" />,
         show: currentUser.id === thing.to.id &&
             [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status) &&
             !thing.isSelf
     }
 }
 
-function CloseAction(thing, currentUser) {
+function CloseAction(thing, currentUser, disabled) {
     return {
-        component: <Action label="Close" doFunc={ThingCommandActions.close} item={thing} key="action-Close" />,
+        component: <Action label="Close" doFunc={ThingCommandActions.close} item={thing} disabled={disabled} key="action-Close" />,
         show: currentUser.id === thing.creator.id &&
             [ThingStatus.DONE.key, ThingStatus.DISMISS.key].includes(thing.payload.status)
     }
 }
 
-function CancelAction(thing, currentUser) {
+function CancelAction(thing, currentUser, disabled) {
     return {
-        component: <Action label="Cancel" doFunc={ThingCommandActions.cancel} item={thing} key="action-Cancel" />,
+        component: <Action label="Cancel" doFunc={ThingCommandActions.cancel} item={thing} disabled={disabled} key="action-Cancel" />,
         show: currentUser.id === thing.creator.id &&
             [ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key].includes(thing.payload.status)
     }
 }
 
-function SendBackAction(thing, currentUser) {
+function SendBackAction(thing, currentUser, disabled) {
     return {
-        component: <Action label="SendBack" doFunc={ThingCommandActions.sendBack} item={thing} key="action-SendBack" />,
+        component: <Action label="SendBack" doFunc={ThingCommandActions.sendBack} item={thing} disabled={disabled} key="action-SendBack" />,
         show: currentUser.id === thing.creator.id &&
             [ThingStatus.DONE.key, ThingStatus.DISMISS.key].includes(thing.payload.status)
     }
 }
 
-function PingAction(thing, currentUser) {
+function PingAction(thing, currentUser, disabled) {
     return {
-        component: <Action label="Ping" doFunc={ThingCommandActions.ping} item={thing} key="action-Ping" />,
+        component: <Action label="Ping" doFunc={ThingCommandActions.ping} item={thing} disabled={disabled} key="action-Ping" />,
         show: currentUser.id === thing.creator.id &&
             [ThingStatus.INPROGRESS.key].includes(thing.payload.status) &&
             !thing.isSelf

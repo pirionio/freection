@@ -35,5 +35,11 @@
     float: left;
     width: $send-section-width;
     margin-left: 10px;
+
+    .send-button {
+      &:disabled {
+        background-color: $button-disabled-color;
+      }
+    }
   }
 }

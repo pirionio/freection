@@ -7,9 +7,16 @@ const thingReducer = require('./thing-reducer')
 
 const immutable = require('../util/immutable')
 
+// TODO Problems with the ongoingAction mechanism:
+// 1) If navigating out of this state, the ongoingAction status is gone.
+// 2) The ongoingAction status is changed right away - there's no delay.
+// It means that components might react to it (and disable things in the view) even if the ongoing action takes millis.
+// It might be that the only place to change this is in the action itself, that should trigger a state change within a given timeout...
+
 const initialState = {
     thing: {},
-    invalidationStatus: InvalidationStatus.INVALIDATED
+    invalidationStatus: InvalidationStatus.INVALIDATED,
+    ongoingAction: false
 }
 
 function get(state, action) {
@@ -153,14 +160,16 @@ function asyncStatusOperation(state, action, status) {
     switch (action.status) {
         case ActionStatus.START:
             return immutable(state)
+                .set('ongoingAction', true)
+                .value()
+        case ActionStatus.COMPLETE:
+            return immutable(state)
                 .touch('thing')
                 .touch('thing.payload')
                 .set('thing.payload.status',  status)
+                .set('ongoingAction', false)
                 .value()
         case ActionStatus.ERROR:
-            return immutable(state)
-                .set('invalidationStatus', InvalidationStatus.INVALIDATED)
-                .value()
         default:
             return state
     }
@@ -178,7 +187,7 @@ module.exports = (state = initialState, action) => {
             return pingThing(state, action)
         case ThingCommandActionTypes.MARK_COMMENT_AS_READ:
             return markCommentAsRead(state, action)
-        case EventActionTypes.COMMENT_CREATED:
+        // case EventActionTypes.COMMENT_CREATED:
         case EventActionTypes.COMMENT_READ_BY:
             return commentChangedOrAdded(state, action)
         case EventActionTypes.PINGED:

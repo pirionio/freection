@@ -15,11 +15,11 @@ class Action extends Component {
     }
     
     render () {
-        const {label} = this.props
+        const {label, disabled} = this.props
 
         return (
             <div className="action-container">
-                <button onClick={this.doAction}>{label}</button>
+                <button className="action-button" onClick={this.doAction} disabled={disabled}>{label}</button>
             </div>
         )
     }
@@ -28,7 +28,12 @@ class Action extends Component {
 Action.propTypes = {
     label: PropTypes.string.isRequired,
     item: PropTypes.any.isRequired,
-    doFunc: PropTypes.func.isRequired
+    doFunc: PropTypes.func.isRequired,
+    disabled: PropTypes.bool
+}
+
+Action.defaultProps = {
+    disabled: false
 }
 
 module.exports = connect()(Action)

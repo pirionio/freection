@@ -61,7 +61,7 @@ class MessageBox extends Component {
                 <Form model="messageBox" onSubmit={this.send}>
                     {messageContent}
                     <div className="send-section">
-                        <button type="submit" tabIndex="4">Send</button>
+                        <button type="submit" className="send-button" tabIndex="4" disabled={messageBox.ongoingAction}>Send</button>
                     </div>
                 </Form>
             </div>

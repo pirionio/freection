@@ -5,7 +5,7 @@ const ActionStatus = {
 }
 
 const GeneralConstants = {
-    FETCH_INTERVAL_MILLIS: 10000
+    ONGOING_ACTION_DELAY_MILLIS: 500
 }
 
 const InvalidationStatus = {

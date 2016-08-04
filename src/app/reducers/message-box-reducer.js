@@ -5,7 +5,8 @@ const initialState = {
         to: '',
         body: '',
         subject: ''
-    }
+    },
+    ongoingAction: false
 }
 
 module.exports = {
