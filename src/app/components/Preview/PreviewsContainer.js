@@ -1,6 +1,8 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const ReactDOM = require('react-dom')
+const Delay = require('react-delay')
+const {GeneralConstants, InvalidationStatus} = require('../../constants')
 
 class PreviewsContainer extends Component {
     componentDidMount () {
@@ -25,7 +27,17 @@ class PreviewsContainer extends Component {
     }
 
     render () {
-        const {previewItems, noPreviewsText} = this.props
+        const {previewItems, noPreviewsText, invalidationStatus} = this.props
+
+        if (invalidationStatus === InvalidationStatus.FETCHING) {
+            return (
+                <div className="previews-container">
+                    <Delay wait={GeneralConstants.FETCHING_DELAY_MILLIS}>
+                        <div>Loading, please wait...</div>
+                    </Delay>
+                </div>
+            )
+        }
 
         return (
             <div className="previews-container">
@@ -40,7 +52,8 @@ class PreviewsContainer extends Component {
 PreviewsContainer.propTypes = {
     previewItems: PropTypes.array.isRequired,
     fetchPreviews: PropTypes.func.isRequired,
-    noPreviewsText: PropTypes.string.isRequired
+    noPreviewsText: PropTypes.string.isRequired,
+    invalidationStatus: PropTypes.string.isRequired
 }
 
 module.exports = PreviewsContainer

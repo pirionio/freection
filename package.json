@@ -54,6 +54,7 @@
     "passport-google-oauth20": "1.0.0",
     "passport-strategy": "1.0.0",
     "react": "0.14.7",
+    "react-delay": "0.0.3",
     "react-document-title": "2.0.2",
     "react-dom": "0.14.7",
     "react-redux": "4.4.5",

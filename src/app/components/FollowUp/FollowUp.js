@@ -3,6 +3,7 @@ const {Component, PropTypes} = React
 const DocumentTitle = require('react-document-title')
 const {connect} = require('react-redux')
 const sortBy = require('lodash/sortBy')
+const classAutobind = require('class-autobind').default
 
 const PreviewsContainer = require('../Preview/PreviewsContainer')
 const FollowUpsActions = require('../../actions/follow-up-actions')
@@ -11,7 +12,12 @@ const FollowUpPreviewItem = require('./FollowUpPreviewItem')
 class FollowUp extends Component {
     constructor(props) {
         super(props)
-        this.getThingsToFollowUp = this.getThingsToFollowUp.bind(this)
+        classAutobind(this)
+    }
+
+    fetchFollowUps() {
+        const {dispatch} = this.props
+        dispatch(FollowUpsActions.fetchFollowUps())
     }
 
     getThingsToFollowUp() {
@@ -27,30 +33,29 @@ class FollowUp extends Component {
     }
 
     render() {
+        const {invalidationStatus} = this.props
+
         return (
             <DocumentTitle title={this.getTitle()}>
                 <PreviewsContainer previewItems={this.getThingsToFollowUp()}
-                                   fetchPreviews={this.props.fetchFollowUps}
-                                   noPreviewsText="There are no things to follow up" />
+                                   fetchPreviews={this.fetchFollowUps}
+                                   noPreviewsText="There are no things to follow up"
+                                   invalidationStatus={invalidationStatus} />
             </DocumentTitle>
         )
     }
 }
 
 FollowUp.propTypes = {
-    things: PropTypes.array.isRequired
+    things: PropTypes.array.isRequired,
+    invalidationStatus: PropTypes.string.isRequired
 }
 
 const mapStateToProps = (state) => {
     return {
-        things: state.followUps.followUps
+        things: state.followUps.followUps,
+        invalidationStatus: state.followUps.invalidationStatus
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchFollowUps: () => dispatch(FollowUpsActions.fetchFollowUps())
-    }
-}
-
-module.exports = connect(mapStateToProps, mapDispatchToProps)(FollowUp)
+module.exports = connect(mapStateToProps)(FollowUp)

@@ -2,6 +2,7 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const DocumentTitle = require('react-document-title')
+const Delay = require('react-delay')
 const dateFns = require('date-fns')
 const {goBack} = require('react-router-redux')
 
@@ -15,7 +16,7 @@ const ThingPageActionsBar = require('./ThingPageActionsBar')
 const ThingPageActions = require('../../actions/thing-page-actions')
 
 const EventTypes = require('../../../common/enums/event-types')
-const {InvalidationStatus} = require('../../constants')
+const {GeneralConstants, InvalidationStatus} = require('../../constants')
 
 class Thing extends Component {
     constructor(props) {
@@ -91,9 +92,11 @@ class Thing extends Component {
         if (this.isFetching()) {
             return (
                 <div className="thing-container">
-                    <div className="thing-loading">
-                        Loading thing, please wait.
-                    </div>
+                    <Delay wait={GeneralConstants.FETCHING_DELAY_MILLIS}>
+                        <div className="thing-loading">
+                            Loading thing, please wait.
+                        </div>
+                    </Delay>
                     <div className="thing-close">
                         <button onClick={this.close}>Back</button>
                     </div>

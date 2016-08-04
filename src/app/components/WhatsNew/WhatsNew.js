@@ -2,6 +2,7 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const DocumentTitle = require('react-document-title')
+const classAutobind = require('class-autobind').default
 
 const groupBy = require('lodash/groupBy')
 const find = require('lodash/find')
@@ -22,7 +23,12 @@ const EventTypes = require('../../../common/enums/event-types')
 class WhatsNew extends Component {
     constructor(props) {
         super(props)
-        this.getNotificationRows = this.getNotificationRows.bind(this)
+        classAutobind(this)
+    }
+
+    fetchWhatsNew() {
+        const {dispatch} = this.props
+        dispatch(WhatsNewActions.fetchWhatsNew())
     }
 
     getNotificationRows() {
@@ -82,30 +88,29 @@ class WhatsNew extends Component {
     }
 
     render () {
+        const {invalidationStatus} = this.props
+        
         return (
             <DocumentTitle title={this.getTitle()}>
                 <PreviewsContainer previewItems={this.getNotificationRows()}
-                                   fetchPreviews={this.props.fetchWhatsNew}
-                                   noPreviewsText="There are no new things" />
+                                   fetchPreviews={this.fetchWhatsNew}
+                                   noPreviewsText="There are no new things" 
+                                   invalidationStatus={invalidationStatus} />
             </DocumentTitle>
         )
     }
 }
 
 WhatsNew.propTypes = {
-    notifications: PropTypes.array.isRequired
+    notifications: PropTypes.array.isRequired,
+    invalidationStatus: PropTypes.string.isRequired
 }
 
-const mapStateToProps = (state) => {
+function mapStateToProps(state) {
     return {
-        notifications: state.whatsNew.notifications
+        notifications: state.whatsNew.notifications,
+        invalidationStatus: state.whatsNew.invalidationStatus
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchWhatsNew: () => dispatch(WhatsNewActions.fetchWhatsNew())
-    }
-}
-
-module.exports = connect(mapStateToProps, mapDispatchToProps)(WhatsNew)
+module.exports = connect(mapStateToProps)(WhatsNew)

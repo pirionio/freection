@@ -3,6 +3,7 @@ const {Component, PropTypes} = React
 const DocumentTitle = require('react-document-title')
 const {connect} = require('react-redux')
 const sortBy = require('lodash/sortBy')
+const classAutobind = require('class-autobind').default
 
 const PreviewsContainer = require('../Preview/PreviewsContainer')
 const ToDoActions = require('../../actions/to-do-actions')
@@ -11,7 +12,12 @@ const ToDoPreviewItem = require('./ToDoPreviewItem')
 class ToDo extends Component {
     constructor(props) {
         super(props)
-        this.getThingsToDo = this.getThingsToDo.bind(this)
+        classAutobind(this)
+    }
+
+    fetchToDo() {
+        const {dispatch} = this.props
+        dispatch(ToDoActions.fetchToDo())
     }
 
     getThingsToDo() {
@@ -27,30 +33,29 @@ class ToDo extends Component {
     }
 
     render() {
+        const {invalidationStatus} = this.props
+        
         return (
             <DocumentTitle title={this.getTitle()}>
                 <PreviewsContainer previewItems={this.getThingsToDo()}
-                                   fetchPreviews={this.props.fetchToDo}
-                                   noPreviewsText="There are no things to do" />
+                                   fetchPreviews={this.fetchToDo}
+                                   noPreviewsText="There are no things to do"
+                                   invalidationStatus={invalidationStatus} />
             </DocumentTitle>
         )
     }
 }
 
 ToDo.propTypes = {
-    things: PropTypes.array.isRequired
+    things: PropTypes.array.isRequired,
+    invalidationStatus: PropTypes.string.isRequired
 }
 
-const mapStateToProps = (state) => {
+function mapStateToProps (state) {
     return {
-        things: state.toDo.things
+        things: state.toDo.things,
+        invalidationStatus: state.toDo.invalidationStatus
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchToDo: () => dispatch(ToDoActions.fetchToDo())
-    }
-}
-
-module.exports = connect(mapStateToProps, mapDispatchToProps)(ToDo)
+module.exports = connect(mapStateToProps)(ToDo)

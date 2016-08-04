@@ -2,6 +2,7 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const DocumentTitle = require('react-document-title')
+const classAutobind = require('class-autobind').default
 
 const {chain} = require('lodash/core')
 const groupBy = require('lodash/groupBy')
@@ -19,9 +20,7 @@ const EmailPreviewItem = require('./EmailPreviewItem')
 class UnreadEmails extends Component {
     constructor(props) {
         super(props)
-
-        this.fetchUnreadEmails = this.fetchUnreadEmails.bind(this)
-        this.getEmailRows = this.getEmailRows.bind(this)
+        classAutobind(this)
     }
 
     getTitle() {
@@ -57,11 +56,14 @@ class UnreadEmails extends Component {
     }
 
     render() {
+        const {invalidationStatus} = this.props
+
         return (
             <DocumentTitle title={this.getTitle()}>
                 <PreviewsContainer previewItems={this.getEmailRows()}
                                    fetchPreviews={this.fetchUnreadEmails}
-                                   noPreviewsText="There are no new emails" />
+                                   noPreviewsText="There are no new emails"
+                                   invalidationStatus={invalidationStatus} />
             </DocumentTitle>
         )
     }
@@ -69,12 +71,14 @@ class UnreadEmails extends Component {
 
 UnreadEmails.propsTypes = {
     emails: PropTypes.array.isRequired,
-    currentUser: PropTypes.object.isRequired
+    currentUser: PropTypes.object.isRequired,
+    invalidationStatus: PropTypes.string.isRequired
 }
 
 function mapStateToProps(state) {
     return {
         emails: state.unreadEmails.emails,
+        invalidationStatus: state.unreadEmails.invalidationStatus,
         currentUser: state.auth
     }
 }

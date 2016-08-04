@@ -1,5 +1,4 @@
 const WhatsNewActionTypes = require('../actions/types/whats-new-action-types')
-const ToDoActionTypes = require('../actions/types/to-do-action-types')
 const ThingCommandActionTypes = require('../actions/types/thing-command-action-types')
 const {ActionStatus} = require('../constants')
 const EventTypes = require('../../common/enums/event-types')

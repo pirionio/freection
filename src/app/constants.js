@@ -5,6 +5,7 @@ const ActionStatus = {
 }
 
 const GeneralConstants = {
+    FETCHING_DELAY_MILLIS: 1000,
     ONGOING_ACTION_DELAY_MILLIS: 500
 }
 
