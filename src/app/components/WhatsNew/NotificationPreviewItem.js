@@ -5,6 +5,7 @@ const EventTypes = require('../../../common/enums/event-types')
 const {PreviewItem, PreviewItemUser, PreviewItemTitle, PreviewItemDate, PreviewItemText, PreviewItemActions} =
     require('../Preview/PreviewItem')
 const {CommentPreviewText, PingPreviewText} = require('../Preview/Thing')
+const NotificationPreviewTitle = require('../Preview/Notification/NotificationPreviewTitle')
 const NotificationActionsBar = require('./NotificationActionsBar')
 
 const StatusPreviewText = ({notification}) => {
@@ -35,7 +36,7 @@ class NotificationPreviewItem extends Component {
                 <span>{notification.creator.email}</span>
             </PreviewItemUser>
             <PreviewItemTitle>
-                <span>{notification.thing.subject}</span>
+                <NotificationPreviewTitle notification={notification} />
             </PreviewItemTitle>
             <PreviewItemDate date={notification.createdAt}/>
             <PreviewItemText>
