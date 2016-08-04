@@ -62,8 +62,7 @@ class Comment extends Component {
         const {comment} = this.props
         const createdAt = dateFns.format(comment.createdAt, 'DD-MM-YYYY HH:mm')
         const containerClassname = classnames('comment-container', {
-            'comment-unread': !comment.payload.isRead,
-            'comment-read': comment.payload.isRead
+            'comment-unread': !comment.payload.initialIsRead
         })
 
         return (

@@ -1,9 +1,11 @@
 const EventActionTypes = require('../actions/types/event-action-types')
 const ThingPageActionTypes = require('../actions/types/thing-page-action-types')
 const ThingStatus = require('../../common/enums/thing-status.js')
+const EventTypes = require('../../common/enums/event-types')
 const ThingCommandActionTypes = require('../actions/types/thing-command-action-types')
 const {ActionStatus, InvalidationStatus} = require('../constants')
 const thingReducer = require('./thing-reducer')
+const isUndefined = require('lodash/isUndefined')
 
 const immutable = require('../util/immutable')
 
@@ -19,6 +21,18 @@ const initialState = {
     ongoingAction: false
 }
 
+function getInitialReadBy(event) {
+    if (isUndefined(event.payload.initialIsRead)) {
+        return {
+            payload: {
+                initialIsRead: event.payload.isRead
+            }
+        }
+    } else {
+        return {}
+    }
+}
+
 function get(state, action) {
     switch (action.status) {
         case ActionStatus.START:
@@ -28,6 +42,9 @@ function get(state, action) {
         case ActionStatus.COMPLETE:
             return immutable(state)
                 .set('thing', action.thing)
+                .touch('thing')
+                .arrayMergeItem('thing.events',
+                    event => [EventTypes.COMMENT.key, EventTypes.PING.key].includes(event.eventType.key), getInitialReadBy)
                 .set('invalidationStatus', InvalidationStatus.FETCHED)
                 .value()
         case ActionStatus.ERROR:
@@ -58,6 +75,7 @@ function comment(state, action) {
                     createdAt: action.comment.createdAt,
                     eventType: action.comment.eventType
                 })
+                .arrayMergeItem('thing.events', {id: action.comment.id}, getInitialReadBy)
                 .value()
         case ActionStatus.START:
         case ActionStatus.ERROR:
@@ -78,6 +96,7 @@ function pingThing(state, action) {
                     createdAt: action.pingEvent.createdAt,
                     eventType: action.pingEvent.eventType
                 })
+                .arrayMergeItem('thing.events', {id: action.pingEvent.id}, getInitialReadBy)
                 .value()
         case ActionStatus.START:
         case ActionStatus.ERROR:
@@ -111,6 +130,8 @@ function commentChangedOrAdded(state, action) {
 
     return immutable(state)
         .set('thing', thingReducer(state.thing, action))
+        .touch('thing')
+        .arrayMergeItem('thing.events', {id: action.comment.id}, getInitialReadBy)
         .value()
 }
 
@@ -121,6 +142,8 @@ function pingReceived(state, action) {
 
     return immutable(state)
         .set('thing', thingReducer(state.thing, action))
+        .touch('thing')
+        .arrayMergeItem('thing.events', {id: action.pingEvent.id}, getInitialReadBy)
         .value()
 }
 

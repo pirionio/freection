@@ -15,10 +15,6 @@
     background-color: $comment-unread-color;
   }
 
-  &.comment-read {
-    transition: background-color 1s ease 0.5s;
-  }
-
   .comment-creator {
     display: inline-block;
     width: $creator-width;
