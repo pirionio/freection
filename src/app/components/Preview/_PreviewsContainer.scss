@@ -1,8 +1,12 @@
 @import '../vars';
 
 .previews-container {
-  height: calc(100% - #{$message-box-height} - 15px);
-  overflow-y: auto;
+  height: 100%;
+
+  .previews-list-container {
+    height: calc(100% - #{$message-box-height} - 15px);
+    overflow-y: auto;
+  }
 
   .previews-content {
     height: 100%;

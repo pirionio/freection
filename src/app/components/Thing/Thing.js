@@ -5,6 +5,7 @@ const DocumentTitle = require('react-document-title')
 const Delay = require('react-delay')
 const dateFns = require('date-fns')
 const {goBack} = require('react-router-redux')
+const classAutobind = require('class-autobind').default
 
 const isEmpty = require('lodash/isEmpty')
 const find = require('lodash/find')
@@ -12,6 +13,7 @@ const includes = require('lodash/includes')
 
 const CommentList = require('../Comment/CommentList')
 const ThingPageActionsBar = require('./ThingPageActionsBar')
+const CommentThingBox = require('../MessageBox/CommentThingBox')
 
 const ThingPageActions = require('../../actions/thing-page-actions')
 
@@ -21,7 +23,8 @@ const {GeneralConstants, InvalidationStatus} = require('../../constants')
 class Thing extends Component {
     constructor(props) {
         super(props)
-        this.close = this.close.bind(this)
+        classAutobind(this)
+        this.getThingReferencer = this.getThingReferencer.bind(this)
     }
 
     componentDidMount() {
@@ -84,71 +87,91 @@ class Thing extends Component {
         return this.props.invalidationStatus === InvalidationStatus.FETCHING
     }
 
-    render() {
+    renderFetching() {
+        return (
+            <div className="thing-content">
+                <Delay wait={GeneralConstants.FETCHING_DELAY_MILLIS}>
+                    <div className="thing-loading">
+                        Loading thing, please wait.
+                    </div>
+                </Delay>
+                <div className="thing-close">
+                    <button onClick={this.close}>Back</button>
+                </div>
+            </div>
+        )
+    }
+
+    renderError() {
+        return (
+            <div className="thing-content">
+                <div className="thing-error">
+                    We are sorry, the thing could not be displayed!
+                </div>
+                <div className="thing-close">
+                    <button onClick={this.close}>Back</button>
+                </div>
+            </div>
+        )
+    }
+    
+    renderContent() {
         const {thing} = this.props
+
         const comments = this.getAllComments()
         const createdAt = dateFns.format(thing.createdAt, 'DD-MM-YYYY HH:mm')
 
-        if (this.isFetching()) {
-            return (
-                <div className="thing-container">
-                    <Delay wait={GeneralConstants.FETCHING_DELAY_MILLIS}>
-                        <div className="thing-loading">
-                            Loading thing, please wait.
+        return (
+            <div className="thing-content">
+                <div className="thing-header">
+                    <div className="thing-title">
+                        <div className="thing-subject">
+                            {thing.subject}
                         </div>
-                    </Delay>
-                    <div className="thing-close">
-                        <button onClick={this.close}>Back</button>
+                        <div className="thing-status">
+                            ({thing.payload ? thing.payload.status : ''})
+                        </div>
+                        <div className="thing-close">
+                            <button onClick={this.close}>Back</button>
+                        </div>
+                        <div className="thing-actions">
+                            <ThingPageActionsBar thing={thing} />
+                        </div>
+                    </div>
+                    <div className="thing-subtitle">
+                        <div className="thing-referencer">
+                            {this.getThingReferencer()}
+                        </div>
+                        <div className="thing-creation-time">
+                            {createdAt}
+                        </div>
                     </div>
                 </div>
-            )
-        }
-
-        if (isEmpty(thing)) {
-            return (
-                <div className="thing-container">
-                    <div className="thing-error">
-                        We are sorry, the thing could not be displayed!
-                    </div>
-                    <div className="thing-close">
-                        <button onClick={this.close}>Back</button>
+                <div className="thing-body-container">
+                    <div className="thing-body-content">
+                        <CommentList comments={comments} />
                     </div>
                 </div>
-            )
-        }
+            </div>
+        )
+    }
+    
+    render() {
+        const {thing} = this.props
 
+        let content
+        if (this.isFetching())
+            content = this.renderFetching()
+        else if (isEmpty(thing))
+            content = this.renderError()
+        else
+            content = this.renderContent()
+        
         return (
             <DocumentTitle title={this.getTitle()}>
                 <div className="thing-container">
-                    <div className="thing-header">
-                        <div className="thing-title">
-                            <div className="thing-subject">
-                                {thing.subject}
-                            </div>
-                            <div className="thing-status">
-                                ({thing.payload ? thing.payload.status : ''})
-                            </div>
-                            <div className="thing-close">
-                                <button onClick={this.close}>Back</button>
-                            </div>
-                            <div className="thing-actions">
-                                <ThingPageActionsBar thing={thing} />
-                            </div>
-                        </div>
-                        <div className="thing-subtitle">
-                            <div className="thing-referencer">
-                                {this.getThingReferencer()}
-                            </div>
-                            <div className="thing-creation-time">
-                                {createdAt}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="thing-body-container">
-                        <div className="thing-body-content">
-                            <CommentList comments={comments} />
-                        </div>
-                    </div>
+                    {content}
+                    <CommentThingBox />
                 </div>
             </DocumentTitle>
         )

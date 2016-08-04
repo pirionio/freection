@@ -9,27 +9,27 @@ const newThingAction = ThingCommandActions.newThing
 function comment(thingId, commentText) {
     return dispatch => {
         const promise = dispatch(commentAction(thingId, commentText))
-        handleMessageBox(dispatch, promise)
+        handleMessageBox(dispatch, promise, 'commentThingBox')
     }
 }
 
 function newThing(thing) {
     return dispatch => {
         const promise = dispatch(newThingAction(thing))
-        handleMessageBox(dispatch, promise)
+        handleMessageBox(dispatch, promise, 'newThingBox')
     }
 }
 
-function handleMessageBox(dispatch, promise) {
+function handleMessageBox(dispatch, promise, stateName) {
         const ongoingActionTimeout = setTimeout(() => {
-            dispatch(actions.change('messageBox.ongoingAction', true))
+            dispatch(actions.change(`${stateName}.ongoingAction`, true))
         }, GeneralConstants.ONGOING_ACTION_DELAY_MILLIS)
 
-        dispatch(actions.submit('messageBox', promise)).then(() => {
+        dispatch(actions.submit(stateName, promise)).then(() => {
             clearTimeout(ongoingActionTimeout)
 
-            dispatch(actions.change('messageBox.ongoingAction', false))
-            dispatch(actions.reset('messageBox'))
+            dispatch(actions.change(`${stateName}.ongoingAction`, false))
+            dispatch(actions.reset(stateName))
         })
 }
 

@@ -5,6 +5,7 @@ const DocumentTitle = require('react-document-title')
 const Delay = require('react-delay')
 const dateFns = require('date-fns')
 const {goBack} = require('react-router-redux')
+const classAutobind = require('class-autobind').default
 
 const isEmpty = require('lodash/isEmpty')
 
@@ -17,7 +18,7 @@ const {GeneralConstants} = require('../../constants')
 class EmailThread extends Component {
     constructor(props) {
         super(props)
-        this.close = this.close.bind(this)
+        classAutobind(this)
     }
 
     componentWillMount() {
@@ -63,68 +64,86 @@ class EmailThread extends Component {
             []
     }
 
-    render() {
-        const {thread, isFetching} = this.props
+    renderFetching() {
+        return (
+            <div className="thing-content">
+                <Delay wait={GeneralConstants.FETCHING_DELAY_MILLIS}>
+                    <div className="thing-loading">
+                        Loading thing, please wait.
+                    </div>
+                </Delay>
+                <div className="thing-close">
+                    <button onClick={this.close}>Back</button>
+                </div>
+            </div>
+        )
+    }
+
+    renderError() {
+        return (
+            <div className="thing-content">
+                <div className="thing-error">
+                    We are sorry, the email could not be displayed!
+                </div>
+                <div className="thing-close">
+                    <button onClick={this.close}>Back</button>
+                </div>
+            </div>
+        )
+    }
+
+    renderContent() {
+        const {thread} = this.props
         const comments = this.getAllComments()
         const createdAt = dateFns.format(thread.createdAt, 'DD-MM-YYYY HH:mm')
 
-        if (isFetching) {
-            return (
-                <div className="thing-container">
-                    <Delay wait={GeneralConstants.FETCHING_DELAY_MILLIS}>
-                        <div className="thing-loading">
-                            Loading thing, please wait.
+        return (
+            <div className="thing-content">
+                <div className="thing-header">
+                    <div className="thing-title">
+                        <div className="thing-subject">
+                            {thread.subject}
                         </div>
-                    </Delay>
-                    <div className="thing-close">
-                        <button onClick={this.close}>Back</button>
+                        <div className="thing-status">
+                            ({thread.payload ? thread.payload.status : ''})
+                        </div>
+                        <div className="thing-close">
+                            <button onClick={this.close}>Back</button>
+                        </div>
+                    </div>
+                    <div className="thing-subtitle">
+                        <div className="thing-referencer">
+                            {this.getThingReferencer()}
+                        </div>
+                        <div className="thing-creation-time">
+                            {createdAt}
+                        </div>
                     </div>
                 </div>
-            )
-        }
+                <div className="thing-body-container">
+                    <div className="thing-body-content">
+                        <CommentList comments={comments} />
+                    </div>
+                </div>
+            </div>
+        )
+    }
 
-        if (isEmpty(thread)) {
-            return (
-                <div className="thing-container">
-                    <div className="thing-error">
-                        We are sorry, the email could not be displayed!
-                    </div>
-                    <div className="thing-close">
-                        <button onClick={this.close}>Back</button>
-                    </div>
-                </div>
-            )
-        }
+    render() {
+        const {thread, isFetching} = this.props
+
+        let content
+        if (isFetching)
+            content = this.renderFetching()
+        else if (isEmpty(thread))
+            content = this.renderError()
+        else
+            content = this.renderContent()
 
         return (
             <DocumentTitle title={this.getTitle()}>
                 <div className="thing-container">
-                    <div className="thing-header">
-                        <div className="thing-title">
-                            <div className="thing-subject">
-                                {thread.subject}
-                            </div>
-                            <div className="thing-status">
-                                ({thread.payload ? thread.payload.status : ''})
-                            </div>
-                            <div className="thing-close">
-                                <button onClick={this.close}>Back</button>
-                            </div>
-                        </div>
-                        <div className="thing-subtitle">
-                            <div className="thing-referencer">
-                                {this.getThingReferencer()}
-                            </div>
-                            <div className="thing-creation-time">
-                                {createdAt}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="thing-body-container">
-                        <div className="thing-body-content">
-                            <CommentList comments={comments} />
-                        </div>
-                    </div>
+                    {content}
                 </div>
             </DocumentTitle>
         )

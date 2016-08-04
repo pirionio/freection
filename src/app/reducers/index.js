@@ -1,7 +1,8 @@
 const {combineReducers} = require('redux')
 const whatsNew = require('./whats-new-reducer')
 const toDo = require('./to-do-reducer')
-const {messageBox, messageBoxForm} = require('./message-box-reducer')
+const {newThingBox, newThingBoxForm} = require('./new-thing-box-reducer')
+const {commentThingBox, commentThingBoxForm} = require('./comment-thing-box-reducer')
 const followUps = require('./follow-ups-reducer')
 const thingPage = require('./thing-page-reducer')
 const unreadEmails = require('./unread-emails-reducer')
@@ -14,8 +15,10 @@ module.exports = combineReducers({
     whatsNew,
     toDo,
     followUps,
-    messageBox,
-    messageBoxForm,
+    newThingBox,
+    newThingBoxForm,
+    commentThingBox,
+    commentThingBoxForm,
     thingPage,
     unreadEmails,
     emailPage,

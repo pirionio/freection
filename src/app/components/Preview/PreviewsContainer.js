@@ -3,6 +3,8 @@ const {Component, PropTypes} = React
 const Delay = require('react-delay')
 const {GeneralConstants, InvalidationStatus} = require('../../constants')
 
+const NewThingBox = require('../MessageBox/NewThingBox')
+
 class PreviewsContainer extends Component {
     componentDidMount () {
         this.props.fetchPreviews()
@@ -28,9 +30,12 @@ class PreviewsContainer extends Component {
 
         return (
             <div className="previews-container">
-                <div className="previews-content">
-                    {previewItems && previewItems.length ? previewItems : noPreviewsText}
+                <div className="previews-list-container">
+                    <div className="previews-content">
+                        {previewItems && previewItems.length ? previewItems : noPreviewsText}
+                    </div>
                 </div>
+                <NewThingBox />
             </div>
         )
     }

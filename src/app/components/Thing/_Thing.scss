@@ -3,7 +3,11 @@
 .thing-container {
   $thing-header-height: 60px;
 
-  height: calc(100% - #{$message-box-height} - 15px);
+  height: 100%;
+
+  .thing-content {
+    height: calc(100% - #{$message-box-height} - 15px);
+  }
 
   .thing-header {
     height: $thing-header-height;
