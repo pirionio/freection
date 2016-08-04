@@ -15,6 +15,7 @@ const ThingPageActionsBar = require('./ThingPageActionsBar')
 const ThingPageActions = require('../../actions/thing-page-actions')
 
 const EventTypes = require('../../../common/enums/event-types')
+const {InvalidationStatus} = require('../../constants')
 
 class Thing extends Component {
     constructor(props) {
@@ -22,7 +23,7 @@ class Thing extends Component {
         this.close = this.close.bind(this)
     }
 
-    componentWillMount() {
+    componentDidMount() {
         const {dispatch, params} = this.props
         dispatch(ThingPageActions.get(params.thingId))
     }
@@ -30,6 +31,12 @@ class Thing extends Component {
     componentWillUnmount() {
         const {dispatch} = this.props
         dispatch(ThingPageActions.hide())
+    }
+
+    componentWillReceiveProps() {
+        // Will fetch messages only if needed
+        const {dispatch, params} = this.props
+        dispatch(ThingPageActions.get(params.thingId))
     }
 
     close() {
@@ -72,12 +79,16 @@ class Thing extends Component {
             []
     }
 
+    isFetching() {
+        return this.props.invalidationStatus === InvalidationStatus.FETCHING
+    }
+
     render() {
-        const {thing, isFetching} = this.props
+        const {thing} = this.props
         const comments = this.getAllComments()
         const createdAt = dateFns.format(thing.createdAt, 'DD-MM-YYYY HH:mm')
 
-        if (isFetching) {
+        if (this.isFetching()) {
             return (
                 <div className="thing-container">
                     <div className="thing-loading">
@@ -143,14 +154,14 @@ class Thing extends Component {
 
 Thing.propTypes = {
     thing: PropTypes.object.isRequired,
-    isFetching: PropTypes.bool.isRequired,
+    invalidationStatus: PropTypes.string.isRequired,
     currentUser: PropTypes.object.isRequired
 }
 
 function mapStateToProps(state) {
     return {
         thing: state.thingPage.thing,
-        isFetching: state.thingPage.isFetching,
+        invalidationStatus: state.thingPage.invalidationStatus,
         currentUser: state.auth
     }
 }

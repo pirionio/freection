@@ -1,7 +1,20 @@
-const ThingPageActions = require('./generated/thing-page-actions')
 const {push} = require('react-router-redux')
 
+const ThingPageActions = require('./generated/thing-page-actions')
+const {InvalidationStatus} = require('../constants')
+
+const getAction = ThingPageActions.get
 const showAction = ThingPageActions.show
+const hideAction = ThingPageActions.hide
+
+function get(thingId) {
+    return (dispatch, getState) => {
+        const {thingPage} = getState()
+        if (thingPage.invalidationStatus === InvalidationStatus.INVALIDATED) {
+            return dispatch(getAction(thingId))
+        }
+    }
+}
 
 function show(thingId) {
     return dispatch => {
@@ -11,8 +24,6 @@ function show(thingId) {
     }
 }
 
-const hideAction = ThingPageActions.hide
-
 function hide() {
     return dispatch => {
         dispatch(hideAction())
@@ -20,5 +31,6 @@ function hide() {
 }
 
 module.exports = ThingPageActions
+ThingPageActions.get = get
 ThingPageActions.show = show
 ThingPageActions.hide = hide

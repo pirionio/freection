@@ -2,31 +2,33 @@ const EventActionTypes = require('../actions/types/event-action-types')
 const ThingPageActionTypes = require('../actions/types/thing-page-action-types')
 const ThingStatus = require('../../common/enums/thing-status.js')
 const ThingCommandActionTypes = require('../actions/types/thing-command-action-types')
-const {ActionStatus} = require('../constants')
+const {ActionStatus, InvalidationStatus} = require('../constants')
 const thingReducer = require('./thing-reducer')
 
 const immutable = require('../util/immutable')
 
 const initialState = {
     thing: {},
-    isFetching: false
+    invalidationStatus: InvalidationStatus.INVALIDATED
 }
 
 function get(state, action) {
     switch (action.status) {
         case ActionStatus.START:
-            return {
-                thing: {},
-                isFetching: true
-            }
+            return immutable(state)
+                .set('invalidationStatus', InvalidationStatus.FETCHING)
+                .value()
         case ActionStatus.COMPLETE:
-            return {
-                thing: action.thing,
-                isFetching: false
-            }
+            return immutable(state)
+                .set('thing', action.thing)
+                .set('invalidationStatus', InvalidationStatus.FETCHED)
+                .value()
         case ActionStatus.ERROR:
+            return immutable(state)
+                .set('invalidationStatus', InvalidationStatus.INVALIDATED)
+                .value()
         default:
-            return initialState
+            return state
     }
 }
 
@@ -156,8 +158,9 @@ function asyncStatusOperation(state, action, status) {
                 .set('thing.payload.status',  status)
                 .value()
         case ActionStatus.ERROR:
-            // TODO: invalidate the thing to make the page re-fetch
-            return state
+            return immutable(state)
+                .set('invalidationStatus', InvalidationStatus.INVALIDATED)
+                .value()
         default:
             return state
     }
