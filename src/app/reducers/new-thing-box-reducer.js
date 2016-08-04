@@ -1,4 +1,5 @@
 const {modelReducer, formReducer} = require('react-redux-form')
+const NewMessageTypes = require('../../common/enums/new-message-types')
 
 const initialState = {
     message: {
@@ -6,7 +7,8 @@ const initialState = {
         body: '',
         subject: ''
     },
-    ongoingAction: false
+    ongoingAction: false,
+    selectedOption: NewMessageTypes.THING
 }
 
 module.exports = {

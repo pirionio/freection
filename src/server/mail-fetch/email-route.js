@@ -2,7 +2,7 @@ const router = require('express').Router()
 
 const {chain} = require('lodash/core')
 
-const ImapConnectionPool = require('../shared/utils/imap/imap-connection-pool')
+const GoogleImapConnectionPool = require('../shared/utils/imap/google-imap-connection-pool')
 const {emailToDto} = require('../shared/transformers')
 const logger = require('../shared/utils/logger')
 
@@ -42,7 +42,7 @@ router.post('/markasread', (request, response) => {
 })
 
 function establishConnection(user) {
-    return ImapConnectionPool.getConnection(user)
+    return GoogleImapConnectionPool.getConnection(user)
 }
 
 function fetchUnreadMessages(user) {
@@ -50,7 +50,7 @@ function fetchUnreadMessages(user) {
         .then(connection => {
             return connection.getUnseenMessages(0, {includeBodies: true})
                 .then(emails => {
-                    ImapConnectionPool.releaseConnection(user, connection)
+                    GoogleImapConnectionPool.releaseConnection(user, connection)
                     return emails
                 })
         })
@@ -61,7 +61,7 @@ function fetchFullThread(user, emailThreadId) {
         .then(connection => {
             return connection.getThreadMessages(emailThreadId)
                 .then(emails => {
-                    ImapConnectionPool.releaseConnection(user, connection)
+                    GoogleImapConnectionPool.releaseConnection(user, connection)
                     return emails
                 })
         })
@@ -78,7 +78,7 @@ function prepareThread(emails) {
 function markAsRead(user, emailIds) {
     return establishConnection(user)
         .then(connection => {
-            return connection.markAsRead(emailIds).then(() => ImapConnectionPool.releaseConnection(user, connection))
+            return connection.markAsRead(emailIds).then(() => GoogleImapConnectionPool.releaseConnection(user, connection))
         })
 }
 

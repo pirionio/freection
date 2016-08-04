@@ -5,6 +5,7 @@ const {Form, Field} = require('react-redux-form')
 const classAutobind = require('class-autobind').default
 
 const ThingCommandActions = require('../../actions/thing-command-actions')
+const NewSelector = require('./NewSelector')
 
 class MessageBox extends Component {
     constructor(props) {
@@ -14,7 +15,7 @@ class MessageBox extends Component {
 
     send() {
         const {dispatch, newThingBox} = this.props
-        dispatch(ThingCommandActions.newThing(newThingBox.message))
+        dispatch(ThingCommandActions.newThing(newThingBox.message, newThingBox.selectedOption))
         this.messageTo.focus()
     }
 
@@ -24,6 +25,9 @@ class MessageBox extends Component {
         return (
             <div className="message-box">
                 <Form model="newThingBox" onSubmit={this.send}>
+                    <div className="new-selector-container">
+                        <NewSelector />
+                    </div>
                     <div className="text-section">
                         <Field model="newThingBox.message.to">
                             <input type="email" className="message-recipients" tabIndex="1" placeholder="to" autoFocus

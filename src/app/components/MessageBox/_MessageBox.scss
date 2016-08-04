@@ -1,14 +1,22 @@
 @import '../vars';
 
 .message-box {
+  $new-selector-width: 80px;
   $send-section-width: 60px;
 
   height: $message-box-height;
   margin-top: 15px;
 
+  .new-selector-container {
+    height: $message-box-height;
+    width: $new-selector-width;
+    float: left;
+    margin-right: 10px;
+  }
+
   .text-section {
     float: left;
-    width: calc(100% - #{$send-section-width} - 10px);
+    width: calc(100% - #{$send-section-width} - #{$new-selector-width} - 10px - 10px);
 
     .message-recipients {
       height: 25px;

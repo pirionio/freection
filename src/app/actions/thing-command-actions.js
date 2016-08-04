@@ -13,9 +13,9 @@ function comment(thingId, commentText) {
     }
 }
 
-function newThing(thing) {
+function newThing(thing, selectedOption) {
     return dispatch => {
-        const promise = dispatch(newThingAction(thing))
+        const promise = dispatch(newThingAction(thing, selectedOption))
         handleMessageBox(dispatch, promise, 'newThingBox')
     }
 }

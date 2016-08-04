@@ -5,28 +5,28 @@ const autobind = require('class-autobind').default
 const promisify = require('../promisify')
 const logger = require('../logger')
 
-const GoogleImapConnection = require('./google-imap-connection')
 const config = require('../../config/google-oauth')
-const {IMAP} = require('../../constants')
 
 const User = require('../../models/User')
 
-class ImapConnectionPool {
-    constructor() {
-        this.userConnectionPools = {}
+class ConnectionPool {
+    constructor(connectionCreator, options) {
+        this._connectionCreator = connectionCreator
+        this._options = options
+        this._userConnectionPools = {}
         autobind(this)
     }
 
     getConnection(user) {
         return new Promise((resolve, reject) => {
-            if (!this.userConnectionPools[user.id]) {
-                this.userConnectionPools[user.id] = {
+            if (!this._userConnectionPools[user.id]) {
+                this._userConnectionPools[user.id] = {
                     pool: this.createUserPool(user),
                     retries: 0
                 }
             }
 
-            const pool = this.userConnectionPools[user.id].pool
+            const pool = this._userConnectionPools[user.id].pool
             pool.acquire((error, connection) => {
                 if (error)
                     reject(error)
@@ -42,8 +42,11 @@ class ImapConnectionPool {
             create: callback => {
                 this.establishConnection(user).then(connection => callback(null, connection))
             },
+            destroy: connection => {
+                connection.close()
+            },
             max: 1,
-            idleTimeoutMillis: IMAP.CONNECTION_ALLOWED_IDLE_MILLIS
+            idleTimeoutMillis: this._options.maxAllowedIdleTime
         })
     }
 
@@ -54,8 +57,10 @@ class ImapConnectionPool {
     }
 
     createConnection(user, accessToken) {
-        const connection = new GoogleImapConnection(accessToken, user.email)
-        connection.onDisconnect(() => this.closeConnection(user, connection))
+        const connection = this._connectionCreator(user, accessToken)
+
+        connection.onDisconnect && connection.onDisconnect(() => this.closeConnection(user, connection))
+
         return connection.connect()
             .then(() => {
                 this.initRetries(user)
@@ -66,7 +71,7 @@ class ImapConnectionPool {
 
     retryConnecting(user, accessToken, connection, connectionError) {
         logger.error(`Error while creating IMAP connection for user ${user.email}`, connectionError)
-        if (this.getNumOfTries(user) >= IMAP.MAX_RETRIES) {
+        if (this.getNumOfTries(user) >= this._options.maxRetries) {
             throw connectionError
         }
 
@@ -90,48 +95,30 @@ class ImapConnectionPool {
     }
 
     getNumOfTries(user) {
-        return this.userConnectionPools[user.id] ? this.userConnectionPools[user.id].retries : 0
+        return this._userConnectionPools[user.id] ? this._userConnectionPools[user.id].retries : 0
     }
 
     addRetry(user) {
-        this.userConnectionPools[user.id].retries++
+        this._userConnectionPools[user.id].retries++
     }
 
     initRetries(user) {
-        this.userConnectionPools[user.id].retries = 0
+        this._userConnectionPools[user.id].retries = 0
     }
 
     releaseConnection(user, connection) {
-        const userPool = this.userConnectionPools[user.id]
+        const userPool = this._userConnectionPools[user.id]
         if (userPool && userPool.pool) {
             userPool.pool.release(connection)
         }
     }
 
     closeConnection(user, connection) {
-        const userPool = this.userConnectionPools[user.id]
+        const userPool = this._userConnectionPools[user.id]
         if (userPool && userPool.pool) {
             userPool.pool.destroy(connection)
         }
     }
 }
 
-const pool = new ImapConnectionPool()
-
-function getConnection(user) {
-    return pool.getConnection(user)
-}
-
-function closeConnection(user) {
-    return pool.closeConnection(user)
-}
-
-function releaseConnection(user, connection) {
-    return pool.releaseConnection(user, connection)
-}
-
-module.exports = {
-    getConnection,
-    closeConnection,
-    releaseConnection
-}
+module.exports = ConnectionPool

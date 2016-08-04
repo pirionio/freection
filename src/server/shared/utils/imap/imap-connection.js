@@ -8,9 +8,9 @@ const promisify = require('../promisify')
 const {IMAP} = require('../../constants')
 
 class ImapConnection {
-    constructor(type, config) {
-        this.type = type
-        this._connection = new imap(config)
+    constructor(type, options) {
+        this._type = type
+        this._connection = new imap(options)
         this._onDisconnect = null
 
         promisify(this._connection, ['openBox', 'search', 'setFlags'])
@@ -20,7 +20,7 @@ class ImapConnection {
     connect() {
         return new Promise((resolve, reject) => {
             this._connection.once('ready', () => {
-                this._connection.openBoxAsync(IMAP[this.type].ALL_MAILBOX)
+                this._connection.openBoxAsync(IMAP[this._type].ALL_MAILBOX)
                     .then(() => resolve(this))
                     .catch(error => reject(error))
             })
@@ -33,6 +33,10 @@ class ImapConnection {
 
             this._connection.connect()
         })
+    }
+
+    close() {
+        this._connection.closeBox()
     }
 
     onDisconnect(callback) {
@@ -105,7 +109,7 @@ class ImapConnection {
     }
 
     getUnseenMessages(since, options = {}) {
-        const criteria = compact(['UNSEEN', [IMAP[this.type].LABEL_FIELD, 'Inbox'], since > 0 ? ['UID', ` ${since+1}:*`] : null])
+        const criteria = compact(['UNSEEN', [IMAP[this._type].LABEL_FIELD, 'Inbox'], since > 0 ? ['UID', ` ${since+1}:*`] : null])
         return this._connection.searchAsync(criteria)
             .then(results => this.fetchByUids(results, options))
             .catch(error => {
@@ -115,7 +119,7 @@ class ImapConnection {
     }
     
     getThreadMessages(threadId) {
-        const criteria = ['ALL', [IMAP[this.type].THREAD_FIELD, threadId]]
+        const criteria = ['ALL', [IMAP[this._type].THREAD_FIELD, threadId]]
         return this._connection.searchAsync(criteria)
             .then(results => {
                 return this.fetchByUids(results, {includeBodies: true})
@@ -127,7 +131,7 @@ class ImapConnection {
     }
 
     markAsRead(emailIds) {
-        return this._connection.setFlagsAsync(emailIds, IMAP[this.type].SEEN_FLAG)
+        return this._connection.setFlagsAsync(emailIds, IMAP[this._type].SEEN_FLAG)
             .catch(error => {
                 logger.error('Could not mark emails as read', error)
                 throw error

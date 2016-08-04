@@ -1,9 +1,9 @@
 const ImapConnection = require('./imap-connection')
 
 class GoogleImapConnection extends ImapConnection {
-    constructor(accessToken, username) {
+    constructor(user, accessToken) {
         const char1 = String.fromCharCode(1)
-        const xoauth2 = `user=${username}${char1}auth=Bearer ${accessToken}${char1}${char1}`
+        const xoauth2 = `user=${user.email}${char1}auth=Bearer ${accessToken}${char1}${char1}`
 
         super('google', {
             host: 'imap.gmail.com',

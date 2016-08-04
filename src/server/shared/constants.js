@@ -9,4 +9,9 @@ const IMAP = {
     CONNECTION_ALLOWED_IDLE_MILLIS: 1000 * 60 * 30
 }
 
-module.exports = {IMAP}
+const SMTP = {
+    MAX_RETRIES: 2,
+    CONNECTION_ALLOWED_IDLE_MILLIS: 1000 * 60 * 30
+}
+
+module.exports = {IMAP, SMTP}

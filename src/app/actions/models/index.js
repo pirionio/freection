@@ -8,5 +8,6 @@ module.exports = [
     require('./email'),
     require('./email-page'),
     require('./email-command'),
-    require('./github')
+    require('./github'),
+    require('./message-box')
 ]
