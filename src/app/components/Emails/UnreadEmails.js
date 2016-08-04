@@ -6,7 +6,7 @@ const classAutobind = require('class-autobind').default
 
 const {chain} = require('lodash/core')
 const groupBy = require('lodash/groupBy')
-const sortBy = require('lodash/sortBy')
+const orderBy = require('lodash/orderBy')
 const forOwn = require('lodash/forOwn')
 const merge = require('lodash/merge')
 const clone = require('lodash/clone')
@@ -50,7 +50,7 @@ class UnreadEmails extends Component {
             }))
         })
 
-        return sortBy(emailRows, 'createdAt').map(email =>
+        return orderBy(emailRows, 'createdAt', 'desc').map(email =>
             <EmailPreviewItem email={email} currentUser={this.props.currentUser} key={email.id} />
         )
     }

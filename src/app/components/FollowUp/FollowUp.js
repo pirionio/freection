@@ -2,7 +2,7 @@ const React = require('react')
 const {Component, PropTypes} = React
 const DocumentTitle = require('react-document-title')
 const {connect} = require('react-redux')
-const sortBy = require('lodash/sortBy')
+const orderBy = require('lodash/orderBy')
 const classAutobind = require('class-autobind').default
 
 const PreviewsContainer = require('../Preview/PreviewsContainer')
@@ -21,7 +21,7 @@ class FollowUp extends Component {
     }
 
     getThingsToFollowUp() {
-        return sortBy(this.props.things, 'createdAt').map(thing =>
+        return orderBy(this.props.things, 'createdAt', 'desc').map(thing =>
             <FollowUpPreviewItem thing={thing} key={thing.id} />)
     }
 

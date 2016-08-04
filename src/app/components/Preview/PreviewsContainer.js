@@ -1,6 +1,5 @@
 const React = require('react')
 const {Component, PropTypes} = React
-const ReactDOM = require('react-dom')
 const Delay = require('react-delay')
 const {GeneralConstants, InvalidationStatus} = require('../../constants')
 
@@ -9,21 +8,9 @@ class PreviewsContainer extends Component {
         this.props.fetchPreviews()
     }
 
-    componentWillUpdate () {
-        const node = ReactDOM.findDOMNode(this)
-        this.shouldScrollBottom = (node.scrollTop + node.offsetHeight) === node.scrollHeight
-    }
-
     componentWillReceiveProps() {
         // Will fetch messages only if needed
         this.props.fetchPreviews()
-    }
-
-    componentDidUpdate () {
-        if (this.shouldScrollBottom) {
-            let node = ReactDOM.findDOMNode(this)
-            node.scrollTop = node.scrollHeight
-        }
     }
 
     render () {

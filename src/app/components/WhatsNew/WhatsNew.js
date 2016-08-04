@@ -10,7 +10,7 @@ const first = require('lodash/first')
 const last = require('lodash/last')
 const merge = require('lodash/merge')
 const reject = require('lodash/reject')
-const sortBy = require('lodash/sortBy')
+const orderBy = require('lodash/orderBy')
 const forOwn = require('lodash/forOwn')
 const clone = require('lodash/clone')
 const {chain} = require('lodash/core')
@@ -75,7 +75,7 @@ class WhatsNew extends Component {
             }))
         })
 
-        return sortBy(notificationsToShow, 'createdAt').map(notification =>
+        return orderBy(notificationsToShow, 'createdAt', 'desc').map(notification =>
             <NotificationPreviewItem notification={notification} key={notification.id} />)
     }
 
