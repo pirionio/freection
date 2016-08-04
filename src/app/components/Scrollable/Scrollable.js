@@ -1,6 +1,8 @@
 const ReactDOM = require('react-dom')
 const React = require('react')
 const {Component, PropTypes} = React
+const keys = require('lodash/keys')
+const last = require('lodash/last')
 
 class Scrollable extends Component {
     componentWillUpdate () {
@@ -10,8 +12,7 @@ class Scrollable extends Component {
 
     componentDidUpdate () {
         if (this.shouldScrollBottom && this.props.stickToBottom) {
-            let node = ReactDOM.findDOMNode(this)
-            node.scrollTop = node.scrollHeight
+            this.scrollToBottom()
         }
     }
 
@@ -31,8 +32,8 @@ class Scrollable extends Component {
     }
 
     scrollToBottom() {
-        const container = ReactDOM.findDOMNode(this)
-        container.scrollTop = container.scrollHeight
+        const lastId = last(keys(this.refs))
+        this.scrollTo(lastId)
     }
 
     render() {
