@@ -52,10 +52,19 @@
         font-size: 18px;
         font-weight: bold;
         cursor: pointer;
-      }
+        text-decoration: none;
+        
+        &:visited {
+          color: #000;
+        }
 
-      &:hover {
-        text-decoration: underline;
+        &:link {
+          color: #000;
+        }
+
+        &:hover {
+          text-decoration: underline;
+        }
       }
     }
 

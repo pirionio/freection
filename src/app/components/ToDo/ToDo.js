@@ -8,6 +8,8 @@ const classAutobind = require('class-autobind').default
 const PreviewsContainer = require('../Preview/PreviewsContainer')
 const ToDoActions = require('../../actions/to-do-actions')
 const ToDoPreviewItem = require('./ToDoPreviewItem')
+const GithubPreviewItem = require('./GithubPreviewItem')
+const EntityTypes = require('../../../common/enums/entity-types')
 
 class ToDo extends Component {
     constructor(props) {
@@ -21,8 +23,11 @@ class ToDo extends Component {
     }
 
     getThingsToDo() {
-        return orderBy(this.props.things, 'createdAt', 'desc').map(thing =>
-            <ToDoPreviewItem thing={thing} key={thing.id} />)
+        return orderBy(this.props.things, 'createdAt', 'desc').map(thing => {
+            if (thing.type.key === EntityTypes.GITHUB.key) {
+                return <GithubPreviewItem thing={thing} key={thing.id} />
+            } else
+                return <ToDoPreviewItem thing={thing} key={thing.id} />})
     }
 
     getTitle() {

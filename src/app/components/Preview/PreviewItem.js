@@ -51,7 +51,6 @@ class PreviewItem extends Component {
 
     render() {
         const statusPreview = this.getStatus()
-        console.log(statusPreview)
 
         return (
             <div className="preview-item">

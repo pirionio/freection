@@ -17,8 +17,10 @@ const {chain} = require('lodash/core')
 
 const PreviewsContainer = require('../Preview/PreviewsContainer')
 const NotificationPreviewItem = require('./NotificationPreviewItem')
+const GithubPreviewItem = require('./GithubPreviewItem')
 const WhatsNewActions = require('../../actions/whats-new-actions')
 const EventTypes = require('../../../common/enums/event-types')
+const EntityTypes = require('../../../common/enums/entity-types')
 
 class WhatsNew extends Component {
     constructor(props) {
@@ -75,8 +77,12 @@ class WhatsNew extends Component {
             }))
         })
 
-        return orderBy(notificationsToShow, 'createdAt', 'desc').map(notification =>
-            <NotificationPreviewItem notification={notification} key={notification.id} />)
+        return orderBy(notificationsToShow, 'createdAt', 'desc').map(notification => {
+            if (notification.thing.type.key === EntityTypes.GITHUB.key) {
+                return <GithubPreviewItem notification={notification} key={notification.id} />
+            } else
+                return <NotificationPreviewItem notification={notification} key={notification.id} /> })
+
     }
 
     getTitle() {

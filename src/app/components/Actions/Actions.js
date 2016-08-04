@@ -9,7 +9,7 @@ const EventTypes = require('../../../common/enums/event-types')
 function DoAction(thing, currentUser, disabled) {
     return {
         component: <Action label="Do" doFunc={ThingCommandActions.doThing} item={thing} disabled={disabled} key="action-Do" />,
-        show: currentUser.id === thing.to.id &&
+        show: currentUser && currentUser.id === thing.to.id &&
             [ThingStatus.NEW.key, ThingStatus.REOPENED.key].includes(thing.payload.status)
     }
 }
@@ -25,7 +25,7 @@ function DoneAction(thing, currentUser, disabled) {
 function DismissAction(thing, currentUser, disabled) {
     return {
         component: <Action label="Dismiss" doFunc={ThingCommandActions.dismiss} item={thing} disabled={disabled} key="action-Dismiss" />,
-        show: currentUser.id === thing.to.id &&
+        show: currentUser && currentUser.id === thing.to.id &&
             [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status) &&
             !thing.isSelf
     }
@@ -34,7 +34,7 @@ function DismissAction(thing, currentUser, disabled) {
 function CloseAction(thing, currentUser, disabled) {
     return {
         component: <Action label="Close" doFunc={ThingCommandActions.close} item={thing} disabled={disabled} key="action-Close" />,
-        show: currentUser.id === thing.creator.id &&
+        show: currentUser && currentUser.id === thing.creator.id &&
             [ThingStatus.DONE.key, ThingStatus.DISMISS.key].includes(thing.payload.status)
     }
 }
