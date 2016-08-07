@@ -3,6 +3,7 @@ const router = require('express').Router()
 const {chain} = require('lodash/core')
 
 const GoogleImapConnectionPool = require('../shared/utils/imap/google-imap-connection-pool')
+const EmailService = require('../shared/application/email-service')
 const {emailToDto} = require('../shared/transformers')
 const logger = require('../shared/utils/logger')
 
@@ -24,6 +25,20 @@ router.get('/:emailThreadId', (request, response) => {
         .then(thread => response.json(thread))
         .catch(error => {
             const message = `Error while fetching thread ${emailThreadId}`
+            logger.error(message, error)
+            response.status(500).send(message)
+        })
+})
+
+router.post('/:emailThreadId/do', (request, response) => {
+    const {user} = request
+    const {emailThreadId} = request.params
+
+    fetchFullThread(user, emailThreadId)
+        .then(thread => EmailService.doEmail(user, thread))
+        .then(() => response.json())
+        .catch(error => {
+            const message = `Error while doing thread ${emailThreadId}`
             logger.error(message, error)
             response.status(500).send(message)
         })

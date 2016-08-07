@@ -10,5 +10,9 @@ module.exports = {
     GITHUB: {
         key: 'GITHUB',
         label: 'Github'
-    }
+    },
+    EMAIL_THING: {
+        key: 'EMAIL_THING',
+        label: 'Email thing'
+    },
 }

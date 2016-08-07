@@ -57,13 +57,14 @@ function createCanceled(creator, thing, getShowNewList) {
     })
 }
 
-function createComment(creator, thing, getShowNewList, commentText) {
+function createComment(creator, thing, getShowNewList, commentText, commentHtml) {
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.COMMENT.key,
         createdAt: new Date(),
         creator,
         payload: {
+            html: commentHtml,
             text: commentText,
             readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
         },

@@ -76,8 +76,7 @@ function emailUserToDTO(user) {
 
     return {
         id: email,
-        type: UserTypes.EMAIL,
-        email: email,
+        type: UserTypes.EMAIL.key,
         payload: {
             email: email,
         },

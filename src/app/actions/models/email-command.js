@@ -13,6 +13,12 @@ module.exports = {
             }
         },
         {
+            name: 'do email',
+            params: ['threadId'],
+            type: 'post',
+            path: '/emails/api/${threadId}/do'
+        },
+        {
             name: 'mark as read',
             params: ['emailIds'],
             type: 'post',

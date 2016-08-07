@@ -27,6 +27,27 @@ function newEmail(email) {
     }
 }
 
+function doEmail(threadId) {
+    return dispatch => {
+        dispatch({
+            type: EmailCommandActionsTypes.DO_EMAIL, 
+            status: ActionStatus.START,
+            threadId
+        })
+        return ResourceUtil.post(`/emails/api/${threadId}/do`)
+            .then(result => dispatch({
+                type: EmailCommandActionsTypes.DO_EMAIL, 
+                status: ActionStatus.COMPLETE,
+                threadId
+            }))
+            .catch(() => dispatch({
+                type: EmailCommandActionsTypes.DO_EMAIL, 
+                status: ActionStatus.ERROR,
+                threadId
+            }))
+    }
+}
+
 function markAsRead(emailIds) {
     return dispatch => {
         dispatch({
@@ -52,5 +73,6 @@ function markAsRead(emailIds) {
 
 module.exports = {
     newEmail,
+    doEmail,
     markAsRead
 }
