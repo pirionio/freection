@@ -51,7 +51,7 @@ class Thing extends Component {
     getThingReferencer() {
         const {thing, currentUser} = this.props
 
-        if (thing.creator.email === currentUser.email) {
+        if (thing.creator.id === currentUser.id) {
             return thing.to.email
         }
 
