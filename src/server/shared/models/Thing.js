@@ -31,9 +31,7 @@ Thing.ensureIndex('githubIssueId', function(doc) {
 })
 
 Thing.defineStatic('getFullThing', function(thingId) {
-    return this.get(thingId).getJoin({to: true, creator: true, events: {
-        _apply: sequence => sequence.getJoin({creator: true})
-    }}).run()
+    return this.get(thingId).getJoin({to: true, creator: true, events: true}).run()
 })
 
 Thing.defineStatic('getUserFollowUps', function(userId) {

@@ -3,6 +3,7 @@ const {pick} = require('lodash/core')
 
 const EntityTypes = require('../../../common/enums/entity-types')
 const EventTypes = require('../../../common/enums/event-types')
+const UserTypes = require('../../../common/enums/user-types')
 
 function thingToDto(thing, user, {includeEvents = true} = {}) {
 
@@ -30,7 +31,7 @@ function eventToDto(event, user, {includeThing = true} = {}) {
         payload: event.eventType === EventTypes.COMMENT.key || event.eventType === EventTypes.PING.key ?
             commentPayloadToDto(event.payload, user) : event.payload,
         eventType: EventTypes[event.eventType],
-        creator: event.creator && userToDto(event.creator),
+        creator: event.creator,
         showNew: event.showNewList.includes(user.id)
     }
 }
@@ -55,14 +56,8 @@ function emailToDto(email) {
     return {
         id: email.header.uid,
         createdAt: email.header.date,
-        creator: {
-            email: `${email.header.from.username }@${email.header.from.organization}`
-        },
-        to: email.header.to.map(to => {
-            return {
-                email: `${to.username}@${to.organization}`
-            }
-        }),
+        creator: emailUserToDTO(email.header.from),
+        to: email.header.to.map(to => emailUserToDTO(to)),
         subject: email.header.subject,
         payload: {
             text: parseReply(email.body),
@@ -73,6 +68,20 @@ function emailToDto(email) {
             isRead: true
         },
         type: EntityTypes.EMAIL
+    }
+}
+
+function emailUserToDTO(user) {
+    const email = `${user.username }@${user.organization}`
+
+    return {
+        id: email,
+        type: UserTypes.EMAIL,
+        email: email,
+        payload: {
+            email: email,
+        },
+        displayName: user.name
     }
 }
 

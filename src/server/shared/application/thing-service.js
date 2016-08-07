@@ -6,6 +6,7 @@ const {eventToDto, thingToDto} = require('../transformers')
 const ThingStatus = require('../../../common/enums/thing-status')
 const EntityTypes = require('../../../common/enums/entity-types')
 const EventTypes = require('../../../common/enums/event-types')
+const {userToCreator} = require('./creator-creator')
 const logger = require('../utils/logger')
 
 function getWhatsNew(user) {
@@ -48,23 +49,26 @@ function newThing(user, to, body, subject) {
     return User.getUserByEmail(to)
         .then(toUser => saveNewThing(body, subject, user, toUser))
         .then(thing => {
-            return EventCreator.createCreated(user, thing, getShowNewList)
+            const creator = userToCreator(user)
+
+            return EventCreator.createCreated(creator, thing, getShowNewList)
                 .then(() => {
                     //  if thing assigned to myself let's accept it immediately
                     if (thing.isSelf()) {
-                        return EventCreator.createAccepted(user, thing, getShowNewList)
+                        return EventCreator.createAccepted(creator, thing, getShowNewList)
                     }
                 })
         })
 }
 
 function doThing(user, thingId) {
+    const creator = userToCreator(user)
 
     return Thing.get(thingId).run()
         .then(validateType)
         .then(thing => validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key]))
         .then(thing => performDoThing(thing, user))
-        .then(thing => EventCreator.createAccepted(user, thing, getShowNewList))
+        .then(thing => EventCreator.createAccepted(creator, thing, getShowNewList))
         .then(() => Event.discardUserEvents(thingId, user.id))
         .catch(error => {
             logger.error(`error while setting user ${user.email} as doer of thing ${thingId}:`, error)
@@ -74,13 +78,15 @@ function doThing(user, thingId) {
 }
 
 function dismiss(user, thingId) {
+    const creator = userToCreator(user)
+
     return Thing.get(thingId).run()
         .then(validateType)
         .then(thing => validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key ]))
         .then(thing => {
             return performDismiss(thing, user)
                 .then(() => Event.discardUserEvents(thingId, user.id))
-                .then(() => EventCreator.createDismissed(user, thing, getShowNewList))
+                .then(() => EventCreator.createDismissed(creator, thing, getShowNewList))
         })
         .catch(error => {
             logger.error(`error while dismissing thing ${thingId} by user ${user.email}`, error)
@@ -89,11 +95,13 @@ function dismiss(user, thingId) {
 }
 
 function close(user, thingId) {
+    const creator = userToCreator(user)
+
     return Thing.get(thingId).run()
         .then(validateType)
         .then(thing => validateStatus(thing, [ThingStatus.DONE.key, ThingStatus.DISMISS.key]))
         .then(thing => performClose(thing, user))
-        .then(thing => EventCreator.createClosed(user, thing, getShowNewList))
+        .then(thing => EventCreator.createClosed(creator, thing, getShowNewList))
         .then(() => Event.discardUserEvents(thingId, user.id))
         .catch(error => {
             logger.error(`error while closing thing ${thingId} by user ${user.email}:`, error)
@@ -102,12 +110,14 @@ function close(user, thingId) {
 }
 
 function cancel(user, thingId) {
+    const creator = userToCreator(user)
+
     return Thing.get(thingId).run()
         .then(thing => validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key]))
         .then(thing => {
             return performCancel(thing, user)
                 .then(() => Event.discardThingEvents(thingId, user.id))
-                .then(() => EventCreator.createCanceled(user, thing, getShowNewList))
+                .then(() => EventCreator.createCanceled(creator, thing, getShowNewList))
         })
         .catch(error => {
             logger.error(`error while canceling thing ${thingId} by user ${user.email}:`, error)
@@ -116,11 +126,13 @@ function cancel(user, thingId) {
 }
 
 function cancelAck(user, thingId) {
+    const creator = userToCreator(user)
+
     return Thing.get(thingId).run()
         .then(thing => {
             return performCancelAck(thing, user)
                 .then(() => Event.discardUserEventsByType(thingId, EventTypes.CANCELED.key, user.id))
-                .then(() => EventCreator.createCancelAck(user, thing, getShowNewList))
+                .then(() => EventCreator.createCancelAck(creator, thing, getShowNewList))
         })
         .catch(error => {
             logger.error(`error while accepting cancellation of thing ${thingId} by user ${user.email}:`, error)
@@ -129,15 +141,17 @@ function cancelAck(user, thingId) {
 }
 
 function markAsDone(user, thingId) {
+    const creator = userToCreator(user)
+
     return Thing.get(thingId).run()
         .then(thing => validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key]))
         .then(thing => {
             return performMarkAsDone(thing, user)
                 .then(() => Event.discardUserEvents(thingId, user.id))
-                .then(() => EventCreator.createDone(user, thing, getShowNewList))
+                .then(() => EventCreator.createDone(creator, thing, getShowNewList))
                 .then(() => {
                     if (thing.isSelf()) {
-                        return EventCreator.createClosed(user, thing, getShowNewList)
+                        return EventCreator.createClosed(creator, thing, getShowNewList)
                     }
                 })
         })
@@ -148,12 +162,14 @@ function markAsDone(user, thingId) {
 }
 
 function sendBack(user, thingId) {
+    const creator = userToCreator(user)
+
     return Thing.get(thingId).run()
         .then(thing => validateStatus(thing, [ThingStatus.DONE.key, ThingStatus.DISMISS.key]))
         .then(thing => {
             return performSendBack(thing)
                 .then(() => Event.discardUserEvents(thingId, user.id))
-                .then(() => EventCreator.createSentBack(user, thing, getShowNewList))
+                .then(() => EventCreator.createSentBack(creator, thing, getShowNewList))
         })
         .catch(error => {
             logger.error(`Error while sending thing ${thingId} back by user ${user.email}:`, error)
@@ -162,9 +178,11 @@ function sendBack(user, thingId) {
 }
 
 function ping(user, thingId) {
+    const creator = userToCreator(user)
+
     return Thing.get(thingId).run()
         .then(thing => validateStatus(thing, ThingStatus.INPROGRESS.key))
-        .then(thing => EventCreator.createPing(user, thing, getShowNewList))
+        .then(thing => EventCreator.createPing(creator, thing, getShowNewList))
         .then(event => Event.getFullEvent(event.id))
         .then(event => eventToDto(event, user, {includeThing: false}))
         .catch(error => {
@@ -174,8 +192,10 @@ function ping(user, thingId) {
 }
 
 function comment(user, thingId, commentText) {
+    const creator = userToCreator(user)
+
     return Thing.get(thingId).run()
-        .then(thing => EventCreator.createComment(user, thing, getShowNewList, commentText))
+        .then(thing => EventCreator.createComment(creator, thing, getShowNewList, commentText))
         .then(event => Event.getFullEvent(event.id))
         .then(event => eventToDto(event, user, {includeThing: false}))
         .catch(error => {

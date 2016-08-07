@@ -5,6 +5,7 @@ const GithubThingService = require('../shared/application/github-thing-service')
 const ThingStatus = require('../../common/enums/thing-status')
 const {User, Thing} = require('./../shared/models')
 const logger = require('../shared/utils/logger')
+const UserTypes = require('../../common/enums/user-types')
 
 router.post('/', function(request, response) {
     const eventType = request.get('X-GitHub-Event')
@@ -38,13 +39,24 @@ function handleClosed(payload) {
 
     Thing.getThingsByGithubIssueId(id)
         .then(things => {
+
+            const creator = {
+                id: payload.sender.login,
+                type: UserTypes.GITHUB.key,
+                displayName: payload.sender.login,
+                payload: {
+                    avatarUrl: payload.sender.avatar_url,
+                    url: payload.sender.html_url
+                }
+            }
+
             things.forEach(thing => {
                 if (thing.payload.status === ThingStatus.INPROGRESS.key) {
                     logger.info(`marking thing as done by github ${fullName}/${number}`)
-                    GithubThingService.markAsDone(thing)
+                    GithubThingService.markAsDone(creator, thing)
                 } else if ((thing.payload.status === ThingStatus.NEW.key)) {
                     logger.info(`closing thing by github ${fullName}/${number}`)
-                    GithubThingService.closeByGithub(thing)
+                    GithubThingService.closeByGithub(creator, thing)
                 }
             })
         })
@@ -68,18 +80,16 @@ function handleAssigned(payload) {
                     logger.info(`creating new thing for issue ${fullName}/${number}`)
 
                     const creator = {
-                        username: payload.issue.user.login,
-                        avatarUrl: payload.issue.user.avatar_url,
-                        url: payload.issue.user.html_url
+                        id: payload.issue.user.login,
+                        type: UserTypes.GITHUB.key,
+                        displayName: payload.issue.user.login,
+                        payload: {
+                            avatarUrl: payload.issue.user.avatar_url,
+                            url: payload.issue.user.html_url
+                        }
                     }
 
-                    const assigner = {
-                        username: payload.sender.login,
-                        avatarUrl: payload.sender.avatar_url,
-                        url: payload.sender.html_url
-                    }
-
-                    return GithubThingService.newThing(creator, assigner, user, title, body, id, number, html_url)
+                    return GithubThingService.newThing(creator, user, title, body, id, number, html_url)
                 })
         })
         .catch(error => {

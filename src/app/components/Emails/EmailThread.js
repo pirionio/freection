@@ -38,7 +38,7 @@ class EmailThread extends Component {
 
     getThingReferencer() {
         const {thread} = this.props
-        return thread.creator.email
+        return thread.creator.displayName
     }
 
     getTitle() {

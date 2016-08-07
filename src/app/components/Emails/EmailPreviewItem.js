@@ -11,7 +11,7 @@ const EmailPreviewItem = ({email, dispatch}) => {
     return (
         <PreviewItem>
             <PreviewItemUser>
-                <span>{email.creator.email}</span>
+                <span>{email.creator.displayName}</span>
             </PreviewItemUser>
             <PreviewItemTitle>
                 <a onClick={() => dispatch(EmailPageActions.show(email.entityId))}>{email.subject}</a>

@@ -10,7 +10,6 @@ Thing.belongsTo(User, 'to', 'toUserId', 'id')
 Thing.hasMany(Event, 'events', 'id', 'thingId')
 
 Event.belongsTo(Thing, 'thing', 'thingId', 'id')
-Event.belongsTo(User, 'creator', 'creatorUserId', 'id')
 
 function uuid() {
     return thinky.r.uuid().run()

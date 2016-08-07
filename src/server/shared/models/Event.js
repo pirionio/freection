@@ -6,7 +6,12 @@ const User = require('./User')
 const Event = thinky.createModel('Event', {
     id: type.string(),
     thingId: type.string().required(),
-    creatorUserId: type.string().required(),
+    creator: {
+        id: type.string(),
+        type: type.string().required(),
+        displayName: type.string().required(),
+        payload: type.object()
+    },
     eventType: type.string().required(),
     createdAt: type.date().required(),
     payload: type.object(),
@@ -24,7 +29,6 @@ Event.ensureIndex('whatsnew', function(doc) {
 
 Event.defineStatic('getFullEvent', function(eventId) {
     return this.get(eventId).getJoin({
-        creator: true,
         thing: {
             creator:true,
             to: true
@@ -33,12 +37,12 @@ Event.defineStatic('getFullEvent', function(eventId) {
 })
 
 Event.defineStatic('getAllChanges', function() {
-    return this.getJoin({creator: true, thing: true}).changes()
+    return this.getJoin({thing: true}).changes()
 })
 
 Event.defineStatic('getWhatsNew', function(userId) {
     return this.getAll(userId, {index: 'whatsnew'}).
-        getJoin({thing: {creator: true, to: true}, creator: true}).
+        getJoin({thing: {to: true}}).
         run()
     })
 

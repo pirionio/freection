@@ -69,7 +69,7 @@ class Comment extends Component {
         <VisibilitySensor onChange={this.onVisibilityChange} partialVisibility={true}>
             <div className={containerClassname}>
                 <div className="comment-creator">
-                    {comment.creator.email} :
+                    {comment.creator.displayName} :
                 </div>
                 <div className="comment-message">
                     {this.getCommentText()}

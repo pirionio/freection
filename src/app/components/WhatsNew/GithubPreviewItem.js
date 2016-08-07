@@ -10,7 +10,7 @@ const GithubPreviewItem = ({notification}) => {
     return (
         <PreviewItem>
             <PreviewItemUser>
-                <span>{notification.thing.payload.creator.username}</span>
+                <span>{notification.creator.displayName}</span>
             </PreviewItemUser>
             <PreviewItemTitle>
                 <GithubPreviewTitle thing={notification.thing} />

@@ -33,7 +33,7 @@ class NotificationPreviewItem extends Component {
 
         return (<PreviewItem>
             <PreviewItemUser>
-                <span>{notification.creator.email}</span>
+                <span>{notification.creator.displayName}</span>
             </PreviewItemUser>
             <PreviewItemTitle>
                 <NotificationPreviewTitle notification={notification} />
