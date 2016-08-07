@@ -9,7 +9,7 @@ const logger = require('../utils/logger')
 const {userToAddress} = require('./address-creator')
 
 function newThing(creator, toUser, subject, body, id, number, url) {
-    saveNewThing(creator, toUser, subject, body, id, number, url)
+    saveNewThing(creator, userToAddress(toUser), subject, body, id, number, url)
         .then(thing => {
             return EventCreator.createCreated(creator, thing, getShowNewList)
         })
@@ -45,8 +45,8 @@ function markAsDone(creator, thing) {
 function closeByGithub(creator, thing) {
     validateStatus(thing, ThingStatus.NEW.key)
 
-    return performClose(thing, {id: thing.toUserId})
-        .then(() => Event.discardUserEvents(thing.id, thing.toUserId))
+    return performClose(thing)
+        .then(() => Event.discardThingEvents(thing.id))
         .then(() => EventCreator.createClosed(creator, thing, getShowNewList))
         .catch(error => {
             logger.error(`Error while closing thing ${thing.id} as done by github:`, error)
@@ -61,7 +61,7 @@ function dismiss(user, thingId) {
         .then(validateType)
         .then(thing => validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key]))
         .then(thing => {
-            return performDismiss(thing, user)
+            return performDismiss(thing)
                 .then(() => Event.discardUserEvents(thingId, user.id))
                 .then(() => EventCreator.createDismissed(creator, thing, getShowNewList))
                 .then(() => EventCreator.createClosed(creator, thing, getShowNewList))
@@ -78,7 +78,7 @@ function close(user, thingId) {
     return Thing.get(thingId).run()
         .then(validateType)
         .then(thing => validateStatus(thing, ThingStatus.DONE.key))
-        .then(thing => performClose(thing, user))
+        .then(thing => performClose(thing))
         .then(thing => EventCreator.createClosed(creator, thing, getShowNewList))
         .then(() => Event.discardUserEvents(thingId, user.id))
         .catch(error => {
@@ -88,12 +88,11 @@ function close(user, thingId) {
 }
 
 function saveNewThing(creator, to, subject, body, id, number, url) {
-    const toUserId = to.id
 
     return Thing.save({
         createdAt: new Date(),
-        creatorUserId: null,
-        toUserId,
+        creator,
+        to,
         body,
         subject,
         followUpers: [],
@@ -101,7 +100,6 @@ function saveNewThing(creator, to, subject, body, id, number, url) {
         type: EntityTypes.GITHUB.key,
         payload: {
             status: ThingStatus.NEW.key,
-            creator,
             id,
             number,
             url
@@ -115,14 +113,14 @@ function performDoThing(thing, user) {
     return thing.save()
 }
 
-function performDismiss(thing, user) {
-    remove(thing.doers, doerId => doerId === user.id)
+function performDismiss(thing) {
+    this.doers = []
     thing.payload.status = ThingStatus.DISMISS.key
     return thing.save()
 }
 
-function performClose(thing, user) {
-    remove(thing.doers, doerId => doerId === user.id)
+function performClose(thing) {
+    this.doers = []
     thing.payload.status = ThingStatus.CLOSE.key
     return thing.save()
 }
@@ -137,7 +135,7 @@ function getShowNewList(user, thing, eventType) {
     switch (eventType) {
         case EventTypes.CREATED.key:
         case EventTypes.DONE.key:
-            return [thing.toUserId]
+            return [thing.to.id]
         case EventTypes.ACCEPTED.key:
         case EventTypes.DISMISSED.key:
         case EventTypes.CLOSED.key:

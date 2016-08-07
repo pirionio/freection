@@ -52,10 +52,10 @@ class Thing extends Component {
         const {thing, currentUser} = this.props
 
         if (thing.creator.id === currentUser.id) {
-            return thing.to.email
+            return thing.to.displayName
         }
 
-        return thing.creator.email
+        return thing.creator.displayName
     }
 
     getTitle() {

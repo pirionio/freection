@@ -10,7 +10,7 @@ const GithubTodoPreviewItem = ({thing}) => {
     return (
         <PreviewItem>
             <PreviewItemUser>
-                <span>{thing.payload.creator.displayName}</span>
+                <span>{thing.creator.displayName}</span>
             </PreviewItemUser>
             <PreviewItemTitle>
                 <GithubPreviewTitle thing={thing} />

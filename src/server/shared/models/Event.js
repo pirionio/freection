@@ -29,10 +29,7 @@ Event.ensureIndex('whatsnew', function(doc) {
 
 Event.defineStatic('getFullEvent', function(eventId) {
     return this.get(eventId).getJoin({
-        thing: {
-            creator:true,
-            to: true
-        }
+        thing: true
     }).run()
 })
 
@@ -42,7 +39,7 @@ Event.defineStatic('getAllChanges', function() {
 
 Event.defineStatic('getWhatsNew', function(userId) {
     return this.getAll(userId, {index: 'whatsnew'}).
-        getJoin({thing: {to: true}}).
+        getJoin({thing: true}).
         run()
     })
 

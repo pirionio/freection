@@ -8,8 +8,18 @@ const EntityTypes = require('../../../common/enums/entity-types')
 const Thing = thinky.createModel('Thing', {
     id: type.string(),
     createdAt: type.date().required(),
-    creatorUserId: type.string().required(),
-    toUserId: type.string().required(),
+    creator: {
+        id: type.string(),
+        type: type.string().required(),
+        displayName: type.string().required(),
+        payload: type.object()
+    },
+    to: {
+        id: type.string(),
+        type: type.string().required(),
+        displayName: type.string().required(),
+        payload: type.object()
+    },
     body: type.string(),
     subject: type.string().required(),
     doers: [type.string()],
@@ -31,15 +41,15 @@ Thing.ensureIndex('githubIssueId', function(doc) {
 })
 
 Thing.defineStatic('getFullThing', function(thingId) {
-    return this.get(thingId).getJoin({to: true, creator: true, events: true}).run()
+    return this.get(thingId).getJoin({events: true}).run()
 })
 
 Thing.defineStatic('getUserFollowUps', function(userId) {
-    return this.getAll(userId, {index: 'followUpers'}).getJoin({to: true, creator: true, events: true}).run()
+    return this.getAll(userId, {index: 'followUpers'}).getJoin({events: true}).run()
 })
 
 Thing.defineStatic('getUserToDos', function(userId) {
-    return this.getAll(userId, {index: 'doers'}).getJoin({creator: true, to: true, events: true}).run()
+    return this.getAll(userId, {index: 'doers'}).getJoin({events: true}).run()
 })
 
 Thing.defineStatic('getThingsByGithubIssueId', function(githubIssueId) {
@@ -47,7 +57,7 @@ Thing.defineStatic('getThingsByGithubIssueId', function(githubIssueId) {
 })
 
 Thing.define('isSelf', function() {
-    return this.creatorUserId === this.toUserId
+    return this.creator.id === this.to.id && this.creator.type === this.to.type
 })
 
 module.exports = Thing

@@ -10,7 +10,7 @@ const FollowUpPreviewItem = ({thing}) => {
     return (
         <PreviewItem>
             <PreviewItemUser>
-                <span>{thing.to.email}</span>
+                <span>{thing.to.displayName}</span>
             </PreviewItemUser>
             <PreviewItemTitle>
                 <ThingPreviewTitle thing={thing} />

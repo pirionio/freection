@@ -113,7 +113,7 @@ function isRepositoryEnabled(user, fullName) {
 }
 
 function isNewThing(user, things) {
-    if (things.map(thing => thing.toUserId).includes(user.id))
+    if (things.map(thing => thing.to.id).includes(user.id))
         throw 'ThingAlreadyExist'
 }
 

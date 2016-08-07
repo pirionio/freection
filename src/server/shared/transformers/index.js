@@ -10,8 +10,8 @@ function thingToDto(thing, user, {includeEvents = true} = {}) {
     return {
         id: thing.id,
         createdAt: thing.createdAt,
-        creator: thing.creator && userToDto(thing.creator),
-        to: thing.to && userToDto(thing.to),
+        creator: thing.creator,
+        to: thing.to,
         body: thing.body,
         subject: thing.subject,
         payload: thing.payload,
@@ -81,7 +81,7 @@ function emailUserToDTO(user) {
         payload: {
             email: email,
         },
-        displayName: user.name
+        displayName: user.name ? user.name : `<${email}>`
     }
 }
 

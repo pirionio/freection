@@ -46,10 +46,11 @@ function getThing(user, thingId) {
 }
 
 function newThing(user, to, body, subject) {
+    const creator = userToAddress(user)
+
     return User.getUserByEmail(to)
-        .then(toUser => saveNewThing(body, subject, user, toUser))
+        .then(toUser => saveNewThing(body, subject, creator, userToAddress(toUser)))
         .then(thing => {
-            const creator = userToAddress(user)
 
             return EventCreator.createCreated(creator, thing, getShowNewList)
                 .then(() => {
@@ -213,19 +214,16 @@ function discardEventsByType(user, thingId, eventType) {
 }
 
 function saveNewThing(body, subject, creator, to) {
-    const toUserId = to.id
-    const creatorUserId = creator ? creator.id : null
-
     // check if thing is self thing (assigned to creator)
-    const isSelfThing = toUserId === creatorUserId
+    const isSelfThing = creator.id === to.id
     const status = isSelfThing ? ThingStatus.INPROGRESS.key : ThingStatus.NEW.key
-    const followUpers = isSelfThing ? [] : [creatorUserId]
-    const doers = isSelfThing ? [creatorUserId] : []
+    const followUpers = isSelfThing ? [] : [creator.id]
+    const doers = isSelfThing ? [creator.id] : []
 
     return Thing.save({
         createdAt: new Date(),
-        creatorUserId,
-        toUserId,
+        creator,
+        to,
         body,
         subject,
         followUpers,
@@ -241,15 +239,15 @@ function getShowNewList(user, thing, eventType) {
 
     switch (eventType) {
         case EventTypes.CREATED.key:
-            return [thing.toUserId]
+            return [thing.to.id]
         case EventTypes.DISMISSED.key:
         case EventTypes.DONE.key:
-            return [thing.creatorUserId]
+            return [thing.creator.id]
         case EventTypes.CANCELED.key:
         case EventTypes.SENT_BACK.key:
-            return union(thing.doers, [thing.toUserId])
+            return union(thing.doers, [thing.to.id])
         case EventTypes.COMMENT.key:
-            return union(thing.followUpers, thing.doers, [thing.creatorUserId]).filter(userId => userId !== user.id)
+            return union(thing.followUpers, thing.doers, [thing.creator.id]).filter(userId => userId !== user.id)
         case EventTypes.PING.key:
             return  [...thing.doers]
         case EventTypes.ACCEPTED.key:

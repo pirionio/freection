@@ -10,7 +10,7 @@ const TodoPreviewItem = ({thing}) => {
     return (
         <PreviewItem>
             <PreviewItemUser>
-                <span>{thing.creator.email}</span>
+                <span>{thing.creator.displayName}</span>
             </PreviewItemUser>
             <PreviewItemTitle>
                 <ThingPreviewTitle thing={thing} />
