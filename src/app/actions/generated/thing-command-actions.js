@@ -29,31 +29,27 @@ function comment(thingId, commentText) {
     }
 }
 
-function newThing(thing, selectedOption) {
+function newThing(thing) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.NEW_THING, 
             status: ActionStatus.START,
-            thing,
-            selectedOption
+            thing
         })
-        return ResourceUtil.post(`/api/new`, {
+        return ResourceUtil.post(`/api/new/thing`, {
                 to: thing.to,
                 body: thing.body,
-                subject: thing.subject,
-                selectedOption: selectedOption
+                subject: thing.subject
             })
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.NEW_THING, 
                 status: ActionStatus.COMPLETE,
-                thing,
-                selectedOption
+                thing
             }))
             .catch(() => dispatch({
                 type: ThingCommandActionsTypes.NEW_THING, 
                 status: ActionStatus.ERROR,
-                thing,
-                selectedOption
+                thing
             }))
     }
 }

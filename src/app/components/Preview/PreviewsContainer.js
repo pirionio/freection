@@ -3,7 +3,7 @@ const {Component, PropTypes} = React
 const Delay = require('react-delay')
 const {GeneralConstants, InvalidationStatus} = require('../../constants')
 
-const NewThingBox = require('../MessageBox/NewThingBox')
+const NewMessageBox = require('../MessageBox/NewMessageBox')
 
 class PreviewsContainer extends Component {
     componentDidMount () {
@@ -35,7 +35,7 @@ class PreviewsContainer extends Component {
                         {previewItems && previewItems.length ? previewItems : noPreviewsText}
                     </div>
                 </div>
-                <NewThingBox />
+                <NewMessageBox />
             </div>
         )
     }

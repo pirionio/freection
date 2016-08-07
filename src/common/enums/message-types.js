@@ -1,0 +1,6 @@
+module.exports = {
+    NEW_THING: 'THING',
+    NEW_EMAIL: 'EMAIL',
+    COMMENT_THING: 'COMMENT_THING',
+    REPLY_EMAIL: 'REPLY_EMAIL'
+}

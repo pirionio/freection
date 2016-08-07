@@ -19,14 +19,13 @@ module.exports = {
         },
         {
             name: 'new thing',
-            params: ['thing', 'selectedOption'],
+            params: ['thing'],
             type: 'post',
-            path: '/api/new',
+            path: '/api/new/thing',
             body: {
                 to: 'thing.to',
                 body: 'thing.body',
-                subject: 'thing.subject',
-                selectedOption: 'selectedOption'
+                subject: 'thing.subject'
             }
         },
         {

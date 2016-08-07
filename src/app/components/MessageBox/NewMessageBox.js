@@ -5,43 +5,54 @@ const {Form, Field} = require('react-redux-form')
 const classAutobind = require('class-autobind').default
 
 const ThingCommandActions = require('../../actions/thing-command-actions')
-const NewSelector = require('./NewSelector')
+const EmailCommandActions = require('../../actions/email-command-actions')
+const MessageTypeSelector = require('./MessageTypeSelector')
+const MessageTypes = require('../../../common/enums/message-types')
 
-class MessageBox extends Component {
+class NewMessageBox extends Component {
     constructor(props) {
         super(props)
         classAutobind(this)
     }
 
     send() {
-        const {dispatch, newThingBox} = this.props
-        dispatch(ThingCommandActions.newThing(newThingBox.message, newThingBox.selectedOption))
+        const {dispatch, newMessageBox} = this.props
+
+        switch (newMessageBox.selectedOption) {
+            case MessageTypes.NEW_THING:
+                dispatch(ThingCommandActions.newThing(newMessageBox.message))
+                break
+            case MessageTypes.NEW_EMAIL:
+                dispatch(EmailCommandActions.newEmail(newMessageBox.message))
+                break
+        }
+
         this.messageTo.focus()
     }
 
     render () {
-        const {newThingBox} = this.props
+        const {newMessageBox} = this.props
 
         return (
             <div className="message-box">
-                <Form model="newThingBox" onSubmit={this.send}>
+                <Form model="newMessageBox" onSubmit={this.send}>
                     <div className="new-selector-container">
-                        <NewSelector />
+                        <MessageTypeSelector />
                     </div>
                     <div className="text-section">
-                        <Field model="newThingBox.message.to">
+                        <Field model="newMessageBox.message.to">
                             <input type="email" className="message-recipients" tabIndex="1" placeholder="to" autoFocus
                                    ref={ref => this.messageTo = ref}/>
                         </Field>
-                        <Field model="newThingBox.message.body">
+                        <Field model="newMessageBox.message.body">
                             <textarea className="message-text" tabIndex="2" placeholder="new message"/>
                         </Field>
-                        <Field model="newThingBox.message.subject">
+                        <Field model="newMessageBox.message.subject">
                             <input type="text" className="message-subject" tabIndex="3" placeholder="subject" />
                         </Field>
                     </div>
                     <div className="send-section">
-                        <button type="submit" className="send-button" tabIndex="4" disabled={newThingBox.ongoingAction}>Send</button>
+                        <button type="submit" className="send-button" tabIndex="4" disabled={newMessageBox.ongoingAction}>Send</button>
                     </div>
                 </Form>
             </div>
@@ -49,14 +60,14 @@ class MessageBox extends Component {
     }
 }
 
-MessageBox.propTypes = {
-    newThingBox: PropTypes.object.isRequired
+NewMessageBox.propTypes = {
+    newMessageBox: PropTypes.object.isRequired
 }
 
 function mapStateToProps(state) {
     return {
-        newThingBox: state.newThingBox
+        newMessageBox: state.newMessageBox
     }
 }
 
-module.exports = connect(mapStateToProps)(MessageBox)
+module.exports = connect(mapStateToProps)(NewMessageBox)
