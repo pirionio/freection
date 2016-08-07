@@ -13,7 +13,7 @@ class ImapConnection {
         this._connection = new imap(options)
         this._onDisconnect = null
 
-        promisify(this._connection, ['openBox', 'search', 'setFlags'])
+        promisify(this._connection, ['openBox', 'closeBox', 'search', 'setFlags'])
         autobind(this, ImapConnection.prototype)
     }
 
@@ -36,7 +36,7 @@ class ImapConnection {
     }
 
     close() {
-        this._connection.closeBox()
+        return this._connection.closeBoxAsync()
     }
 
     onDisconnect(callback) {
