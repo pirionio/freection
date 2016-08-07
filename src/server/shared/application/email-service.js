@@ -16,7 +16,7 @@ function sendEmail(user, to, subject, text, html) {
 function doEmail(user, thread) {
     const creator = thread.creator
 
-    const comments = [thread, ...thread.messages].map(message => {
+    const comments = thread.messages.map(message => {
         return {
             html: message.payload.html,
             text: message.payload.text
@@ -29,6 +29,7 @@ function doEmail(user, thread) {
                 .then(() => EventsCreator.createAccepted(userToAddress(user), thing, getShowNewList))
                 .then(() => comments.map(
                     comment => EventsCreator.createComment(creator, thing, getShowNewList, comment.text, comment.html)))
+                .then(all => Promise.all(all))
 
     })
 }
