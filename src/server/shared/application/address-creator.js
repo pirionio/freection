@@ -1,6 +1,6 @@
 const UserTypes = require('../../../common/enums/user-types')
 
-function userToCreator(user) {
+function userToAddress(user) {
     return {
         id: user.id,
         type: UserTypes.FREECTION.key,
@@ -13,4 +13,4 @@ function userToCreator(user) {
     }
 }
 
-module.exports = {userToCreator}
+module.exports = {userToAddress}

@@ -6,7 +6,7 @@ const {eventToDto, thingToDto} = require('../transformers')
 const ThingStatus = require('../../../common/enums/thing-status')
 const EntityTypes = require('../../../common/enums/entity-types')
 const EventTypes = require('../../../common/enums/event-types')
-const {userToCreator} = require('./creator-creator')
+const {userToAddress} = require('./address-creator')
 const logger = require('../utils/logger')
 
 function getWhatsNew(user) {
@@ -49,7 +49,7 @@ function newThing(user, to, body, subject) {
     return User.getUserByEmail(to)
         .then(toUser => saveNewThing(body, subject, user, toUser))
         .then(thing => {
-            const creator = userToCreator(user)
+            const creator = userToAddress(user)
 
             return EventCreator.createCreated(creator, thing, getShowNewList)
                 .then(() => {
@@ -62,7 +62,7 @@ function newThing(user, to, body, subject) {
 }
 
 function doThing(user, thingId) {
-    const creator = userToCreator(user)
+    const creator = userToAddress(user)
 
     return Thing.get(thingId).run()
         .then(validateType)
@@ -78,7 +78,7 @@ function doThing(user, thingId) {
 }
 
 function dismiss(user, thingId) {
-    const creator = userToCreator(user)
+    const creator = userToAddress(user)
 
     return Thing.get(thingId).run()
         .then(validateType)
@@ -95,7 +95,7 @@ function dismiss(user, thingId) {
 }
 
 function close(user, thingId) {
-    const creator = userToCreator(user)
+    const creator = userToAddress(user)
 
     return Thing.get(thingId).run()
         .then(validateType)
@@ -110,7 +110,7 @@ function close(user, thingId) {
 }
 
 function cancel(user, thingId) {
-    const creator = userToCreator(user)
+    const creator = userToAddress(user)
 
     return Thing.get(thingId).run()
         .then(thing => validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key]))
@@ -126,7 +126,7 @@ function cancel(user, thingId) {
 }
 
 function cancelAck(user, thingId) {
-    const creator = userToCreator(user)
+    const creator = userToAddress(user)
 
     return Thing.get(thingId).run()
         .then(thing => {
@@ -141,7 +141,7 @@ function cancelAck(user, thingId) {
 }
 
 function markAsDone(user, thingId) {
-    const creator = userToCreator(user)
+    const creator = userToAddress(user)
 
     return Thing.get(thingId).run()
         .then(thing => validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key]))
@@ -162,7 +162,7 @@ function markAsDone(user, thingId) {
 }
 
 function sendBack(user, thingId) {
-    const creator = userToCreator(user)
+    const creator = userToAddress(user)
 
     return Thing.get(thingId).run()
         .then(thing => validateStatus(thing, [ThingStatus.DONE.key, ThingStatus.DISMISS.key]))
@@ -178,7 +178,7 @@ function sendBack(user, thingId) {
 }
 
 function ping(user, thingId) {
-    const creator = userToCreator(user)
+    const creator = userToAddress(user)
 
     return Thing.get(thingId).run()
         .then(thing => validateStatus(thing, ThingStatus.INPROGRESS.key))
@@ -192,7 +192,7 @@ function ping(user, thingId) {
 }
 
 function comment(user, thingId, commentText) {
-    const creator = userToCreator(user)
+    const creator = userToAddress(user)
 
     return Thing.get(thingId).run()
         .then(thing => EventCreator.createComment(creator, thing, getShowNewList, commentText))

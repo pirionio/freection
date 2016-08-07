@@ -6,7 +6,7 @@ const ThingStatus = require('../../../common/enums/thing-status')
 const EntityTypes = require('../../../common/enums/entity-types')
 const EventTypes = require('../../../common/enums/event-types')
 const logger = require('../utils/logger')
-const {userToCreator} = require('./creator-creator')
+const {userToAddress} = require('./address-creator')
 
 function newThing(creator, toUser, subject, body, id, number, url) {
     saveNewThing(creator, toUser, subject, body, id, number, url)
@@ -16,7 +16,7 @@ function newThing(creator, toUser, subject, body, id, number, url) {
 }
 
 function doThing(user, thingId) {
-    const creator = userToCreator(user)
+    const creator = userToAddress(user)
 
     return Thing.get(thingId).run()
         .then(validateType)
@@ -55,7 +55,7 @@ function closeByGithub(creator, thing) {
 }
 
 function dismiss(user, thingId) {
-    const creator = userToCreator(user)
+    const creator = userToAddress(user)
 
     return Thing.get(thingId).run()
         .then(validateType)
@@ -73,7 +73,7 @@ function dismiss(user, thingId) {
 }
 
 function close(user, thingId) {
-    const creator = userToCreator(user)
+    const creator = userToAddress(user)
 
     return Thing.get(thingId).run()
         .then(validateType)
