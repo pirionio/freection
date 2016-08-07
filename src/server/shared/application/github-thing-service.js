@@ -114,13 +114,13 @@ function performDoThing(thing, user) {
 }
 
 function performDismiss(thing) {
-    this.doers = []
+    thing.doers = []
     thing.payload.status = ThingStatus.DISMISS.key
     return thing.save()
 }
 
 function performClose(thing) {
-    this.doers = []
+    thing.doers = []
     thing.payload.status = ThingStatus.CLOSE.key
     return thing.save()
 }
