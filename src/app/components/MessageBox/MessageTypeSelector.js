@@ -8,6 +8,8 @@ const Flexbox = require('../UI/Flexbox')
 const MessageBoxActions = require('../../actions/message-box-actions')
 const MessageTypes = require('../../../common/enums/message-types')
 
+const styleVars = require('../style-vars')
+
 class MessageTypeSelector extends Component {
     constructor(props) {
         super(props)
@@ -25,27 +27,46 @@ class MessageTypeSelector extends Component {
     }
 
     render() {
-        const optionStyles = {
-            base: {
-                display: 'block',
+        const {selectedOption} = this.props
+
+        const styles = {
+            selector: {
+                height: '100%'
+            },
+            option: {
                 width: '100%',
-                height: '55'
-            },
-            thing: {
-                backgroundColor: this.props.selectedOption === MessageTypes.NEW_THING ? '#eff3ca' : undefined
-            },
-            email: {
-                backgroundColor: this.props.selectedOption === MessageTypes.NEW_EMAIL ? '#eff3ca' : undefined
+                height: '50%',
+                border: 'none',
+                outline: 'none',
+                backgroundColor: styleVars.primaryColor,
+                color: 'white',
+                ':hover': {
+                    cursor: 'pointer',
+                    color: styleVars.secondaryColor
+                },
+                selected: {
+                    backgroundColor: styleVars.secondaryColor,
+                    color: styleVars.primaryColor,
+                    ':hover': {
+                        color: styleVars.primaryColor,
+                    }
+                }
             }
         }
 
         return (
-            <Flexbox container="column" justifyContent="space-between" height="100%">
+            <Flexbox container="column" style={styles.selector}>
                 <Flexbox>
-                    <input type="button" style={[optionStyles.base, optionStyles.thing]} onClick={this.selectThing} value="Thing" />
+                    <button type="button" style={[styles.option, selectedOption === MessageTypes.NEW_THING ? styles.option.selected : {}]}
+                            onClick={this.selectThing}>
+                        New Thing
+                    </button>
                 </Flexbox>
                 <Flexbox>
-                    <input type="button" style={[optionStyles.base, optionStyles.email]} onClick={this.selectEmail} value="Email" />
+                    <button type="button" style={[styles.option, selectedOption === MessageTypes.NEW_EMAIL ? styles.option.selected : {}]}
+                            onClick={this.selectEmail}>
+                        New Email
+                    </button>
                 </Flexbox>
             </Flexbox>
         )

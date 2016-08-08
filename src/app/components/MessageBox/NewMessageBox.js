@@ -10,6 +10,8 @@ const EmailCommandActions = require('../../actions/email-command-actions')
 const MessageTypeSelector = require('./MessageTypeSelector')
 const MessageTypes = require('../../../common/enums/message-types')
 
+const styleVars = require('../style-vars')
+
 class NewMessageBox extends Component {
     constructor(props) {
         super(props)
@@ -28,34 +30,70 @@ class NewMessageBox extends Component {
                 break
         }
 
-        this.messageTo.focus()
+        this.messageSubject.focus()
     }
 
     getStyles() {
         return {
-            box: {
-                height: '120px'
-            },
             form: {
                 width: '100%'
             },
+            panel: {
+                height: '200px'
+            },
+            box: {
+                position: 'relative'
+            },
+            topBar: {
+                height: '40px',
+                backgroundColor: styleVars.primaryColor
+            },
+            boxText: {
+                backgroundColor: 'white',
+                border: `1px solid ${styleVars.primaryColor}`
+            },
             messageTypeSelector: {
-                width: '80px',
-                marginRight: '10px'
+                width: '80px'
+            },
+            messageAdditionalInfo: {
+                height: '40px',
+                width: '100%',
+                padding: '10px 10px'
             },
             messageTo: {
-                height: '25px'
+                height: '40px',
+                width: 'calc(100% - 70px)',
+                padding: '10px 10px'
             },
             messageBody: {
-                height: '70px',
-                margin: '-1px 0 -1px'
+                padding: '0 10px'
             },
-            messageSubject: {
-                height: '25px'
+            textField: {
+                width: '100%',
+                border: 'none',
+                outline: 'none'
             },
             send: {
+                position: 'absolute',
                 width: '60px',
-                marginLeft: '10px'
+                bottom: '40px',
+                right: '140px',
+                border: `1px solid ${styleVars.primaryColor}`,
+                button: {
+                    height: '30px',
+                    width: '100%',
+                    border: 'none',
+                    backgroundColor: styleVars.primaryColor,
+                    color: 'white',
+                    ':focus':{
+                        outlineColor: styleVars.secondaryColor
+                    },
+                    ':hover': {
+                        cursor: 'pointer',
+                        color: styleVars.secondaryColor
+                    }
+
+                }
             }
         }
     }
@@ -66,25 +104,34 @@ class NewMessageBox extends Component {
 
         return (
             <Form model="newMessageBox" onSubmit={this.send} style={styles.form}>
-                <Flexbox name="message-box" shrink={0} container="row" style={styles.box}>
-                    <Flexbox name="message-type-container" shrink={0} style={styles.messageTypeSelector}>
+                <Flexbox name="message-panel" container="row" style={styles.panel}>
+                    <Flexbox name="message-box" grow={1} container="column" style={styles.box}>
+                        <Flexbox name="message-box-top-bar" style={styles.topBar} />
+                        <Flexbox name="message-text" grow={1} style={styles.boxText} container="column">
+                            <Flexbox name="message-subject" style={styles.messageAdditionalInfo}>
+                                <Field model="newMessageBox.message.subject">
+                                    <input type="text" style={styles.textField} tabIndex="1" placeholder="Subject" autoFocus
+                                           ref={ref => this.messageSubject = ref}/>
+                                </Field>
+                            </Flexbox>
+                            <Flexbox name="message-body" grow={1} style={styles.messageBody}>
+                                <Field model="newMessageBox.message.body">
+                                    <textarea style={styles.textField} tabIndex="2" placeholder="Write your message here" />
+                                </Field>
+                            </Flexbox>
+                            <Flexbox name="message-to" style={styles.messageTo}>
+                                <Field model="newMessageBox.message.to">
+                                    <input type="text" style={styles.textField} tabIndex="3" placeholder="To" />
+                                </Field>
+                            </Flexbox>
+                        </Flexbox>
+                    </Flexbox>
+                    <Flexbox name="message-selector" style={styles.messageTypeSelector}>
                         <MessageTypeSelector />
                     </Flexbox>
-                    <Flexbox name="box-text-container" grow={1} container="column">
-                        <Field model="newMessageBox.message.to">
-                            <input type="email" style={styles.messageTo} tabIndex="1" placeholder="to" autoFocus
-                                   ref={ref => this.messageTo = ref}/>
-                        </Field>
-                        <Field model="newMessageBox.message.body">
-                            <textarea style={styles.messageBody} tabIndex="2" placeholder="new message"/>
-                        </Field>
-                        <Field model="newMessageBox.message.subject">
-                            <input type="text" style={styles.messageSubject} tabIndex="3" placeholder="subject" />
-                        </Field>
-                    </Flexbox>
-                    <Flexbox name="send-container" style={styles.send}>
-                        <button type="submit" tabIndex="4" disabled={newMessageBox.ongoingAction}>Send</button>
-                    </Flexbox>
+                    <div name="send-container" style={styles.send}>
+                        <button type="submit" style={styles.send.button} tabIndex="4" disabled={newMessageBox.ongoingAction}>Send</button>
+                    </div>
                 </Flexbox>
             </Form>
         )
