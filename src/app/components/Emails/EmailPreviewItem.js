@@ -2,6 +2,7 @@ const React = require('react')
 const {PropTypes} = React
 const {connect} = require('react-redux')
 
+const TextTruncate = require('../UI/TextTruncate')
 const EmailPreviewActionBar = require('./EmailPreviewActionsBar')
 const EmailPageActions = require('../../actions/email-page-actions')
 const {PreviewItem, PreviewItemUser, PreviewItemTitle, PreviewItemDate, PreviewItemText, PreviewItemActions} =
@@ -18,7 +19,7 @@ const EmailPreviewItem = ({email, dispatch}) => {
             </PreviewItemTitle>
             <PreviewItemDate date={email.createdAt}/>
             <PreviewItemText>
-                <div className="email-preview-text">{email.payload.text}</div>
+                <TextTruncate>{email.payload.text}</TextTruncate>
             </PreviewItemText>
             <PreviewItemActions>
                 <EmailPreviewActionBar emailUids={email.payload.emailUids} email={email} />
