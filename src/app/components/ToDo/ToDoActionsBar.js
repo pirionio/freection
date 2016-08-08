@@ -15,11 +15,7 @@ class ToDoActionsBar extends Component {
             DismissAction(thing, currentUser)
         ]
 
-        return (
-            <div>
-                <ActionsBar actions={actions} />
-            </div>
-        )
+        return <ActionsBar actions={actions} />
     }
 }
 

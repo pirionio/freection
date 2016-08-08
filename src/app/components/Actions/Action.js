@@ -16,11 +16,12 @@ class Action extends Component {
     
     render () {
         const {label, disabled} = this.props
+        const buttonStyle = {
+            marginLeft: '28px'
+        }
 
         return (
-            <div className="action-container">
-                <button className="action-button" onClick={this.doAction} disabled={disabled}>{label}</button>
-            </div>
+            <button style={buttonStyle} onClick={this.doAction} disabled={disabled}>{label}</button>
         )
     }
 }

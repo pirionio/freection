@@ -4,6 +4,7 @@ const {connect} = require('react-redux')
 const {Form, Field} = require('react-redux-form')
 const classAutobind = require('class-autobind').default
 
+const Flexbox = require('../UI/Flexbox')
 const ThingCommandActions = require('../../actions/thing-command-actions')
 const EmailCommandActions = require('../../actions/email-command-actions')
 const MessageTypeSelector = require('./MessageTypeSelector')
@@ -34,7 +35,7 @@ class NewMessageBox extends Component {
         const {newMessageBox} = this.props
 
         return (
-            <div className="message-box">
+            <Flexbox grow={0} shrink={0} height='120px'>
                 <Form model="newMessageBox" onSubmit={this.send}>
                     <div className="new-selector-container">
                         <MessageTypeSelector />
@@ -55,7 +56,7 @@ class NewMessageBox extends Component {
                         <button type="submit" className="send-button" tabIndex="4" disabled={newMessageBox.ongoingAction}>Send</button>
                     </div>
                 </Form>
-            </div>
+            </Flexbox>
         )
     }
 }

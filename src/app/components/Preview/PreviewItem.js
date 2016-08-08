@@ -3,6 +3,7 @@ const {Component, PropTypes} = React
 const {getChildOfType, createSlots} = require('../../util/component-util')
 const dateFns = require('date-fns')
 
+const Flexbox = require('../UI/Flexbox')
 const ThingStatus = require('../../../common/enums/thing-status')
 
 const slots = createSlots('PreviewItemUser', 'PreviewItemTitle', 'PreviewItemText', 'PreviewItemActions')
@@ -51,32 +52,37 @@ class PreviewItem extends Component {
 
     render() {
         const statusPreview = this.getStatus()
+        const containerStyle = {
+            backgroundColor: '#FAFAFA',
+            marginBottom: '5px',
+            paddingLeft: '30px',
+            paddingRight: '30px'
+        }
 
         return (
-            <div className="preview-item">
-                <div className="preview-item-content">
-                    <div className="row">
-                        <div className="preview-item-user">
-                            {this.getUser()}
-                        </div>
-                        <div className="preview-item-title">
-                            {this.getTitle()}
-                        </div>
-                        {statusPreview ? <div className="preview-item-status">{statusPreview}</div> : null}
-                        <div className="preview-item-date">
-                            {this.getDate()}
-                        </div>
+            <Flexbox grow={0} shrink={0} height='70px' container='row' style={containerStyle}>
+
+                <Flexbox width='250px' grow={0} shrink={0} container='column' justifyContent="center">
+                    <Flexbox>
+                        {this.getUser()}
+                    </Flexbox>
+                    {statusPreview ? <Flexbox className="preview-item-status">{statusPreview}</Flexbox> : null}
+                    <Flexbox>
+                        {this.getDate()}
+                    </Flexbox>
+                </Flexbox>
+                <Flexbox container="column" justifyContent="center" grow={1} style={{minWidth: 0}}>
+                    <div>
+                        {this.getTitle()}
                     </div>
-                    <div className="row">
-                        <div className="preview-item-text">
-                            {this.getPreviewText()}
-                        </div>
+                    <div>
+                        {this.getPreviewText()}
                     </div>
-                </div>
-                <div className="preview-item-actions">
+                </Flexbox>
+                <Flexbox container="column" justifyContent="center" grow={0} shrink={0} width='250px'>
                     {this.getActions()}
-                </div>
-            </div>
+                </Flexbox>
+            </Flexbox>
         )
     }
 }

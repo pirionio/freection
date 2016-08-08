@@ -9,8 +9,6 @@ const thunk = require('redux-thunk').default
 
 const AppRouter = require('./routes')
 
-require('./index.scss')
-
 const middleware = routerMiddleware(browserHistory)
 
 let store = createStore(reducers,

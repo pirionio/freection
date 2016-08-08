@@ -1,19 +1,23 @@
 const React = require('react')
 const {PropTypes} = React
+const TextTruncate = require('../../UI/TextTruncate')
 
 const CommentPreviewText = ({comment, numOfNewComments}) => {
     const unreadCount = numOfNewComments > 1 ?
         <div className="preview-comment-unread-count">
             (+{numOfNewComments - 1})
-        </div> : ''
+        </div> : null
+
+     const textTruncateStyle = {
+        display: 'inline-block',
+        width:'100%'
+     }
 
     return (
-        <span>
-            <div className="preview-comment-text">
-                {comment}
-            </div>
+        <div>
+            <TextTruncate style={textTruncateStyle}>{comment}</TextTruncate>
             {unreadCount}
-        </span>
+        </div>
     )
 }
 

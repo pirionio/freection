@@ -3,6 +3,7 @@ const {Component, PropTypes} = React
 const Delay = require('react-delay')
 const {GeneralConstants, InvalidationStatus} = require('../../constants')
 
+const Flexbox = require('../UI/Flexbox')
 const NewMessageBox = require('../MessageBox/NewMessageBox')
 
 class PreviewsContainer extends Component {
@@ -17,10 +18,14 @@ class PreviewsContainer extends Component {
 
     render () {
         const {previewItems, noPreviewsText, invalidationStatus} = this.props
+        const containerStyle = {
+            height: '100%',
+            padding: '35px 50px 20px 50px'
+        }
 
         if (invalidationStatus === InvalidationStatus.FETCHING) {
             return (
-                <div className="previews-container">
+                <div style={containerStyle}>
                     <Delay wait={GeneralConstants.FETCHING_DELAY_MILLIS}>
                         <div>Loading, please wait...</div>
                     </Delay>
@@ -29,14 +34,12 @@ class PreviewsContainer extends Component {
         }
 
         return (
-            <div className="previews-container">
-                <div className="previews-list-container">
-                    <div className="previews-content">
-                        {previewItems && previewItems.length ? previewItems : noPreviewsText}
-                    </div>
-                </div>
+            <Flexbox container='column' style={containerStyle}>
+                <Flexbox grow={1} container='column'>
+                    {previewItems && previewItems.length ? previewItems : noPreviewsText}
+                </Flexbox>
                 <NewMessageBox />
-            </div>
+            </Flexbox>
         )
     }
 }

@@ -1,10 +1,10 @@
 const React = require('react')
 const {Component, PropTypes} = React
-const DocumentTitle = require('react-document-title')
 const {connect} = require('react-redux')
 const orderBy = require('lodash/orderBy')
 const classAutobind = require('class-autobind').default
 
+const Page = require('../UI/Page')
 const PreviewsContainer = require('../Preview/PreviewsContainer')
 const ToDoActions = require('../../actions/to-do-actions')
 const ToDoPreviewItem = require('./ToDoPreviewItem')
@@ -41,12 +41,12 @@ class ToDo extends Component {
         const {invalidationStatus} = this.props
         
         return (
-            <DocumentTitle title={this.getTitle()}>
+            <Page title={this.getTitle()}>
                 <PreviewsContainer previewItems={this.getThingsToDo()}
                                    fetchPreviews={this.fetchToDo}
                                    noPreviewsText="There are no things to do"
                                    invalidationStatus={invalidationStatus} />
-            </DocumentTitle>
+            </Page>
         )
     }
 }

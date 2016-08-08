@@ -1,7 +1,9 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
+const radium = require('radium')
 
+const Flexbox = require('../UI/Flexbox')
 const TopBar = require('../TopBar/TopBar')
 const SideBar = require('../SideBar/SideBar')
 const Login = require('../Login/Login')
@@ -20,18 +22,18 @@ class App extends Component {
 
         if (currentUser.isAuthenticated) {
             return (
-                <div className="app-root">
-                    <TopBar />
+                <Flexbox container={true}>
+                    {/* <TopBar />*/}
                     <SideBar />
                     {this.props.children}
-                </div>
+                </Flexbox>
             )
         } else {
             return (
-                <div className="app-root">
-                    <TopBar />
+                <Flexbox container={true}>
+                    {/* <TopBar />*/}
                     <Login />
-                </div>
+                </Flexbox>
             )
         }
     }
@@ -47,4 +49,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-module.exports = connect(mapStateToProps)(App)
+module.exports = connect(mapStateToProps)(radium(App))
