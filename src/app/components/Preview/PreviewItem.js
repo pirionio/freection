@@ -61,7 +61,6 @@ class PreviewItem extends Component {
 
         return (
             <Flexbox grow={0} shrink={0} height='70px' container='row' style={containerStyle}>
-
                 <Flexbox width='250px' grow={0} shrink={0} container='column' justifyContent="center">
                     <Flexbox>
                         {this.getUser()}

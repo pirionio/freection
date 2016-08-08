@@ -1,6 +1,7 @@
 const React = require('react')
 const {PropTypes, Component} = React
 const radium = require('radium')
+const classnames = require('classnames')
 const isString = require('lodash/isString')
 
 class Flexbox extends Component {
@@ -8,14 +9,12 @@ class Flexbox extends Component {
     getContainerStyle() {
         const {container} = this.props
         if (container) {
-
             if (isString(container)) {
                 return {
                     display: 'flex',
                     flexDirection: container
                 }
-            }
-            else {
+            } else {
                 return {
                     display: 'flex'
                 }
@@ -62,7 +61,7 @@ class Flexbox extends Component {
     }
 
     render() {
-        const {children, style} = this.props
+        const {children, style, name} = this.props
 
         const containerStyle = [
             this.getContainerStyle(),
@@ -73,12 +72,16 @@ class Flexbox extends Component {
             style
         ]
 
-        return (<div style={containerStyle}>
-            {children}
-        </div>)
+        return (
+            <div name={name} style={containerStyle}>
+                {children}
+            </div>
+        )
     }
 }
+
 Flexbox.propTypes = {
+    name: PropTypes.string,
     style: PropTypes.object,
     container: PropTypes.any,
     width: PropTypes.string,
@@ -88,6 +91,7 @@ Flexbox.propTypes = {
     basis: PropTypes.string,
     justifyContent: PropTypes.string
 }
+
 Flexbox.defaultProps = {
     container: false,
     grow: 0,

@@ -1,9 +1,10 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
-const classnames = require('classnames')
+const radium = require('radium')
 const classAutobind = require('class-autobind').default
 
+const Flexbox = require('../UI/Flexbox')
 const MessageBoxActions = require('../../actions/message-box-actions')
 const MessageTypes = require('../../../common/enums/message-types')
 
@@ -24,19 +25,29 @@ class MessageTypeSelector extends Component {
     }
 
     render() {
-        const thingOptionClasses = classnames('option', {
-            'selected': this.props.selectedOption === MessageTypes.NEW_THING
-        })
-
-        const emailOptionClasses = classnames('option', {
-            'selected': this.props.selectedOption === MessageTypes.NEW_EMAIL
-        })
+        const optionStyles = {
+            base: {
+                display: 'block',
+                width: '100%',
+                height: '55'
+            },
+            thing: {
+                backgroundColor: this.props.selectedOption === MessageTypes.NEW_THING ? '#eff3ca' : undefined
+            },
+            email: {
+                backgroundColor: this.props.selectedOption === MessageTypes.NEW_EMAIL ? '#eff3ca' : undefined
+            }
+        }
 
         return (
-            <div className="message-type-selector">
-                <input type="button" className={thingOptionClasses} onClick={this.selectThing} value="Thing" />
-                <input type="button" className={emailOptionClasses} onClick={this.selectEmail} value="Email" />
-            </div>
+            <Flexbox container="column" justifyContent="space-between" height="100%">
+                <Flexbox>
+                    <input type="button" style={[optionStyles.base, optionStyles.thing]} onClick={this.selectThing} value="Thing" />
+                </Flexbox>
+                <Flexbox>
+                    <input type="button" style={[optionStyles.base, optionStyles.email]} onClick={this.selectEmail} value="Email" />
+                </Flexbox>
+            </Flexbox>
         )
     }
 }
@@ -51,4 +62,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(MessageTypeSelector)
+module.exports = connect(mapStateToProps)(radium(MessageTypeSelector))
