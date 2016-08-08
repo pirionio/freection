@@ -2,6 +2,7 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {getChildOfType, createSlots} = require('../../util/component-util')
 const dateFns = require('date-fns')
+const Color = require('color')
 
 const Flexbox = require('../UI/Flexbox')
 
@@ -81,7 +82,10 @@ class PreviewItem extends Component {
             backgroundColor: '#FAFAFA',
             marginBottom: '5px',
             paddingLeft: '30px',
-            paddingRight: '30px'
+            paddingRight: '30px',
+            borderColor: Color('rgb(233,234,236)').hexString(),
+            borderStyle: 'outset',
+            borderWidth: '1px'
         }
 
         const textStyle = {
