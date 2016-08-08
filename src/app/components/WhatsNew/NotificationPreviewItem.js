@@ -1,16 +1,13 @@
 const React = require('react')
 const {Component, PropTypes} = React
+const {connect} = require('react-redux')
 
 const EventTypes = require('../../../common/enums/event-types')
-const {PreviewItem, PreviewItemUser, PreviewItemTitle, PreviewItemDate, PreviewItemText, PreviewItemActions} =
+const {PreviewItem, PreviewItemUser, PreviewItemTitle, PreviewItemDate, PreviewItemText, PreviewItemStatus, PreviewItemActions} =
     require('../Preview/PreviewItem')
-const {CommentPreviewText, PingPreviewText} = require('../Preview/Thing')
-const NotificationPreviewTitle = require('../Preview/Notification/NotificationPreviewTitle')
+const {CommentPreviewText, PingPreviewText, BodyPreviewText} = require('../Preview/Thing')
 const NotificationActionsBar = require('./NotificationActionsBar')
-
-const StatusPreviewText = ({notification}) => {
-    return <span>{notification.thing.payload.status}</span>
-}
+const ThingPageActions = require('../../actions/thing-page-actions')
 
 class NotificationPreviewItem extends Component {
 
@@ -23,25 +20,28 @@ class NotificationPreviewItem extends Component {
                                            numOfNewComments={notification.payload.numOfNewComments} />
             case EventTypes.PING.key:
                 return <PingPreviewText />
+
+            case EventTypes.CREATED.key:
+                return <BodyPreviewText body={notification.thing.body} />
+
             default:
-                return <StatusPreviewText notification={notification} />
+                return null;
         }
     }
 
     render() {
-        const {notification} = this.props
+        const {notification, dispatch} = this.props
+        const textPreview = this.getTextElement()
 
         return (<PreviewItem>
             <PreviewItemUser>
                 <span>{notification.creator.displayName}</span>
             </PreviewItemUser>
-            <PreviewItemTitle>
-                <NotificationPreviewTitle notification={notification} />
-            </PreviewItemTitle>
+            <PreviewItemStatus status={notification.eventType.label} />
+            <PreviewItemTitle title={notification.thing.subject}
+                              onClick={() => dispatch(ThingPageActions.show(notification.thing.id))} />
             <PreviewItemDate date={notification.createdAt}/>
-            <PreviewItemText>
-                {this.getTextElement()}
-            </PreviewItemText>
+            {textPreview ? <PreviewItemText>{textPreview}</PreviewItemText> : null}
             <PreviewItemActions>
                 <NotificationActionsBar notification={notification} />
             </PreviewItemActions>
@@ -53,4 +53,4 @@ NotificationPreviewItem.propTypes = {
     notification: PropTypes.object.isRequired
 }
 
-module.exports = NotificationPreviewItem
+module.exports = connect()(NotificationPreviewItem)

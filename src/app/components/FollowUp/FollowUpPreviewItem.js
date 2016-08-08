@@ -1,20 +1,20 @@
 const React = require('react')
 const {PropTypes} = React
+const {connect} = require('react-redux')
 
 const {PreviewItem, PreviewItemUser, PreviewItemTitle, PreviewItemStatus, PreviewItemDate, PreviewItemText, PreviewItemActions} =
     require('../Preview/PreviewItem')
-const {ThingPreviewText, ThingPreviewTitle}= require('../Preview/Thing')
+const {ThingPreviewText}= require('../Preview/Thing')
 const FollowUpActionsBar = require('./FollowUpActionsBar')
+const ThingPageActions = require('../../actions/thing-page-actions')
 
-const FollowUpPreviewItem = ({thing}) => {
+const FollowUpPreviewItem = ({thing, dispatch}) => {
     return (
         <PreviewItem>
             <PreviewItemUser>
                 <span>{thing.to.displayName}</span>
             </PreviewItemUser>
-            <PreviewItemTitle>
-                <ThingPreviewTitle thing={thing} />
-            </PreviewItemTitle>
+            <PreviewItemTitle title={thing.subject} onClick={() => dispatch(ThingPageActions.show(thing.id))} />
             <PreviewItemStatus status={thing.payload.status} />
             <PreviewItemDate date={thing.createdAt}/>
             <PreviewItemText>
@@ -31,4 +31,4 @@ FollowUpPreviewItem.propTypes = {
     thing: PropTypes.object.isRequired
 }
 
-module.exports = FollowUpPreviewItem
+module.exports = connect()(FollowUpPreviewItem)

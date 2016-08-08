@@ -3,7 +3,6 @@ const {PropTypes} = React
 
 const {PreviewItem, PreviewItemUser, PreviewItemTitle, PreviewItemDate, PreviewItemText, PreviewItemActions} =
     require('../Preview/PreviewItem')
-const {GithubPreviewTitle} = require('../Preview/Github')
 const GithubActionsBar = require('./GithubActionsBar')
 
 const GithubPreviewItem = ({notification}) => {
@@ -12,9 +11,7 @@ const GithubPreviewItem = ({notification}) => {
             <PreviewItemUser>
                 <span>{notification.creator.displayName}</span>
             </PreviewItemUser>
-            <PreviewItemTitle>
-                <GithubPreviewTitle thing={notification.thing} />
-            </PreviewItemTitle>
+            <PreviewItemTitle title={notification.thing.subject} href={notification.thing.payload.url} />
             <PreviewItemDate date={notification.createdAt}/>
             <PreviewItemText>
                 <span>{notification.thing.body}</span>

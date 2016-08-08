@@ -1,11 +1,10 @@
 const React = require('react')
 const {PropTypes} = React
+const TextTruncate = require('../../UI/TextTruncate')
 
 const BodyPreviewText = ({body}) => {
     return (
-        <div className="preview-comment-text">
-            {body}
-        </div>
+        <TextTruncate>{body}</TextTruncate>
     )
 }
 
