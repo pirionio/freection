@@ -14,9 +14,7 @@ const EmailPreviewItem = ({email, dispatch}) => {
             <PreviewItemUser>
                 <span>{email.creator.displayName}</span>
             </PreviewItemUser>
-            <PreviewItemTitle>
-                <a onClick={() => dispatch(EmailPageActions.show(email.entityId))}>{email.subject}</a>
-            </PreviewItemTitle>
+            <PreviewItemTitle onClick={() => dispatch(EmailPageActions.show(email.entityId))} title={email.subject} />
             <PreviewItemDate date={email.createdAt}/>
             <PreviewItemText>
                 <TextTruncate>{email.payload.text}</TextTruncate>
