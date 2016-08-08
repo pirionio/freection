@@ -128,7 +128,7 @@ function smtpEmailToDto(email, user, subject, text, html) {
         payload: {
             text,
             html,
-            isRead: false
+            isRead: true
         },
         type: EntityTypes.EMAIL,
         createdAt: new Date()
