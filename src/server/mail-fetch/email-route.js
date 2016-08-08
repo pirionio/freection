@@ -46,8 +46,8 @@ router.post('/:emailThreadId/do', (request, response) => {
 
 router.post('/markasread', (request, response) => {
     const user = request.user
-    const {emailIds} = request.body
-    markAsRead(user, emailIds)
+    const {emailUids} = request.body
+    markAsRead(user, emailUids)
         .then(() => response.json({}))
         .catch(error => {
             const message = 'Error while marking emails as read'
@@ -90,10 +90,10 @@ function prepareThread(emails) {
     return threadDto
 }
 
-function markAsRead(user, emailIds) {
+function markAsRead(user, emailUids) {
     return establishConnection(user)
         .then(connection => {
-            return connection.markAsRead(emailIds).then(() => GoogleImapConnectionPool.releaseConnection(user, connection))
+            return connection.markAsRead(emailUids).then(() => GoogleImapConnectionPool.releaseConnection(user, connection))
         })
 }
 

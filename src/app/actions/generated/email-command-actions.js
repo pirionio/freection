@@ -48,25 +48,25 @@ function doEmail(threadId) {
     }
 }
 
-function markAsRead(emailIds) {
+function markAsRead(emailUids) {
     return dispatch => {
         dispatch({
             type: EmailCommandActionsTypes.MARK_AS_READ, 
             status: ActionStatus.START,
-            emailIds
+            emailUids
         })
         return ResourceUtil.post(`/emails/api/markasread`, {
-                emailIds: emailIds
+                emailUids: emailUids
             })
             .then(result => dispatch({
                 type: EmailCommandActionsTypes.MARK_AS_READ, 
                 status: ActionStatus.COMPLETE,
-                emailIds: emailIds
+                emailUids: emailUids
             }))
             .catch(() => dispatch({
                 type: EmailCommandActionsTypes.MARK_AS_READ, 
                 status: ActionStatus.ERROR,
-                emailIds
+                emailUids
             }))
     }
 }

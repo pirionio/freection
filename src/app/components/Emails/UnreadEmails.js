@@ -45,7 +45,7 @@ class UnreadEmails extends Component {
             emailRows.push(merge(lastEmail, {
                 entityId: lastEmail.payload.threadId,
                 payload: {
-                    emailIds: map(threadEmails, 'id')
+                    emailUids: map(threadEmails, 'payload.uid')
                 }
             }))
         })

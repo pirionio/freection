@@ -7,10 +7,10 @@ const {DiscardEmails, DoEmail} = require('../Actions/Actions')
 
 class EmailPreviewActionsBar extends Component {
     render() {
-        const {emailIds, email, currentUser} = this.props
+        const {emailUids, email, currentUser} = this.props
 
         const actions = [
-            DiscardEmails(emailIds),
+            DiscardEmails(emailUids),
             DoEmail(email, currentUser)
         ]
 
@@ -23,7 +23,7 @@ class EmailPreviewActionsBar extends Component {
 }
 
 EmailPreviewActionsBar.propTypes = {
-    emailIds: PropTypes.array.isRequired,
+    emailUids: PropTypes.array.isRequired,
     email: PropTypes.object.isRequired,
     currentUser: PropTypes.object.isRequired
 }

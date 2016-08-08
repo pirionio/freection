@@ -130,8 +130,8 @@ class ImapConnection {
             })
     }
 
-    markAsRead(emailIds) {
-        return this._connection.setFlagsAsync(emailIds, IMAP[this._type].SEEN_FLAG)
+    markAsRead(emailUids) {
+        return this._connection.setFlagsAsync(emailUids, IMAP[this._type].SEEN_FLAG)
             .catch(error => {
                 logger.error('Could not mark emails as read', error)
                 throw error

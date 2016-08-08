@@ -1,5 +1,7 @@
 const parseReply = require('parse-reply')
-const {pick} = require('lodash/core')
+const pick = require('lodash/pick')
+const trimStart = require('lodash/trimStart')
+const trimEnd = require('lodash/trimEnd')
 
 const EntityTypes = require('../../../common/enums/entity-types')
 const EventTypes = require('../../../common/enums/event-types')
@@ -53,8 +55,13 @@ function emailToDto(email) {
     // We decided for the meantime to set this flag in the discard flow, meaning that in the comments list - emails will
     // always appear as read.
 
+    // The ID of IMAP returns with enclosing '<' and '>'. We get rid of it to keep it conformed to the email ID returned
+    // by other email structures (such as SMTP).
+    let id = trimStart(email.header.messageId, '<')
+    id = trimEnd(id, '>')
+
     return {
-        id: email.header.uid,
+        id: id,
         createdAt: email.header.date,
         creator: emailUserToDTO(email.header.from),
         to: email.header.to.map(to => emailUserToDTO(to)),
@@ -64,7 +71,7 @@ function emailToDto(email) {
             html: email.html,
             threadId: email.header.gmailThreadId,
             gmailId: email.header.gmailId,
-            messageId: email.header.messageId,
+            uid: email.header.uid,
             isRead: true
         },
         type: EntityTypes.EMAIL

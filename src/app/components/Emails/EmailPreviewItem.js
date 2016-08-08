@@ -21,7 +21,7 @@ const EmailPreviewItem = ({email, dispatch}) => {
                 <div className="email-preview-text">{email.payload.text}</div>
             </PreviewItemText>
             <PreviewItemActions>
-                <EmailPreviewActionBar emailIds={email.payload.emailIds} email={email} />
+                <EmailPreviewActionBar emailUids={email.payload.emailUids} email={email} />
             </PreviewItemActions>
         </PreviewItem>
     )

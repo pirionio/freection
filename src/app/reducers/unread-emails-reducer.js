@@ -34,7 +34,7 @@ function markAsRead(state, action) {
     switch (action.status) {
         case ActionStatus.START:
             return immutable(state)
-                .arrayReject('emails', email => includes(action.emailIds, email.id))
+                .arrayReject('emails', email => includes(action.emailUids, email.id))
                 .value()
         case ActionStatus.ERROR:
             return immutable(state)

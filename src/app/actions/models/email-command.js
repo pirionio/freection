@@ -20,14 +20,14 @@ module.exports = {
         },
         {
             name: 'mark as read',
-            params: ['emailIds'],
+            params: ['emailUids'],
             type: 'post',
             path: '/emails/api/markasread',
             body: {
-                emailIds: 'emailIds'
+                emailUids: 'emailUids'
             },
             completeParams: {
-                emailIds: 'emailIds'
+                emailUids: 'emailUids'
             }
         }
     ]

@@ -85,9 +85,9 @@ function CancelAckAction(notification) {
     }
 }
 
-function DiscardEmails(emailIds) {
+function DiscardEmails(emailUids) {
     return {
-        component: <Action label="Discard" doFunc={EmailCommandActions.markAsRead} item={emailIds} key="action-Discard" />,
+        component: <Action label="Discard" doFunc={EmailCommandActions.markAsRead} item={emailUids} key="action-Discard" />,
         show: true
     }
 }
