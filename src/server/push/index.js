@@ -5,7 +5,7 @@ const {union, difference} = require('lodash')
 const tokenConfig = require('../shared/config/token')
 const Event = require('../shared/models/Event')
 const Thing = require('../shared/models/Thing')
-const {eventToDto} = require('../shared/transformers')
+const {eventToDto} = require('../shared/application/transformers')
 const logger = require('../shared/utils/logger')
 const EventTypes = require('../../common/enums/event-types')
 

@@ -2,7 +2,7 @@ const {remove, castArray, union} = require('lodash')
 
 const {Event, Thing, User} = require('../models')
 const EventCreator = require('./event-creator')
-const {eventToDto, thingToDto} = require('../transformers')
+const {eventToDto, thingToDto} = require('../application/transformers')
 const ThingStatus = require('../../../common/enums/thing-status')
 const EntityTypes = require('../../../common/enums/entity-types')
 const EventTypes = require('../../../common/enums/event-types')

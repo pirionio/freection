@@ -7,7 +7,7 @@ const ThingStatus = require('../../../common/enums/thing-status')
 const {Thing} = require('../models')
 const EventsCreator = require('./event-creator')
 const {userToAddress} = require('./address-creator')
-const {imapEmailToDto} = require('../transformers')
+const {imapEmailToDto} = require('../application/transformers')
 
 function fetchUnreadMessages(user) {
     return getImapConnection(user)
