@@ -71,7 +71,8 @@ class NewMessageBox extends Component {
             textField: {
                 width: '100%',
                 border: 'none',
-                outline: 'none'
+                outline: 'none',
+                resize: 'none'
             },
             send: {
                 position: 'absolute',
@@ -114,9 +115,9 @@ class NewMessageBox extends Component {
                                            ref={ref => this.messageSubject = ref}/>
                                 </Field>
                             </Flexbox>
-                            <Flexbox name="message-body" grow={1} style={styles.messageBody}>
+                            <Flexbox name="message-body" grow={1} container={true} style={styles.messageBody}>
                                 <Field model="newMessageBox.message.body">
-                                    <textarea style={styles.textField} tabIndex="2" placeholder="Write your message here" />
+                                    <textarea style={styles.textField} tabIndex="2" placeholder="Wrtie your message here" />
                                 </Field>
                             </Flexbox>
                             <Flexbox name="message-to" style={styles.messageTo}>
