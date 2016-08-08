@@ -24,7 +24,7 @@ function handlePost(request, response, action, options) {
     action(user, ...params)
         .then(result => response.json(options.result ? result : {}))
         .catch(error => {
-            if (error && error.name === 'DocumentNotFoundError') {
+            if (error && error.name === 'DocumentNotFoundError' && notFoundError) {
                 response.status(404).send(notFoundError)
             } else {
                 response.status(500).send(generalError + `: ${error.message}`)
@@ -42,17 +42,21 @@ function getParams(request, options) {
 }
 
 function getNotFoundErrorMessage(options, user, params) {
-    return template(options.errorTemplates.notFound)(getTemplateOptions(options, user, params))
+    return options.errorTemplates && options.errorTemplates.notFound ?
+        template(options.errorTemplates.notFound)(getTemplateOptions(options, user, params)) :
+        null
 }
 
 function getGeneralErrorMessage(options, user, params) {
-    return template(options.errorTemplates.general)(getTemplateOptions(options, user, params))
+    return options.errorTemplates && options.errorTemplates.general ?
+        template(options.errorTemplates.general)(getTemplateOptions(options, user, params)) :
+        null
 }
 
 function getTemplateOptions(options, user, params) {
     return merge({
         user: user.email,
-    }, zipObject(options.params, params))
+    }, zipObject(options.params, params), zipObject(options.body, params))
 }
 
 module.exports = {
