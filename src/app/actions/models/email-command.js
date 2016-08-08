@@ -19,6 +19,22 @@ module.exports = {
             path: '/emails/api/${threadId}/do'
         },
         {
+            name: 'reply to all',
+            params: ['threadId', 'messageText', 'subject', 'to', 'inReplyTo'],
+            type: 'post',
+            path: '/emails/api/message',
+            body: {
+                messageText: 'messageText',
+                subject: 'subject',
+                to: 'to',
+                inReplyTo: 'inReplyTo'
+            },
+            completeParams: {
+                threadId: 'threadId',
+                message: 'result'
+            }
+        },
+        {
             name: 'mark as read',
             params: ['emailUids'],
             type: 'post',

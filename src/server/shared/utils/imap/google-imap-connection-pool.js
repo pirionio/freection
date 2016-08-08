@@ -1,6 +1,6 @@
 const ConnectionPool = require('../connection-pool/connection-pool')
 const GoogleImapConnection = require('./google-imap-connection')
-const IMAP = require('../../constants')
+const {IMAP} = require('../../constants')
 
 class GoogleImapConnectionPool extends ConnectionPool {
     constructor() {

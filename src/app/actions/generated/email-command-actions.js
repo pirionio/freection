@@ -48,6 +48,41 @@ function doEmail(threadId) {
     }
 }
 
+function replyToAll(threadId, messageText, subject, to, inReplyTo) {
+    return dispatch => {
+        dispatch({
+            type: EmailCommandActionsTypes.REPLY_TO_ALL,
+            status: ActionStatus.START,
+            threadId,
+            messageText,
+            subject,
+            to,
+            inReplyTo
+        })
+        return ResourceUtil.post(`/emails/api/message`, {
+            messageText: messageText,
+            subject: subject,
+            to: to,
+            inReplyTo: inReplyTo
+        })
+            .then(result => dispatch({
+                type: EmailCommandActionsTypes.REPLY_TO_ALL,
+                status: ActionStatus.COMPLETE,
+                threadId: threadId,
+                message: result
+            }))
+            .catch(() => dispatch({
+                type: EmailCommandActionsTypes.REPLY_TO_ALL,
+                status: ActionStatus.ERROR,
+                threadId,
+                messageText,
+                subject,
+                to,
+                inReplyTo
+            }))
+    }
+}
+
 function markAsRead(emailUids) {
     return dispatch => {
         dispatch({
@@ -74,5 +109,6 @@ function markAsRead(emailUids) {
 module.exports = {
     newEmail,
     doEmail,
+    replyToAll,
     markAsRead
 }

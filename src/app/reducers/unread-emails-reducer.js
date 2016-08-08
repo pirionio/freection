@@ -1,5 +1,3 @@
-const includes = require('lodash/includes')
-
 const EmailActionTypes = require('../actions/types/email-action-types')
 const EmailCommandActionTypes = require('../actions/types/email-command-action-types')
 const {ActionStatus} = require('../constants')
@@ -34,7 +32,7 @@ function markAsRead(state, action) {
     switch (action.status) {
         case ActionStatus.START:
             return immutable(state)
-                .arrayReject('emails', email => includes(action.emailUids, email.id))
+                .arrayReject('emails', email => action.emailUids.includes(email.payload.uid))
                 .value()
         case ActionStatus.ERROR:
             return immutable(state)

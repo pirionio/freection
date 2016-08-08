@@ -4,13 +4,13 @@ const {chain} = require('lodash/core')
 
 const GoogleImapConnectionPool = require('../shared/utils/imap/google-imap-connection-pool')
 const EmailService = require('../shared/application/email-service')
-const {emailToDto} = require('../shared/transformers')
+const {imapEmailToDto} = require('../shared/transformers')
 const logger = require('../shared/utils/logger')
 
 router.get('/unread', (request, response) => {
     const user = request.user
     fetchUnreadMessages(user)
-        .then(emails => response.json(emails.map(emailToDto)))
+        .then(emails => response.json(emails.map(imapEmailToDto)))
         .catch(error => {
             const message = 'Error while fetching unread emails'
             logger.error(message, error)
@@ -44,6 +44,19 @@ router.post('/:emailThreadId/do', (request, response) => {
         })
 })
 
+router.post('/message', (request, response) => {
+    const user = request.user
+    const {messageText, subject, to, inReplyTo} = request.body
+
+    return EmailService.replyToAll(user, to, inReplyTo, subject, messageText)
+        .then(result => response.json(result))
+        .catch(error => {
+            const message = `Could not reply to message ${inReplyTo} to all`
+            logger.error(message, error)
+            response.status(500).send(message)
+        })
+})
+
 router.post('/markasread', (request, response) => {
     const user = request.user
     const {emailUids} = request.body
@@ -56,12 +69,12 @@ router.post('/markasread', (request, response) => {
         })
 })
 
-function establishConnection(user) {
+function getImapConnection(user) {
     return GoogleImapConnectionPool.getConnection(user)
 }
 
 function fetchUnreadMessages(user) {
-    return establishConnection(user)
+    return getImapConnection(user)
         .then(connection => {
             return connection.getUnseenMessages(0, {includeBodies: true})
                 .then(emails => {
@@ -72,7 +85,7 @@ function fetchUnreadMessages(user) {
 }
 
 function fetchFullThread(user, emailThreadId) {
-    return establishConnection(user)
+    return getImapConnection(user)
         .then(connection => {
             return connection.getThreadMessages(emailThreadId)
                 .then(emails => {
@@ -85,13 +98,13 @@ function fetchFullThread(user, emailThreadId) {
 
 function prepareThread(emails) {
     const firstEmail = chain(emails).sortBy('header.date').head().value()
-    const threadDto = emailToDto(firstEmail)
-    threadDto.messages = emails.map(emailToDto)
+    const threadDto = imapEmailToDto(firstEmail)
+    threadDto.messages = emails.map(imapEmailToDto)
     return threadDto
 }
 
 function markAsRead(user, emailUids) {
-    return establishConnection(user)
+    return getImapConnection(user)
         .then(connection => {
             return connection.markAsRead(emailUids).then(() => GoogleImapConnectionPool.releaseConnection(user, connection))
         })

@@ -10,6 +10,7 @@ const classAutobind = require('class-autobind').default
 const isEmpty = require('lodash/isEmpty')
 
 const CommentList = require('../Comment/CommentList')
+const ReplyEmailBox = require('../MessageBox/ReplyEmailBox')
 
 const EmailPageActions = require('../../actions/email-page-actions')
 
@@ -125,6 +126,7 @@ class EmailThread extends Component {
                         <CommentList comments={comments} />
                     </div>
                 </div>
+                <ReplyEmailBox />
             </div>
         )
     }

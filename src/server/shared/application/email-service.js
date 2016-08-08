@@ -34,6 +34,18 @@ function doEmail(user, thread) {
     })
 }
 
+function replyToAll(user, to, inReplyTo, subject, messageText, messageHtml) {
+    return getConnection(user)
+        .then(connection => {
+            return connection.replyToAll(to, inReplyTo, subject, messageText, messageHtml)
+                .then(result => {
+                    GoogleSmtpConnectionPool.releaseConnection(user, connection)
+                    const creator = userToAddress(user)
+                    return smtpEmailToDto(result, creator, subject, messageText, messageHtml)
+                })
+        })
+}
+
 function saveNewThing(subject, creator, to, threadId) {
 
     return Thing.save({
@@ -60,6 +72,24 @@ function getConnection(user) {
     return GoogleSmtpConnectionPool.getConnection(user)
 }
 
+function smtpEmailToDto(email, creator, subject, text, html) {
+    return {
+        id: email.messageId,
+        creator,
+        to: email.to,
+        subject,
+        payload: {
+            text,
+            html,
+            isRead: false
+        },
+        type: EntityTypes.EMAIL,
+        createdAt: new Date()
+    }
+}
+
 module.exports = {
-    sendEmail, doEmail
+    sendEmail, 
+    doEmail,
+    replyToAll
 }

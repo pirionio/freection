@@ -29,19 +29,40 @@ class SmtpConnection {
         return Promise.resolve(this._transport)
     }
 
-    send(to, subject, message, html) {
+    send(to, subject, messageText, messageHtml) {
         return this._transport.sendMailAsync({
-            from: this._user.email,
+            from: createFromAddress(this._user),
             to,
             subject,
-            text: message,
-            html: html
+            text: messageText,
+            html: messageHtml
+        })
+    }
+
+    replyToAll(to, inReplyTo, subject, messageText, messageHtml) {
+        return this._transport.sendMailAsync({
+            from: createFromAddress(this._user),
+            to,
+            inReplyTo,
+            subject: createReplySubject(subject),
+            text: messageText,
+            html: messageHtml
         })
     }
 
     close() {
         return this._transport.close()
     }
+}
+
+function createFromAddress(user) {
+    return `${user.firstName} ${user.lastName} <${user.email}>`
+}
+
+function createReplySubject(subject) {
+    return subject.toLowerCase().startsWith('re:') ?
+        subject :
+        `Re: ${subject}`
 }
 
 module.exports = SmtpConnection

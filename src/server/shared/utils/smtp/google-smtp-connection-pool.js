@@ -1,6 +1,6 @@
 const ConnectionPool = require('../connection-pool/connection-pool')
 const GoogleSmtpConnection = require('./google-smtp-connection')
-const SMTP = require('../../constants')
+const {SMTP} = require('../../constants')
 
 class GoogleSmtpConnectionPool extends ConnectionPool {
     constructor() {

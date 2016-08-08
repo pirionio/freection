@@ -6,7 +6,7 @@ const classAutobind = require('class-autobind').default
 
 const ThingCommandActions = require('../../actions/thing-command-actions')
 
-class MessageBox extends Component {
+class CommentThingBox extends Component {
     constructor(props) {
         super(props)
         classAutobind(this)
@@ -39,7 +39,7 @@ class MessageBox extends Component {
     }
 }
 
-MessageBox.propTypes = {
+CommentThingBox.propTypes = {
     commentThingBox: PropTypes.object.isRequired,
     thing: PropTypes.object.isRequired
 }
@@ -51,4 +51,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(MessageBox)
+module.exports = connect(mapStateToProps)(CommentThingBox)

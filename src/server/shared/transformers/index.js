@@ -49,7 +49,7 @@ function commentPayloadToDto(payload, user) {
     })
 }
 
-function emailToDto(email) {
+function imapEmailToDto(email) {
     // TODO We don't know how differ the read status of a comment, and the discard of new email notifications.
     // Our app has these two different options, while a regular mail has only a single state (the \\Seen flag).
     // We decided for the meantime to set this flag in the discard flow, meaning that in the comments list - emails will
@@ -91,4 +91,4 @@ function emailUserToDTO(user) {
     }
 }
 
-module.exports = {thingToDto, eventToDto, userToDto, emailToDto}
+module.exports = {thingToDto, eventToDto, userToDto, imapEmailToDto}
