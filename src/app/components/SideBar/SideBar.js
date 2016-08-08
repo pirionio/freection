@@ -1,6 +1,6 @@
 const React = require('react')
 const {Component, PropTypes} = React
-const {Link} = require('react-router')
+const Link = require('../UI/Link')
 const radium = require('radium')
 
 const Flexbox = require('../UI/Flexbox')
@@ -18,9 +18,10 @@ class SideBar extends Component {
             color: vars.menuTextColor,
             display: 'block',
             marginBottom: 38,
+            fontWeight: 600,
 
-            ':visited': {
-                color: vars.menuTextColor
+            ':hover': {
+                color: vars.secondaryColor
             }
         }
 

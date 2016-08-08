@@ -2,6 +2,9 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const classAutobind = require('class-autobind').default
+const radium = require('radium')
+
+const styleVars = require('../style-vars')
 
 class Action extends Component {
     constructor(props) {
@@ -17,7 +20,24 @@ class Action extends Component {
     render () {
         const {label, disabled} = this.props
         const buttonStyle = {
-            marginLeft: '28px'
+            marginLeft: '28px',
+            border: 'none',
+            backgroundColor: styleVars.primaryColor,
+            color: 'white',
+            textTransform: 'uppercase',
+            fontWeight: '600',
+            fontSize: '12px',
+            height: '27px',
+            padding: '8px 16px',
+            cursor: 'hand',
+
+            ':focus':{
+                outline: 'none',
+            },
+
+            ':hover': {
+                color: styleVars.secondaryColor
+            }
         }
 
         return (
@@ -37,4 +57,4 @@ Action.defaultProps = {
     disabled: false
 }
 
-module.exports = connect()(Action)
+module.exports = connect()(radium(Action))
