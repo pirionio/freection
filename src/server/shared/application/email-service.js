@@ -43,8 +43,16 @@ function sendEmail(user, to, subject, text, html) {
     return getSmtpConnection(user)
         .then(connection => {
             return connection.send(to, subject, text, html)
-                .then(() => GoogleSmtpConnectionPool.releaseConnection(user, connection))
+                .then(email => {
+                    GoogleSmtpConnectionPool.releaseConnection(user, connection)
+                    return smtpEmailToDto(email, user, subject, text, html)
+                })
         })
+}
+
+function sendEmailForThing(user, to, subject, body) {
+    const emailForThingHtml = getEmailForThingHtml(user, body)
+    return sendEmail(user, to, subject, undefined, emailForThingHtml)
 }
 
 function doEmail(user, emailThreadId) {
@@ -59,7 +67,7 @@ function doEmail(user, emailThreadId) {
                 }
             })
 
-            return saveNewThing(thread.subject, creator, userToAddress(user), thread.payload.threadId).
+            return saveNewThing(thread.subject, creator, userToAddress(user), thread.id, thread.payload.threadId).
                 then(thing => {
                     EventsCreator.createCreated(creator, thing, getShowNewList)
                         .then(() => EventsCreator.createAccepted(userToAddress(user), thing, getShowNewList))
@@ -77,8 +85,7 @@ function replyToAll(user, to, inReplyTo, subject, messageText, messageHtml) {
             return connection.replyToAll(to, inReplyTo, subject, messageText, messageHtml)
                 .then(result => {
                     GoogleSmtpConnectionPool.releaseConnection(user, connection)
-                    const creator = userToAddress(user)
-                    return smtpEmailToDto(result, creator, subject, messageText, messageHtml)
+                    return smtpEmailToDto(result, user, subject, messageText, messageHtml)
                 })
         })
 }
@@ -90,7 +97,7 @@ function prepareThread(emails) {
     return threadDto
 }
 
-function saveNewThing(subject, creator, to, threadId) {
+function saveNewThing(subject, creator, to, emailId, threadId) {
     return Thing.save({
         createdAt: new Date(),
         creator,
@@ -101,6 +108,7 @@ function saveNewThing(subject, creator, to, threadId) {
         doers: [to.id],
         type: EntityTypes.EMAIL_THING.key,
         payload: {
+            emailId,
             threadId,
             status: ThingStatus.INPROGRESS.key
         }
@@ -111,10 +119,10 @@ function getShowNewList() {
     return []
 }
 
-function smtpEmailToDto(email, creator, subject, text, html) {
+function smtpEmailToDto(email, user, subject, text, html) {
     return {
         id: email.messageId,
-        creator,
+        creator: userToAddress(user),
         to: email.to,
         subject,
         payload: {
@@ -125,6 +133,17 @@ function smtpEmailToDto(email, creator, subject, text, html) {
         type: EntityTypes.EMAIL,
         createdAt: new Date()
     }
+}
+
+function getEmailForThingHtml(user, body) {
+    return `<div>
+                <div>${body}</div><br>
+                <span>
+                    ${user.firstName} ${user.lastName} is using Freection.
+                    If you want to let ${user.firstName} know that's going on with this thing, try Freection 
+                    <a href="https://freection.com" target="_blank">here!</a>
+                </span>
+            </div>`
 }
 
 function getImapConnection(user) {
@@ -140,6 +159,7 @@ module.exports = {
     fetchFullThread,
     markAsRead,
     sendEmail,
+    sendEmailForThing,
     doEmail,
     replyToAll
 }

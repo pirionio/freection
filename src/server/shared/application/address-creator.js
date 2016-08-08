@@ -13,4 +13,15 @@ function userToAddress(user) {
     }
 }
 
-module.exports = {userToAddress}
+function emailToAddress(email, name) {
+    return {
+        id: email,
+        type: UserTypes.EMAIL.key,
+        payload: {
+            email: email
+        },
+        displayName: name ? name : `<${email}>`
+    }
+}
+
+module.exports = {userToAddress, emailToAddress}

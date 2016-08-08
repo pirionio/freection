@@ -3,6 +3,7 @@ const pick = require('lodash/pick')
 const trimStart = require('lodash/trimStart')
 const trimEnd = require('lodash/trimEnd')
 
+const AddressCreator = require('../application/address-creator')
 const EntityTypes = require('../../../common/enums/entity-types')
 const EventTypes = require('../../../common/enums/event-types')
 const UserTypes = require('../../../common/enums/user-types')
@@ -80,15 +81,7 @@ function imapEmailToDto(email) {
 
 function emailUserToDTO(user) {
     const email = `${user.username }@${user.organization}`
-
-    return {
-        id: email,
-        type: UserTypes.EMAIL.key,
-        payload: {
-            email: email,
-        },
-        displayName: user.name ? user.name : `<${email}>`
-    }
+    return AddressCreator.emailToAddress(email, user.name)
 }
 
 module.exports = {thingToDto, eventToDto, userToDto, imapEmailToDto}

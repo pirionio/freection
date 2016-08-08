@@ -1,4 +1,4 @@
-const {remove, castArray, union} = require('lodash')
+const {remove, castArray, union, chain, omitBy, isNil} = require('lodash')
 
 const {Event, Thing, User} = require('../models')
 const EventCreator = require('./event-creator')
@@ -6,7 +6,9 @@ const {eventToDto, thingToDto} = require('../application/transformers')
 const ThingStatus = require('../../../common/enums/thing-status')
 const EntityTypes = require('../../../common/enums/entity-types')
 const EventTypes = require('../../../common/enums/event-types')
-const {userToAddress} = require('./address-creator')
+const UserTypes = require('../../../common/enums/user-types')
+const {userToAddress, emailToAddress} = require('./address-creator')
+const EmailService = require('./email-service')
 const logger = require('../utils/logger')
 
 function getWhatsNew(user) {
@@ -48,17 +50,21 @@ function getThing(user, thingId) {
 function newThing(user, to, body, subject) {
     const creator = userToAddress(user)
 
-    return User.getUserByEmail(to)
-        .then(toUser => saveNewThing(body, subject, creator, userToAddress(toUser)))
-        .then(thing => {
-
-            return EventCreator.createCreated(creator, thing, getShowNewList)
-                .then(() => {
+    return getToAddress(to)
+        .then(toAddress => {
+            return sendEmailForThing(user, toAddress, subject, body)
+                .then(email => saveNewThing(body, subject, creator, toAddress, email))
+                .then(thing => EventCreator.createCreated(creator, thing, getShowNewList).then(() => thing))
+                .then(thing => {
                     //  if thing assigned to myself let's accept it immediately
                     if (thing.isSelf()) {
                         return EventCreator.createAccepted(creator, thing, getShowNewList)
                     }
                 })
+        })
+        .catch(error => {
+            logger.error(`error while creating new thing for user ${user.email}`, error)
+            throw error
         })
 }
 
@@ -196,6 +202,7 @@ function comment(user, thingId, commentText) {
     const creator = userToAddress(user)
 
     return Thing.get(thingId).run()
+        .then(thing => sendEmailForComment(user, thing, commentText).then(() => thing))
         .then(thing => EventCreator.createComment(creator, thing, getShowNewList, commentText))
         .then(event => Event.getFullEvent(event.id))
         .then(event => eventToDto(event, user, {includeThing: false}))
@@ -213,7 +220,38 @@ function discardEventsByType(user, thingId, eventType) {
         })
 }
 
-function saveNewThing(body, subject, creator, to) {
+function getToAddress(to) {
+    return User.getUserByEmail(to)
+        .then(toUser => userToAddress(toUser))
+        .catch(error => {
+            if (error !== 'NotFound')
+                throw error
+            else
+                return emailToAddress(to)
+        })
+}
+
+function sendEmailForThing(user, toAddress, subject, body) {
+    if (toAddress.type === UserTypes.EMAIL.key)
+        return EmailService.sendEmailForThing(user, toAddress.payload.email, subject, body)
+    else
+        return Promise.resolve(null)
+}
+
+function sendEmailForComment(user, thing, commentText) {
+    const emailRecipients = chain([thing.creator, thing.to])
+        .filter({type: UserTypes.EMAIL.key})
+        .map('payload.email')
+        .value()
+
+    if (!emailRecipients.length)
+        return Promise.resolve(null)
+
+    return EmailService.replyToAll(user, emailRecipients, thing.payload.emailId, thing.subject, commentText)
+}
+
+function saveNewThing(body, subject, creator, to, email) {
+    console.log('email', email)
     // check if thing is self thing (assigned to creator)
     const isSelfThing = creator.id === to.id
     const status = isSelfThing ? ThingStatus.INPROGRESS.key : ThingStatus.NEW.key
@@ -229,7 +267,10 @@ function saveNewThing(body, subject, creator, to) {
         followUpers,
         doers,
         type: EntityTypes.THING.key,
-        payload: { status }
+        payload: omitBy({
+            status,
+            emailId: email ? email.id : null
+        }, isNil)
     })
 }
 
@@ -239,13 +280,13 @@ function getShowNewList(user, thing, eventType) {
 
     switch (eventType) {
         case EventTypes.CREATED.key:
-            return [thing.to.id]
+            return getToList(thing)
         case EventTypes.DISMISSED.key:
         case EventTypes.DONE.key:
             return [thing.creator.id]
         case EventTypes.CANCELED.key:
         case EventTypes.SENT_BACK.key:
-            return union(thing.doers, [thing.to.id])
+            return union(thing.doers, getToList(thing))
         case EventTypes.COMMENT.key:
             return union(thing.followUpers, thing.doers, [thing.creator.id]).filter(userId => userId !== user.id)
         case EventTypes.PING.key:
@@ -257,6 +298,10 @@ function getShowNewList(user, thing, eventType) {
         default:
             throw "UnknownEventType"
     }
+}
+
+function getToList(thing) {
+    return thing.to.type === UserTypes.FREECTION.key ? [thing.to.id] : []
 }
 
 function performDoThing(thing, user) {
