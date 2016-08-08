@@ -1,3 +1,5 @@
+const isUndefined = require('lodash/isUndefined')
+
 const EmailPageActionTypes = require('../actions/types/email-page-action-types')
 const EmailCommandActionTypes = require('../actions/types/email-command-action-types')
 const {ActionStatus} = require('../constants')
