@@ -13,7 +13,7 @@ const styleVars = require('../style-vars')
 class MessageTypeSelector extends Component {
     constructor(props) {
         super(props)
-        classAutobind(this)
+        classAutobind(this, MessageTypeSelector.prototype)
     }
 
     selectThing() {
