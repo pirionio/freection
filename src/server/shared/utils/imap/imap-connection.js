@@ -43,6 +43,10 @@ class ImapConnection {
         this._onDisconnect = callback
     }
 
+    onMail(callback) {
+        this._connection.on('mail', callback)
+    }
+
     parseRawMessage(rawMessage, options) {
         return new Promise((resolve, reject) => {
             const message = {}

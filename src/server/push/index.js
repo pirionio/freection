@@ -3,7 +3,7 @@ const socketioJwt = require('socketio-jwt')
 const {union, difference} = require('lodash')
 
 const tokenConfig = require('../shared/config/token')
-const Event = require('../shared/models/Event')
+const {Event, MailNotification} = require('../shared/models')
 const Thing = require('../shared/models/Thing')
 const {eventToDto} = require('../shared/application/transformers')
 const logger = require('../shared/utils/logger')
@@ -14,6 +14,7 @@ module.exports = (app) => {
 
     acceptConnections()
     listenToEventChanges()
+    listenToMailNotifications()
 
     function acceptConnections() {
         io.on('connection', socketioJwt.authorize({
@@ -34,12 +35,30 @@ module.exports = (app) => {
             })
     }
 
+    function listenToMailNotifications() {
+        MailNotification.changes()
+            .then(auditMailNotifications)
+            .catch(error => {
+                logger.error('Error reading mail notifications from the DB:', error)
+            })
+    }
+
     function auditChanges(changes) {
         changes.each((error, doc) => {
             if (error) {
                 logger.error('Error reading changes from the DB:', error)
             } else {
                 auditEvent(doc)
+            }
+        })
+    }
+
+    function auditMailNotifications(changes) {
+        changes.each((error, doc) => {
+            if (error) {
+                logger.error('Error reading changes from the DB:', error)
+            } else {
+                io.to(doc.id).emit('email-notification')
             }
         })
     }

@@ -51,7 +51,7 @@ function doEmail(threadId) {
 function replyToAll(threadId, messageText, subject, to, inReplyTo) {
     return dispatch => {
         dispatch({
-            type: EmailCommandActionsTypes.REPLY_TO_ALL,
+            type: EmailCommandActionsTypes.REPLY_TO_ALL, 
             status: ActionStatus.START,
             threadId,
             messageText,
@@ -60,19 +60,19 @@ function replyToAll(threadId, messageText, subject, to, inReplyTo) {
             inReplyTo
         })
         return ResourceUtil.post(`/emails/api/message`, {
-            messageText: messageText,
-            subject: subject,
-            to: to,
-            inReplyTo: inReplyTo
-        })
+                messageText: messageText,
+                subject: subject,
+                to: to,
+                inReplyTo: inReplyTo
+            })
             .then(result => dispatch({
-                type: EmailCommandActionsTypes.REPLY_TO_ALL,
+                type: EmailCommandActionsTypes.REPLY_TO_ALL, 
                 status: ActionStatus.COMPLETE,
                 threadId: threadId,
                 message: result
             }))
             .catch(() => dispatch({
-                type: EmailCommandActionsTypes.REPLY_TO_ALL,
+                type: EmailCommandActionsTypes.REPLY_TO_ALL, 
                 status: ActionStatus.ERROR,
                 threadId,
                 messageText,

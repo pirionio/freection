@@ -4,6 +4,8 @@ const WhatsNewActions = require('../actions/whats-new-actions')
 const EventActions = require('../actions/event-actions')
 const EventTypes = require('../../common/enums/event-types')
 
+const EmailLifecycleService = require('./email-lifecycle-service')
+
 function listenToUpdates(pushToken, dispatch) {
     const socket = SocketUtil.createSocket(pushToken)
     
@@ -49,6 +51,10 @@ function listenToUpdates(pushToken, dispatch) {
 
     socket.on('comment-read-by', event => {
         dispatch(EventActions.commentReadBy(event))
+    })
+
+    socket.on('email-notification', () => {
+        EmailLifecycleService.updateUnread()
     })
 }
 
