@@ -17,6 +17,8 @@ const CommentThingBox = require('../MessageBox/CommentThingBox')
 
 const Flexbox = require('../UI/Flexbox')
 const TextTruncate = require('../UI/TextTruncate')
+const Button = require('../UI/Button')
+const styleVars = require('../style-vars')
 
 const ThingPageActions = require('../../actions/thing-page-actions')
 
@@ -131,27 +133,29 @@ class Thing extends Component {
         return (
             <Flexbox name="thing-content" grow={1} container="column" style={styles.thing}>
                     <Flexbox name="thing-header" style={styles.header}>
-                        <Flexbox name="thing-header-row" container="row" alignItems="center">
-                            <Flexbox name="thing-subject" grow={1} style={styles.subject}>
-                                <TextTruncate>{thing.subject}</TextTruncate>
+                        <Flexbox name="thing-header-row" container="row" alignItems="center" style={styles.headerRow}>
+                            <Flexbox grow={1} container="row" style={{minWidth: 0}}>
+                                <Flexbox name="thing-subject" style={styles.subject}>
+                                    <TextTruncate>{thing.subject}</TextTruncate>
+                                </Flexbox>
+                                <Flexbox name="thing-status" style={styles.status}>
+                                    ({thing.payload ? thing.payload.status : ''})
+                                </Flexbox>
                             </Flexbox>
-                            <Flexbox name="thing-status" style={styles.status}>
-                                ({thing.payload ? thing.payload.status : ''})
-                            </Flexbox>
-                            <Flexbox name="thing-actions" style={styles.actions}>
+                            <Flexbox name="thing-actions">
                                 <ThingPageActionsBar thing={thing} />
                             </Flexbox>
                             <Flexbox name="thing-close" style={styles.close}>
-                                <button onClick={this.close}>Back</button>
+                                <Button label="Back" onClick={this.close} style={styles.button} />
                             </Flexbox>
                         </Flexbox>
                     </Flexbox>
-                    <Flexbox name="thing-sub-header" style={styles.subHeader}>
+                    <Flexbox name="thing-sub-header" style={styles.header}>
                         <Flexbox name="thing-header-row" container="row" alignItems="center">
-                            <Flexbox name="thing-user" grow={1} style={styles.user}>
+                            <Flexbox name="thing-user" grow={1}>
                                 {this.getThingUser()}
                             </Flexbox>
-                            <Flexbox name="thing-creation-time" style={styles.created}>
+                            <Flexbox name="thing-creation-time">
                                 {createdAt}
                             </Flexbox>
                         </Flexbox>
@@ -173,34 +177,33 @@ class Thing extends Component {
                 marginBottom: '15px'
             },
             header: {
-                height: '30px',
-                marginBottom: '10px'
+                height: '40px',
+                padding: '0 10px',
+                backgroundColor: '#36474f',
+                color: 'white'
             },
-            subHeader: {
-                height: '30px',
-                marginBottom: '10px'
+            headerRow: {
+                height: '100%'
             },
             subject: {
+                fontWeight: 'bold',
                 minWidth: 0
             },
             status: {
-                width: '150px'
-            },
-            close: {
+                width: '150px',
                 paddingLeft: '10px'
-            },
-            actions: {
-
-            },
-            created: {
-
-            },
-            user: {
-
             },
             content: {
                 height: '100%',
-                overflowY: 'hidden'
+                overflowY: 'hidden',
+                marginTop: '10px'
+            },
+            button: {
+                backgroundColor: styleVars.secondaryColor,
+                color: styleVars.primaryColor,
+                ':hover': {
+                    color: 'white'
+                }
             }
         }
     }

@@ -4,12 +4,12 @@ const {connect} = require('react-redux')
 const classAutobind = require('class-autobind').default
 const radium = require('radium')
 
-const styleVars = require('../style-vars')
+const Button = require('../UI/Button')
 
 class Action extends Component {
     constructor(props) {
         super(props)
-        classAutobind(this)
+        classAutobind(this, Action.prototype)
     }
 
     doAction() {
@@ -18,30 +18,10 @@ class Action extends Component {
     }
     
     render () {
-        const {label, disabled} = this.props
-        const buttonStyle = {
-            marginLeft: '28px',
-            border: 'none',
-            backgroundColor: styleVars.primaryColor,
-            color: 'white',
-            textTransform: 'uppercase',
-            fontWeight: '600',
-            fontSize: '12px',
-            height: '27px',
-            padding: '8px 16px',
-            cursor: 'hand',
-
-            ':focus':{
-                outline: 'none',
-            },
-
-            ':hover': {
-                color: styleVars.secondaryColor
-            }
-        }
+        const {label, disabled, style} = this.props
 
         return (
-            <button style={buttonStyle} onClick={this.doAction} disabled={disabled}>{label}</button>
+            <Button label={label} onClick={this.doAction} disabled={disabled} style={style} />
         )
     }
 }
@@ -50,7 +30,8 @@ Action.propTypes = {
     label: PropTypes.string.isRequired,
     item: PropTypes.any.isRequired,
     doFunc: PropTypes.func.isRequired,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
+    style: PropTypes.object
 }
 
 Action.defaultProps = {

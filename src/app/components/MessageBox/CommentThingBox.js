@@ -7,6 +7,7 @@ const classAutobind = require('class-autobind').default
 const ThingCommandActions = require('../../actions/thing-command-actions')
 
 const Flexbox = require('../UI/Flexbox')
+const Button = require('../UI/Button')
 const styleVars = require('../style-vars')
 
 class CommentThingBox extends Component {
@@ -59,6 +60,8 @@ class CommentThingBox extends Component {
                 button: {
                     height: '30px',
                     width: '100%',
+                    padding: '0',
+                    margin: '0',
                     border: 'none',
                     backgroundColor: styleVars.primaryColor,
                     color: 'white',
@@ -95,7 +98,7 @@ class CommentThingBox extends Component {
                         </Flexbox>
                     </Flexbox>
                     <div name="send-container" style={styles.send}>
-                        <button type="submit" style={styles.send.button} tabIndex="4" disabled={commentThingBox.ongoingAction}>Send</button>
+                        <Button type="submit" label="Send" style={styles.send.button} tabIndex="4" disabled={commentThingBox.ongoingAction} />
                     </div>
                 </Flexbox>
             </Form>

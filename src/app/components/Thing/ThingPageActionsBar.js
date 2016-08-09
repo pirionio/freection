@@ -4,6 +4,7 @@ const {connect} = require('react-redux')
 
 const ActionsBar = require('../Actions/ActionsBar')
 const {DoAction, DoneAction, DismissAction, CloseAction, CancelAction, SendBackAction} = require('../Actions/Actions')
+const styleVars = require('../style-vars')
 
 class ThingPageActionsBar extends Component {
     isDisabled() {
@@ -13,13 +14,21 @@ class ThingPageActionsBar extends Component {
     render() {
         const {thing, currentUser} = this.props
 
+        const buttonStyle = {
+            backgroundColor: styleVars.secondaryColor,
+            color: styleVars.primaryColor,
+            ':hover': {
+                color: 'white'
+            }
+        }
+
         const actions = [
-            DoAction(thing, currentUser, this.isDisabled()),
-            DoneAction(thing, currentUser, this.isDisabled()),
-            DismissAction(thing, currentUser, this.isDisabled()),
-            CloseAction(thing, currentUser, this.isDisabled()),
-            CancelAction(thing, currentUser, this.isDisabled()),
-            SendBackAction(thing, currentUser, this.isDisabled())
+            DoAction(thing, currentUser, this.isDisabled(), buttonStyle),
+            DoneAction(thing, currentUser, this.isDisabled(), buttonStyle),
+            DismissAction(thing, currentUser, this.isDisabled(), buttonStyle),
+            CloseAction(thing, currentUser, this.isDisabled(), buttonStyle),
+            CancelAction(thing, currentUser, this.isDisabled(), buttonStyle),
+            SendBackAction(thing, currentUser, this.isDisabled(), buttonStyle)
         ]
 
         return (

@@ -72,7 +72,10 @@ class Comment extends Component {
         const styles = {
             comment: {
                 minHeight: '35px',
-                margin: '15px 0'
+                padding: '10px',
+                marginBottom: '5px',
+                backgroundColor: 'white',
+                border: `1px solid, ${styleVars.primaryColor}`
             },
             unread: {
                 backgroundColor: Color('rgba(232, 221, 110, 0.36)').hexString()
