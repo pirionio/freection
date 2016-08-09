@@ -13,7 +13,7 @@ class TextTruncate extends Component {
         }
 
         return (
-            <div style={[textTruncateStyle, style]}>
+            <div name="text-truncate" style={[textTruncateStyle, style]}>
                 {children}
             </div>)
     }

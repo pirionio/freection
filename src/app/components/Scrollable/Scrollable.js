@@ -37,13 +37,15 @@ class Scrollable extends Component {
     }
 
     render() {
-        return <div style={{overflowY: 'auto', height: '100%'}}>
-            {
-                React.Children.map(this.props.children, element => {
-                    return React.cloneElement(element, { ref: element.key })
-                })
-            }
-        </div>
+        const childrenToRender = React.Children.map(this.props.children, element => {
+            return React.cloneElement(element, {ref: element.key})
+        })
+
+        return (
+            <div name="scrollable" style={{overflowY: 'auto', height: '100%'}}>
+                {childrenToRender}
+            </div>
+        )
     }
 }
 

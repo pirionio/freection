@@ -7,14 +7,21 @@ const classnames = require('classnames')
 const sanitizeHtml = require('sanitize-html')
 const cheerio = require('cheerio')
 const juice = require('juice/client')
+const radium = require('radium')
+const classAutobind = require('class-autobind').default
 
 const EventTypes = require('../../../common/enums/event-types')
 const ThingCommandActions = require('../../actions/thing-command-actions')
 
+const Flexbox = require('../UI/Flexbox')
+const Color = require('color')
+const TextTruncate = require('../UI/TextTruncate')
+const styleVars = require('../style-vars')
+
 class Comment extends Component {
     constructor(props) {
         super(props)
-        this.onVisibilityChange = this.onVisibilityChange.bind(this)
+        classAutobind(this, Comment.prototype)
     }
 
     onVisibilityChange(isVisible) {
@@ -61,24 +68,41 @@ class Comment extends Component {
     render() {
         const {comment} = this.props
         const createdAt = dateFns.format(comment.createdAt, 'DD-MM-YYYY HH:mm')
-        const containerClassname = classnames('comment-container', {
-            'comment-unread': !comment.payload.initialIsRead
-        })
+
+        const styles = {
+            comment: {
+                minHeight: '35px',
+                margin: '15px 0'
+            },
+            unread: {
+                backgroundColor: Color('rgba(232, 221, 110, 0.36)').hexString()
+            },
+            creator: {
+                width: '120px'
+            },
+            text: {
+                padding: '0 10px'
+            },
+            date: {
+                width: '120px'
+            }
+        }
 
         return (
-        <VisibilitySensor onChange={this.onVisibilityChange} partialVisibility={true}>
-            <div className={containerClassname}>
-                <div className="comment-creator">
-                    {comment.creator.displayName} :
-                </div>
-                <div className="comment-message">
-                    {this.getCommentText()}
-                </div>
-                <div className="comment-date">
-                    {createdAt}
-                </div>
-            </div>
-        </VisibilitySensor>
+            <VisibilitySensor onChange={this.onVisibilityChange} partialVisibility={true}>
+                <Flexbox name="comment-container" container="row" alignItems="flex-start"
+                         style={[styles.comment, !comment.payload.initialIsRead && styles.unread]}>
+                    <Flexbox name="comment-creator" shrink={0} style={styles.creator}>
+                        <TextTruncate>{comment.creator.displayName} :</TextTruncate>
+                    </Flexbox>
+                    <Flexbox name="comment-message" grow={1} style={styles.text}>
+                        {this.getCommentText()}
+                    </Flexbox>
+                    <Flexbox name="comment-date" shrink={0} style={styles.date}>
+                        {createdAt}
+                    </Flexbox>
+                </Flexbox>
+            </VisibilitySensor>
         )
     }
 }
@@ -94,4 +118,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-module.exports = connect(mapStateToProps)(Comment)
+module.exports = connect(mapStateToProps)(radium(Comment))

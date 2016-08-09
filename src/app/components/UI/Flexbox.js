@@ -60,6 +60,26 @@ class Flexbox extends Component {
         return {}
     }
 
+    getAlignItems() {
+        const {alignItems} = this.props
+
+        if (alignItems) {
+            return {alignItems}
+        }
+
+        return {}
+    }
+
+    getAlignSelf() {
+        const {alignSelf} = this.props
+
+        if (alignSelf) {
+            return {alignSelf}
+        }
+
+        return {}
+    }
+
     render() {
         const {children, style, name} = this.props
 
@@ -67,6 +87,8 @@ class Flexbox extends Component {
             this.getContainerStyle(),
             this.getFlexStyle(),
             this.getJustifyContent(),
+            this.getAlignItems(),
+            this.getAlignSelf(),
             this.getWidthStyle(),
             this.getHeightStyle(),
             style
@@ -89,7 +111,9 @@ Flexbox.propTypes = {
     grow: PropTypes.number,
     shrink: PropTypes.number,
     basis: PropTypes.string,
-    justifyContent: PropTypes.string
+    justifyContent: PropTypes.string,
+    alignItems: PropTypes.string,
+    alignSelf: PropTypes.string
 }
 
 Flexbox.defaultProps = {

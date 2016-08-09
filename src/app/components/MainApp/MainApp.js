@@ -7,7 +7,7 @@ const styleVars = require('../style-vars')
 class MainApp extends Component {
     render () {
         return (
-            <Flexbox grow={1} height='100%' style={{minWidth: 0, backgroundColor: styleVars.backgroundColor}}>
+            <Flexbox name="main-app" grow={1} height='100%' style={{minWidth: 0, backgroundColor: styleVars.backgroundColor}}>
                 {this.props.children}
             </Flexbox>
         )
