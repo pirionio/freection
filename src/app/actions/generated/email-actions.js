@@ -46,7 +46,7 @@ function hello() {
             type: EmailActionsTypes.HELLO, 
             status: ActionStatus.START            
         })
-        return ResourceUtil.post(`/emailssync/api/hello`)
+        return ResourceUtil.post(`/emails/push/hello`)
             .then(result => dispatch({
                 type: EmailActionsTypes.HELLO, 
                 status: ActionStatus.COMPLETE                

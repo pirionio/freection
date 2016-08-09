@@ -16,7 +16,7 @@ class EmailLifecycleService {
     }
 
     doKeepAlive() {
-        ResourceUtil.post('/emailssync/api/keepalive', {})
+        ResourceUtil.post('/emails/push/keepalive', {})
             .catch(error => {
                 if (error.response.status === 404) {
                     this._dispatch(EmailActions.hello())

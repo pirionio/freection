@@ -20,7 +20,7 @@ module.exports = {
         {
             name: 'hello',
             type: 'post',
-            path: '/emailssync/api/hello'
+            path: '/emails/push/hello'
         },
         {
             name: 'invalidate',
