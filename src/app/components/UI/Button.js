@@ -6,7 +6,7 @@ const styleVars = require('../style-vars')
 
 class Button extends Component {
     render() {
-        const {label, onClick, disabled, type, style} = this.props
+        const {label, onClick, disabled, type, style, tabIndex} = this.props
 
         const buttonStyle = {
             margin: '0 0 0 28px',
@@ -30,7 +30,7 @@ class Button extends Component {
         }
 
         return (
-            <button type={type} style={[buttonStyle, style]} onClick={onClick} disabled={disabled}>{label}</button>
+            <button type={type} style={[buttonStyle, style]} onClick={onClick} disabled={disabled} tabIndex={tabIndex}>{label}</button>
         )
     }
 }
@@ -40,7 +40,8 @@ Button.propTypes = {
     onClick: PropTypes.func,
     disabled: PropTypes.bool,
     type: PropTypes.string,
-    style: PropTypes.object
+    style: PropTypes.object,
+    tabIndex: PropTypes.string
 }
 
 Button.defaultProps = {
