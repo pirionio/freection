@@ -91,14 +91,14 @@ class CommentThingBox extends Component {
                         <Flexbox name="message-text" grow={1} style={styles.boxText} container="column">
                             <Flexbox name="message-body" grow={1} container={true} style={styles.messageBody}>
                                 <Field model="commentThingBox.text">
-                                    <textarea style={styles.textField} tabIndex="2" placeholder="Write your message here"
-                                              ref={ref => this.messageText = ref} />
+                                    <textarea style={styles.textField} tabIndex="1" placeholder="Write your message here"
+                                              ref={ref => this.messageText = ref} autoFocus />
                                 </Field>
                             </Flexbox>
                         </Flexbox>
                     </Flexbox>
                     <div name="send-container" style={styles.send}>
-                        <Button type="submit" label="Send" style={styles.send.button} tabIndex="4" disabled={commentThingBox.ongoingAction} />
+                        <Button type="submit" label="Send" style={styles.send.button} tabIndex="2" disabled={commentThingBox.ongoingAction} />
                     </div>
                 </Flexbox>
             </Form>

@@ -9,7 +9,7 @@ class Button extends Component {
         const {label, onClick, disabled, type, style} = this.props
 
         const buttonStyle = {
-            marginLeft: '28px',
+            margin: '0 0 0 28px',
             border: 'none',
             backgroundColor: styleVars.primaryColor,
             color: 'white',
@@ -37,7 +37,7 @@ class Button extends Component {
 
 Button.propTypes = {
     label: PropTypes.string.isRequired,
-    onClick: PropTypes.func.isRequired,
+    onClick: PropTypes.func,
     disabled: PropTypes.bool,
     type: PropTypes.string,
     style: PropTypes.object

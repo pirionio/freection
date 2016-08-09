@@ -20,8 +20,7 @@ class PreviewsContainer extends Component {
     getStyles() {
         return {
             container: {
-                height: '100%',
-                padding: '35px 50px 20px 50px'
+                height: '100%'
             },
             list: {
                 marginBottom: '15px'
