@@ -32,6 +32,17 @@ function fetchFullThread(user, emailThreadId) {
         .then(prepareThread)
 }
 
+function getThreadIdOfEmail(user, emailId) {
+    return getImapConnection(user)
+        .then(connection => {
+            return connection.getEmailById(emailId)
+                .then(email => {
+                    GoogleImapConnectionPool.releaseConnection(user, connection)
+                    return email.header.gmailThreadId
+                })
+        })
+}
+
 function markAsRead(user, emailUids) {
     return getImapConnection(user)
         .then(connection => {
@@ -72,7 +83,8 @@ function doEmail(user, emailThreadId) {
                     EventsCreator.createCreated(creator, thing, getShowNewList)
                         .then(() => EventsCreator.createAccepted(userToAddress(user), thing, getShowNewList))
                         .then(() => comments.map(
-                            comment => EventsCreator.createComment(creator, thing, getShowNewList, comment.text, comment.html)))
+                            comment => EventsCreator.createComment(creator, thing, getShowNewList, comment.text,
+                                comment.html, comment.header.messageId)))
                         .then(all => Promise.all(all))
 
             })
@@ -161,5 +173,6 @@ module.exports = {
     sendEmail,
     sendEmailForThing,
     doEmail,
-    replyToAll
+    replyToAll,
+    getThreadIdOfEmail
 }

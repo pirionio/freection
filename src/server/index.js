@@ -6,5 +6,6 @@ require('./static')(app)
 require('./push')(app)
 require('./webhook')(app)
 require('./mail-push')(app)
+require('./mail-sync')(app)
 
 app.start()

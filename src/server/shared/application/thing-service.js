@@ -202,10 +202,13 @@ function comment(user, thingId, commentText) {
     const creator = userToAddress(user)
 
     return Thing.get(thingId).run()
-        .then(thing => sendEmailForComment(user, thing, commentText).then(() => thing))
-        .then(thing => EventCreator.createComment(creator, thing, getShowNewList, commentText))
-        .then(event => Event.getFullEvent(event.id))
-        .then(event => eventToDto(event, user, {includeThing: false}))
+        .then(thing => {
+            sendEmailForComment(user, thing, commentText)
+                .then(email => EventCreator.createComment(creator, thing, getShowNewList,
+                    commentText, null, email && email.id))
+                .then(event => Event.getFullEvent(event.id))
+                .then(event => eventToDto(event, user, {includeThing: false}))
+        })
         .catch(error => {
             logger.error(`Could not comment on thing ${thingId} for user ${user.email}`, error)
             throw error
@@ -217,6 +220,21 @@ function discardEventsByType(user, thingId, eventType) {
         .catch(error => {
             logger.error(`Could not discard events of type ${eventType} unread by user ${user.email} for thing ${thingId}`, error)
             throw error
+        })
+}
+
+function syncThingWithThread(thingId, thread) {
+    return Thing.getFullThing(thingId)
+        .then(thing => {
+            const emailIds =
+                [...thing.events.filter(event => event.eventType === EventTypes.COMMENT.key && event.payload.emailId)
+                    .map(comment => comment.payload.emailId),
+                    thing.payload.emailId]
+
+            const promises = thread.messages.filter(message => !emailIds.includes(message.id))
+                .map(comment => EventCreator.createComment(comment.creator, thing, getShowNewList, comment.payload.text,
+                    comment.payload.html, comment.id))
+            return Promise.all(promises)
         })
 }
 
@@ -251,7 +269,6 @@ function sendEmailForComment(user, thing, commentText) {
 }
 
 function saveNewThing(body, subject, creator, to, email) {
-    console.log('email', email)
     // check if thing is self thing (assigned to creator)
     const isSelfThing = creator.id === to.id
     const status = isSelfThing ? ThingStatus.INPROGRESS.key : ThingStatus.NEW.key
@@ -375,5 +392,6 @@ module.exports = {
     cancel,
     cancelAck,
     ping,
-    discardEventsByType
+    discardEventsByType,
+    syncThingWithThread
 }

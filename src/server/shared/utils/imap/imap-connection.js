@@ -134,6 +134,20 @@ class ImapConnection {
             })
     }
 
+    getEmailById(emailId) {
+        const criteria = [['HEADER', 'Message-ID', emailId]]
+        return this._connection.searchAsync(criteria)
+            .then(results => {
+                return this.fetchByUids(results, {})
+            })
+            .then(emails => {
+                if (emails && emails.length > 0)
+                    return emails[0]
+                else
+                    throw 'NotFound'
+            })
+    }
+
     markAsRead(emailUids) {
         return this._connection.setFlagsAsync(emailUids, IMAP[this._type].SEEN_FLAG)
             .catch(error => {

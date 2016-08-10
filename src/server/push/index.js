@@ -58,7 +58,8 @@ module.exports = (app) => {
             if (error) {
                 logger.error('Error reading changes from the DB:', error)
             } else {
-                io.to(doc.id).emit('email-notification')
+                if (doc.type === 'NEW')
+                    io.to(doc.id).emit('email-notification')
             }
         })
     }

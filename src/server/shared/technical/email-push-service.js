@@ -7,8 +7,8 @@ function onMail(userId, email) {
 
     MailNotification.save({
         id: userId,
+        type: 'NEW',
         timestamp: new Date(),
-        payload: {}
     }, { conflict: 'replace' })
 }
 
@@ -25,6 +25,12 @@ function hello(user) {
             logger.info(`created push imap connection for ${user.email}`)
 
             connection.onMail(() => onMail(user.id, user.email))
+
+            MailNotification.save({
+                id: user.id,
+                type: 'HELLO',
+                timestamp: new Date(),
+            }, { conflict: 'replace' })
         })
 }
 
