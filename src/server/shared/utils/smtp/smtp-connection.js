@@ -29,13 +29,14 @@ class SmtpConnection {
         return Promise.resolve(this._transport)
     }
 
-    send(to, subject, messageText, messageHtml) {
+    send(to, subject, messageText, messageHtml, messageId) {
         return this._transport.sendMailAsync({
             from: createFromAddress(this._user),
             to,
             subject,
             text: messageText,
-            html: messageHtml
+            html: messageHtml,
+            messageId
         })
     }
 

@@ -50,10 +50,10 @@ function markAsRead(user, emailUids) {
         })
 }
 
-function sendEmail(user, to, subject, text, html) {
+function sendEmail(user, to, subject, text, html, messageId) {
     return getSmtpConnection(user)
         .then(connection => {
-            return connection.send(to, subject, text, html)
+            return connection.send(to, subject, text, html, messageId)
                 .then(email => {
                     GoogleSmtpConnectionPool.releaseConnection(user, connection)
                     return smtpEmailToDto(email, user, subject, text, html)
@@ -61,9 +61,9 @@ function sendEmail(user, to, subject, text, html) {
         })
 }
 
-function sendEmailForThing(user, to, subject, body) {
+function sendEmailForThing(user, to, subject, body, messageId) {
     const emailForThingHtml = getEmailForThingHtml(user, body)
-    return sendEmail(user, to, subject, undefined, emailForThingHtml)
+    return sendEmail(user, to, subject, undefined, emailForThingHtml, messageId)
 }
 
 function doEmail(user, emailThreadId) {

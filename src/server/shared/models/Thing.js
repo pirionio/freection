@@ -44,7 +44,7 @@ Thing.ensureIndex('thingsWithEmail', function(doc) {
     return thinky.r
         .branch(thinky.r.and(
             doc('type').eq('THING'),
-            doc('payload').hasFields('emailId'),
+            doc('to')('type').eq('EMAIL'),
             doc('payload')('status').ne('CLOSE')),
             doc('creator')('id'), null)
 })
@@ -71,6 +71,13 @@ Thing.defineStatic('getThingsWithEmailByUser', function(userId) {
 
 Thing.define('isSelf', function() {
     return this.creator.id === this.to.id && this.creator.type === this.to.type
+})
+
+Thing.define('getEmailId', function () {
+    const email = this.creator.payload.email
+    const domain = email.substr(email.indexOf('@'))
+
+    return `thing/${this.id}${domain}`
 })
 
 module.exports = Thing

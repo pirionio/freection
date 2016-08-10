@@ -2,13 +2,13 @@ const {Event} = require('../models')
 const EventTypes = require('../../../common/enums/event-types')
 const UserTypes = require('../../../common/enums/user-types')
 
-function createCreated(creator, thing, getShowNewList) {
+function createCreated(creator, thing, getShowNewList, emailId) {
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.CREATED.key,
         createdAt: thing.createdAt,
         creator,
-        payload: {},
+        payload: { emailId },
         showNewList: getShowNewList(creator, thing, EventTypes.CREATED.key)
     })
 }
@@ -64,7 +64,7 @@ function createComment(creator, thing, getShowNewList, commentText, commentHtml,
         createdAt: new Date(),
         creator,
         payload: {
-            emailId: emailId,
+            emailId,
             html: commentHtml,
             text: commentText,
             readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []

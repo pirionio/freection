@@ -52,15 +52,18 @@ function newThing(user, to, body, subject) {
 
     return getToAddress(to)
         .then(toAddress => {
-            return sendEmailForThing(user, toAddress, subject, body)
-                .then(email => saveNewThing(body, subject, creator, toAddress, email))
-                .then(thing => EventCreator.createCreated(creator, thing, getShowNewList).then(() => thing))
+            return saveNewThing(body, subject, creator, toAddress)
+                .then(thing => EventCreator.createCreated(creator, thing, getShowNewList, thing.getEmailId()).then(() => thing))
                 .then(thing => {
                     //  if thing assigned to myself let's accept it immediately
                     if (thing.isSelf()) {
                         return EventCreator.createAccepted(creator, thing, getShowNewList)
+                            .then(() => thing)
                     }
+
+                    return thing
                 })
+                .then(thing => sendEmailForThing(user, toAddress, subject, body, thing.getEmailId()))
         })
         .catch(error => {
             logger.error(`error while creating new thing for user ${user.email}`, error)
@@ -227,9 +230,8 @@ function syncThingWithThread(thingId, thread) {
     return Thing.getFullThing(thingId)
         .then(thing => {
             const emailIds =
-                [...thing.events.filter(event => event.eventType === EventTypes.COMMENT.key && event.payload.emailId)
-                    .map(comment => comment.payload.emailId),
-                    thing.payload.emailId]
+                thing.events.filter(event => event.payload && event.payload.emailId)
+                    .map(comment => comment.payload.emailId)
 
             const promises = thread.messages.filter(message => !emailIds.includes(message.id))
                 .map(comment => EventCreator.createComment(comment.creator, thing, getShowNewList, comment.payload.text,
@@ -249,9 +251,9 @@ function getToAddress(to) {
         })
 }
 
-function sendEmailForThing(user, toAddress, subject, body) {
+function sendEmailForThing(user, toAddress, subject, body, messageId) {
     if (toAddress.type === UserTypes.EMAIL.key)
-        return EmailService.sendEmailForThing(user, toAddress.payload.email, subject, body)
+        return EmailService.sendEmailForThing(user, toAddress.payload.email, subject, body, messageId)
     else
         return Promise.resolve(null)
 }

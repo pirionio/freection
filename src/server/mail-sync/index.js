@@ -1,7 +1,7 @@
 const GoogleImapConnectionPool = require('../shared/utils/imap/google-imap-connection-pool')
 const EmailService = require('../shared/application/email-service')
 const ThingService = require('../shared/application/thing-service')
-const {MailNotification, Thing} = require('../shared/models')
+const {MailNotification, Thing, Event} = require('../shared/models')
 const logger = require('../shared/utils/logger')
 
 module.exports = function() {
@@ -32,7 +32,7 @@ module.exports = function() {
     }
 
     function getThread(user, thing) {
-        return EmailService.getThreadIdOfEmail(user, thing.payload.emailId)
+        return EmailService.getThreadIdOfEmail(user, thing.getEmailId())
             .then(threadId => EmailService.fetchFullThread(user, threadId))
     }
 }
