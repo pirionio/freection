@@ -40,11 +40,12 @@ class SmtpConnection {
         })
     }
 
-    replyToAll(to, inReplyTo, subject, messageText, messageHtml) {
+    replyToAll(to, inReplyTo, references, subject, messageText, messageHtml) {
         return this._transport.sendMailAsync({
             from: createFromAddress(this._user),
             to,
             inReplyTo,
+            references,
             subject: createReplySubject(subject),
             text: messageText,
             html: messageHtml

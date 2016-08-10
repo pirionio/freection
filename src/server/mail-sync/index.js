@@ -13,7 +13,6 @@ module.exports = function() {
             logger.error('Error reading mail notifications from the DB:', error)
         } else {
             const userId = doc.id
-
             const user = {id: userId}
 
             Thing.getThingsWithEmailByUser(userId)

@@ -53,6 +53,10 @@ class ImapConnection {
             const parser = new MailParser()
 
             parser.once('end', mail => {
+                if (mail.references) {
+                    message.references = mail.references
+                }
+
                 message.body = mail.text
                 message.html = mail.html
                 resolve(message)

@@ -88,4 +88,9 @@ Event.defineStatic('markAsRead', function(eventId, userId) {
     }).run()
 })
 
+Event.defineStatic('getThingEmailIds', function (thingId) {
+    return this.getAll(thingId, {index: 'thingId'}).orderBy('createdAt').pluck({payload: {emailId: true}}).execute()
+        .then(events => events.map(event=> event.payload.emailId))
+})
+
 module.exports = Event

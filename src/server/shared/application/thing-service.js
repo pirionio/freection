@@ -1,4 +1,4 @@
-const {remove, castArray, union, chain, omitBy, isNil} = require('lodash')
+const {remove, castArray, union, chain, omitBy, isNil, last} = require('lodash')
 
 const {Event, Thing, User} = require('../models')
 const EventCreator = require('./event-creator')
@@ -63,7 +63,7 @@ function newThing(user, to, body, subject) {
 
                     return thing
                 })
-                .then(thing => sendEmailForThing(user, toAddress, subject, body, thing.getEmailId()))
+                .then(thing => sendEmailForThing(thing, user, toAddress, subject, body))
         })
         .catch(error => {
             logger.error(`error while creating new thing for user ${user.email}`, error)
@@ -251,9 +251,11 @@ function getToAddress(to) {
         })
 }
 
-function sendEmailForThing(user, toAddress, subject, body, messageId) {
-    if (toAddress.type === UserTypes.EMAIL.key)
+function sendEmailForThing(thing, user, toAddress, subject, body) {
+    if (toAddress.type === UserTypes.EMAIL.key) {
+        const messageId = thing.getEmailId()
         return EmailService.sendEmailForThing(user, toAddress.payload.email, subject, body, messageId)
+    }
     else
         return Promise.resolve(null)
 }
@@ -267,7 +269,12 @@ function sendEmailForComment(user, thing, commentText) {
     if (!emailRecipients.length)
         return Promise.resolve(null)
 
-    return EmailService.replyToAll(user, emailRecipients, thing.payload.emailId, thing.subject, commentText)
+    return Event.getThingEmailIds(thing.id)
+        .then(emailIds => {
+            return EmailService.replyToAll(user, emailRecipients, last(emailIds), emailIds,  thing.subject, commentText)
+        })
+
+
 }
 
 function saveNewThing(body, subject, creator, to, email) {

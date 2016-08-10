@@ -1,4 +1,4 @@
-const {chain} = require('lodash/core')
+const {chain, some} = require('lodash/core')
 
 const GoogleImapConnectionPool = require('../utils/imap/google-imap-connection-pool')
 const GoogleSmtpConnectionPool = require('../utils/smtp/google-smtp-connection-pool')
@@ -9,13 +9,23 @@ const EventsCreator = require('./event-creator')
 const {userToAddress} = require('./address-creator')
 const {imapEmailToDto} = require('../application/transformers')
 
+function filterThingMessage(user, message) {
+    const domain = user.email.substring(user.email.indexOf('@'))
+
+    if (message.references && some(message.references, reference => reference.startsWith('thing/') && reference.endsWith(domain))) {
+        return false
+    }
+
+    return true
+}
+
 function fetchUnreadMessages(user) {
     return getImapConnection(user)
         .then(connection => {
             return connection.getUnseenMessages(0, {includeBodies: true})
                 .then(emails => {
                     GoogleImapConnectionPool.releaseConnection(user, connection)
-                    return emails.map(imapEmailToDto)
+                    return emails.filter(message => filterThingMessage(user, message)).map(imapEmailToDto)
                 })
         })
 }
@@ -91,10 +101,10 @@ function doEmail(user, emailThreadId) {
         })
 }
 
-function replyToAll(user, to, inReplyTo, subject, messageText, messageHtml) {
+function replyToAll(user, to, inReplyTo, references, subject, messageText, messageHtml) {
     return getSmtpConnection(user)
         .then(connection => {
-            return connection.replyToAll(to, inReplyTo, subject, messageText, messageHtml)
+            return connection.replyToAll(to, inReplyTo, references, subject, messageText, messageHtml)
                 .then(result => {
                     GoogleSmtpConnectionPool.releaseConnection(user, connection)
                     return smtpEmailToDto(result, user, subject, messageText, messageHtml)
