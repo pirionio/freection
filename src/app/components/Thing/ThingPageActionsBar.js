@@ -33,7 +33,7 @@ class ThingPageActionsBar extends Component {
 
         return (
             <div>
-                <ActionsBar actions={actions} />
+                <ActionsBar actions={actions} supportRollover={false} />
             </div>
         )
     }

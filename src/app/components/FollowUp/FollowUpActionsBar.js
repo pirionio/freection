@@ -7,7 +7,7 @@ const {CloseAction, SendBackAction, PingAction} = require('../Actions/Actions')
 
 class FollowUpActionsBar extends Component {
     render() {
-        const {thing, currentUser} = this.props
+        const {thing, currentUser, isRollover} = this.props
 
         const actions = [
             CloseAction(thing, currentUser),
@@ -17,7 +17,7 @@ class FollowUpActionsBar extends Component {
 
         return (
             <div>
-                <ActionsBar actions={actions} />
+                <ActionsBar actions={actions} isRollover={isRollover} />
             </div>
         )
     }
@@ -25,7 +25,12 @@ class FollowUpActionsBar extends Component {
 
 FollowUpActionsBar.propTypes = {
     thing: PropTypes.object.isRequired,
-    currentUser: PropTypes.object.isRequired
+    currentUser: PropTypes.object.isRequired,
+    isRollover: PropTypes.bool
+}
+
+FollowUpActionsBar.defaultProps = {
+    isRollover: false
 }
 
 function mapStateToProps(state) {

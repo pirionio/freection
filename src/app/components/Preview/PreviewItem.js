@@ -2,6 +2,7 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {getChildOfType, createSlots} = require('../../util/component-util')
 const dateFns = require('date-fns')
+const radium = require('radium')
 const Color = require('color')
 
 const Flexbox = require('../UI/Flexbox')
@@ -68,7 +69,9 @@ class PreviewItem extends Component {
     }
 
     getActions() {
-        return getChildOfType(this.props.children, slots.PreviewItemActions)
+        const original = getChildOfType(this.props.children, slots.PreviewItemActions)
+        const isRollover = radium.getState(this.state, 'preview', ':hover')
+        return React.cloneElement(original, {isRollover: isRollover})
     }
 
     getStatus() {
@@ -78,42 +81,52 @@ class PreviewItem extends Component {
     render() {
         const statusPreview = this.getStatus()
         const textPreview = this.getPreviewText()
-        const containerStyle = {
-            backgroundColor: '#FAFAFA',
-            marginBottom: '5px',
-            paddingLeft: '30px',
-            paddingRight: '30px',
-            borderColor: Color('rgb(233,234,236)').hexString(),
-            borderStyle: 'outset',
-            borderWidth: '1px'
-        }
 
-        const textStyle = {
-            marginTop: '10px'
+        const styles = {
+            hoverable: {
+                width: '100%',
+                ':hover': {
+                    backgroundColor: 'lightgrey',
+                    cursor: 'pointer'
+                }
+            },
+            container: {
+                backgroundColor: '#FAFAFA',
+                marginBottom: '5px',
+                paddingLeft: '30px',
+                paddingRight: '30px',
+                borderColor: Color('rgb(233,234,236)').hexString(),
+                borderStyle: 'outset',
+                borderWidth: '1px'
+            },
+            text: {
+                marginTop: '10px'
+            }
         }
 
         return (
-            <Flexbox grow={0} shrink={0} height='70px' container='row' style={containerStyle}>
-
-                <Flexbox width='250px' grow={0} shrink={0} container='column' justifyContent="space-around">
-                    <Flexbox>
-                        {this.getUser()}
+            <div style={styles.hoverable} key="preview">
+                <Flexbox grow={0} shrink={0} height='70px' container='row' style={styles.container}>
+                    <Flexbox width='250px' grow={0} shrink={0} container='column' justifyContent="space-around">
+                        <Flexbox>
+                            {this.getUser()}
+                        </Flexbox>
+                        <Flexbox>
+                            {this.getDate()}
+                        </Flexbox>
+                        {statusPreview ? <Flexbox className="preview-item-status">{statusPreview}</Flexbox> : null}
                     </Flexbox>
-                    <Flexbox>
-                        {this.getDate()}
+                    <Flexbox container="column" justifyContent="center" grow={1} style={{minWidth: 0}}>
+                        <div>
+                            {this.getTitle()}
+                        </div>
+                        {textPreview ? <div style={styles.text}>{textPreview}</div> : null}
                     </Flexbox>
-                    {statusPreview ? <Flexbox className="preview-item-status">{statusPreview}</Flexbox> : null}
+                    <Flexbox container="column" justifyContent="center" grow={0} shrink={0} width='250px'>
+                        {this.getActions()}
+                    </Flexbox>
                 </Flexbox>
-                <Flexbox container="column" justifyContent="center" grow={1} style={{minWidth: 0}}>
-                    <div>
-                        {this.getTitle()}
-                    </div>
-                    {textPreview ? <div style={textStyle}>{textPreview}</div> : null}
-                </Flexbox>
-                <Flexbox container="column" justifyContent="center" grow={0} shrink={0} width='250px'>
-                    {this.getActions()}
-                </Flexbox>
-            </Flexbox>
+            </div>
         )
     }
 }
@@ -122,7 +135,7 @@ PreviewItem.propTypes = {
 }
 
 module.exports = Object.assign({
-    PreviewItem,
+    PreviewItem: radium(PreviewItem),
     PreviewItemDate,
     PreviewItemStatus,
     PreviewItemTitle
