@@ -25,7 +25,19 @@ function fetchUnreadMessages(user) {
             return connection.getUnseenMessages(0, {includeBodies: true})
                 .then(emails => {
                     GoogleImapConnectionPool.releaseConnection(user, connection)
-                    return emails.filter(message => filterThingMessage(user, message)).map(imapEmailToDto)
+                    return emails.filter(message => filterThingMessage(user, message))
+                        .map(email=> imapEmailToDto(email, user))
+                })
+        })
+}
+
+function getEmailsSince(user, internalDate) {
+    return getImapConnection(user)
+        .then(connection => {
+            return connection.getEmailsSince(internalDate)
+                .then(emails => {
+                    GoogleImapConnectionPool.releaseConnection(user, connection)
+                    return emails.map(email => imapEmailToDto(email, user))
                 })
         })
 }
@@ -39,16 +51,20 @@ function fetchFullThread(user, emailThreadId) {
                     return emails
                 })
         })
-        .then(prepareThread)
+        .then(emails => prepareThread(emails, user))
 }
 
-function getThreadIdOfEmail(user, emailId) {
+function getLastInternalDate(user) {
     return getImapConnection(user)
         .then(connection => {
-            return connection.getEmailById(emailId)
+            return connection.getLastEmail()
                 .then(email => {
                     GoogleImapConnectionPool.releaseConnection(user, connection)
-                    return email.header.gmailThreadId
+                    return email.header.internalDate
+                })
+                .catch(error => {
+                    GoogleImapConnectionPool.releaseConnection(user, connection)
+                    throw error
                 })
         })
 }
@@ -112,10 +128,10 @@ function replyToAll(user, to, inReplyTo, references, subject, messageText, messa
         })
 }
 
-function prepareThread(emails) {
+function prepareThread(emails, user) {
     const firstEmail = chain(emails).sortBy('header.date').head().value()
-    const threadDto = imapEmailToDto(firstEmail)
-    threadDto.messages = emails.map(imapEmailToDto)
+    const threadDto = imapEmailToDto(firstEmail, user)
+    threadDto.messages = emails.map(email => imapEmailToDto(email, user))
     return threadDto
 }
 
@@ -184,5 +200,6 @@ module.exports = {
     sendEmailForThing,
     doEmail,
     replyToAll,
-    getThreadIdOfEmail
+    getEmailsSince,
+    getLastInternalDate
 }

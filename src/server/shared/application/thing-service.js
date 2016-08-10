@@ -226,17 +226,22 @@ function discardEventsByType(user, thingId, eventType) {
         })
 }
 
-function syncThingWithThread(thingId, thread) {
+function syncThingWithMessage(thingId, message) {
     return Thing.getFullThing(thingId)
         .then(thing => {
             const emailIds =
                 thing.events.filter(event => event.payload && event.payload.emailId)
                     .map(comment => comment.payload.emailId)
 
-            const promises = thread.messages.filter(message => !emailIds.includes(message.id))
-                .map(comment => EventCreator.createComment(comment.creator, thing, getShowNewList, comment.payload.text,
-                    comment.payload.html, comment.id))
-            return Promise.all(promises)
+            if (!emailIds.includes(message.id)) {
+                return EventCreator.createComment(message.creator, thing, getShowNewList, message.payload.text,
+                    message.payload.html, message.id)
+            }
+        })
+        .catch(error => {
+            // If thing doesn't exist we just ignore the thing
+            if (error.name !== 'DocumentNotFoundError')
+                throw error
         })
 }
 
@@ -273,8 +278,6 @@ function sendEmailForComment(user, thing, commentText) {
         .then(emailIds => {
             return EmailService.replyToAll(user, emailRecipients, last(emailIds), emailIds,  thing.subject, commentText)
         })
-
-
 }
 
 function saveNewThing(body, subject, creator, to, email) {
@@ -402,5 +405,5 @@ module.exports = {
     cancelAck,
     ping,
     discardEventsByType,
-    syncThingWithThread
+    syncThingWithMessage
 }

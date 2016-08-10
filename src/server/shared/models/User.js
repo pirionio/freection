@@ -11,7 +11,7 @@ const User = thinky.createModel('User', {
     lastName: type.string().required(),
     accessToken: type.string().required(),
     refreshToken: type.string().required(),
-    lastFetchedEmail: type.number().default('0'),
+    lastFetchedEmailDate: type.date(),
     integrations: {
         github: {
             active: type.boolean(),

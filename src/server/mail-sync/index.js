@@ -1,7 +1,10 @@
+const dateFns = require('date-fns')
+const {last} = require('lodash')
+
 const GoogleImapConnectionPool = require('../shared/utils/imap/google-imap-connection-pool')
 const EmailService = require('../shared/application/email-service')
 const ThingService = require('../shared/application/thing-service')
-const {MailNotification, Thing, Event} = require('../shared/models')
+const {MailNotification, Thing, User} = require('../shared/models')
 const logger = require('../shared/utils/logger')
 
 module.exports = function() {
@@ -13,25 +16,46 @@ module.exports = function() {
             logger.error('Error reading mail notifications from the DB:', error)
         } else {
             const userId = doc.id
-            const user = {id: userId}
 
-            Thing.getThingsWithEmailByUser(userId)
-                .then(things => {
-                    things.forEach(thing => syncThing(user, thing))
+            User.get(userId).run()
+                .then(user => {
+                    getLastInternalDate(user)
+                        .then(lastFetchedEmailDate => EmailService.getEmailsSince(user, lastFetchedEmailDate))
+                        .then(messages => {
+                            if (messages.length) {
+                                const promises = messages.filter(message => message.relatedThingId).map(syncMessage)
+
+                                return Promise.all(promises)
+                                    .then(() => updateUserWithWithLatestEmail(user, last(messages)))
+                            }
+                        })
+                        .catch(error => {
+                            // We might don't have any emails in the mailbox, just ignore and do it next time
+                            if (error !== 'NotFound')
+                                logger.error(`error while syncing user ${user.email}`)
+                        })
+                })
+                .catch(error => {
+                    logger.error(`error while fetching userid ${userId}`)
                 })
         }
     }
 
-    function syncThing(user, thing) {
-        getThread(user, thing)
-            .then(thread => ThingService.syncThingWithThread(thing.id, thread))
-            .catch(error => {
-                logger.error('error while syncing thing', error)
-            })
+    function updateUserWithWithLatestEmail(user, email) {
+        return User.get(user.id).update({lastFetchedEmailDate: email.internalDate}).run()
     }
 
-    function getThread(user, thing) {
-        return EmailService.getThreadIdOfEmail(user, thing.getEmailId())
-            .then(threadId => EmailService.fetchFullThread(user, threadId))
+    function syncMessage(message) {
+        const thingId = message.relatedThingId
+        return ThingService.syncThingWithMessage(thingId, message)
+    }
+
+    function getLastInternalDate(user) {
+        if (!user.lastFetchedEmailDate) {
+            return EmailService.getLastInternalDate(user)
+                .then(lastFetchedEmailDate => dateFns.subDays(lastFetchedEmailDate, 1))
+        } else {
+            return Promise.resolve(user.lastFetchedEmailDate)
+        }
     }
 }

@@ -69,6 +69,7 @@ class ImapConnection {
                     uid: attributes.uid,
                     subject: envelope.subject,
                     date: new Date(envelope.date),
+                    internalDate: attributes.date,
                     from: chain(envelope.from).map(from => this.convertEnvelopeUser(from)).head().value(),
                     to: envelope.to ? envelope.to.map(to => this.convertEnvelopeUser(to)) : [],
                     messageId: envelope.messageId,
@@ -138,8 +139,8 @@ class ImapConnection {
             })
     }
 
-    getEmailById(emailId) {
-        const criteria = [['HEADER', 'Message-ID', emailId]]
+    getLastEmail() {
+        const criteria = [['UID', '*']]
         return this._connection.searchAsync(criteria)
             .then(results => {
                 return this.fetchByUids(results, {})
@@ -149,6 +150,14 @@ class ImapConnection {
                     return emails[0]
                 else
                     throw 'NotFound'
+            })
+    }
+
+    getEmailsSince(internalDate) {
+        const criteria = [['SINCE', internalDate]]
+        return this._connection.searchAsync(criteria)
+            .then(results => {
+                return this.fetchByUids(results, {includeBodies: true})
             })
     }
 

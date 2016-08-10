@@ -40,15 +40,6 @@ Thing.ensureIndex('githubIssueId', function(doc) {
     return thinky.r.branch(doc('type').eq('GITHUB'), doc('payload')('id'), null)
 })
 
-Thing.ensureIndex('thingsWithEmail', function(doc) {
-    return thinky.r
-        .branch(thinky.r.and(
-            doc('type').eq('THING'),
-            doc('to')('type').eq('EMAIL'),
-            doc('payload')('status').ne('CLOSE')),
-            doc('creator')('id'), null)
-})
-
 Thing.defineStatic('getFullThing', function(thingId) {
     return this.get(thingId).getJoin({events: true}).run()
 })
@@ -63,10 +54,6 @@ Thing.defineStatic('getUserToDos', function(userId) {
 
 Thing.defineStatic('getThingsByGithubIssueId', function(githubIssueId) {
     return this.getAll(githubIssueId, {index: 'githubIssueId'}).run()
-})
-
-Thing.defineStatic('getThingsWithEmailByUser', function(userId) {
-    return this.getAll(userId, {index: 'thingsWithEmail'}).run()
 })
 
 Thing.define('isSelf', function() {

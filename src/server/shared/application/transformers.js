@@ -2,6 +2,7 @@ const parseReply = require('parse-reply')
 const pick = require('lodash/pick')
 const trimStart = require('lodash/trimStart')
 const trimEnd = require('lodash/trimEnd')
+const {chain} = require('lodash/core')
 
 const AddressCreator = require('../application/address-creator')
 const EntityTypes = require('../../../common/enums/entity-types')
@@ -50,7 +51,7 @@ function commentPayloadToDto(payload, user) {
     })
 }
 
-function imapEmailToDto(email) {
+function imapEmailToDto(email, user) {
     // TODO We don't know how differ the read status of a comment, and the discard of new email notifications.
     // Our app has these two different options, while a regular mail has only a single state (the \\Seen flag).
     // We decided for the meantime to set this flag in the discard flow, meaning that in the comments list - emails will
@@ -75,7 +76,24 @@ function imapEmailToDto(email) {
             uid: email.header.uid,
             isRead: true
         },
-        type: EntityTypes.EMAIL
+        type: EntityTypes.EMAIL,
+        relatedThingId: getRelatedThingId(email, user),
+        internalDate: email.header.internalDate
+    }
+}
+
+function getRelatedThingId(email, user) {
+    const domain = user.email.substring(user.email.indexOf('@'))
+
+    const messageId = email.references && chain(email.references)
+            .filter(reference => reference.startsWith('thing/') && reference.endsWith(domain))
+            .head()
+            .value()
+
+    if (messageId) {
+        const start = 'thing/'.length
+        const end = messageId.indexOf('@')
+        return messageId.substr(start, end - start)
     }
 }
 
