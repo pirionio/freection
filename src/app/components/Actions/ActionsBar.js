@@ -41,7 +41,9 @@ class ActionsBar extends Component {
                             leave={{opacity: 0}}
                             appear={{opacity: 0}}>
                     <div key="rest-of-actions">
-                        {restOfActions}
+                        <Flexbox container="row-reverse">
+                            {restOfActions}
+                        </Flexbox>
                     </div>
                 </Transition>
             </Flexbox>
