@@ -7,7 +7,7 @@ const {DiscardEmails, DoEmail} = require('../Actions/Actions')
 
 class EmailPreviewActionsBar extends Component {
     render() {
-        const {emailUids, email, currentUser} = this.props
+        const {emailUids, email, currentUser, isRollover} = this.props
 
         const actions = [
             DiscardEmails(emailUids),
@@ -16,7 +16,7 @@ class EmailPreviewActionsBar extends Component {
 
         return (
             <div>
-                <ActionsBar actions={actions} email={email} />
+                <ActionsBar actions={actions} email={email} isRollover={isRollover} />
             </div>
         )
     }
@@ -25,7 +25,12 @@ class EmailPreviewActionsBar extends Component {
 EmailPreviewActionsBar.propTypes = {
     emailUids: PropTypes.array.isRequired,
     email: PropTypes.object.isRequired,
-    currentUser: PropTypes.object.isRequired
+    currentUser: PropTypes.object.isRequired,
+    isRollover: PropTypes.bool
+}
+
+EmailPreviewActionsBar.defaultProps = {
+    isRollover: false
 }
 
 function mapStateToProps(state) {
