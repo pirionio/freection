@@ -9,7 +9,7 @@ class MainApp extends Component {
         const style = {
             container: {
                 minWidth: 0,
-                padding: '35px 0 50px 0',
+                padding: '35px 35px 0 0',
                 backgroundColor: styleVars.backgroundColor
             },
             content: {
