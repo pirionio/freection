@@ -23,7 +23,7 @@ class SideBar extends Component {
                 backgroundColor: styleVars.primaryColor
             },
             menu: {
-                paddingTop: 34,
+                paddingTop: 10,
                 paddingLeft: 27
             },
             link: {
@@ -58,7 +58,7 @@ class SideBar extends Component {
             arrow: {
                 position: 'absolute',
                 right: 0,
-                top: 3,
+                top: 21,
                 width: 0,
                 height: 0,
                 borderTop: '5px solid transparent',
