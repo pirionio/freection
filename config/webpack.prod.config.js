@@ -19,6 +19,14 @@ config.module.loaders = [
     {
         test: /\.(scss|css)$/,
         loader: ExtractTextPlugin.extract('style', 'css!sass')
+    },
+    {
+        test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,
+        loader: 'url-loader',
+        query: {
+            name: '[hash].[ext]',
+            limit: 10000
+        }
     }
 ]
 
