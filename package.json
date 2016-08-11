@@ -39,6 +39,7 @@
     "es6-promise": "3.2.1",
     "express": "4.14.0",
     "extract-text-webpack-plugin": "1.0.1",
+    "file-loader": "^0.9.0",
     "generic-pool": "2.4.2",
     "google-auth-library": "0.9.8",
     "imap": "0.8.17",
@@ -63,7 +64,6 @@
     "react-delay": "0.0.3",
     "react-document-title": "2.0.2",
     "react-dom": "0.14.7",
-    "react-motion": "0.4.4",
     "react-motion-ui-pack": "0.9.0",
     "react-redux": "4.4.5",
     "react-redux-form": "0.14.1",
@@ -81,11 +81,11 @@
     "style-loader": "0.13.1",
     "thinky": "2.3.3",
     "url-loader": "0.5.7",
+    "utf7": "https://github.com/truebit/utf7.git",
     "webpack": "1.13.1",
     "winston": "2.2.0",
     "winston-papertrail": "1.0.2",
-    "xoauth2": "1.2.0",
-    "utf7": "https://github.com/truebit/utf7.git"
+    "xoauth2": "1.2.0"
   },
   "devDependencies": {
     "chai": "3.5.0",
