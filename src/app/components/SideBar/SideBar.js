@@ -29,8 +29,10 @@ class SideBar extends Component {
             link: {
                 display: 'block',
                 position: 'relative',
-                marginBottom: 42,
-                fontWeight: 600,
+                fontFamily: 'Roboto Mono, monospace',
+                fontSize: '0.857em',
+                lineHeight:'4.167',
+                fontWeight: 500,
                 color: styleVars.menuTextColor,
                 textTransform: 'uppercase',
                 textDecoration: 'none',

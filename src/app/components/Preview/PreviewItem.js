@@ -6,6 +6,7 @@ const radium = require('radium')
 const Color = require('color')
 
 const Flexbox = require('../UI/Flexbox')
+const Ellipse = require('../UI/Ellipse')
 
 const slots = createSlots('PreviewItemUser', 'PreviewItemText', 'PreviewItemActions')
 
@@ -24,16 +25,19 @@ const PreviewItemDate = ({date}) => {
 const PreviewItemTitle = ({title, onClick, href}) => {
     const style = {
         color: 'black',
-        fontWeight: 'bold',
         cursor: 'pointer',
-        textDecoration: 'none'
+        textDecoration: 'none',
+        lineHeight: 1.571
     }
 
-    return <a style={style} onClick={onClick} href={href}>{title}</a>
+    return <a style={style} onClick={onClick} href={href}><strong>{title}</strong></a>
 }
 
-const PreviewItemStatus = ({status}) => {
-    return <span>{status}</span>
+const PreviewItemStatus = ({status, children}) => {
+    if (status)
+        return <span>{status}</span>
+
+    return React.Children.only(children)
 }
 
 PreviewItemDate.propTypes = {
@@ -41,7 +45,7 @@ PreviewItemDate.propTypes = {
 }
 
 PreviewItemStatus.propTypes = {
-    status: PropTypes.string.isRequired
+    status: PropTypes.string
 }
 
 PreviewItemTitle.propTypes = {
@@ -81,13 +85,13 @@ class PreviewItem extends Component {
     render() {
         const statusPreview = this.getStatus()
         const textPreview = this.getPreviewText()
+        const {circleColor} = this.props
 
         const styles = {
             hoverable: {
                 width: '100%',
                 ':hover': {
-                    backgroundColor: 'lightgrey',
-                    cursor: 'pointer'
+                    backgroundColor: 'lightgrey'
                 }
             },
             container: {
@@ -95,34 +99,42 @@ class PreviewItem extends Component {
                 marginBottom: '5px',
                 paddingLeft: '30px',
                 paddingRight: '30px',
-                borderColor: Color('rgb(233,234,236)').hexString(),
-                borderStyle: 'outset',
+                borderColor: 'e0e0e0',
+                borderStyle: 'solid',
                 borderWidth: '1px'
             },
             text: {
-                marginTop: '10px'
+                lineHeight: 1.571
+            },
+            status: {
+                lineHeight: 1.571
+            },
+            date:{
+                color: '#565656',
+                lineHeight: 1.571
             }
         }
 
         return (
             <div style={styles.hoverable} key="preview">
-                <Flexbox grow={0} shrink={0} height='70px' container='row' style={styles.container}>
-                    <Flexbox width='250px' grow={0} shrink={0} container='column' justifyContent="space-around">
-                        <Flexbox>
-                            {this.getUser()}
-                        </Flexbox>
-                        <Flexbox>
+                <Flexbox shrink={0} height='70px' container='row' style={styles.container}>
+                    { circleColor ? <Flexbox width='19px' container='column' justifyContent="center">
+                        <Ellipse width="8xp" height="8px" color={circleColor} />
+                    </Flexbox> : null }
+                    <Flexbox width='274px' shrink={0} container='column' justifyContent="center">
+                        <Flexbox style={styles.status}>{statusPreview}</Flexbox>
+                        <Flexbox style={styles.date}>
                             {this.getDate()}
                         </Flexbox>
-                        {statusPreview ? <Flexbox className="preview-item-status">{statusPreview}</Flexbox> : null}
                     </Flexbox>
                     <Flexbox container="column" justifyContent="center" grow={1} style={{minWidth: 0}}>
-                        <div>
+                        <Flexbox>
                             {this.getTitle()}
-                        </div>
-                        {textPreview ? <div style={styles.text}>{textPreview}</div> : null}
+                        </Flexbox>
+
+                        {textPreview ? <Flexbox style={styles.text}>{textPreview}</Flexbox> : null}
                     </Flexbox>
-                    <Flexbox container="column" justifyContent="center" grow={0} shrink={0} width='250px'>
+                    <Flexbox container="column" justifyContent="center" shrink={0} width='250px'>
                         {this.getActions()}
                     </Flexbox>
                 </Flexbox>
@@ -132,6 +144,7 @@ class PreviewItem extends Component {
 }
 
 PreviewItem.propTypes = {
+    circleColor: PropTypes.string
 }
 
 module.exports = Object.assign({

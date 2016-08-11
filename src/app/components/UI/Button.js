@@ -10,9 +10,8 @@ class Button extends Component {
 
         const buttonStyle = {
             margin: '0 0 0 28px',
-            border: 'none',
-            backgroundColor: styleVars.primaryColor,
-            color: 'white',
+            border: `1px solid ${styleVars.secondaryColor}`,
+            backgroundColor: 'rgba(0, 0, 0, 0)',
             textTransform: 'uppercase',
             fontWeight: '600',
             fontSize: '12px',
@@ -25,7 +24,8 @@ class Button extends Component {
             },
 
             ':hover': {
-                color: styleVars.highlightColor
+                backgroundColor: styleVars.secondaryColor,
+                color: 'white'
             }
         }
 

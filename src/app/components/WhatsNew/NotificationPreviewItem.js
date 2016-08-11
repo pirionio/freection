@@ -29,15 +29,50 @@ class NotificationPreviewItem extends Component {
         }
     }
 
+    getStatusText() {
+        const {notification} = this.props
+        const {creator} = notification
+
+        switch (notification.eventType.key) {
+            case EventTypes.COMMENT.key:
+                return <span><strong>{`${creator.displayName}`}</strong> commented</span>
+            case EventTypes.CREATED.key:
+                return <span><strong>{`${creator.displayName}`}</strong> sent you a thing</span>
+            case EventTypes.DONE.key:
+                return <span><strong>{`${creator.displayName}`}</strong> completed a thing</span>
+            default:
+                return <span><strong>{notification.eventType}</strong></span>
+        }
+    }
+
+    getCircleColor() {
+        const {notification} = this.props
+
+        switch (notification.eventType.key) {
+            case EventTypes.COMMENT.key:
+                return '#ffd200'
+            case EventTypes.CREATED.key:
+                return '#448ccb'
+            case EventTypes.CANCELED:
+            case EventTypes.CLOSED:
+            case EventTypes.DISMISSED:
+                return '#ff3a4e'
+            default:
+                return null
+        }
+    }
+
     render() {
         const {notification, dispatch} = this.props
         const textPreview = this.getTextElement()
 
-        return (<PreviewItem>
+        return (<PreviewItem circleColor={this.getCircleColor()}>
             <PreviewItemUser>
                 <span>{notification.creator.displayName}</span>
             </PreviewItemUser>
-            <PreviewItemStatus status={notification.eventType.label} />
+            <PreviewItemStatus>
+                {this.getStatusText()}
+            </PreviewItemStatus>
             <PreviewItemTitle title={notification.thing.subject}
                               onClick={() => dispatch(ThingPageActions.show(notification.thing.id))} />
             <PreviewItemDate date={notification.createdAt}/>

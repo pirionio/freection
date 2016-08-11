@@ -52,6 +52,7 @@ passport.use(new GoogleStrategy({
     clientSecret: config.clientSecret,
     callbackURL: config.callbackURL
 }, function (accessToken, refreshToken, profile, cb) {
+
     const userData = {
         googleId: profile.id,
         firstName: profile.name.givenName,
