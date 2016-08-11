@@ -70,7 +70,7 @@ class SideBar extends Component {
         const styles = this.getStyles()
 
         return (
-            <Link to={pathname} style={styles.link} activeStyle={styles.link.active}>
+            <Link to={pathname} style={styles.link} activeStyle={styles.link.active} key={pathname}>
                 {title}
                 {window.location.pathname === pathname && <span style={styles.arrow}></span>}
             </Link>
