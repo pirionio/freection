@@ -2,15 +2,15 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {Router, Route, IndexRedirect} = require('react-router')
 
-const App = require('../components/App/App')
-const MainApp = require('../components/MainApp/MainApp')
-const WhatsNew = require('../components/WhatsNew/WhatsNew')
-const ToDo = require('../components/ToDo/ToDo')
-const FollowUp = require('../components/FollowUp/FollowUp')
-const Thing = require('../components/Thing/Thing')
-const UnreadEmails = require('../components/Emails/UnreadEmails')
-const EmailThread = require('../components/Emails/EmailThread')
-const Github = require('../components/Github/Github')
+const App = require('./components/App/App')
+const MainApp = require('./components/MainApp/MainApp')
+const WhatsNew = require('./components/WhatsNew/WhatsNew')
+const ToDo = require('./components/ToDo/ToDo')
+const FollowUp = require('./components/FollowUp/FollowUp')
+const Thing = require('./components/Thing/Thing')
+const UnreadEmails = require('./components/Emails/UnreadEmails')
+const EmailThread = require('./components/Emails/EmailThread')
+const Github = require('./components/Github/Github')
 
 class AppRouter extends Component {
     render() {
