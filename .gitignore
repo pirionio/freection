@@ -43,3 +43,6 @@ style.css
 
 # Project generated files
 /src/public/bundle.js
+
+# Dist folder
+/dist/

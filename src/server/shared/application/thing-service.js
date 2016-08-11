@@ -47,28 +47,23 @@ function getThing(user, thingId) {
         })
 }
 
-function newThing(user, to, body, subject) {
+async function newThing(user, to, body, subject) {
     const creator = userToAddress(user)
 
-    return getToAddress(to)
-        .then(toAddress => {
-            return saveNewThing(body, subject, creator, toAddress)
-                .then(thing => EventCreator.createCreated(creator, thing, getShowNewList, thing.getEmailId()).then(() => thing))
-                .then(thing => {
-                    //  if thing assigned to myself let's accept it immediately
-                    if (thing.isSelf()) {
-                        return EventCreator.createAccepted(creator, thing, getShowNewList)
-                            .then(() => thing)
-                    }
+    try {
+        const toAddress = await getToAddress(to)
+        const thing = await saveNewThing(body, subject, creator, toAddress)
+        await EventCreator.createCreated(creator, thing, getShowNewList, thing.getEmailId())
 
-                    return thing
-                })
-                .then(thing => sendEmailForThing(thing, user, toAddress, subject, body))
-        })
-        .catch(error => {
-            logger.error(`error while creating new thing for user ${user.email}`, error)
-            throw error
-        })
+        if (thing.isSelf()) {
+            await EventCreator.createAccepted(creator, thing, getShowNewList)
+        }
+
+        await sendEmailForThing(thing, user, toAddress, subject, body)
+    } catch(error) {
+        logger.error(`error while creating new thing for user ${user.email}`, error)
+        throw error
+    }
 }
 
 function doThing(user, thingId) {
