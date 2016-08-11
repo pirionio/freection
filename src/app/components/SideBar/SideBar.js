@@ -1,9 +1,9 @@
 const React = require('react')
 const {Component, PropTypes} = React
-const Link = require('../UI/Link')
 const radium = require('radium')
 const classAutobind = require('class-autobind').default
 
+const Link = require('../UI/Link')
 const Flexbox = require('../UI/Flexbox')
 const styleVars = require('../style-vars')
 
@@ -26,9 +26,12 @@ class SideBar extends Component {
                 paddingTop: 10,
                 paddingLeft: 27
             },
-            link: {
+            linkBox: {
                 display: 'block',
                 position: 'relative',
+                marginBottom: 42
+            },
+            link: {
                 fontFamily: 'Roboto Mono, monospace',
                 fontSize: '0.857em',
                 lineHeight:'4.167',
@@ -72,10 +75,12 @@ class SideBar extends Component {
         const styles = this.getStyles()
 
         return (
-            <Link to={pathname} style={styles.link} activeStyle={styles.link.active} key={pathname}>
-                {title}
-                {window.location.pathname === pathname && <span style={styles.arrow}></span>}
-            </Link>
+            <div name="link-box" style={styles.linkBox} key={pathname}>
+                <Link to={pathname} style={styles.link} activeStyle={styles.link.active}>
+                    {title}
+                    {window.location.pathname === pathname && <span style={styles.arrow}></span>}
+                </Link>
+            </div>
         )
     }
 
