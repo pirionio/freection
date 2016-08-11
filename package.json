@@ -9,8 +9,8 @@
   "scripts": {
     "test": "mocha \"src/**/*.test.js\" --compilers js:babel-register",
     "start": "babel-node src/server/index.js --presets babel-async-preset",
-    "preprod": "babel src/server -d src/server --presets babel-async-preset",
-    "prod": "node src/server/index.js",
+    "preprod": "babel src/server -d src/server-dist --presets babel-async-preset --copy-files",
+    "prod": "node src/server-dist/index.js",
     "dev": "forever -f -w --watchDirectory \"src/server\" -c babel-node src/server/index.js --presets babel-async-preset",
     "generate": "node scripts/generate-actions.js",
     "postinstall": "node scripts/webpack"
