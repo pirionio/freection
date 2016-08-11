@@ -25,7 +25,7 @@ class Button extends Component {
             },
 
             ':hover': {
-                color: styleVars.secondaryColor
+                color: styleVars.highlightColor
             }
         }
 

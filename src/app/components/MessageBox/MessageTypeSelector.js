@@ -42,10 +42,10 @@ class MessageTypeSelector extends Component {
                 color: 'white',
                 ':hover': {
                     cursor: 'pointer',
-                    color: styleVars.secondaryColor
+                    color: styleVars.highlightColor
                 },
                 selected: {
-                    backgroundColor: styleVars.secondaryColor,
+                    backgroundColor: styleVars.highlightColor,
                     color: styleVars.primaryColor,
                     ':hover': {
                         color: styleVars.primaryColor,

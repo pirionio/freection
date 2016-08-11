@@ -35,7 +35,7 @@ class SideBar extends Component {
                 textTransform: 'uppercase',
                 textDecoration: 'none',
                 ':hover': {
-                    color: styleVars.secondaryColor
+                    color: styleVars.highlightColor
                 },
                 active: {
                     color: 'white'

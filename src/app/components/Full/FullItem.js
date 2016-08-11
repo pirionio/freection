@@ -149,7 +149,7 @@ class FullItem extends  Component {
                 marginTop: '10px'
             },
             button: {
-                backgroundColor: styleVars.secondaryColor,
+                backgroundColor: styleVars.highlightColor,
                 color: styleVars.primaryColor,
                 ':hover': {
                     color: 'white'

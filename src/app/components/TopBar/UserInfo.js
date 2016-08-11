@@ -9,7 +9,7 @@ class UserInfo extends Component {
         if (isAuthenticated) {
             return (
                 <span className="user-info">
-                    Hello {firstName} | <a href="/login/logout" className="logout-link">Logout</a>
+                    Hello {firstName} | <a href="/login/logout" style={{color: 'white'}}>Logout</a>
                 </span>)
         } else {
             return null

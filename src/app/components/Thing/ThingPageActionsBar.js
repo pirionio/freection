@@ -15,7 +15,7 @@ class ThingPageActionsBar extends Component {
         const {thing, currentUser} = this.props
 
         const buttonStyle = {
-            backgroundColor: styleVars.secondaryColor,
+            backgroundColor: styleVars.highlightColor,
             color: styleVars.primaryColor,
             ':hover': {
                 color: 'white'

@@ -87,11 +87,11 @@ class NewMessageBox extends Component {
                     backgroundColor: styleVars.primaryColor,
                     color: 'white',
                     ':focus':{
-                        outlineColor: styleVars.secondaryColor
+                        outlineColor: styleVars.highlightColor
                     },
                     ':hover': {
                         cursor: 'pointer',
-                        color: styleVars.secondaryColor
+                        color: styleVars.highlightColor
                     }
 
                 }
