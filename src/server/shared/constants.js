@@ -1,6 +1,7 @@
 const IMAP = {
     google: {
-        ALL_MAILBOX: '[Gmail]/All Mail',
+        MAIN_BOX: '[Gmail]',
+        ALL_ATTRIBUTE: '\\All',
         THREAD_FIELD: 'X-GM-THRID',
         LABEL_FIELD: 'X-GM-LABELS',
         SEEN_FLAG: '\\Seen'

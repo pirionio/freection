@@ -1,7 +1,6 @@
 const dateFns = require('date-fns')
 const {last} = require('lodash')
 
-const GoogleImapConnectionPool = require('../shared/utils/imap/google-imap-connection-pool')
 const EmailService = require('../shared/application/email-service')
 const ThingService = require('../shared/application/thing-service')
 const {MailNotification, Thing, User} = require('../shared/models')

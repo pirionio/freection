@@ -13,14 +13,29 @@ class ImapConnection {
         this._connection = new imap(options)
         this._onDisconnect = null
 
-        promisify(this._connection, ['openBox', 'closeBox', 'search', 'setFlags'])
+        promisify(this._connection, ['openBox', 'closeBox', 'search', 'setFlags', 'getBoxes'])
         autobind(this, ImapConnection.prototype)
     }
 
     connect() {
         return new Promise((resolve, reject) => {
             this._connection.once('ready', () => {
-                this._connection.openBoxAsync(IMAP[this._type].ALL_MAILBOX)
+                this._connection.getBoxesAsync()
+                    .then(boxes => {
+
+                        // This is very gmail behavior, we should probably seek other solution for other providers
+                        const mainBox = boxes[IMAP[this._type].MAIN_BOX]
+
+                        const allMailName = chain(mainBox.children)
+                            .toPairs()
+                            .filter(box => box[1].attribs && box[1].attribs.includes(IMAP[this._type].ALL_ATTRIBUTE))
+                            .map(box=> box[0])
+                            .head()
+                            .value()
+
+                        return `${IMAP[this._type].MAIN_BOX}/${allMailName}`
+                    })
+                    .then(mailBoxName => this._connection.openBoxAsync(mailBoxName))
                     .then(() => resolve(this))
                     .catch(error => reject(error))
             })
