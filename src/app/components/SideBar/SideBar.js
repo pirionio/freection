@@ -77,7 +77,7 @@ class SideBar extends Component {
             <div name="link-box" style={styles.linkBox} key={pathname}>
                 <Link to={pathname} style={styles.link} activeStyle={styles.link.active}>
                     {title}
-                    {window.location.pathname === pathname && <span style={styles.arrow}></span>}
+                    {window.location.pathname.startsWith(pathname) && <span style={styles.arrow}></span>}
                 </Link>
             </div>
         )
@@ -88,7 +88,7 @@ class SideBar extends Component {
 
         const links = [
             {
-                pathname: '/whatsnew/things',
+                pathname: '/whatsnew',
                 title: 'What\'s New'
             },
             {

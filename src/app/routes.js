@@ -1,6 +1,6 @@
 const React = require('react')
 const {Component, PropTypes} = React
-const {Router, Route, IndexRedirect} = require('react-router')
+const {Router, Route, IndexRoute, IndexRedirect} = require('react-router')
 
 const App = require('./components/App/App')
 const MainApp = require('./components/MainApp/MainApp')
@@ -19,8 +19,9 @@ class AppRouter extends Component {
             <Router history={this.props.history}>
                 <Route path="/" component={App}>
                     <Route component={MainApp}>
-                        <IndexRedirect to="/whatsnew/things" />
+                        <IndexRedirect to="/whatsnew" />
                         <Route path="/whatsnew" component={WhatsNew}>
+                            <IndexRedirect to="/whatsnew/things" />
                             <Route path="/whatsnew/things" component={UnreadNotifications} />
                             <Route path="/whatsnew/emails" component={UnreadEmails} />
                         </Route>
