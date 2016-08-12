@@ -111,7 +111,7 @@ class FullItem extends  Component {
                         </Flexbox>
                     </Flexbox>
                 </Flexbox>
-                <Flexbox name="full-item-body-container" grow={1} style={styles.content}>
+                <Flexbox name="full-item-body-container" grow={1} container="column" style={styles.content}>
                     <CommentList comments={messages} />
                 </Flexbox>
             </Flexbox>
