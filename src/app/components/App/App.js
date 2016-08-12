@@ -5,6 +5,7 @@ const radium = require('radium')
 
 const Flexbox = require('../UI/Flexbox')
 const TopBar = require('../TopBar/TopBar')
+const LoginTopBar = require('../TopBar/LoginTopBar')
 const SideBar = require('../SideBar/SideBar')
 const Login = require('../Login/Login')
 const PushService = require('../../services/push-service')
@@ -36,7 +37,7 @@ class App extends Component {
         } else {
             return (
                 <Flexbox container="column">
-                    <TopBar />
+                    <LoginTopBar />
                     <Login />
                 </Flexbox>
             )
