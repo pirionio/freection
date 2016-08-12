@@ -1,9 +1,9 @@
 const React = require('react')
 const {Component, PropTypes} = React
+const Link = require('../UI/Link')
 const radium = require('radium')
 const classAutobind = require('class-autobind').default
 
-const Link = require('../UI/Link')
 const Flexbox = require('../UI/Flexbox')
 const styleVars = require('../style-vars')
 
@@ -27,14 +27,13 @@ class SideBar extends Component {
                 paddingLeft: 27
             },
             linkBox: {
-                display: 'block',
-                position: 'relative',
-                marginBottom: 42
+                height: '12px',
+                marginBottom: '40px',
+                position: 'relative'
             },
             link: {
                 fontFamily: 'Roboto Mono, monospace',
                 fontSize: '0.857em',
-                lineHeight:'4.167',
                 fontWeight: 500,
                 color: styleVars.menuTextColor,
                 textTransform: 'uppercase',
