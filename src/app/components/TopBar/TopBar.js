@@ -69,7 +69,7 @@ class TopBar extends Component {
         return {
             topBar: {
                 height: '75px',
-                padding: '30px 47px 30px 55px',
+                padding: '0 47px 0 55px',
                 backgroundColor: styleVars.secondaryColor,
                 color: 'white'
             },
@@ -90,7 +90,7 @@ class TopBar extends Component {
         const counts = this.getAllCounts()
 
         return (
-            <Flexbox name="top-bar" container="row" justifyContent="flex-end" alignItems="center" style={styles.topBar}>
+            <Flexbox name="top-bar" shrink={0} container="row" justifyContent="flex-end" alignItems="center" style={styles.topBar}>
                 <Flexbox name="count-summary" grow={1}>
                     Greetings {currentUser.firstName}! You have:
                     {counts}

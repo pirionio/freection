@@ -25,6 +25,7 @@ class Link extends Component {
         return (<a href={href} onClick={this.onClick} style={[style, isActive && activeStyle]}>{children}</a>)
     }
 }
+
 Link.propTypes = {
     to: PropTypes.string,
     style: PropTypes.object,

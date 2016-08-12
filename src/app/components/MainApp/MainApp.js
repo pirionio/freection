@@ -15,13 +15,17 @@ class MainApp extends Component {
             content: {
                 width: '100%',
                 maxWidth: '1178px'
+            },
+            padding: {
+                minWidth:'35px',
+                maxWidth: '130px'
             }
         }
 
         return (
-            <Flexbox name="main-app" grow={1} height='100%' style={style.container} container={true}>
-                <Flexbox grow={1} style={{minWidth:'35px', maxWidth: '130px'}} />
-                <Flexbox style={style.content}>
+            <Flexbox name="main-app" grow={1} container="row" style={style.container} >
+                <Flexbox name="main-app-padding" grow={1} style={style.padding} />
+                <Flexbox name="main-app-content" container="column" style={style.content}>
                     {this.props.children}
                 </Flexbox>
             </Flexbox>

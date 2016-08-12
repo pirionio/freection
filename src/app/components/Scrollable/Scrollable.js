@@ -4,6 +4,8 @@ const {Component, PropTypes} = React
 const keys = require('lodash/keys')
 const last = require('lodash/last')
 
+const Flexbox = require('../UI/Flexbox')
+
 class Scrollable extends Component {
     componentWillUpdate () {
         const node = ReactDOM.findDOMNode(this)
@@ -41,10 +43,25 @@ class Scrollable extends Component {
             return React.cloneElement(element, {ref: element.key})
         })
 
+        const styles = {
+            container: {
+                position: 'relative',
+                overflowY: 'hidden'
+            },
+            content: {
+                width: '100%',
+                height: '100%',
+                position: 'absolute',
+                overflowY: 'auto'
+            }
+        }
+
         return (
-            <div name="scrollable" style={{overflowY: 'auto', height: '100%'}}>
-                {childrenToRender}
-            </div>
+            <Flexbox name="scrollable-container" container="column" grow={1} style={styles.container}>
+                <Flexbox name="scrollable-content" style={styles.content}>
+                    {childrenToRender}
+                </Flexbox>
+            </Flexbox>
         )
     }
 }

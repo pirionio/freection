@@ -3,25 +3,26 @@ const {Component, PropTypes} = React
 const DocumentTitle = require('react-document-title')
 const radium = require('radium')
 
+const Flexbox = require('./Flexbox')
+
 class Page extends Component {
     render() {
         const {title, style, children} = this.props
 
         return (
-            <div style={[
-                {width: '100%', height: '100%'},
-                style
-            ]}>
+            <Flexbox grow={1} container="column" style={[{width: '100%'}, style]}>
                 <DocumentTitle title={title} />
                 {children}
-            </div>
+            </Flexbox>
         )
     }
 }
+
 Page.propTypes = {
     title: PropTypes.string,
     style: PropTypes.object
 }
+
 Page.defaultProps = {
     title: ''
 }

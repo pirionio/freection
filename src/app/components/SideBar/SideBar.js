@@ -23,7 +23,7 @@ class SideBar extends Component {
                 backgroundColor: styleVars.primaryColor
             },
             menu: {
-                paddingTop: 10,
+                paddingTop: 34,
                 paddingLeft: 27
             },
             linkBox: {
@@ -60,7 +60,7 @@ class SideBar extends Component {
             arrow: {
                 position: 'absolute',
                 right: 0,
-                top: 21,
+                top: 3,
                 width: 0,
                 height: 0,
                 borderTop: '5px solid transparent',
@@ -88,7 +88,7 @@ class SideBar extends Component {
 
         const links = [
             {
-                pathname: '/whatsnew',
+                pathname: '/whatsnew/things',
                 title: 'What\'s New'
             },
             {
@@ -98,10 +98,6 @@ class SideBar extends Component {
             {
                 pathname: '/followup',
                 title: 'Follow Up'
-            },
-            {
-                pathname: '/emails/unread',
-                title: 'Unread Emails'
             },
             {
                 pathname: '/integrations/github',

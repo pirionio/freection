@@ -17,24 +17,12 @@ class PreviewsContainer extends Component {
         this.props.fetchPreviews()
     }
 
-    getStyles() {
-        return {
-            container: {
-                height: '100%'
-            },
-            list: {
-                marginBottom: '15px'
-            }
-        }
-    }
-
     render () {
         const {previewItems, noPreviewsText, invalidationStatus} = this.props
-        const styles = this.getStyles()
 
         if (invalidationStatus === InvalidationStatus.FETCHING) {
             return (
-                <div style={styles.container}>
+                <div>
                     <Delay wait={GeneralConstants.FETCHING_DELAY_MILLIS}>
                         <div>Loading, please wait...</div>
                     </Delay>
@@ -43,15 +31,13 @@ class PreviewsContainer extends Component {
         }
 
         return (
-            <Flexbox name="preview-container" container="column" style={styles.container}>
-                <Flexbox name="preview-list-content" grow={1} container="column" style={styles.list}>
+            <Flexbox name="preview-container" grow={1} container="column" justifyContent="flex-end">
+                <Flexbox name="preview-content" container="column" grow={1} style={{marginBottom: '15px'}}>
                     <Scrollable>
                         {previewItems && previewItems.length ? previewItems : <span>{noPreviewsText}</span>}
                     </Scrollable>
                 </Flexbox>
-                <Flexbox>
-                    <NewMessageBox />
-                </Flexbox>
+                <NewMessageBox />
             </Flexbox>
         )
     }
