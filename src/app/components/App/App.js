@@ -36,7 +36,7 @@ class App extends Component {
             )
         } else {
             return (
-                <Flexbox container="column">
+                <Flexbox name="root" container="column" height="100%">
                     <LoginTopBar />
                     <Login />
                 </Flexbox>

@@ -4,7 +4,7 @@ const {Component} = React
 const Flexbox = require('../UI/Flexbox')
 const styleVars = require('../style-vars')
 
-const Logo = require('../../static/logo-white.png')
+const Logo = require('../../static/logo-text-white.png')
 
 class LoginTopBar extends Component {
     constructor(props) {
@@ -20,7 +20,7 @@ class LoginTopBar extends Component {
                 color: 'white'
             },
             image: {
-                width: '90px',
+                width: '412px',
                 height: '30px'
             }
         }
