@@ -41,7 +41,7 @@ class NotificationPreviewItem extends Component {
             case EventTypes.DONE.key:
                 return <span><strong>{`${creator.displayName}`}</strong> completed a thing</span>
             default:
-                return <span><strong>{notification.eventType}</strong></span>
+                return <span><strong>{notification.eventType.label}</strong></span>
         }
     }
 
@@ -58,7 +58,7 @@ class NotificationPreviewItem extends Component {
             case EventTypes.DISMISSED:
                 return '#ff3a4e'
             default:
-                return null
+                return 'black'
         }
     }
 
