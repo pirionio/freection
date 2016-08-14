@@ -5,8 +5,10 @@ module.exports = {
     menuTextColor: '#838c91',
     backgroundColor: '#eceff2',
     watermarkColor: 'darkgrey',
+    disabledColor: '#f5f4f4',
     baseBlueColor: '#448ccb',
     basePurpleColor: '#7985ce',
     basePinkColor: '#ff3a4e',
-    disabledColor: '#f5f4f4'
+    baseGrayColor: '#565656',
+    previewLineHeight: 1.571
 }

@@ -25,7 +25,7 @@ class NotificationPreviewItem extends Component {
                 return <BodyPreviewText body={notification.thing.body} />
 
             default:
-                return null;
+                return <span></span>;
         }
     }
 
@@ -35,13 +35,22 @@ class NotificationPreviewItem extends Component {
 
         switch (notification.eventType.key) {
             case EventTypes.COMMENT.key:
-                return <span><strong>{`${creator.displayName}`}</strong> commented</span>
+                return <span><strong>{creator.displayName}</strong> commented</span>
+            case EventTypes.PING.key:
+                return <span><strong>{creator.displayName}</strong> pinged you</span>
             case EventTypes.CREATED.key:
-                return <span><strong>{`${creator.displayName}`}</strong> sent you a thing</span>
+                return <span><strong>{creator.displayName}</strong> sent you a thing</span>
             case EventTypes.DONE.key:
-                return <span><strong>{`${creator.displayName}`}</strong> completed a thing</span>
+                return <span><strong>{creator.displayName}</strong> completed a thing</span>
+            case EventTypes.DISMISSED.key:
+                return <span><strong>{creator.displayName}</strong> dismissed a thing</span>
+            case EventTypes.SENT_BACK.key:
+                return <span><strong>{creator.displayName}</strong> sent a thing back</span>
+            case EventTypes.CLOSED.key:
+            case EventTypes.CANCELED.key:
+                return <span><strong>{creator.displayName}</strong> closed a thing</span>
             default:
-                return <span><strong>{notification.eventType.label}</strong></span>
+                return <span><strong>{creator.displayName}</strong> {notification.eventType.label}</span>
         }
     }
 
@@ -50,13 +59,17 @@ class NotificationPreviewItem extends Component {
 
         switch (notification.eventType.key) {
             case EventTypes.COMMENT.key:
+            case EventTypes.PING.key:
                 return '#ffd200'
             case EventTypes.CREATED.key:
+            case EventTypes.SENT_BACK.key:
                 return '#448ccb'
-            case EventTypes.CANCELED:
-            case EventTypes.CLOSED:
-            case EventTypes.DISMISSED:
+            case EventTypes.CANCELED.key:
+            case EventTypes.CLOSED.key:
+            case EventTypes.DISMISSED.key:
                 return '#ff3a4e'
+            case EventTypes.DONE.key:
+                return 'green'
             default:
                 return 'black'
         }
@@ -65,6 +78,7 @@ class NotificationPreviewItem extends Component {
     render() {
         const {notification, dispatch} = this.props
         const textPreview = this.getTextElement()
+        console.log(textPreview)
 
         return (<PreviewItem circleColor={this.getCircleColor()}>
             <PreviewItemUser>
