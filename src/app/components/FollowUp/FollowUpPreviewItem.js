@@ -14,7 +14,7 @@ const FollowUpPreviewItem = ({thing, dispatch}) => {
             <PreviewItemUser>
                 <span>{thing.to.displayName}</span>
             </PreviewItemUser>
-            <PreviewItemTitle title={thing.subject} onClick={() => dispatch(ThingPageActions.show(thing.id))} />
+            <PreviewItemTitle title={thing.subject} onClick={() => dispatch(ThingPageActions.show(thing))} />
             <PreviewItemStatus status={thing.payload.status} />
             <PreviewItemDate date={thing.createdAt}/>
             <PreviewItemText>

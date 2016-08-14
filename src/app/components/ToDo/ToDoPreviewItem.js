@@ -15,7 +15,7 @@ const TodoPreviewItem = ({thing, dispatch}) => {
             <PreviewItemUser>
                 <span>{thing.creator.displayName}</span>
             </PreviewItemUser>
-            <PreviewItemTitle title={thing.subject} onClick={() => dispatch(ThingPageActions.show(thing.id))} />
+            <PreviewItemTitle title={thing.subject} onClick={() => dispatch(ThingPageActions.show(thing))} />
             <PreviewItemStatus status={ThingStatus[thing.payload.status].label} />
             <PreviewItemDate date={thing.createdAt}/>
             <PreviewItemText>

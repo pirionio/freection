@@ -10,6 +10,7 @@ const isEmpty = require('lodash/isEmpty')
 
 const ThingPageActionsBar = require('./ThingPageActionsBar')
 const CommentThingBox = require('../MessageBox/CommentThingBox')
+const NewMessagePanel = require('../MessageBox/NewMessagePanel')
 
 const {FullItem, FullItemSubject, FullItemStatus, FullItemActions, FullItemUser, FullItemDate, FullItemBox} = require('../Full/FullItem')
 const TextTruncate = require('../UI/TextTruncate')
@@ -113,7 +114,7 @@ class Thing extends Component {
                         <span>{dateFns.format(thing.createdAt, 'DD-MM-YYYY HH:mm')}</span>
                     </FullItemDate>
                     <FullItemBox>
-                        <CommentThingBox />
+                        <NewMessagePanel />
                     </FullItemBox>
                 </FullItem>
             </DocumentTitle>

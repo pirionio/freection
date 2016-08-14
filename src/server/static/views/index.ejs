@@ -17,6 +17,11 @@
             * {
                 box-sizing: border-box;
             }
+
+            /* This is important in order to get rid of the ugly yellow highlight of webkit's auto-complete on inputs. */
+            input:-webkit-autofill {
+                -webkit-box-shadow: 0 0 0 1000px white inset;
+            }
         </style>
     </head>
     <body>

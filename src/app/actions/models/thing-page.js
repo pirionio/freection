@@ -3,7 +3,7 @@ module.exports = {
     actions: [
         {
             name: 'show',
-            params: ['thingId']
+            params: ['thing']
         },
         {
             name: 'hide'

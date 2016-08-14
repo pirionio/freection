@@ -2,10 +2,10 @@ const ThingPageActionsTypes = require('../types/thing-page-action-types')
 const {ActionStatus} = require('../../constants')
 const ResourceUtil = require('../../util/resource-util')
 
-function show(thingId) {
+function show(thing) {
     return {
         type: ThingPageActionsTypes.SHOW,
-        thingId
+        thing
     }
 }
 

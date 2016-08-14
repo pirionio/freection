@@ -9,6 +9,8 @@ class CommentList extends Component {
     componentDidMount() {
         const {comments} = this.props
 
+        console.log('comments', comments)
+
         const firstUnreadMessage = chain(comments)
             .sortBy('createdAt')
             .filter({isRead: false})

@@ -68,7 +68,7 @@ class Immutable {
 
         return this
     }
-    
+
     arraySetOrPushItem(path, predicate, value) {
         const array = get(this._object, path)
 
