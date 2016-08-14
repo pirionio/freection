@@ -8,6 +8,7 @@ const {PreviewItem, PreviewItemUser, PreviewItemTitle, PreviewItemDate, PreviewI
 const {CommentPreviewText, PingPreviewText, BodyPreviewText} = require('../Preview/Thing')
 const NotificationActionsBar = require('./NotificationActionsBar')
 const ThingPageActions = require('../../actions/thing-page-actions')
+const styleVars = require('../style-vars')
 
 class NotificationPreviewItem extends Component {
 
@@ -60,16 +61,16 @@ class NotificationPreviewItem extends Component {
         switch (notification.eventType.key) {
             case EventTypes.COMMENT.key:
             case EventTypes.PING.key:
-                return '#ffd200'
+                return styleVars.greenCircleColor
             case EventTypes.CREATED.key:
             case EventTypes.SENT_BACK.key:
-                return '#448ccb'
+                return styleVars.blueCircleColor
             case EventTypes.CANCELED.key:
             case EventTypes.CLOSED.key:
             case EventTypes.DISMISSED.key:
-                return '#ff3a4e'
+                return styleVars.redCircleColor
             case EventTypes.DONE.key:
-                return 'green'
+                return styleVars.greenCircleColor
             default:
                 return 'black'
         }

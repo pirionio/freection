@@ -6,9 +6,12 @@ const {PreviewItem, PreviewItemStatus, PreviewItemTitle, PreviewItemDate, Previe
     require('../Preview/PreviewItem')
 const GithubActionsBar = require('./GithubActionsBar')
 const TextTruncate = require('../UI/TextTruncate')
+const styleVars = require('../style-vars')
 
 const GithubPreviewItem = ({notification}) => {
-    const color = notification.eventType.key === EventTypes.CREATED.key ? '#448ccb' : 'green'
+    const color = notification.eventType.key === EventTypes.CREATED.key ?
+        styleVars.blueCircleColor :
+        styleVars.greenCircleColor
     const {creator} = notification
 
     const text = notification.eventType.key === EventTypes.CREATED.key ?
