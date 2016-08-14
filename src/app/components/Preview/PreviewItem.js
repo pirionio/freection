@@ -7,6 +7,7 @@ const Color = require('color')
 
 const Flexbox = require('../UI/Flexbox')
 const Ellipse = require('../UI/Ellipse')
+const styleVars = require('../style-vars')
 
 const slots = createSlots('PreviewItemUser', 'PreviewItemText', 'PreviewItemActions')
 
@@ -104,21 +105,21 @@ class PreviewItem extends Component {
                 borderWidth: '1px'
             },
             text: {
-                lineHeight: 1.571
+                lineHeight: styleVars.previewLineHeight
             },
             status: {
-                lineHeight: 1.571
+                lineHeight: styleVars.previewLineHeight
             },
             date:{
-                color: '#565656',
-                lineHeight: 1.571
+                color: styleVars.baseGrayColor,
+                lineHeight: styleVars.previewLineHeight
             }
         }
 
         return (
             <div style={styles.hoverable} key="preview">
                 <Flexbox shrink={0} height='70px' container='row' style={styles.container}>
-                    { circleColor ? <Flexbox width='19px' container='column' justifyContent="center">
+                    { circleColor ? <Flexbox width='19px' shrink={0} container='column' justifyContent="center">
                         <Ellipse width="8xp" height="8px" color={circleColor} />
                     </Flexbox> : null }
                     <Flexbox width='274px' shrink={0} container='column' justifyContent="center">

@@ -1,23 +1,36 @@
 const React = require('react')
 const {PropTypes} = React
+
 const TextTruncate = require('../../UI/TextTruncate')
+const Flexbox = require('../../UI/Flexbox')
+const styleVars = require('../../style-vars')
 
 const CommentPreviewText = ({comment, numOfNewComments}) => {
-    const unreadCount = numOfNewComments > 1 ?
-        <div className="preview-comment-unread-count">
-            (+{numOfNewComments - 1})
-        </div> : null
+    const style = {
+        unreadCount: {
+            color: styleVars.baseGrayColor,
+            marginLeft: '6px',
+            fontSize: '0.9em',
+            lineHeight: styleVars.previewLineHeight
+        },
+        textTruncate: {
+            display: 'inline-block',
+            width:'100%'
+        }
+    }
 
-     const textTruncateStyle = {
-        display: 'inline-block',
-        width:'100%'
-     }
+    const unreadCount = numOfNewComments > 1 ?
+        <Flexbox style={style.unreadCount}>
+            (+{numOfNewComments - 1})
+        </Flexbox> : null
 
     return (
-        <div>
-            <TextTruncate style={textTruncateStyle}>{comment}</TextTruncate>
-            {unreadCount}
-        </div>
+        <Flexbox container={true}>
+            <Flexbox style={{minWidth: 0}}>
+                <TextTruncate style={style.textTruncate}>{comment}</TextTruncate>
+            </Flexbox>
+            { unreadCount }
+        </Flexbox>
     )
 }
 

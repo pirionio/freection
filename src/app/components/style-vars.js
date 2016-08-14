@@ -9,5 +9,7 @@ module.exports = {
     watermarkColor: 'darkgrey',
     baseBlueColor: '#448ccb',
     basePurpleColor: '#7985ce',
-    basePinkColor: '#ff3a4e'
+    basePinkColor: '#ff3a4e',
+    baseGrayColor: '#565656',
+    previewLineHeight: 1.571
 }

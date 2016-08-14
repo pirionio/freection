@@ -50,6 +50,7 @@ class NotificationPreviewItem extends Component {
 
         switch (notification.eventType.key) {
             case EventTypes.COMMENT.key:
+            case EventTypes.PING.key:
                 return '#ffd200'
             case EventTypes.CREATED.key:
                 return '#448ccb'
