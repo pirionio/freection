@@ -79,7 +79,6 @@ class NotificationPreviewItem extends Component {
     render() {
         const {notification, dispatch} = this.props
         const textPreview = this.getTextElement()
-        console.log(textPreview)
 
         return (<PreviewItem circleColor={this.getCircleColor()}>
             <PreviewItemUser>
