@@ -4,12 +4,14 @@ const OAuth2 = require('google-auth-library/lib/auth/oauth2client')
 const GoogleImapConnection = require('./google-imap-connection')
 const config = require('../../config/google-oauth')
 const promisify = require('../promisify')
+const logger = require('../logger')
 
 const connectionCache = new NodeCache({ stdTTL: 30 * 60, useClones: false})
 
 connectionCache.on('del', onDeleted)
 
 function onDeleted(userId, connection) {
+    logger.info(`closing connection for ${userId}`)
     connection.close()
 }
 

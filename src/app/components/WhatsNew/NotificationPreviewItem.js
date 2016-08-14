@@ -25,7 +25,7 @@ class NotificationPreviewItem extends Component {
                 return <BodyPreviewText body={notification.thing.body} />
 
             default:
-                return null;
+                return <span></span>;
         }
     }
 
@@ -53,9 +53,9 @@ class NotificationPreviewItem extends Component {
                 return '#ffd200'
             case EventTypes.CREATED.key:
                 return '#448ccb'
-            case EventTypes.CANCELED:
-            case EventTypes.CLOSED:
-            case EventTypes.DISMISSED:
+            case EventTypes.CANCELED.key:
+            case EventTypes.CLOSED.key:
+            case EventTypes.DISMISSED.key:
                 return '#ff3a4e'
             default:
                 return 'black'
@@ -65,6 +65,7 @@ class NotificationPreviewItem extends Component {
     render() {
         const {notification, dispatch} = this.props
         const textPreview = this.getTextElement()
+        console.log(textPreview)
 
         return (<PreviewItem circleColor={this.getCircleColor()}>
             <PreviewItemUser>
