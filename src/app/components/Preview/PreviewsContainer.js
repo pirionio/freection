@@ -24,7 +24,7 @@ class PreviewsContainer extends Component {
         const {noPreviews} = this.props
         const styles = this.getStyles()
 
-        const texts = noPreviews.texts.map(text => <span style={styles.noPreviews.text}>{text}</span>)
+        const texts = noPreviews.texts.map((text, index) => <span key={`text-${index}`} style={styles.noPreviews.text}>{text}</span>)
 
         return (
             <Flexbox container="column">
