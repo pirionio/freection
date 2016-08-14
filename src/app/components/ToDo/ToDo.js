@@ -5,6 +5,7 @@ const orderBy = require('lodash/orderBy')
 const classAutobind = require('class-autobind').default
 
 const Page = require('../UI/Page')
+const styleVars = require('../style-vars')
 const PreviewsContainer = require('../Preview/PreviewsContainer')
 const ToDoActions = require('../../actions/to-do-actions')
 const ToDoPreviewItem = require('./ToDoPreviewItem')
@@ -37,6 +38,16 @@ class ToDo extends Component {
             return 'Freection - To Do'
     }
 
+    getNoPreviews() {
+        return {
+            texts: [
+                'Nothing to do...',
+                'Beware, they might fire you if it keep going on like this.'
+            ],
+            logoColor: styleVars.baseBlueColor
+        }
+    }
+
     render() {
         const {invalidationStatus} = this.props
         
@@ -44,7 +55,7 @@ class ToDo extends Component {
             <Page title={this.getTitle()}>
                 <PreviewsContainer previewItems={this.getThingsToDo()}
                                    fetchPreviews={this.fetchToDo}
-                                   noPreviewsText="There are no things to do"
+                                   noPreviews={this.getNoPreviews()}
                                    invalidationStatus={invalidationStatus} />
             </Page>
         )

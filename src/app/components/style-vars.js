@@ -5,5 +5,9 @@ module.exports = {
     secondaryColor: '#36474f',
     highlightColor: Color('rgb(251,191,0)').hexString(),
     menuTextColor: Color('rgb(131, 140, 145)').hexString(),
-    backgroundColor: '#eceff2'
+    backgroundColor: '#eceff2',
+    watermarkColor: 'darkgrey',
+    baseBlueColor: '#448ccb',
+    basePurpleColor: '#7985ce',
+    basePinkColor: '#ff3a4e'
 }

@@ -1,7 +1,6 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
-const DocumentTitle = require('react-document-title')
 const classAutobind = require('class-autobind').default
 
 const groupBy = require('lodash/groupBy')
@@ -16,6 +15,7 @@ const clone = require('lodash/clone')
 const {chain} = require('lodash/core')
 
 const Page = require('../UI/Page')
+const styleVars = require('../style-vars')
 const PreviewsContainer = require('../Preview/PreviewsContainer')
 const NotificationPreviewItem = require('./NotificationPreviewItem')
 const GithubPreviewItem = require('./GithubPreviewItem')
@@ -94,6 +94,16 @@ class WhatsNew extends Component {
             return 'Freection - What\'s New?'
     }
 
+    getNoPreviews() {
+        return {
+            texts: [
+                'Nothing new under the sun.',
+                'Stop checking your Freection so often!'
+            ],
+            logoColor: styleVars.highlightColor
+        }
+    }
+    
     render () {
         const {invalidationStatus} = this.props
         
@@ -101,7 +111,7 @@ class WhatsNew extends Component {
             <Page title={this.getTitle()}>
                 <PreviewsContainer previewItems={this.getNotificationRows()}
                                    fetchPreviews={this.fetchWhatsNew}
-                                   noPreviewsText="There are no new things"
+                                   noPreviews={this.getNoPreviews()}
                                    invalidationStatus={invalidationStatus} />
             </Page>
         )

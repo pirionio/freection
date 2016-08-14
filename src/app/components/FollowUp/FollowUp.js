@@ -6,6 +6,7 @@ const orderBy = require('lodash/orderBy')
 const classAutobind = require('class-autobind').default
 
 const PreviewsContainer = require('../Preview/PreviewsContainer')
+const styleVars = require('../style-vars')
 const FollowUpsActions = require('../../actions/follow-up-actions')
 const FollowUpPreviewItem = require('./FollowUpPreviewItem')
 
@@ -32,6 +33,16 @@ class FollowUp extends Component {
             return 'Freection - Follow Up'
     }
 
+    getNoPreviews() {
+        return {
+            texts: [
+                'Nothing to follow up.',
+                'Damn! You\'re good!'
+            ],
+            logoColor: styleVars.basePurpleColor
+        }
+    }
+
     render() {
         const {invalidationStatus} = this.props
 
@@ -39,7 +50,7 @@ class FollowUp extends Component {
             <DocumentTitle title={this.getTitle()}>
                 <PreviewsContainer previewItems={this.getThingsToFollowUp()}
                                    fetchPreviews={this.fetchFollowUps}
-                                   noPreviewsText="There are no things to follow up"
+                                   noPreviews={this.getNoPreviews()}
                                    invalidationStatus={invalidationStatus} />
             </DocumentTitle>
         )

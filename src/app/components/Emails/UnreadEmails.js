@@ -16,6 +16,7 @@ const EmailActions = require('../../actions/email-actions')
 
 const PreviewsContainer = require('../Preview/PreviewsContainer')
 const EmailPreviewItem = require('./EmailPreviewItem')
+const styleVars = require('../style-vars')
 
 class UnreadEmails extends Component {
     constructor(props) {
@@ -55,6 +56,16 @@ class UnreadEmails extends Component {
         )
     }
 
+    getNoPreviews() {
+        return {
+            texts: [
+                'No new emails.',
+                'Hmm, sorry, we don\'t have a good joke for this part.'
+            ],
+            logoColor: styleVars.basePinkColor
+        }
+    }
+
     render() {
         const {invalidationStatus} = this.props
 
@@ -62,7 +73,7 @@ class UnreadEmails extends Component {
             <DocumentTitle title={this.getTitle()}>
                 <PreviewsContainer previewItems={this.getEmailRows()}
                                    fetchPreviews={this.fetchUnreadEmails}
-                                   noPreviewsText="There are no new emails"
+                                   noPreviews={this.getNoPreviews()}
                                    invalidationStatus={invalidationStatus} />
             </DocumentTitle>
         )
