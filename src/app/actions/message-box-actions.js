@@ -1,6 +1,8 @@
 const {actions} = require('react-redux-form')
 const last = require('lodash/last')
 const isEmpty = require('lodash/isEmpty')
+const findIndex = require('lodash/findIndex')
+const nth = require('lodash/nth')
 
 const MessageBoxActionsTypes = require('./types/message-box-action-types')
 const MessageBoxActions = require('./generated/message-box-actions')
@@ -8,6 +10,7 @@ const {GeneralConstants, ActionStatus} = require('../constants')
 
 const newMessageAction = MessageBoxActions.newMessage
 const selectMessageBoxAction = MessageBoxActions.selectMessageBox
+const closeMessageBoxAction = MessageBoxActions.closeMessageBox
 
 function newMessage(messageType, context) {
     return (dispatch, getState) => {
@@ -48,6 +51,24 @@ function messageSent(messageBox, shouldCloseMessageBox, messagePromise) {
     }
 }
 
+function closeMessageBox(messageBox) {
+    return (dispatch, getState) => {
+        const {newMessagePanel} = getState()
+
+        // We need to select the new active message box, only if the closed one if the currently active one.
+        // First try to set the active one to the next one, if none exists (since the user closed the last message box),
+        // set the previous one as the active, and as last resort set none as the active.
+        if (newMessagePanel.activeMessageBox.id === messageBox.id) {
+            const messageBoxIndex = findIndex(newMessagePanel.messageBoxes, {id: messageBox.id})
+            const newActiveMessageBox = nth(newMessagePanel.messageBoxes, messageBoxIndex + 1) ||
+                nth(newMessagePanel.messageBoxes, messageBoxIndex - 1) || {}
+            dispatch(selectMessageBox(messageBox, newActiveMessageBox))
+        }
+
+        dispatch(closeMessageBoxAction(messageBox))
+    }
+}
+
 function messageSentRequest(messageBox) {
     return {
         type: MessageBoxActionsTypes.MESSAGE_SENT,
@@ -69,3 +90,4 @@ module.exports = MessageBoxActions
 module.exports.newMessage = newMessage
 module.exports.selectMessageBox = selectMessageBox
 module.exports.messageSent = messageSent
+module.exports.closeMessageBox = closeMessageBox
