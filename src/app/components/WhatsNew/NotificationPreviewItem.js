@@ -61,7 +61,7 @@ class NotificationPreviewItem extends Component {
         switch (notification.eventType.key) {
             case EventTypes.COMMENT.key:
             case EventTypes.PING.key:
-                return styleVars.greenCircleColor
+                return styleVars.yellowCircleColor
             case EventTypes.CREATED.key:
             case EventTypes.SENT_BACK.key:
                 return styleVars.blueCircleColor
