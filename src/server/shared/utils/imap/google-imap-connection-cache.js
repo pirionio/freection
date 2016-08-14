@@ -10,13 +10,13 @@ const connectionCache = new NodeCache({ stdTTL: 30 * 60, useClones: false})
 
 connectionCache.on('del', onDeleted)
 
-function onDeleted(userId, connection) {
-    logger.info(`closing connection for ${userId}`)
+function onDeleted(email, connection) {
+    logger.info(`closing connection for ${email}`)
     connection.close()
 }
 
 function getConnection(user) {
-    return connectionCache.get(user.id)
+    return connectionCache.get(user.email)
 }
 
 function createConnection(user) {
@@ -30,10 +30,10 @@ function createConnection(user) {
 
             // kill existing connection is exist
             if (existConnection)
-                connectionCache.del(user.id)
+                connectionCache.del(user.email)
 
-            connectionCache.set(user.id, connection)
-            connection.onDisconnect(() => connectionCache.del(user.id))
+            connectionCache.set(user.email, connection)
+            connection.onDisconnect(() => connectionCache.del(user.email))
 
             return connection
         })
