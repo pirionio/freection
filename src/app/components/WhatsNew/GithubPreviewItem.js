@@ -15,7 +15,7 @@ const GithubPreviewItem = ({notification}) => {
     const {creator} = notification
 
     const text = notification.eventType.key === EventTypes.CREATED.key ?
-        <span><strong>{creator.displayName}</strong> assigned you an issue on github</span> :
+        <span><strong>{creator.displayName}</strong> opened an issue on github</span> :
         <span><strong>{creator.displayName}</strong> closed an issue on github</span>
 
     return (
