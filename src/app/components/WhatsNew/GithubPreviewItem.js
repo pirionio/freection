@@ -4,6 +4,7 @@ const {PropTypes} = React
 const {PreviewItem, PreviewItemUser, PreviewItemTitle, PreviewItemDate, PreviewItemText, PreviewItemActions} =
     require('../Preview/PreviewItem')
 const GithubActionsBar = require('./GithubActionsBar')
+const TextTruncate = require('../UI/TextTruncate')
 
 const GithubPreviewItem = ({notification}) => {
     return (
@@ -14,7 +15,7 @@ const GithubPreviewItem = ({notification}) => {
             <PreviewItemTitle title={notification.thing.subject} href={notification.thing.payload.url} />
             <PreviewItemDate date={notification.createdAt}/>
             <PreviewItemText>
-                <span>{notification.thing.body}</span>
+                <TextTruncate>{notification.thing.body}</TextTruncate>
             </PreviewItemText>
             <PreviewItemActions>
                 <GithubActionsBar notification={notification} />

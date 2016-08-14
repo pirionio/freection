@@ -4,6 +4,7 @@ const {PropTypes} = React
 const {PreviewItem, PreviewItemUser, PreviewItemTitle, PreviewItemStatus, PreviewItemDate, PreviewItemText, PreviewItemActions} =
     require('../Preview/PreviewItem')
 const GithubActionsBar = require('./GithubActionsBar')
+const TextTruncate = require('../UI/TextTruncate')
 
 const GithubTodoPreviewItem = ({thing}) => {
     return (
@@ -15,7 +16,7 @@ const GithubTodoPreviewItem = ({thing}) => {
             <PreviewItemStatus status={thing.payload.status} />
             <PreviewItemDate date={thing.createdAt}/>
             <PreviewItemText>
-                <span>{thing.body}</span>
+                <TextTruncate>{thing.body}</TextTruncate>
             </PreviewItemText>
             <PreviewItemActions>
                 <GithubActionsBar thing={thing} />
