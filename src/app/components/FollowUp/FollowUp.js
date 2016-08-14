@@ -37,7 +37,7 @@ class FollowUp extends Component {
         return {
             texts: [
                 'Nothing to follow up.',
-                'Damn! You\'re good!'
+                'Damn, You\'re good!'
             ],
             logoColor: styleVars.basePurpleColor
         }

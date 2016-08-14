@@ -42,7 +42,7 @@ class ToDo extends Component {
         return {
             texts: [
                 'Nothing to do...',
-                'Beware, they might fire you if it keep going on like this.'
+                'Beware, they might fire you if it keeps going on like this.'
             ],
             logoColor: styleVars.baseBlueColor
         }
