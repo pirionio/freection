@@ -68,8 +68,11 @@ class PreviewsContainer extends Component {
 
         if (!previewItems || !previewItems.length) {
             return (
-                <Flexbox name="preview-container" grow={1} container="column" justifyContent="center" alignItems="center">
-                    {this.getNoPreviews()}
+                <Flexbox name="preview-container" grow={1} container="column" justifyContent="flex-end">
+                    <Flexbox name="preview-content" grow={1} container="column" justifyContent="center" alignItems="center">
+                        {this.getNoPreviews()}
+                    </Flexbox>
+                    <NewMessageBox />
                 </Flexbox>
             )
         }
