@@ -23,8 +23,7 @@ class NewMessageBox extends Component {
         return (
             <Flexbox name="message-subject" style={styles.messageSubject}>
                 <Field model="newMessageBox.message.subject">
-                    <input type="text" style={styles.textField} tabIndex="1" placeholder="Subject" autoFocus
-                           ref={ref => this.messageSubject = ref}/>
+                    <input type="text" style={styles.textField} tabIndex="1" placeholder="Subject" autoFocus />
                 </Field>
             </Flexbox>
         )
@@ -59,7 +58,8 @@ class NewMessageBox extends Component {
 
     getStyles() {
         return {
-            boxText: {
+            box: {
+                height: '200px',
                 backgroundColor: 'white',
                 border: `1px solid ${styleVars.primaryColor}`
             },
@@ -97,7 +97,7 @@ class NewMessageBox extends Component {
         const to = this.getTo()
 
         return (
-            <Flexbox name="message-text" grow={1} style={styles.boxText} container="column">
+            <Flexbox name="message-text" grow={1} style={styles.box} container="column">
                 {subject}
                 {body}
                 {to}

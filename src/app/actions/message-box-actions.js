@@ -60,8 +60,9 @@ function closeMessageBox(messageBox) {
         // set the previous one as the active, and as last resort set none as the active.
         if (newMessagePanel.activeMessageBox.id === messageBox.id) {
             const messageBoxIndex = findIndex(newMessagePanel.messageBoxes, {id: messageBox.id})
-            const newActiveMessageBox = nth(newMessagePanel.messageBoxes, messageBoxIndex + 1) ||
-                nth(newMessagePanel.messageBoxes, messageBoxIndex - 1) || {}
+            const next = messageBoxIndex + 1 < newMessagePanel.messageBoxes.length ? newMessagePanel.messageBoxes[messageBoxIndex + 1] : null
+            const prev = messageBoxIndex - 1 >= 0 ? newMessagePanel.messageBoxes[messageBoxIndex - 1] : null
+            const newActiveMessageBox = next || prev || {}
             dispatch(selectMessageBox(messageBox, newActiveMessageBox))
         }
 

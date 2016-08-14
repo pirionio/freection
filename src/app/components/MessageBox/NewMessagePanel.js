@@ -11,6 +11,7 @@ const MessageBoxActions = require('../../actions/message-box-actions')
 const Flexbox = require('../UI/Flexbox')
 const TextTruncate = require('../UI/TextTruncate')
 const NewMessageBox = require('./NewMessageBox')
+const CollapsedMessageBox = require('./CollapsedMessageBox')
 const NewMessageTabs = require('./NewMessageTabs')
 const ThingCommandActions = require('../../actions/thing-command-actions')
 const EmailCommandActions = require('../../actions/email-command-actions')
@@ -55,11 +56,7 @@ class NewMessagePanel extends Component {
                 width: '100%'
             },
             panel: {
-                height: '200px',
                 position: 'relative'
-            },
-            messageTypeSelector: {
-                width: '80px'
             },
             send: {
                 position: 'absolute',
@@ -90,26 +87,43 @@ class NewMessagePanel extends Component {
         }
     }
 
+    getMessageBox() {
+        const {activeMessageBox} = this.props
+        return isEmpty(activeMessageBox) ?
+            <CollapsedMessageBox /> :
+            <NewMessageBox to={activeMessageBox.context ? null : ""} subject={activeMessageBox.context ? null : ""} />
+    }
+
+    getSendButton() {
+        const {activeMessageBox} = this.props
+        const styles = this.getStyles()
+        return !isEmpty(activeMessageBox) ?
+            <div name="send-container" style={styles.send}>
+                <button type="submit"
+                        tabIndex="4"
+                        disabled={this.isSendDisabled()}
+                        style={[styles.send.button, this.isSendDisabled() && styles.send.button.disabled]}>
+                    Send
+                </button>
+            </div> :
+            null
+    }
+
     render () {
         const {newMessageBox, activeMessageBox} = this.props
         const styles = this.getStyles()
+
+        const messageBox = this.getMessageBox()
+        const sendButton = this.getSendButton()
 
         return (
             <Form model="newMessageBox" onSubmit={this.send} style={styles.form}>
                 <Flexbox name="message-panel" container="row" style={styles.panel}>
                     <Flexbox name="message-box" grow={1} container="column">
                         <NewMessageTabs />
-                        <NewMessageBox to={activeMessageBox.context ? null : ""}
-                                       subject={activeMessageBox.context ? null : ""} />
+                        {messageBox}
                     </Flexbox>
-                    <div name="send-container" style={styles.send}>
-                        <button type="submit"
-                                tabIndex="4"
-                                disabled={this.isSendDisabled()}
-                                style={[styles.send.button, this.isSendDisabled() && styles.send.button.disabled]}>
-                            Send
-                        </button>
-                    </div>
+                    {sendButton}
                 </Flexbox>
             </Form>
         )
