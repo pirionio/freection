@@ -30,7 +30,7 @@ const PreviewItemTitle = ({title, onClick, href}) => {
         lineHeight: 1.571
     }
 
-    return <a style={style} onClick={onClick} href={href}><strong>{title}</strong></a>
+    return <a style={style} onClick={onClick} href={href} target="blank"><strong>{title}</strong></a>
 }
 
 const PreviewItemStatus = ({status, children}) => {
