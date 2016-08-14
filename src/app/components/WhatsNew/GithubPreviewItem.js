@@ -1,17 +1,25 @@
 const React = require('react')
 const {PropTypes} = React
 
-const {PreviewItem, PreviewItemUser, PreviewItemTitle, PreviewItemDate, PreviewItemText, PreviewItemActions} =
+const EventTypes = require('../../../common/enums/event-types')
+const {PreviewItem, PreviewItemStatus, PreviewItemTitle, PreviewItemDate, PreviewItemText, PreviewItemActions} =
     require('../Preview/PreviewItem')
 const GithubActionsBar = require('./GithubActionsBar')
 const TextTruncate = require('../UI/TextTruncate')
 
 const GithubPreviewItem = ({notification}) => {
+    const color = notification.eventType.key === EventTypes.CREATED.key ? '#448ccb' : 'green'
+    const {creator} = notification
+
+    const text = notification.eventType.key === EventTypes.CREATED.key ?
+        <span><strong>{creator.displayName}</strong> assigned you an issue on github</span> :
+        <span><strong>{creator.displayName}</strong> closed an issue on github</span>
+
     return (
-        <PreviewItem>
-            <PreviewItemUser>
-                <span>{notification.creator.displayName}</span>
-            </PreviewItemUser>
+        <PreviewItem circleColor={color}>
+            <PreviewItemStatus>
+                {text}
+            </PreviewItemStatus>
             <PreviewItemTitle title={notification.thing.subject} href={notification.thing.payload.url} />
             <PreviewItemDate date={notification.createdAt}/>
             <PreviewItemText>

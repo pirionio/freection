@@ -122,7 +122,7 @@ class PreviewItem extends Component {
                     { circleColor ? <Flexbox width='19px' shrink={0} container='column' justifyContent="center">
                         <Ellipse width="8xp" height="8px" color={circleColor} />
                     </Flexbox> : null }
-                    <Flexbox width='274px' shrink={0} container='column' justifyContent="center">
+                    <Flexbox width='300px' shrink={0} container='column' justifyContent="center">
                         <Flexbox style={styles.status}>{statusPreview}</Flexbox>
                         <Flexbox style={styles.date}>
                             {this.getDate()}
