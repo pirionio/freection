@@ -118,27 +118,6 @@ function doThing(thing) {
     }
 }
 
-function cancel(thing) {
-    return dispatch => {
-        dispatch({
-            type: ThingCommandActionsTypes.CANCEL, 
-            status: ActionStatus.START,
-            thing
-        })
-        return ResourceUtil.post(`/api/things/${thing.id}/cancel`)
-            .then(result => dispatch({
-                type: ThingCommandActionsTypes.CANCEL, 
-                status: ActionStatus.COMPLETE,
-                thing
-            }))
-            .catch(() => dispatch({
-                type: ThingCommandActionsTypes.CANCEL, 
-                status: ActionStatus.ERROR,
-                thing
-            }))
-    }
-}
-
 function cancelAck(thing) {
     return dispatch => {
         dispatch({
@@ -292,7 +271,6 @@ module.exports = {
     ping,
     markCommentAsRead,
     doThing,
-    cancel,
     cancelAck,
     close,
     dismiss,

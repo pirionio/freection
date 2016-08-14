@@ -46,17 +46,6 @@ function createDone(creator, thing, getShowNewList) {
     })
 }
 
-function createCanceled(creator, thing, getShowNewList) {
-    return Event.save({
-        thingId: thing.id,
-        eventType: EventTypes.CANCELED.key,
-        createdAt: new Date(),
-        creator,
-        payload: {},
-        showNewList: getShowNewList(creator, thing, EventTypes.CANCELED.key)
-    })
-}
-
 function createComment(creator, thing, getShowNewList, commentText, commentHtml, emailId) {
     return Event.save({
         thingId: thing.id,
@@ -124,7 +113,6 @@ module.exports = {
     createAccepted,
     createDismissed,
     createDone,
-    createCanceled,
     createCancelAck,
     createComment,
     createClosed,

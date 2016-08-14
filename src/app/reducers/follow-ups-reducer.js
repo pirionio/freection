@@ -91,7 +91,6 @@ module.exports = (state = initialState, action) => {
         case EventActionTypes.MARKED_AS_DONE:
         case EventActionTypes.DISMISSED:
         case EventActionTypes.CLOSED:
-        case EventActionTypes.CANCELED:
         case EventActionTypes.CANCEL_ACKED:
         case EventActionTypes.SENT_BACK:
             return statusChangedReceived(state, action)

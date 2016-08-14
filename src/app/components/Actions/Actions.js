@@ -35,15 +35,7 @@ function CloseAction(thing, currentUser, disabled, style) {
     return {
         component: <Action label="Close" doFunc={ThingCommandActions.close} item={thing} disabled={disabled} key="action-Close" style={style} />,
         show: currentUser && currentUser.id === thing.creator.id &&
-            [ThingStatus.DONE.key, ThingStatus.DISMISS.key].includes(thing.payload.status)
-    }
-}
-
-function CancelAction(thing, currentUser, disabled, style) {
-    return {
-        component: <Action label="Cancel" doFunc={ThingCommandActions.cancel} item={thing} disabled={disabled} key="action-Cancel" style={style} />,
-        show: currentUser.id === thing.creator.id &&
-            [ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key].includes(thing.payload.status)
+            [ThingStatus.DONE.key, ThingStatus.DISMISS.key, ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key].includes(thing.payload.status)
     }
 }
 
@@ -81,7 +73,7 @@ function DiscardPingAction(notification, style) {
 function CancelAckAction(notification, style) {
     return {
         component: <Action label="Stop doing" doFunc={ThingCommandActions.cancelAck} item={notification.thing} key="action-StopDoing" style={style} />,
-        show: notification.eventType.key === EventTypes.CANCELED.key
+        show: notification.eventType.key === EventTypes.CLOSED.key
     }
 }
 
@@ -104,7 +96,6 @@ module.exports = {
     DoneAction,
     DismissAction,
     CloseAction,
-    CancelAction,
     PingAction,
     SendBackAction,
     DiscardCommentsAction,

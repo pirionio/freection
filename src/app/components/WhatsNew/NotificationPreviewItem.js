@@ -48,7 +48,6 @@ class NotificationPreviewItem extends Component {
             case EventTypes.SENT_BACK.key:
                 return <span><strong>{creator.displayName}</strong> sent a thing back</span>
             case EventTypes.CLOSED.key:
-            case EventTypes.CANCELED.key:
                 return <span><strong>{creator.displayName}</strong> closed a thing</span>
             default:
                 return <span><strong>{creator.displayName}</strong> {notification.eventType.label}</span>
@@ -65,7 +64,6 @@ class NotificationPreviewItem extends Component {
             case EventTypes.CREATED.key:
             case EventTypes.SENT_BACK.key:
                 return styleVars.blueCircleColor
-            case EventTypes.CANCELED.key:
             case EventTypes.CLOSED.key:
             case EventTypes.DISMISSED.key:
                 return styleVars.redCircleColor

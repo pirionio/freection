@@ -13,7 +13,6 @@ class GithubTodoPreviewItem extends Component {
         const {thing} = this.props
 
         switch (thing.payload.status) {
-            case ThingStatus.CANCELED.key:
             case ThingStatus.CLOSE.key:
             case ThingStatus.DISMISS.key:
                 return styleVars.redCircleColor

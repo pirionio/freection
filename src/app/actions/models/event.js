@@ -18,10 +18,6 @@ module.exports = {
             params: ['thing']
         },
         {
-            name: 'canceled',
-            params: ['thing']
-        },
-        {
             name: 'cancel acked',
             params: ['thing']
         },

@@ -23,10 +23,6 @@ module.exports = {
         key: 'CLOSED',
         label: 'Closed'
     },
-    CANCELED: {
-        key: 'CANCELED',
-        label: 'Canceled'
-    },
     CANCEL_ACKED: {
         key: 'CANCEL_ACKED',
         label: 'Cancel accepted'

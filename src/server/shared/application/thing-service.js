@@ -99,35 +99,37 @@ function dismiss(user, thingId) {
         })
 }
 
-function close(user, thingId) {
+async function close(user, thingId) {
     const creator = userToAddress(user)
 
-    return Thing.get(thingId).run()
-        .then(validateType)
-        .then(thing => validateStatus(thing, [ThingStatus.DONE.key, ThingStatus.DISMISS.key]))
-        .then(thing => performClose(thing, user))
-        .then(thing => EventCreator.createClosed(creator, thing, getShowNewList))
-        .then(() => Event.discardUserEvents(thingId, user.id))
-        .catch(error => {
-            logger.error(`error while closing thing ${thingId} by user ${user.email}:`, error)
-            throw error
-        })
-}
+    try {
+        const thing = await Thing.get(thingId).run()
 
-function cancel(user, thingId) {
-    const creator = userToAddress(user)
+        // Validate that the status of the thing matched the action
+        validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key,
+            ThingStatus.INPROGRESS.key, ThingStatus.DONE.key, ThingStatus.DISMISS.key])
 
-    return Thing.get(thingId).run()
-        .then(thing => validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key]))
-        .then(thing => {
-            return performCancel(thing, user)
-                .then(() => Event.discardThingEvents(thingId, user.id))
-                .then(() => EventCreator.createCanceled(creator, thing, getShowNewList))
-        })
-        .catch(error => {
-            logger.error(`error while canceling thing ${thingId} by user ${user.email}:`, error)
-            throw error
-        })
+        // Removing the user from the doers and follow upers
+        remove(thing.followUpers, followUperId => followUperId === user.id)
+        remove(thing.doers, doerUserId => doerUserId === user.id)
+
+        // Update the status
+        const previousStatus = thing.payload.status
+        thing.payload.status = ThingStatus.CLOSE.key
+
+        // saving the thing
+        await thing.save()
+
+        // Discard all existing user evens from the Whatsnew page
+        await Event.discardThingEvents(thingId, user.id)
+
+        // Creating the close event and saving to DB
+        await EventCreator.createClosed(creator, thing,
+            (user, thing, eventType) => getShowNewList(user, thing, eventType, previousStatus))
+    } catch(error) {
+        logger.error(`error while closing thing ${thingId} by user ${user.email}:`, error)
+        throw error
+    }
 }
 
 function cancelAck(user, thingId) {
@@ -136,7 +138,7 @@ function cancelAck(user, thingId) {
     return Thing.get(thingId).run()
         .then(thing => {
             return performCancelAck(thing, user)
-                .then(() => Event.discardUserEventsByType(thingId, EventTypes.CANCELED.key, user.id))
+                .then(() => Event.discardUserEventsByType(thingId, EventTypes.CLOSED.key, user.id))
                 .then(() => EventCreator.createCancelAck(creator, thing, getShowNewList))
         })
         .catch(error => {
@@ -298,7 +300,7 @@ function saveNewThing(body, subject, creator, to, email) {
     })
 }
 
-function getShowNewList(user, thing, eventType) {
+function getShowNewList(user, thing, eventType, previousStatus) {
     if (thing.isSelf())
         return []
 
@@ -308,7 +310,11 @@ function getShowNewList(user, thing, eventType) {
         case EventTypes.DISMISSED.key:
         case EventTypes.DONE.key:
             return [thing.creator.id]
-        case EventTypes.CANCELED.key:
+        case EventTypes.CLOSED.key:
+            if ([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(previousStatus))
+                return union(thing.doers, getToList(thing))
+            else
+                return thing.doers
         case EventTypes.SENT_BACK.key:
             return union(thing.doers, getToList(thing))
         case EventTypes.COMMENT.key:
@@ -316,7 +322,6 @@ function getShowNewList(user, thing, eventType) {
         case EventTypes.PING.key:
             return  [...thing.doers]
         case EventTypes.ACCEPTED.key:
-        case EventTypes.CLOSED.key:
         case EventTypes.CANCEL_ACKED.key:
             return []
         default:
@@ -343,20 +348,6 @@ function performDismiss(thing, user) {
 function performMarkAsDone(thing, user) {
     remove(thing.doers, doerId => doerId === user.id)
     thing.payload.status = thing.isSelf() ? ThingStatus.CLOSE.key : ThingStatus.DONE.key
-    return thing.save()
-}
-
-function performClose(thing, user) {
-    remove(thing.followUpers, followUperId => followUperId === user.id)
-    thing.payload.status = ThingStatus.CLOSE.key
-    return thing.save()
-}
-
-function performCancel(thing, user) {
-    remove(thing.followUpers, followUperId => followUperId === user.id)
-    remove(thing.doers, doerUserId => doerUserId === user.id)
-
-    thing.payload.status = ThingStatus.CANCELED.key
     return thing.save()
 }
 
@@ -396,7 +387,6 @@ module.exports = {
     sendBack,
     comment,
     close,
-    cancel,
     cancelAck,
     ping,
     discardEventsByType,

@@ -51,12 +51,6 @@ module.exports = {
             path: '/api/things/${thing.type.key}/${thing.id}/do'
         },
         {
-            name: 'cancel',
-            params: ['thing'],
-            type: 'post',
-            path: '/api/things/${thing.id}/cancel'
-        },
-        {
             name: 'cancel ack',
             params: ['thing'],
             type: 'post',

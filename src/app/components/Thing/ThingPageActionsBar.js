@@ -3,7 +3,7 @@ const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 
 const ActionsBar = require('../Actions/ActionsBar')
-const {DoAction, DoneAction, DismissAction, CloseAction, CancelAction, SendBackAction} = require('../Actions/Actions')
+const {DoAction, DoneAction, DismissAction, CloseAction, SendBackAction} = require('../Actions/Actions')
 const styleVars = require('../style-vars')
 
 class ThingPageActionsBar extends Component {
@@ -27,7 +27,6 @@ class ThingPageActionsBar extends Component {
             DoneAction(thing, currentUser, this.isDisabled(), buttonStyle),
             DismissAction(thing, currentUser, this.isDisabled(), buttonStyle),
             CloseAction(thing, currentUser, this.isDisabled(), buttonStyle),
-            CancelAction(thing, currentUser, this.isDisabled(), buttonStyle),
             SendBackAction(thing, currentUser, this.isDisabled(), buttonStyle)
         ]
 
