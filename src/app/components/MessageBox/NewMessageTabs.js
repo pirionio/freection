@@ -31,7 +31,7 @@ class NewMessageTabs extends Component {
                 null
 
             return (
-                <Flexbox key={messageBox.id} container="row" justifyContent="center" alignItems="center"
+                <Flexbox key={messageBox.id} container="column" justifyContent="center"
                          style={[styles.tab, activeMessageBox.id === messageBox.id && styles.tab.active]}>
 
                     <a onClick={() => this.selectMessageBox(messageBox)} style={styles.tab.link}>
