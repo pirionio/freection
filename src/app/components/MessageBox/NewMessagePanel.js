@@ -30,15 +30,12 @@ class NewMessagePanel extends Component {
         let promise, shouldClose = true
         switch (activeMessageBox.type.key) {
             case MessageTypes.NEW_THING.key:
-                console.log('newThing')
                 promise = dispatch(ThingCommandActions.newThing(newMessageBox.message))
                 break
             case MessageTypes.NEW_EMAIL.key:
-                console.log('newEmail')
                 promise = dispatch(EmailCommandActions.newEmail(newMessageBox.message))
                 break
             case MessageTypes.NEW_COMMENT.key:
-                console.log('comment')
                 promise = dispatch(ThingCommandActions.comment(activeMessageBox.context.id, newMessageBox.message.body))
                 shouldClose = false
                 break

@@ -14,7 +14,7 @@ const styleVars = require('../style-vars')
 class NewMessageTabs extends Component {
     constructor(props) {
         super(props)
-        classAutobind(this)
+        classAutobind(this, NewMessageTabs.prototype)
     }
 
     selectMessageBox(selectedMessageBox) {
@@ -25,14 +25,22 @@ class NewMessageTabs extends Component {
     getMessageTabs() {
         const {messageBoxes, activeMessageBox} = this.props
         const styles = this.getStyles()
-        return messageBoxes.map(messageBox =>
-            <Flexbox key={messageBox.id} container="row" alignItems="center"
-                     style={[styles.tab, activeMessageBox.id === messageBox.id && styles.tab.active]}>
-                <a onClick={() => this.selectMessageBox(messageBox)} style={styles.tab.link}>
-                    <TextTruncate>{messageBox.title}</TextTruncate>
-                </a>
-            </Flexbox>
-        )
+        return messageBoxes.map(messageBox => {
+            const closeButton = [MessageTypes.NEW_THING.key, MessageTypes.NEW_EMAIL.key].includes(messageBox.type.key) ?
+                <button type="button" style={styles.tab.close} onClick={() => this.closeMessageBox(messageBox)}>x</button> :
+                null
+
+            return (
+                <Flexbox key={messageBox.id} container="row" justifyContent="center" alignItems="center"
+                         style={[styles.tab, activeMessageBox.id === messageBox.id && styles.tab.active]}>
+
+                    <a onClick={() => this.selectMessageBox(messageBox)} style={styles.tab.link}>
+                        <TextTruncate>{messageBox.title}</TextTruncate>
+                    </a>
+                    {closeButton}
+                </Flexbox>
+            )
+        })
     }
 
     newThingMessageBox() {
@@ -43,6 +51,11 @@ class NewMessageTabs extends Component {
     newEmailMessageBox() {
         const {dispatch} = this.props
         dispatch(MessageBoxActions.newMessage(MessageTypes.NEW_EMAIL))
+    }
+
+    closeMessageBox(messageBox) {
+        const {dispatch} = this.props
+        dispatch(MessageBoxActions.closeMessageBox(messageBox))
     }
 
     getNewMenu() {
@@ -71,7 +84,9 @@ class NewMessageTabs extends Component {
                 backgroundColor: styleVars.primaryColor
             },
             tab: {
+                position: 'relative',
                 height: '100%',
+                minWidth: '98px',
                 maxWidth: '150px',
                 color: 'white',
                 padding: '0 16px',
@@ -81,10 +96,23 @@ class NewMessageTabs extends Component {
                 },
                 link: {
                     cursor: 'pointer'
+                },
+                close: {
+                    position: 'absolute',
+                    top: '0',
+                    right: '2px',
+                    width: '9px',
+                    height: '12px',
+                    padding: '0',
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    border: 'none',
+                    outline: 'none',
+                    backgroundColor: 'inherit',
+                    color: 'inherit'
                 }
             },
             new: {
-                position: 'relative',
                 button: {
                     height: '100%',
                     lineHeight: '37px',
@@ -106,6 +134,7 @@ class NewMessageTabs extends Component {
                     ':hover': {}
                 },
                 menuOption: {
+                    position: 'relative',
                     height: '37px',
                     width: '100%',
                     paddingTop: '11px',

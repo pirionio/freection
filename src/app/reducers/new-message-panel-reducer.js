@@ -48,31 +48,28 @@ function newMessageInContext(state, action) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
             const existingMessageBox = find(state.messageBoxes, {context: {id: action.thing.id}})
-            if (!existingMessageBox) {
-                const messageBox = {
-                    id: uniqueId(),
-                    type: MessageTypes.NEW_COMMENT,
-                    title: action.thing.subject,
-                    context: action.thing,
-                    ongoingAction: false
-                }
-                return immutable(state)
-                    .arrayPushItem('messageBoxes', messageBox)
-                    .set('activeMessageBox', messageBox)
-                    .value()
+            if (existingMessageBox)
+                return state
+
+            const messageBox = {
+                id: uniqueId(),
+                type: MessageTypes.NEW_COMMENT,
+                title: action.thing.subject,
+                context: action.thing,
+                ongoingAction: false
             }
+            return immutable(state)
+                .arrayPushItem('messageBoxes', messageBox)
+                .set('activeMessageBox', messageBox)
+                .value()
         default:
             return state
     }
 }
 
 function closeMessageBox(state, action) {
-    const newState = immutable(state)
+    return immutable(state)
         .arrayReject('messageBoxes', {id: action.messageBox.id})
-        .value()
-
-    return immutable(newState)
-        .set('activeMessageBox', head(newState.messageBoxes) || {})
         .value()
 }
 
