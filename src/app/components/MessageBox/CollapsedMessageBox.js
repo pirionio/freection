@@ -17,7 +17,7 @@ class CollapsedMessageBox extends Component {
 
     newThingMessageBox() {
         const {dispatch} = this.props
-        dispatch(MessageBoxActions.newMessage(MessageTypes.NEW_THING))
+        dispatch(MessageBoxActions.newMessageBox(MessageTypes.NEW_THING))
     }
 
     getStyles() {
