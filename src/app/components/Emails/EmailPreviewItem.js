@@ -13,13 +13,12 @@ class EmailPreviewItem extends Component {
         const {email, dispatch} = this.props
 
         return (
-            <PreviewItem>
+            <PreviewItem title={email.subject}
+                         date={email.createdAt}
+                         onClick={() => dispatch(EmailPageActions.showEmailPage(email))}>
                 <PreviewItemStatus>
                     <strong>{email.creator.displayName}</strong>
                 </PreviewItemStatus>
-                <PreviewItemTitle onClick={() => dispatch(EmailPageActions.showEmailPage(email))}
-                                  title={email.subject}/>
-                <PreviewItemDate date={email.createdAt}/>
                 <PreviewItemText>
                     <TextTruncate>{email.payload.text}</TextTruncate>
                 </PreviewItemText>

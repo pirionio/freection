@@ -31,12 +31,13 @@ class FollowUpPreviewItem extends Component {
         const {thing, dispatch} = this.props
 
         return (
-            <PreviewItem circleColor={this.getCircleColor()}>
-                <PreviewItemTitle title={thing.subject} onClick={() => dispatch(ThingPageActions.showThingPage(thing))}/>
+            <PreviewItem circleColor={this.getCircleColor()}
+                         title={thing.subject}
+                         date={thing.createdAt}
+                         onClick={() => dispatch(ThingPageActions.showThingPage(thing))}>
                 <PreviewItemStatus>
                     <strong>{thing.to.displayName}</strong>
                 </PreviewItemStatus>
-                <PreviewItemDate date={thing.createdAt}/>
                 <PreviewItemText>
                     <ThingPreviewText thing={thing}/>
                 </PreviewItemText>

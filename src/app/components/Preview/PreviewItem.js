@@ -9,30 +9,7 @@ const Flexbox = require('../UI/Flexbox')
 const Ellipse = require('../UI/Ellipse')
 const styleVars = require('../style-vars')
 
-const slots = createSlots('PreviewItemUser', 'PreviewItemText', 'PreviewItemActions')
-
-const PreviewItemDate = ({date}) => {
-    const time = dateFns.format(date, 'HH:mm')
-
-    if (dateFns.isToday(date)) {
-        return <span>Today at {time}</span>
-    } else if (dateFns.isYesterday(date)) {
-        return <span>Yesterday at {time}</span>
-    } else {
-        return <span>{dateFns.format(date, 'DD MMM YYYY')} at {time}</span>
-    }
-}
-
-const PreviewItemTitle = ({title, onClick, href}) => {
-    const style = {
-        color: 'black',
-        cursor: 'pointer',
-        textDecoration: 'none',
-        lineHeight: 1.571
-    }
-
-    return <a style={style} onClick={onClick} href={href} target="blank"><strong>{title}</strong></a>
-}
+const slots = createSlots('PreviewItemText', 'PreviewItemActions')
 
 const PreviewItemStatus = ({status, children}) => {
     if (status)
@@ -41,34 +18,11 @@ const PreviewItemStatus = ({status, children}) => {
     return React.Children.only(children)
 }
 
-PreviewItemDate.propTypes = {
-    date: PropTypes.any.isRequired
-}
-
 PreviewItemStatus.propTypes = {
     status: PropTypes.string
 }
 
-PreviewItemTitle.propTypes = {
-    title: PropTypes.string.isRequired,
-    onClick: PropTypes.func,
-    href: PropTypes.string
-}
-
 class PreviewItem extends Component {
-
-    getUser() {
-        return getChildOfType(this.props.children, slots.PreviewItemUser)
-    }
-
-    getTitle() {
-        return getChildOfType(this.props.children, PreviewItemTitle)
-    }
-
-    getDate() {
-        return getChildOfType(this.props.children, PreviewItemDate)
-    }
-
     getPreviewText() {
         return getChildOfType(this.props.children, slots.PreviewItemText)
     }
@@ -83,17 +37,32 @@ class PreviewItem extends Component {
         return getChildOfType(this.props.children, PreviewItemStatus)
     }
 
+    getDateText() {
+        const {date} = this.props
+
+        const time = dateFns.format(date, 'HH:mm')
+
+        if (dateFns.isToday(date)) {
+            return <span>Today at {time}</span>
+        } else if (dateFns.isYesterday(date)) {
+            return <span>Yesterday at {time}</span>
+        } else {
+            return <span>{dateFns.format(date, 'DD MMM YYYY')} at {time}</span>
+        }
+    }
+
     render() {
         const statusPreview = this.getStatus()
         const textPreview = this.getPreviewText()
-        const {circleColor} = this.props
+        const {circleColor, title, onClick} = this.props
 
         const styles = {
             hoverable: {
                 width: '100%',
                 ':hover': {
                     backgroundColor: 'lightgrey'
-                }
+                },
+                cursor: 'pointer'
             },
             container: {
                 backgroundColor: '#FAFAFA',
@@ -117,7 +86,7 @@ class PreviewItem extends Component {
         }
 
         return (
-            <div style={styles.hoverable} key="preview">
+            <div style={styles.hoverable} key="preview" onClick={onClick}>
                 <Flexbox shrink={0} height='70px' container='row' style={styles.container}>
                     { circleColor ? <Flexbox width='19px' shrink={0} container='column' justifyContent="center">
                         <Ellipse width="8xp" height="8px" color={circleColor} />
@@ -125,12 +94,12 @@ class PreviewItem extends Component {
                     <Flexbox width='300px' shrink={0} container='column' justifyContent="center">
                         <Flexbox style={styles.status}>{statusPreview}</Flexbox>
                         <Flexbox style={styles.date}>
-                            {this.getDate()}
+                            {this.getDateText()}
                         </Flexbox>
                     </Flexbox>
                     <Flexbox container="column" justifyContent="center" grow={1} style={{minWidth: 0}}>
                         <Flexbox>
-                            {this.getTitle()}
+                            <strong>{title}</strong>
                         </Flexbox>
 
                         {textPreview ? <Flexbox style={styles.text}>{textPreview}</Flexbox> : null}
@@ -145,12 +114,13 @@ class PreviewItem extends Component {
 }
 
 PreviewItem.propTypes = {
-    circleColor: PropTypes.string
+    circleColor: PropTypes.string,
+    title: PropTypes.string.isRequired,
+    date: PropTypes.any.isRequired,
+    onClick: PropTypes.func.isRequired
 }
 
 module.exports = Object.assign({
     PreviewItem: radium(PreviewItem),
-    PreviewItemDate,
-    PreviewItemStatus,
-    PreviewItemTitle
+    PreviewItemStatus
 }, slots)

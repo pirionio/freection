@@ -12,7 +12,8 @@ class Action extends Component {
         classAutobind(this, Action.prototype)
     }
 
-    doAction() {
+    doAction(event) {
+        event.stopPropagation()
         const {dispatch, doFunc, item} = this.props
         dispatch(doFunc(item))
     }

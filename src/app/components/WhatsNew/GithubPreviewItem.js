@@ -22,12 +22,13 @@ class GithubPreviewItem extends Component {
             <span><strong>{creator.displayName}</strong> closed an issue on github</span>
 
         return (
-            <PreviewItem circleColor={color}>
+            <PreviewItem circleColor={color}
+                         title={notification.thing.subject}
+                         date={notification.createdAt}
+                         onClick={() => window.open(notification.thing.payload.url, '_blank')}>
                 <PreviewItemStatus>
                     {text}
                 </PreviewItemStatus>
-                <PreviewItemTitle title={notification.thing.subject} href={notification.thing.payload.url}/>
-                <PreviewItemDate date={notification.createdAt}/>
                 <PreviewItemText>
                     <TextTruncate>{notification.thing.body}</TextTruncate>
                 </PreviewItemText>

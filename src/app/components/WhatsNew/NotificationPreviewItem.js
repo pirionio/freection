@@ -78,16 +78,13 @@ class NotificationPreviewItem extends Component {
         const {notification, dispatch} = this.props
         const textPreview = this.getTextElement()
 
-        return (<PreviewItem circleColor={this.getCircleColor()}>
-            <PreviewItemUser>
-                <span>{notification.creator.displayName}</span>
-            </PreviewItemUser>
+        return (<PreviewItem circleColor={this.getCircleColor()}
+                             title={notification.thing.subject}
+                             date={notification.createdAt}
+                             onClick={() => dispatch(ThingPageActions.showThingPage(notification.thing))}>
             <PreviewItemStatus>
                 {this.getStatusText()}
             </PreviewItemStatus>
-            <PreviewItemTitle title={notification.thing.subject}
-                              onClick={() => dispatch(ThingPageActions.showThingPage(notification.thing))} />
-            <PreviewItemDate date={notification.createdAt}/>
             {textPreview ? <PreviewItemText>{textPreview}</PreviewItemText> : null}
             <PreviewItemActions>
                 <NotificationActionsBar notification={notification} />

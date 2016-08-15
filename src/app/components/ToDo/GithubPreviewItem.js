@@ -29,12 +29,13 @@ class GithubTodoPreviewItem extends Component {
         const {thing} = this.props
 
         return (
-            <PreviewItem circleColor={this.getCircleColor()}>
-                <PreviewItemTitle title={thing.subject} href={thing.payload.url}/>
+            <PreviewItem circleColor={this.getCircleColor()}
+                         title={thing.subject}
+                         date={thing.createdAt}
+                         onClick={() => window.open(thing.payload.url, '_blank')}>
                 <PreviewItemStatus>
                     <strong>{thing.creator.displayName}</strong>
                 </PreviewItemStatus>
-                <PreviewItemDate date={thing.createdAt}/>
                 <PreviewItemText>
                     <TextTruncate>{thing.body}</TextTruncate>
                 </PreviewItemText>
