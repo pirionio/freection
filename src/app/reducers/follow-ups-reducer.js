@@ -14,17 +14,21 @@ const initialState = {
     invalidationStatus: InvalidationStatus.INVALIDATED
 }
 
+function setState(state, action) {
+    return immutable(action)
+        .arraySetAll('followUps', thing => {
+            return immutable(thing)
+                .arrayMergeItem('events', {eventType: {key: EventTypes.PING.key}}, {payload: {text: 'Ping!'}})
+                .value()
+        })
+        .set('invalidationStatus', InvalidationStatus.FETCHED)
+        .value()
+}
+
 function fetchFollowUps(state, action) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
-            return immutable(action)
-                .arraySetAll('followUps', thing => {
-                    return immutable(thing)
-                        .arrayMergeItem('events', {eventType: {key: EventTypes.PING.key}}, {payload: {text: 'Ping!'}})
-                        .value()
-                })
-                .set('invalidationStatus', InvalidationStatus.FETCHED)
-                .value()
+            return setState(state, action)
         case ActionStatus.START:
             return immutable(state)
                 .set('invalidationStatus', InvalidationStatus.FETCHING)
@@ -79,6 +83,8 @@ function statusChangedReceived(state, action) {
 
 module.exports = (state = initialState, action) => {
     switch (action.type) {
+        case FollowUpsActionTypes.SET_STATE:
+            return setState(state, action)
         case FollowUpsActionTypes.FETCH_FOLLOW_UPS:
             return fetchFollowUps(state, action)
         case EventActionTypes.COMMENT_CREATED:

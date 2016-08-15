@@ -2,6 +2,13 @@ const WhatsNewActionsTypes = require('../types/whats-new-action-types')
 const {ActionStatus} = require('../../constants')
 const ResourceUtil = require('../../util/resource-util')
 
+function setState(notifications) {
+    return {
+        type: WhatsNewActionsTypes.SET_STATE,
+        notifications
+    }
+}
+
 function fetchWhatsNew() {
     return dispatch => {
         dispatch({
@@ -36,6 +43,7 @@ function notificationDeleted(notification) {
 }
 
 module.exports = {
+    setState,
     fetchWhatsNew,
     notificationReceived,
     notificationDeleted

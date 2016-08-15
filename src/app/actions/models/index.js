@@ -9,5 +9,6 @@ module.exports = [
     require('./email-page'),
     require('./email-command'),
     require('./github'),
-    require('./message-box')
+    require('./message-box'),
+    require('./auth')
 ]

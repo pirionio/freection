@@ -10,13 +10,17 @@ const initialState = {
     invalidationStatus: InvalidationStatus.INVALIDATED
 }
 
+function setState(state, action) {
+    return {
+        notifications: action.notifications,
+        invalidationStatus: InvalidationStatus.FETCHED
+    }
+}
+
 function fetchWhatsNew(state, action) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
-            return {
-                notifications: action.notifications,
-                invalidationStatus: InvalidationStatus.FETCHED
-            }
+            setState(state, action)
         case ActionStatus.START:
             return {
                 notifications: state.notifications,
@@ -119,6 +123,8 @@ function notificationDeleted(state, action) {
 
 module.exports = (state = initialState, action) => {
     switch (action.type) {
+        case WhatsNewActionTypes.SET_STATE:
+            return setState(state, action)
         case WhatsNewActionTypes.FETCH_WHATS_NEW:
             return fetchWhatsNew(state, action)
         case ThingCommandActionTypes.DO_THING:

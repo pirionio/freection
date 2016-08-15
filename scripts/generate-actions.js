@@ -124,13 +124,14 @@ function getActionsFilename(modelName) {
 }
 
 function generateTypesCode(model) {
+    const modelName = getTypeName(model.name)
     const typesFileName = getTypesFilename(model.name)
     const typesPath =  `./src/app/actions/types/${typesFileName}.js`
 
     const code = `module.exports = {\r\n` +
         `    ${model.actions.map(action => {
             const typeName = getTypeName(action.name)
-            return `${typeName}: '${typeName}'`
+            return `${typeName}: '${modelName}_${typeName}'`
         }).join(',\r\n    ')}\r\n` +
         `}`
 

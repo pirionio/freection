@@ -2,6 +2,13 @@ const FollowUpActionsTypes = require('../types/follow-up-action-types')
 const {ActionStatus} = require('../../constants')
 const ResourceUtil = require('../../util/resource-util')
 
+function setState(followUps) {
+    return {
+        type: FollowUpActionsTypes.SET_STATE,
+        followUps
+    }
+}
+
 function fetchFollowUps() {
     return dispatch => {
         dispatch({
@@ -22,5 +29,6 @@ function fetchFollowUps() {
 }
 
 module.exports = {
+    setState,
     fetchFollowUps
 }
