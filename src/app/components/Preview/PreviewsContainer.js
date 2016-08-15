@@ -6,7 +6,7 @@ const radium = require('radium')
 const {GeneralConstants, InvalidationStatus} = require('../../constants')
 
 const Flexbox = require('../UI/Flexbox')
-const NewMessagePanel = require('../MessageBox/NewMessagePanel')
+const MessagePanel = require('../MessageBox/MessagePanel')
 const Scrollable = require('../Scrollable/Scrollable')
 const styleVars = require('../style-vars')
 
@@ -72,7 +72,7 @@ class PreviewsContainer extends Component {
                     <Flexbox name="preview-content" grow={1} container="column" justifyContent="center" alignItems="center">
                         {this.getNoPreviews()}
                     </Flexbox>
-                    <NewMessagePanel />
+                    <MessagePanel />
                 </Flexbox>
             )
         }
@@ -84,7 +84,7 @@ class PreviewsContainer extends Component {
                         {previewItems}
                     </Scrollable>
                 </Flexbox>
-                <NewMessagePanel />
+                <MessagePanel />
             </Flexbox>
         )
     }

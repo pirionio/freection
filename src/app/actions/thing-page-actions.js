@@ -29,12 +29,12 @@ function showThingPage(thing) {
 
 function hideThingPage() {
     return (dispatch, getState) => {
-        const {thingPage, newMessagePanel} = getState()
+        const {thingPage, messagePanel} = getState()
         const thingId = thingPage.thing.id
 
         dispatch(hideAction())
 
-        const thingMessageBox = find(newMessagePanel.messageBoxes, {context: {id: thingId}})
+        const thingMessageBox = find(messagePanel.messageBoxes, {context: {id: thingId}})
         thingMessageBox && dispatch(MessageBoxActions.closeMessageBox(thingMessageBox))
     }
 }

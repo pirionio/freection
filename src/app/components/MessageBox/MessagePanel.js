@@ -13,34 +13,34 @@ const MessageBoxActions = require('../../actions/message-box-actions')
 
 const Flexbox = require('../UI/Flexbox')
 const TextTruncate = require('../UI/TextTruncate')
-const NewMessageBox = require('./NewMessageBox')
+const MessageBox = require('./MessageBox')
 const CollapsedMessageBox = require('./CollapsedMessageBox')
-const NewMessageTabs = require('./NewMessageTabs')
+const MessageTabs = require('./MessageTabs')
 const ThingCommandActions = require('../../actions/thing-command-actions')
 const EmailCommandActions = require('../../actions/email-command-actions')
 const MessageTypes = require('../../../common/enums/message-types')
 
 const styleVars = require('../style-vars')
 
-class NewMessagePanel extends Component {
+class MessagePanel extends Component {
     constructor(props) {
         super(props)
         classAutobind(this)
     }
 
     send() {
-        const {dispatch, newMessageBox, activeMessageBox} = this.props
+        const {dispatch, messageBox, activeMessageBox} = this.props
 
         let promise, shouldClose = true
         switch (activeMessageBox.type.key) {
             case MessageTypes.NEW_THING.key:
-                promise = dispatch(ThingCommandActions.newThing(newMessageBox.message))
+                promise = dispatch(ThingCommandActions.newThing(messageBox.message))
                 break
             case MessageTypes.NEW_EMAIL.key:
-                promise = dispatch(EmailCommandActions.newEmail(newMessageBox.message))
+                promise = dispatch(EmailCommandActions.newEmail(messageBox.message))
                 break
             case MessageTypes.COMMENT_THING.key:
-                promise = dispatch(ThingCommandActions.comment(activeMessageBox.context.id, newMessageBox.message.body))
+                promise = dispatch(ThingCommandActions.comment(activeMessageBox.context.id, messageBox.message.body))
                 shouldClose = false
                 break
             case MessageTypes.REPLY_EMAIL.key:
@@ -48,7 +48,7 @@ class NewMessagePanel extends Component {
                 const lastMessage = chain(activeMessageBox.context.messages).sortBy('createdAt').head().clone().value()
                 const references = map(activeMessageBox.context.messages, 'id')
 
-                promise = dispatch(EmailCommandActions.replyToAll(activeMessageBox.context.id, newMessageBox.message.body,
+                promise = dispatch(EmailCommandActions.replyToAll(activeMessageBox.context.id, messageBox.message.body,
                     activeMessageBox.context.subject, toEmails, lastMessage.id, references))
                 shouldClose = false
                 break
@@ -103,7 +103,7 @@ class NewMessagePanel extends Component {
         const {activeMessageBox} = this.props
         return isEmpty(activeMessageBox) ?
             <CollapsedMessageBox /> :
-            <NewMessageBox to={activeMessageBox.context ? null : ""} subject={activeMessageBox.context ? null : ""} />
+            <MessageBox to={activeMessageBox.context ? null : ""} subject={activeMessageBox.context ? null : ""} />
     }
 
     getSendButton() {
@@ -122,17 +122,16 @@ class NewMessagePanel extends Component {
     }
 
     render () {
-        const {newMessageBox} = this.props
         const styles = this.getStyles()
 
         const messageBox = this.getMessageBox()
         const sendButton = this.getSendButton()
 
         return (
-            <Form model="newMessageBox" onSubmit={this.send} style={styles.form}>
+            <Form model="messageBox" onSubmit={this.send} style={styles.form}>
                 <Flexbox name="message-panel" container="row" style={styles.panel}>
                     <Flexbox name="message-box" grow={1} container="column">
-                        <NewMessageTabs />
+                        <MessageTabs />
                         {messageBox}
                     </Flexbox>
                     {sendButton}
@@ -142,18 +141,18 @@ class NewMessagePanel extends Component {
     }
 }
 
-NewMessagePanel.propTypes = {
+MessagePanel.propTypes = {
     messageBoxes: PropTypes.array.isRequired,
     activeMessageBox: PropTypes.object.isRequired,
-    newMessageBox: PropTypes.object.isRequired
+    messageBox: PropTypes.object.isRequired
 }
 
 function mapStateToProps(state) {
     return {
-        messageBoxes: state.newMessagePanel.messageBoxes,
-        activeMessageBox: state.newMessagePanel.activeMessageBox,
-        newMessageBox: state.newMessageBox
+        messageBoxes: state.messagePanel.messageBoxes,
+        activeMessageBox: state.messagePanel.activeMessageBox,
+        messageBox: state.messageBox
     }
 }
 
-module.exports = connect(mapStateToProps)(radium(NewMessagePanel))
+module.exports = connect(mapStateToProps)(radium(MessagePanel))

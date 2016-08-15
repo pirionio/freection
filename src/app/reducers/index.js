@@ -3,10 +3,8 @@ const whatsNew = require('./whats-new-reducer')
 const unreadEmails = require('./unread-emails-reducer')
 const toDo = require('./to-do-reducer')
 const followUps = require('./follow-ups-reducer')
-const newMessagePanel = require('./new-message-panel-reducer')
-const {newMessageBox, newMessageBoxForm} = require('./new-message-box-reducer')
-const {commentThingBox, commentThingBoxForm} = require('./comment-thing-box-reducer')
-const {replyEmailBox, replyEmailBoxForm} = require('./reply-email-box-reducer')
+const messagePanel = require('./message-panel-reducer')
+const {messageBox, messageBoxForm} = require('./message-box-reducer')
 const thingPage = require('./thing-page-reducer')
 const emailPage = require('./email-page-reducer')
 const github = require('./github')
@@ -17,13 +15,9 @@ module.exports = combineReducers({
     whatsNew,
     toDo,
     followUps,
-    newMessagePanel,
-    newMessageBox,
-    newMessageBoxForm,
-    commentThingBox,
-    commentThingBoxForm,
-    replyEmailBox,
-    replyEmailBoxForm,
+    messagePanel,
+    messageBox,
+    messageBoxForm,
     thingPage,
     unreadEmails,
     emailPage,

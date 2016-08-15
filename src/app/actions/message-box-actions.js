@@ -15,9 +15,9 @@ const closeMessageBoxAction = MessageBoxActions.closeMessageBox
 function newMessageBox(messageType, context) {
     return (dispatch, getState) => {
         dispatch(newMessageBoxAction(messageType, context))
-        const {newMessagePanel} = getState()
-        const previousMessageBox = newMessagePanel.activeMessageBox
-        const newMessageBox = last(newMessagePanel.messageBoxes)
+        const {messagePanel} = getState()
+        const previousMessageBox = messagePanel.activeMessageBox
+        const newMessageBox = last(messagePanel.messageBoxes)
         if (newMessageBox)
             dispatch(selectMessageBox(previousMessageBox, newMessageBox))
     }
@@ -25,9 +25,9 @@ function newMessageBox(messageType, context) {
 
 function selectMessageBox(currentMessageBox, selectedMessageBox) {
     return (dispatch, getState) => {
-        const {newMessageBox} = getState()
-        dispatch(selectMessageBoxAction(currentMessageBox, selectedMessageBox, newMessageBox.message))
-        dispatch(actions.change('newMessageBox.message', selectedMessageBox.message))
+        const {messageBox} = getState()
+        dispatch(selectMessageBoxAction(currentMessageBox, selectedMessageBox, messageBox.message))
+        dispatch(actions.change('messageBox.message', selectedMessageBox.message))
     }
 }
 
@@ -39,30 +39,30 @@ function messageSent(messageBox, shouldCloseMessageBox, messagePromise) {
             dispatch(messageSentRequest(messageBox))
         }, GeneralConstants.ONGOING_ACTION_DELAY_MILLIS)
 
-        dispatch(actions.submit('newMessageBox', messagePromise)).then(() => {
+        dispatch(actions.submit('messageBox', messagePromise)).then(() => {
             clearTimeout(ongoingActionTimeout)
             dispatch(messageSentComplete(messageBox, shouldCloseMessageBox))
 
-            const {newMessagePanel} = getState()
-            if (isEmpty(newMessagePanel.activeMessageBox))
-                dispatch(actions.reset('newMessageBox'))
+            const {messagePanel} = getState()
+            if (isEmpty(messagePanel.activeMessageBox))
+                dispatch(actions.reset('messageBox'))
             else
-                dispatch(actions.change('newMessageBox.message', newMessagePanel.activeMessageBox.message))
+                dispatch(actions.change('messageBox.message', messagePanel.activeMessageBox.message))
         })
     }
 }
 
 function closeMessageBox(messageBox) {
     return (dispatch, getState) => {
-        const {newMessagePanel} = getState()
+        const {messagePanel} = getState()
 
         // We need to select the new active message box, only if the closed one if the currently active one.
         // First try to set the active one to the next one, if none exists (since the user closed the last message box),
         // set the previous one as the active, and as last resort set none as the active.
-        if (newMessagePanel.activeMessageBox.id === messageBox.id) {
-            const messageBoxIndex = findIndex(newMessagePanel.messageBoxes, {id: messageBox.id})
-            const next = messageBoxIndex + 1 < newMessagePanel.messageBoxes.length ? newMessagePanel.messageBoxes[messageBoxIndex + 1] : null
-            const prev = messageBoxIndex - 1 >= 0 ? newMessagePanel.messageBoxes[messageBoxIndex - 1] : null
+        if (messagePanel.activeMessageBox.id === messageBox.id) {
+            const messageBoxIndex = findIndex(messagePanel.messageBoxes, {id: messageBox.id})
+            const next = messageBoxIndex + 1 < messagePanel.messageBoxes.length ? messagePanel.messageBoxes[messageBoxIndex + 1] : null
+            const prev = messageBoxIndex - 1 >= 0 ? messagePanel.messageBoxes[messageBoxIndex - 1] : null
             const newActiveMessageBox = next || prev || {}
             dispatch(selectMessageBox(messageBox, newActiveMessageBox))
         }

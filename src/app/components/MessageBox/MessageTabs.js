@@ -175,8 +175,8 @@ NewMessageTabs.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        messageBoxes: state.newMessagePanel.messageBoxes,
-        activeMessageBox: state.newMessagePanel.activeMessageBox
+        messageBoxes: state.messagePanel.messageBoxes,
+        activeMessageBox: state.messagePanel.activeMessageBox
     }
 }
 

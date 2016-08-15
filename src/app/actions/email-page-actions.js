@@ -29,12 +29,12 @@ function showEmailPage(email) {
 
 function hideEmailPage() {
     return (dispatch, getState) => {
-        const {emailPage, newMessagePanel} = getState()
+        const {emailPage, messagePanel} = getState()
         const threadId = emailPage.thread.id
 
         dispatch(hideAction())
 
-        const messageBox = find(newMessagePanel.messageBoxes, {context: {id: threadId}})
+        const messageBox = find(messagePanel.messageBoxes, {context: {id: threadId}})
         messageBox && dispatch(MessageBoxActions.closeMessageBox(messageBox))
     }
 }

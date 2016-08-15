@@ -9,7 +9,7 @@ const classAutobind = require('class-autobind').default
 const isEmpty = require('lodash/isEmpty')
 
 const ThingPageActionsBar = require('./ThingPageActionsBar')
-const NewMessagePanel = require('../MessageBox/NewMessagePanel')
+const MessagePanel = require('../MessageBox/MessagePanel')
 
 const {FullItem, FullItemSubject, FullItemStatus, FullItemActions, FullItemUser, FullItemDate, FullItemBox} = require('../Full/FullItem')
 const TextTruncate = require('../UI/TextTruncate')
@@ -113,7 +113,7 @@ class Thing extends Component {
                         <span>{dateFns.format(thing.createdAt, 'DD-MM-YYYY HH:mm')}</span>
                     </FullItemDate>
                     <FullItemBox>
-                        <NewMessagePanel />
+                        <MessagePanel />
                     </FullItemBox>
                 </FullItem>
             </DocumentTitle>

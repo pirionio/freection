@@ -8,7 +8,7 @@ const classAutobind = require('class-autobind').default
 
 const isEmpty = require('lodash/isEmpty')
 
-const NewMessagePanel = require('../MessageBox/NewMessagePanel')
+const MessagePanel = require('../MessageBox/MessagePanel')
 
 const {FullItem, FullItemSubject, FullItemUser, FullItemDate, FullItemBox} = require('../Full/FullItem')
 const TextTruncate = require('../UI/TextTruncate')
@@ -89,7 +89,7 @@ class EmailThread extends Component {
                         <span>{dateFns.format(thread.createdAt, 'DD-MM-YYYY HH:mm')}</span>
                     </FullItemDate>
                     <FullItemBox>
-                        <NewMessagePanel />
+                        <MessagePanel />
                     </FullItemBox>
                 </FullItem>
             </DocumentTitle>

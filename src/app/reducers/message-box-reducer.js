@@ -12,6 +12,6 @@ const initialState = {
 }
 
 module.exports = {
-    newMessageBox: modelReducer('newMessageBox', initialState),
-    newMessageBoxForm: formReducer('newMessageBox', initialState)
+    messageBox: modelReducer('messageBox', initialState),
+    messageBoxForm: formReducer('messageBox', initialState)
 }
