@@ -28,7 +28,7 @@ class TopBar extends Component {
             .value()
             .length
 
-        return <span style={[styles.count, styles.notLastCount]} key="created">{count} New Things</span>
+        return count ? <span style={[styles.count, styles.notLastCount]} key="created">{count} New Things</span> : null
     }
 
     getCommentsCount() {
@@ -40,25 +40,25 @@ class TopBar extends Component {
 
         const count = keys(groupBy(notifications, 'thingId')).length
 
-        return <span style={[styles.count, styles.notLastCount]} key="comments">{count} Unread Messages</span>
+        return count ? <span style={[styles.count, styles.notLastCount]} key="comments">{count} Unread Messages</span> : null
     }
 
     getToDoCount() {
         const styles = this.getStyles()
         const count = this.props.todoThings.length
-        return <span style={[styles.count, styles.notLastCount]} key="todos">{count} To Dos</span>
+        return count ? <span style={[styles.count, styles.notLastCount]} key="todos">{count} To Dos</span> : null
     }
 
     getFollowUpCount() {
         const styles = this.getStyles()
         const count = this.props.followUpThings.length
-        return <span style={[styles.count, styles.notLastCount]} key="follow-ups">{count} Follow Ups</span>
+        return count ? <span style={[styles.count, styles.notLastCount]} key="follow-ups">{count} Follow Ups</span> : null
     }
 
     getEmailsCount() {
         const styles = this.getStyles()
         const count = keys(groupBy(this.props.newEmails, 'payload.threadId')).length
-        return <span key="emails" style={styles.count}>{count} Unread Emails</span>
+        return count ? <span key="emails" style={styles.count}>{count} Unread Emails</span> : null
     }
 
     getAllCounts() {
