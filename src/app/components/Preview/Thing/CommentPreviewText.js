@@ -4,9 +4,14 @@ const {PropTypes} = React
 const TextTruncate = require('../../UI/TextTruncate')
 const Flexbox = require('../../UI/Flexbox')
 const styleVars = require('../../style-vars')
+const commentImage = require('../../../static/comment-square.png')
 
 const CommentPreviewText = ({comment, numOfNewComments}) => {
     const style = {
+        icon: {
+            lineHeight: styleVars.previewLineHeight,
+            marginRight: '12px'
+        },
         unreadCount: {
             color: styleVars.baseGrayColor,
             marginLeft: '6px',
@@ -15,7 +20,8 @@ const CommentPreviewText = ({comment, numOfNewComments}) => {
         },
         textTruncate: {
             display: 'inline-block',
-            width:'100%'
+            width:'100%',
+            lineHeight: styleVars.previewLineHeight
         }
     }
 
@@ -26,6 +32,9 @@ const CommentPreviewText = ({comment, numOfNewComments}) => {
 
     return (
         <Flexbox container={true}>
+            <Flexbox style={style.icon} container="column" justifyContent="center">
+                <img src={commentImage} />
+            </Flexbox>
             <Flexbox style={{minWidth: 0}}>
                 <TextTruncate style={style.textTruncate}>{comment}</TextTruncate>
             </Flexbox>
