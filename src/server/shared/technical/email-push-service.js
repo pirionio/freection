@@ -35,10 +35,8 @@ function hello(user) {
 }
 
 function keepAlive(user) {
-    const existConnection = connectionCache.getConnection(user)
-
     // If connection doesn't exist we throw an exception
-    if (!existConnection)
+    if (!connectionCache.resetTtl(user))
         throw 'NoConnection'
 }
 

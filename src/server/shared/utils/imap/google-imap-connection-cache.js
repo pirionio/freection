@@ -15,6 +15,10 @@ function onDeleted(email, connection) {
     connection.close()
 }
 
+function resetTtl(user) {
+    return connectionCache.ttl(user.email)
+}
+
 function getConnection(user) {
     return connectionCache.get(user.email)
 }
@@ -46,5 +50,5 @@ function getNewAccessToken(user) {
     return oauth2.getAccessTokenAsync()
 }
 
-module.exports = {getConnection, createConnection}
+module.exports = {getConnection, createConnection, resetTtl}
 
