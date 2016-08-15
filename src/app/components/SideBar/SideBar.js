@@ -38,6 +38,7 @@ class SideBar extends Component {
                 color: styleVars.menuTextColor,
                 textTransform: 'uppercase',
                 textDecoration: 'none',
+                letterSpacing: '0.05em',
                 ':hover': {
                     color: styleVars.highlightColor
                 },

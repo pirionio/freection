@@ -73,6 +73,11 @@ class TopBar extends Component {
                 backgroundColor: styleVars.secondaryColor,
                 color: 'white'
             },
+            countSummary: {
+                fontFamily: 'Roboto Mono, monospace',
+                fontWeight: 500,
+                letterSpacing: '0.025em'
+            },
             count: {
                 height: '13px',
                 padding: '0 13px'
@@ -91,7 +96,7 @@ class TopBar extends Component {
 
         return (
             <Flexbox name="top-bar" shrink={0} container="row" justifyContent="flex-end" alignItems="center" style={styles.topBar}>
-                <Flexbox name="count-summary" grow={1}>
+                <Flexbox name="count-summary" grow={1} style={styles.countSummary}>
                     Greetings {currentUser.firstName}! You have:
                     {counts}
                 </Flexbox>
