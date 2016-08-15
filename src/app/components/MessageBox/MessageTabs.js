@@ -105,7 +105,7 @@ class MessageTabs extends Component {
                     right: '2px',
                     cursor: 'pointer',
                     fontSize: '0.8em',
-                    color: styleVars.secondaryColor
+                    color: 'inherit'
                 }
             },
             new: {
