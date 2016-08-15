@@ -1,6 +1,7 @@
 const OAuth2 = require('google-auth-library/lib/auth/oauth2client')
 const Pool = require('generic-pool').Pool
 const autobind = require('class-autobind').default
+const forOwn = require('lodash/forOwn')
 
 const promisify = require('../promisify')
 const logger = require('../logger')
@@ -14,7 +15,10 @@ class ConnectionPool {
         this._connectionCreator = connectionCreator
         this._options = options
         this._userConnectionPools = {}
-        autobind(this)
+
+        autobind(this, ConnectionPool.prototype)
+
+        this.registerDrainAll()
     }
 
     getConnection(user) {
@@ -118,6 +122,26 @@ class ConnectionPool {
         if (userPool && userPool.pool) {
             userPool.pool.destroy(connection)
         }
+    }
+
+    drainAll() {
+        forOwn(this._userConnectionPools, userPool => {
+            userPool.pool && userPool.pool.drain(() => {
+                userPool.pool.destroyAllNow()
+            })
+        })
+    }
+
+    registerDrainAll() {
+        process.on('SIGTERM', () => {
+            logger.info('Connection Pool - application got SIGTERM, gracefully destroying all connections')
+            this.drainAll()
+        })
+
+        process.on('SIGINT', () => {
+            logger.info('Connection Pool - application got SIGINT, gracefully destroying all connections')
+            this.drainAll()
+        })
     }
 }
 

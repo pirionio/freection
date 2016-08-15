@@ -84,6 +84,10 @@ function sendEmail(user, to, subject, text, html, messageId) {
                     GoogleSmtpConnectionPool.releaseConnection(user, connection)
                     return smtpEmailToDto(email, user, subject, text, html)
                 })
+                .catch(error => {
+                    GoogleSmtpConnectionPool.releaseConnection(user, connection)
+                    throw error
+                })
         })
 }
 
@@ -124,6 +128,10 @@ function replyToAll(user, to, inReplyTo, references, subject, messageText, messa
                 .then(result => {
                     GoogleSmtpConnectionPool.releaseConnection(user, connection)
                     return smtpEmailToDto(result, user, subject, messageText, messageHtml)
+                })
+                .catch(error => {
+                    GoogleSmtpConnectionPool.releaseConnection(user, connection)
+                    throw error
                 })
         })
 }
