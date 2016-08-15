@@ -17,6 +17,10 @@ module.exports = {
         {
             name: 'close message box',
             params: ['messageBox']
+        },
+        {
+            name: 'set focus',
+            params: ['messageBoxId', 'focusOn']
         }
     ]
 }

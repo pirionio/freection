@@ -27,8 +27,17 @@ function closeMessageBox(messageBox) {
     }
 }
 
+function setFocus(messageBoxId,focusOn) {
+    return {
+        type: MessageBoxActionsTypes.SET_FOCUS,
+        messageBoxId,
+        focusOn
+    }
+}
+
 module.exports = {
     newMessageBox,
     selectMessageBox,
-    closeMessageBox
+    closeMessageBox,
+    setFocus
 }

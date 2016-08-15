@@ -27,7 +27,7 @@ function selectMessageBox(currentMessageBox, selectedMessageBox) {
     return (dispatch, getState) => {
         const {messageBox} = getState()
         dispatch(selectMessageBoxAction(currentMessageBox, selectedMessageBox, messageBox.message))
-        dispatch(actions.change('messageBox.message', selectedMessageBox.message))
+        dispatch(actions.change('messageBox', selectedMessageBox))
     }
 }
 
@@ -66,7 +66,7 @@ function messageSent(messageBox, shouldCloseMessageBox, messagePromise) {
             if (isEmpty(messagePanel.activeMessageBox))
                 dispatch(actions.reset('messageBox'))
             else
-                dispatch(actions.change('messageBox.message', messagePanel.activeMessageBox.message))
+                dispatch(actions.change('messageBox', messagePanel.activeMessageBox))
         })
     }
 }

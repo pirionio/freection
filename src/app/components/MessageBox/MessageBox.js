@@ -1,12 +1,15 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
-const {Form, Field} = require('react-redux-form')
+const {Field} = require('react-redux-form')
 const classAutobind = require('class-autobind').default
+const radium = require('radium')
 const isNil = require('lodash/isNil')
 
 const Flexbox = require('../UI/Flexbox')
 const styleVars = require('../style-vars')
+
+const MessageBoxActions = require('../../actions/message-box-actions')
 
 class MessageBox extends Component {
     constructor(props) {
@@ -14,18 +17,45 @@ class MessageBox extends Component {
         classAutobind(this, MessageBox.prototype)
     }
 
+    componentDidMount() {
+        this.focus()
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps && prevProps.messageBox && this.props && this.props.messageBox &&
+            (prevProps.messageBox.id !== this.props.messageBox.id) ||
+            (prevProps.messageBox.message !== this.props.messageBox.message)) {
+
+            this.focus()
+        }
+    }
+
+    focus() {
+        const focusOnField = this.props.messageBox.focusOn
+
+        let focusOn = this[focusOnField]
+
+        if (!focusOn) {
+            focusOn = this.hasSubject() ? this.messageSubject : this.messageBody
+        }
+
+        focusOn && focusOn.focus()
+    }
+
     getSubject() {
         const styles = this.getStyles()
 
-        if (isNil(this.props.subject))
+        if (!this.hasSubject())
             return null
 
         return (
-            <Flexbox name="message-subject" style={styles.messageSubject}>
+            <div name="message-subject" style={styles.messageSubject}>
                 <Field model="messageBox.message.subject">
-                    <input type="text" style={styles.textField} tabIndex="1" placeholder="Subject" autoFocus />
+                    <input type="text" style={[styles.textField]} tabIndex="1" placeholder="Subject"
+                           ref={ref => this.messageSubject = ref}
+                           onFocus={this.focusOnSubject} />
                 </Field>
-            </Flexbox>
+            </div>
         )
     }
 
@@ -33,27 +63,54 @@ class MessageBox extends Component {
         const styles = this.getStyles()
 
         return (
-            <Flexbox name="message-body" grow={1} container={true} style={styles.messageBody}>
+            <div name="message-body" grow={1} container={true} style={styles.messageBody}>
                 <Field model="messageBox.message.body">
-                    <textarea style={styles.textField} tabIndex="2" placeholder="Wrtie your message here" />
+                    <textarea style={styles.textField} tabIndex="2" placeholder="Wrtie your message here"
+                              ref={ref => this.messageBody = ref}
+                              onFocus={this.focusOnBody} />
                 </Field>
-            </Flexbox>
+            </div>
         )
     }
 
     getTo() {
         const styles = this.getStyles()
 
-        if (isNil(this.props.to))
+        if (!this.hasTo())
             return null
 
         return (
-            <Flexbox name="message-to" style={styles.messageTo}>
+            <div name="message-to" style={styles.messageTo}>
                 <Field model="messageBox.message.to">
-                    <input type="text" style={styles.textField} tabIndex="3" placeholder="To" />
+                    <input type="text" style={styles.textField} tabIndex="3" placeholder="To"
+                           ref={ref => this.messageTo = ref}
+                           onFocus={this.focusOnTo} />
                 </Field>
-            </Flexbox>
+            </div>
         )
+    }
+
+    focusOnSubject() {
+        const {dispatch, messageBox} = this.props
+        dispatch(MessageBoxActions.setFocus(messageBox.id, 'messageSubject'))
+    }
+
+    focusOnBody() {
+        const {dispatch, messageBox} = this.props
+        dispatch(MessageBoxActions.setFocus(messageBox.id, 'messageBody'))
+    }
+
+    focusOnTo() {
+        const {dispatch, messageBox} = this.props
+        dispatch(MessageBoxActions.setFocus(messageBox.id, 'messageTo'))
+    }
+
+    hasSubject() {
+        return !isNil(this.props.subject)
+    }
+
+    hasTo() {
+        return !isNil(this.props.to)
     }
 
     getStyles() {
@@ -117,4 +174,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(MessageBox)
+module.exports = connect(mapStateToProps)(radium(MessageBox))

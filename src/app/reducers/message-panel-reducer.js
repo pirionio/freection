@@ -102,6 +102,13 @@ function messageSent(state, action) {
     }
 }
 
+function setFocus(state, action) {
+    return immutable(state)
+        .arrayMergeItem('messageBoxes', {id: action.messageBoxId}, {focusOn: action.focusOn})
+        .merge('activeMessageBox', {focusOn: action.focusOn})
+        .value()
+}
+
 module.exports = (state = initialState, action) => {
     switch (action.type) {
         case MessageBoxActionTypes.NEW_MESSAGE_BOX:
@@ -112,6 +119,8 @@ module.exports = (state = initialState, action) => {
             return selectMessageBox(state, action)
         case MessageBoxActionTypes.MESSAGE_SENT:
             return messageSent(state, action)
+        case MessageBoxActionTypes.SET_FOCUS:
+            return setFocus(state, action)
         case ThingPageActionTypes.GET_THING:
             return newMessageInThing(state, action)
         case EmailPageActionTypes.GET_EMAIL:
