@@ -138,10 +138,14 @@ function replyToAll(user, to, inReplyTo, references, subject, messageText, messa
 
 function prepareThread(emails, user) {
     const firstEmail = chain(emails).sortBy('header.date').head().value()
-    return Object.assign(imapEmailToDto(firstEmail, user), {
-        id: firstEmail.payload ? firstEmail.payload.threadId : firstEmail.id,
-        messages: emails.map(email => imapEmailToDto(email, user))
-    })
+
+    const threadDto = imapEmailToDto(firstEmail, user)
+    threadDto.messages = emails.map(email => imapEmailToDto(email, user))
+
+    if (firstEmail.payload && firstEmail.payload.threadId)
+        threadDto.id = firstEmail.payload.threadId
+
+    return threadDto
 }
 
 function saveNewThing(subject, creator, to, emailId, threadId) {
