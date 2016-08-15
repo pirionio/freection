@@ -25,7 +25,7 @@ const styleVars = require('../style-vars')
 class MessagePanel extends Component {
     constructor(props) {
         super(props)
-        classAutobind(this)
+        classAutobind(this, MessagePanel.prototype)
     }
 
     send() {

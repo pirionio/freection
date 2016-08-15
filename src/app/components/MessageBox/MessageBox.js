@@ -8,10 +8,10 @@ const isNil = require('lodash/isNil')
 const Flexbox = require('../UI/Flexbox')
 const styleVars = require('../style-vars')
 
-class NewMessageBox extends Component {
+class MessageBox extends Component {
     constructor(props) {
         super(props)
-        classAutobind(this)
+        classAutobind(thi, MessageBox.prototype)
     }
 
     getSubject() {
@@ -105,7 +105,7 @@ class NewMessageBox extends Component {
     }
 }
 
-NewMessageBox.propTypes = {
+MessageBox.propTypes = {
     messageBox: PropTypes.object.isRequired,
     subject: PropTypes.string,
     to: PropTypes.string
@@ -117,4 +117,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(NewMessageBox)
+module.exports = connect(mapStateToProps)(MessageBox)

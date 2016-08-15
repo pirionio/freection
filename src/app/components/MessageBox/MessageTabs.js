@@ -12,10 +12,10 @@ const Flexbox = require('../UI/Flexbox')
 const TextTruncate = require('../UI/TextTruncate')
 const styleVars = require('../style-vars')
 
-class NewMessageTabs extends Component {
+class MessageTabs extends Component {
     constructor(props) {
         super(props)
-        classAutobind(this, NewMessageTabs.prototype)
+        classAutobind(this, MessageTabs.prototype)
     }
 
     selectMessageBox(selectedMessageBox) {
@@ -166,7 +166,7 @@ class NewMessageTabs extends Component {
     }
 }
 
-NewMessageTabs.propTypes = {
+MessageTabs.propTypes = {
     messageBoxes: PropTypes.array.isRequired,
     activeMessageBox: PropTypes.object.isRequired
 }
@@ -178,4 +178,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(radium(NewMessageTabs))
+module.exports = connect(mapStateToProps)(radium(MessageTabs))
