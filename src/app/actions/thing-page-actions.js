@@ -6,11 +6,11 @@ const MessageBoxActions = require('./message-box-actions')
 const {InvalidationStatus} = require('../constants')
 const MessageTypes = require('../../common/enums/message-types')
 
-const getAction = ThingPageActions.get
-const showAction = ThingPageActions.show
-const hideAction = ThingPageActions.hide
+const getAction = ThingPageActions.getThing
+const showAction = ThingPageActions.showThingPage
+const hideAction = ThingPageActions.hideThingPage
 
-function get(thingId) {
+function getThing(thingId) {
     return (dispatch, getState) => {
         const {thingPage} = getState()
         if (thingPage.invalidationStatus === InvalidationStatus.INVALIDATED) {
@@ -19,15 +19,15 @@ function get(thingId) {
     }
 }
 
-function show(thing) {
+function showThingPage(thing) {
     return dispatch => {
         dispatch(push(`/things/${thing.id}`))
         dispatch(showAction(thing))
-        dispatch(MessageBoxActions.newMessage(MessageTypes.NEW_COMMENT, thing))
+        dispatch(MessageBoxActions.newMessageBox(MessageTypes.COMMENT_THING, thing))
     }
 }
 
-function hide() {
+function hideThingPage() {
     return (dispatch, getState) => {
         const {thingPage, newMessagePanel} = getState()
         const thingId = thingPage.thing.id
@@ -40,6 +40,6 @@ function hide() {
 }
 
 module.exports = ThingPageActions
-ThingPageActions.get = get
-ThingPageActions.show = show
-ThingPageActions.hide = hide
+ThingPageActions.getThing = getThing
+ThingPageActions.showThingPage = showThingPage
+ThingPageActions.hideThingPage = hideThingPage

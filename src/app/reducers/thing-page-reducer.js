@@ -196,9 +196,9 @@ function asyncStatusOperation(state, action, status) {
 
 module.exports = (state = initialState, action) => {
     switch (action.type) {
-        case ThingPageActionTypes.GET:
+        case ThingPageActionTypes.GET_THING:
             return get(state, action)
-        case ThingPageActionTypes.HIDE:
+        case ThingPageActionTypes.HIDE_THING_PAGE:
             return hide(state, action)
         case ThingCommandActionTypes.COMMENT:
             return comment(state, action)

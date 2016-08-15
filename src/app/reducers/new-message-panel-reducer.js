@@ -4,33 +4,23 @@ const head = require('lodash/head')
 
 const MessageBoxActionTypes = require('../actions/types/message-box-action-types')
 const ThingPageActionTypes = require('../actions/types/thing-page-action-types')
+const EmailPageActionTypes = require('../actions/types/email-page-action-types')
 const immutable = require('../util/immutable')
 const {ActionStatus} = require('../constants')
 const MessageTypes = require('../../common/enums/message-types')
-
-const defaultMessageBox = {
-    id: uniqueId(),
-    ongoingAction: false,
-    type: MessageTypes.NEW_THING,
-    title: MessageTypes.NEW_THING.label,
-    message: {}
-}
 
 const initialState = {
     messageBoxes: [],
     activeMessageBox: {}
 }
 
-function createDefaultMessageBox(state) {
-    if (state.messageBoxes.length)
+function newMessageBox(state, action) {
+    // This is sad, but when there's a new message box for reply to email, we don't have the full object of the email's thread,
+    // so we can't really add the new message box, with the right context.
+    // We'd have to wait for a GET on the whole thread to occur, and only then create the message box.
+    if (action.messageType.key === MessageTypes.REPLY_EMAIL.key)
         return state
-
-    return immutable(state)
-        .arrayPushItem('messageBoxes', defaultMessageBox)
-        .value()
-}
-
-function newMessage(state, action) {
+    
     const messageBox = {
         id: uniqueId(),
         type: action.messageType,
@@ -44,18 +34,29 @@ function newMessage(state, action) {
         .value()
 }
 
-function newMessageInContext(state, action) {
+function newMessageInThing(state, action) {
+    return newMessageInContext(state, action, MessageTypes.COMMENT_THING, 'thing')
+}
+
+function newMessageInEmail(state, action) {
+    return newMessageInContext(state, action, MessageTypes.REPLY_EMAIL, 'thread')
+}
+
+function newMessageInContext(state, action, type, contextField) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
-            const existingMessageBox = find(state.messageBoxes, {context: {id: action.thing.id}})
+            const existingMessageBox = find(state.messageBoxes, {context: {id: action[contextField].id}})
             if (existingMessageBox)
-                return state
+                return immutable(state)
+                    .arrayMergeItem('messageBoxes', {id: existingMessageBox.id}, {context: action[contextField]})
+                    .merge('activeMessageBox', {context: action[contextField]})
+                    .value()
 
             const messageBox = {
                 id: uniqueId(),
-                type: MessageTypes.NEW_COMMENT,
-                title: action.thing.subject,
-                context: action.thing,
+                type,
+                title: action[contextField].subject,
+                context: action[contextField],
                 ongoingAction: false
             }
             return immutable(state)
@@ -101,18 +102,19 @@ function messageSent(state, action) {
 
 module.exports = (state = initialState, action) => {
     switch (action.type) {
-        case MessageBoxActionTypes.NEW_MESSAGE:
-            return newMessage(state, action)
+        case MessageBoxActionTypes.NEW_MESSAGE_BOX:
+            return newMessageBox(state, action)
         case MessageBoxActionTypes.CLOSE_MESSAGE_BOX:
             return closeMessageBox(state, action)
         case MessageBoxActionTypes.SELECT_MESSAGE_BOX:
             return selectMessageBox(state, action)
         case MessageBoxActionTypes.MESSAGE_SENT:
             return messageSent(state, action)
-        case ThingPageActionTypes.GET:
-            return newMessageInContext(state, action)
+        case ThingPageActionTypes.GET_THING:
+            return newMessageInThing(state, action)
+        case EmailPageActionTypes.GET_EMAIL:
+            return newMessageInEmail(state, action)
         default:
             return state
-            // return createDefaultMessageBox(state)
     }
 }

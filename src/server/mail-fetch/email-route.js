@@ -32,7 +32,7 @@ router.post('/:emailThreadId/do', (request, response) => {
 
 router.post('/message', (request, response) => {
     EndpointUtil.handlePost(request, response, EmailService.replyToAll, {
-        body: ['to', 'inReplyTo', 'subject', 'messageText'],
+        body: ['to', 'inReplyTo', 'references', 'subject', 'messageText'],
         result: true,
         errorTemplates: {
             general: 'Could not reply-to-all for message ${inReplyTo}'

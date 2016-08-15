@@ -8,17 +8,18 @@ const MessageBoxActionsTypes = require('./types/message-box-action-types')
 const MessageBoxActions = require('./generated/message-box-actions')
 const {GeneralConstants, ActionStatus} = require('../constants')
 
-const newMessageAction = MessageBoxActions.newMessage
+const newMessageBoxAction = MessageBoxActions.newMessageBox
 const selectMessageBoxAction = MessageBoxActions.selectMessageBox
 const closeMessageBoxAction = MessageBoxActions.closeMessageBox
 
-function newMessage(messageType, context) {
+function newMessageBox(messageType, context) {
     return (dispatch, getState) => {
-        dispatch(newMessageAction(messageType, context))
+        dispatch(newMessageBoxAction(messageType, context))
         const {newMessagePanel} = getState()
         const previousMessageBox = newMessagePanel.activeMessageBox
         const newMessageBox = last(newMessagePanel.messageBoxes)
-        dispatch(selectMessageBox(previousMessageBox, newMessageBox))
+        if (newMessageBox)
+            dispatch(selectMessageBox(previousMessageBox, newMessageBox))
     }
 }
 
@@ -88,7 +89,7 @@ function messageSentComplete(messageBox, shouldCloseMessageBox) {
 }
 
 module.exports = MessageBoxActions
-module.exports.newMessage = newMessage
+module.exports.newMessageBox = newMessageBox
 module.exports.selectMessageBox = selectMessageBox
 module.exports.messageSent = messageSent
 module.exports.closeMessageBox = closeMessageBox

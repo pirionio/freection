@@ -1,5 +1,5 @@
 module.exports = {
-    SHOW: 'SHOW',
-    HIDE: 'HIDE',
-    GET: 'GET'
+    SHOW_THING_PAGE: 'SHOW_THING_PAGE',
+    HIDE_THING_PAGE: 'HIDE_THING_PAGE',
+    GET_THING: 'GET_THING'
 }

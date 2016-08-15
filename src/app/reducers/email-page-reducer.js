@@ -2,30 +2,34 @@ const isUndefined = require('lodash/isUndefined')
 
 const EmailPageActionTypes = require('../actions/types/email-page-action-types')
 const EmailCommandActionTypes = require('../actions/types/email-command-action-types')
-const {ActionStatus} = require('../constants')
+const {ActionStatus, InvalidationStatus} = require('../constants')
 
 const immutable = require('../util/immutable')
 
 const initialState = {
     thread: {},
-    isFetching: false
+    invalidationStatus: InvalidationStatus.INVALIDATED,
 }
 
 function get(state, action) {
     switch (action.status) {
         case ActionStatus.START:
-            return {
-                thread: {},
-                isFetching: true
-            }
+            return immutable(state)
+                .set('invalidationStatus', InvalidationStatus.FETCHING)
+                .value()
         case ActionStatus.COMPLETE:
-            return {
-                thread: action.thread,
-                isFetching: false
-            }
+            return immutable(state)
+                .set('thread', action.thread)
+                .touch('thread')
+                .arrayMergeItem('thread.messages', message => true, getInitialReadBy)
+                .set('invalidationStatus', InvalidationStatus.FETCHED)
+                .value()
         case ActionStatus.ERROR:
+            return immutable(state)
+                .set('invalidationStatus', InvalidationStatus.INVALIDATED)
+                .value()
         default:
-            return initialState
+            return state
     }
 }
 
@@ -71,9 +75,9 @@ function getInitialReadBy(event) {
 
 module.exports = (state = initialState, action) => {
     switch (action.type) {
-        case EmailPageActionTypes.GET:
+        case EmailPageActionTypes.GET_EMAIL:
             return get(state, action)
-        case EmailPageActionTypes.HIDE:
+        case EmailPageActionTypes.HIDE_EMAIL_PAGE:
             return hide(state, action)
         case EmailCommandActionTypes.REPLY_TO_ALL:
             return replyToAll(state, action)

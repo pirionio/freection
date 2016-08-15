@@ -32,7 +32,7 @@ class FollowUpPreviewItem extends Component {
 
         return (
             <PreviewItem circleColor={this.getCircleColor()}>
-                <PreviewItemTitle title={thing.subject} onClick={() => dispatch(ThingPageActions.show(thing))}/>
+                <PreviewItemTitle title={thing.subject} onClick={() => dispatch(ThingPageActions.showThingPage(thing))}/>
                 <PreviewItemStatus>
                     <strong>{thing.to.displayName}</strong>
                 </PreviewItemStatus>

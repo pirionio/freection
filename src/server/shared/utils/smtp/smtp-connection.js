@@ -46,7 +46,7 @@ class SmtpConnection {
             to,
             inReplyTo,
             references,
-            subject: createReplySubject(subject),
+            subject,
             text: messageText,
             html: messageHtml
         })
@@ -59,12 +59,6 @@ class SmtpConnection {
 
 function createFromAddress(user) {
     return `${user.firstName} ${user.lastName} <${user.email}>`
-}
-
-function createReplySubject(subject) {
-    return subject.toLowerCase().startsWith('re:') ?
-        subject :
-        `Re: ${subject}`
 }
 
 module.exports = SmtpConnection

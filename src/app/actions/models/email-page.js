@@ -2,14 +2,14 @@ module.exports = {
     name: 'email page',
     actions: [
         {
-            name: 'show',
-            params: ['emailThreadId']
+            name: 'show email page',
+            params: ['emailThread']
         },
         {
-            name: 'hide'
+            name: 'hide email page'
         },
         {
-            name: 'get',
+            name: 'get email',
             type: 'get',
             path: '/emails/api/${emailThreadId}',
             params: ['emailThreadId'],

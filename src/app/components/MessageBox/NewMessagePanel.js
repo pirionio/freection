@@ -1,10 +1,13 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
-const {Form, Field} = require('react-redux-form')
+const {Form} = require('react-redux-form')
 const classAutobind = require('class-autobind').default
 const radium = require('radium')
+
 const isEmpty = require('lodash/isEmpty')
+const map = require('lodash/map')
+const {chain} = require('lodash/core')
 
 const MessageBoxActions = require('../../actions/message-box-actions')
 
@@ -36,8 +39,17 @@ class NewMessagePanel extends Component {
             case MessageTypes.NEW_EMAIL.key:
                 promise = dispatch(EmailCommandActions.newEmail(newMessageBox.message))
                 break
-            case MessageTypes.NEW_COMMENT.key:
+            case MessageTypes.COMMENT_THING.key:
                 promise = dispatch(ThingCommandActions.comment(activeMessageBox.context.id, newMessageBox.message.body))
+                shouldClose = false
+                break
+            case MessageTypes.REPLY_EMAIL.key:
+                const toEmails = map(activeMessageBox.context.to, 'payload.email')
+                const lastMessage = chain(activeMessageBox.context.messages).sortBy('createdAt').head().clone().value()
+                const references = map(activeMessageBox.context.messages, 'id')
+
+                promise = dispatch(EmailCommandActions.replyToAll(activeMessageBox.context.id, newMessageBox.message.body,
+                    activeMessageBox.context.subject, toEmails, lastMessage.id, references))
                 shouldClose = false
                 break
         }
@@ -110,7 +122,7 @@ class NewMessagePanel extends Component {
     }
 
     render () {
-        const {newMessageBox, activeMessageBox} = this.props
+        const {newMessageBox} = this.props
         const styles = this.getStyles()
 
         const messageBox = this.getMessageBox()

@@ -7,8 +7,12 @@ module.exports = {
         key: 'NEW_EMAIL',
         label: 'New Email'
     },
-    NEW_COMMENT: {
-        key: 'NEW_COMMENT',
-        label: 'New Comment'
+    COMMENT_THING: {
+        key: 'COMMENT_THING',
+        label: 'Comment'
+    },
+    REPLY_EMAIL: {
+        key: 'REPLY_EMAIL',
+        label: 'Reply'
     }
 }

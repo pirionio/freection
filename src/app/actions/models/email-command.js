@@ -20,14 +20,15 @@ module.exports = {
         },
         {
             name: 'reply to all',
-            params: ['threadId', 'messageText', 'subject', 'to', 'inReplyTo'],
+            params: ['threadId', 'messageText', 'subject', 'to', 'inReplyTo', 'references'],
             type: 'post',
             path: '/emails/api/message',
             body: {
                 messageText: 'messageText',
                 subject: 'subject',
                 to: 'to',
-                inReplyTo: 'inReplyTo'
+                inReplyTo: 'inReplyTo',
+                references: 'references'
             },
             completeParams: {
                 threadId: 'threadId',

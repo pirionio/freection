@@ -17,7 +17,7 @@ class EmailPreviewItem extends Component {
                 <PreviewItemStatus>
                     <strong>{email.creator.displayName}</strong>
                 </PreviewItemStatus>
-                <PreviewItemTitle onClick={() => dispatch(EmailPageActions.show(email.entityId))}
+                <PreviewItemTitle onClick={() => dispatch(EmailPageActions.showEmailPage(email))}
                                   title={email.subject}/>
                 <PreviewItemDate date={email.createdAt}/>
                 <PreviewItemText>

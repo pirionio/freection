@@ -48,7 +48,7 @@ function doEmail(threadId) {
     }
 }
 
-function replyToAll(threadId, messageText, subject, to, inReplyTo) {
+function replyToAll(threadId, messageText, subject, to, inReplyTo, references) {
     return dispatch => {
         dispatch({
             type: EmailCommandActionsTypes.REPLY_TO_ALL, 
@@ -57,13 +57,15 @@ function replyToAll(threadId, messageText, subject, to, inReplyTo) {
             messageText,
             subject,
             to,
-            inReplyTo
+            inReplyTo,
+            references
         })
         return ResourceUtil.post(`/emails/api/message`, {
                 messageText: messageText,
                 subject: subject,
                 to: to,
-                inReplyTo: inReplyTo
+                inReplyTo: inReplyTo,
+                references: references
             })
             .then(result => dispatch({
                 type: EmailCommandActionsTypes.REPLY_TO_ALL, 
@@ -78,7 +80,8 @@ function replyToAll(threadId, messageText, subject, to, inReplyTo) {
                 messageText,
                 subject,
                 to,
-                inReplyTo
+                inReplyTo,
+                references
             }))
     }
 }

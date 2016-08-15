@@ -67,7 +67,7 @@ function imapEmailToDto(email, user) {
         createdAt: email.header.date,
         creator: emailUserToDTO(email.header.from),
         to: email.header.to.map(to => emailUserToDTO(to)),
-        subject: email.header.subject,
+        subject: subjectToDto(email.header.subject),
         payload: {
             text: parseReply(email.body),
             html: email.html,
@@ -100,6 +100,12 @@ function getRelatedThingId(email, user) {
 function emailUserToDTO(user) {
     const email = `${user.username }@${user.organization}`
     return AddressCreator.emailToAddress(email, user.name)
+}
+
+function subjectToDto(subject) {
+    return subject.toLowerCase().startsWith('re: ') ?
+        subject.substr('re: '.length) :
+        subject
 }
 
 module.exports = {thingToDto, eventToDto, userToDto, imapEmailToDto}

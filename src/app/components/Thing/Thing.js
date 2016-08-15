@@ -9,7 +9,6 @@ const classAutobind = require('class-autobind').default
 const isEmpty = require('lodash/isEmpty')
 
 const ThingPageActionsBar = require('./ThingPageActionsBar')
-const CommentThingBox = require('../MessageBox/CommentThingBox')
 const NewMessagePanel = require('../MessageBox/NewMessagePanel')
 
 const {FullItem, FullItemSubject, FullItemStatus, FullItemActions, FullItemUser, FullItemDate, FullItemBox} = require('../Full/FullItem')
@@ -28,18 +27,18 @@ class Thing extends Component {
 
     componentDidMount() {
         const {dispatch, params} = this.props
-        dispatch(ThingPageActions.get(params.thingId))
+        dispatch(ThingPageActions.getThing(params.thingId))
     }
 
     componentWillUnmount() {
         const {dispatch} = this.props
-        dispatch(ThingPageActions.hide())
+        dispatch(ThingPageActions.hideThingPage())
     }
 
     componentWillReceiveProps() {
         // Will fetch messages only if needed
         const {dispatch, params} = this.props
-        dispatch(ThingPageActions.get(params.thingId))
+        dispatch(ThingPageActions.getThing(params.thingId))
     }
 
     close() {

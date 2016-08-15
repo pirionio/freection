@@ -1,5 +1,5 @@
 module.exports = {
-    SHOW: 'SHOW',
-    HIDE: 'HIDE',
-    GET: 'GET'
+    SHOW_EMAIL_PAGE: 'SHOW_EMAIL_PAGE',
+    HIDE_EMAIL_PAGE: 'HIDE_EMAIL_PAGE',
+    GET_EMAIL: 'GET_EMAIL'
 }

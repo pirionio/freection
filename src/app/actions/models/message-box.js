@@ -2,7 +2,7 @@ module.exports = {
     name: 'message-box',
     actions: [
         {
-            name: 'new message',
+            name: 'new message box',
             params: ['messageType', 'context']
         },
         {

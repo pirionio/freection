@@ -2,9 +2,9 @@ const MessageBoxActionsTypes = require('../types/message-box-action-types')
 const {ActionStatus} = require('../../constants')
 const ResourceUtil = require('../../util/resource-util')
 
-function newMessage(messageType,context) {
+function newMessageBox(messageType,context) {
     return {
-        type: MessageBoxActionsTypes.NEW_MESSAGE,
+        type: MessageBoxActionsTypes.NEW_MESSAGE_BOX,
         messageType,
         context
     }
@@ -28,7 +28,7 @@ function closeMessageBox(messageBox) {
 }
 
 module.exports = {
-    newMessage,
+    newMessageBox,
     selectMessageBox,
     closeMessageBox
 }

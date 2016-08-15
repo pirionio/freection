@@ -86,7 +86,7 @@ class NotificationPreviewItem extends Component {
                 {this.getStatusText()}
             </PreviewItemStatus>
             <PreviewItemTitle title={notification.thing.subject}
-                              onClick={() => dispatch(ThingPageActions.show(notification.thing))} />
+                              onClick={() => dispatch(ThingPageActions.showThingPage(notification.thing))} />
             <PreviewItemDate date={notification.createdAt}/>
             {textPreview ? <PreviewItemText>{textPreview}</PreviewItemText> : null}
             <PreviewItemActions>

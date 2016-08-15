@@ -45,12 +45,12 @@ class NewMessageTabs extends Component {
 
     newThingMessageBox() {
         const {dispatch} = this.props
-        dispatch(MessageBoxActions.newMessage(MessageTypes.NEW_THING))
+        dispatch(MessageBoxActions.newMessageBox(MessageTypes.NEW_THING))
     }
 
     newEmailMessageBox() {
         const {dispatch} = this.props
-        dispatch(MessageBoxActions.newMessage(MessageTypes.NEW_EMAIL))
+        dispatch(MessageBoxActions.newMessageBox(MessageTypes.NEW_EMAIL))
     }
 
     closeMessageBox(messageBox) {
@@ -95,7 +95,8 @@ class NewMessageTabs extends Component {
                     color: styleVars.primaryColor
                 },
                 link: {
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    textAlign: 'center'
                 },
                 close: {
                     position: 'absolute',

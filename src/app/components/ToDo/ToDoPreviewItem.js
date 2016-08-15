@@ -33,7 +33,7 @@ class TodoPreviewItem extends Component {
         return (
             <PreviewItem circleColor={this.getCircleColor()}>
                 <PreviewItemTitle title={thing.subject}
-                                  onClick={() => dispatch(ThingPageActions.show(thing))}/>
+                                  onClick={() => dispatch(ThingPageActions.showThingPage(thing))}/>
                 <PreviewItemStatus>
                     <strong>{thing.creator.displayName}</strong>
                 </PreviewItemStatus>

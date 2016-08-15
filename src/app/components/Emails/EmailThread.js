@@ -8,12 +8,13 @@ const classAutobind = require('class-autobind').default
 
 const isEmpty = require('lodash/isEmpty')
 
-const ReplyEmailBox = require('../MessageBox/ReplyEmailBox')
+const NewMessagePanel = require('../MessageBox/NewMessagePanel')
 
 const {FullItem, FullItemSubject, FullItemUser, FullItemDate, FullItemBox} = require('../Full/FullItem')
 const TextTruncate = require('../UI/TextTruncate')
 
 const EmailPageActions = require('../../actions/email-page-actions')
+const {InvalidationStatus} = require('../../constants')
 
 class EmailThread extends Component {
     constructor(props) {
@@ -23,12 +24,12 @@ class EmailThread extends Component {
 
     componentDidMount() {
         const {dispatch, params} = this.props
-        dispatch(EmailPageActions.get(params.emailThreadId))
+        dispatch(EmailPageActions.getEmail(params.emailThreadId))
     }
 
     componentWillUnmount() {
         const {dispatch} = this.props
-        dispatch(EmailPageActions.hide())
+        dispatch(EmailPageActions.hideEmailPage())
     }
 
     close() {
@@ -65,7 +66,7 @@ class EmailThread extends Component {
     }
 
     isFetching() {
-        return this.props.isFetching
+        return this.props.invalidationStatus === InvalidationStatus.FETCHING
     }
 
     isEmpty() {
@@ -88,7 +89,7 @@ class EmailThread extends Component {
                         <span>{dateFns.format(thread.createdAt, 'DD-MM-YYYY HH:mm')}</span>
                     </FullItemDate>
                     <FullItemBox>
-                        <ReplyEmailBox />
+                        <NewMessagePanel />
                     </FullItemBox>
                 </FullItem>
             </DocumentTitle>
@@ -98,14 +99,14 @@ class EmailThread extends Component {
 
 EmailThread.propTypes = {
     thread: PropTypes.object.isRequired,
-    isFetching: PropTypes.bool.isRequired,
+    invalidationStatus: PropTypes.string.isRequired,
     currentUser: PropTypes.object.isRequired
 }
 
 function mapStateToProps(state) {
     return {
         thread: state.emailPage.thread,
-        isFetching: state.emailPage.isFetching,
+        invalidationStatus: state.emailPage.invalidationStatus,
         currentUser: state.auth
     }
 }

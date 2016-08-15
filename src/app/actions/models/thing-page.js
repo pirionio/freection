@@ -2,14 +2,14 @@ module.exports = {
     name: 'thing page',
     actions: [
         {
-            name: 'show',
+            name: 'show thing page',
             params: ['thing']
         },
         {
-            name: 'hide'
+            name: 'hide thing page'
         },
         {
-            name: 'get',
+            name: 'get thing',
             type: 'get',
             path: '/api/things/${thingId}',
             params: ['thingId'],
