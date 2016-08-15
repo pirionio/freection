@@ -4,12 +4,10 @@ const dateFns = require('date-fns')
 const VisibilitySensor = require('react-visibility-sensor')
 const {connect} = require('react-redux')
 const classnames = require('classnames')
-const sanitizeHtml = require('sanitize-html')
-const cheerio = require('cheerio')
-const juice = require('juice/client')
 const radium = require('radium')
 const classAutobind = require('class-autobind').default
 
+const HtmlUtil = require('../../util/html-util')
 const EventTypes = require('../../../common/enums/event-types')
 const ThingCommandActions = require('../../actions/thing-command-actions')
 
@@ -51,18 +49,8 @@ class Comment extends Component {
     }
 
     parseEmailHtml(html) {
-
-        const $ = cheerio.load(juice(html))
-        $('.gmail_quote').remove()
-        return <div dangerouslySetInnerHTML={{__html: sanitizeHtml($.html(), {
-            allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'img', 'span', 'center', 'colgroup', 'col' ]),
-            allowedAttributes: {
-                '*': ['style', 'align', 'valign', 'width', 'height', 'title', 'dir'],
-                a: [ 'href', 'name', 'target' ],
-                img: [ 'src', 'alt' ],
-                table: ['border', 'cellpadding', 'cellspacing', 'bgcolor']
-            }
-        })}}></div>
+        const parsedHtml = HtmlUtil.parse(html)
+        return <div dangerouslySetInnerHTML={{__html: parsedHtml}}></div>
     }
 
     render() {
