@@ -3,6 +3,7 @@ const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const classAutobind = require('class-autobind').default
 const radium = require('radium')
+const Icon = require('react-fontawesome')
 
 const MessageBoxActions = require('../../actions/message-box-actions')
 const MessageTypes = require('../../../common/enums/message-types')
@@ -27,7 +28,7 @@ class NewMessageTabs extends Component {
         const styles = this.getStyles()
         return messageBoxes.map(messageBox => {
             const closeButton = [MessageTypes.NEW_THING.key, MessageTypes.NEW_EMAIL.key].includes(messageBox.type.key) ?
-                <button type="button" style={styles.tab.close} onClick={() => this.closeMessageBox(messageBox)}>x</button> :
+                <Icon name="times" style={styles.tab.close} onClick={() => this.closeMessageBox(messageBox)} /> :
                 null
 
             return (
@@ -100,17 +101,11 @@ class NewMessageTabs extends Component {
                 },
                 close: {
                     position: 'absolute',
-                    top: '0',
+                    top: '1px',
                     right: '2px',
-                    width: '9px',
-                    height: '12px',
-                    padding: '0',
-                    textAlign: 'center',
                     cursor: 'pointer',
-                    border: 'none',
-                    outline: 'none',
-                    backgroundColor: 'inherit',
-                    color: 'inherit'
+                    fontSize: '0.8em',
+                    color: styleVars.secondaryColor
                 }
             },
             new: {
@@ -125,6 +120,9 @@ class NewMessageTabs extends Component {
                     textAlign: 'center',
                     cursor: 'default',
                     ':hover': {}
+                },
+                icon: {
+                    fontSize: '0.7em'
                 },
                 menu: {
                     position: 'absolute',
@@ -160,7 +158,7 @@ class NewMessageTabs extends Component {
                     {messageTabs}
                 </Flexbox>
                 <div name="message-new" style={styles.new}>
-                    <div style={styles.new.button} key="new-button">+ new</div>
+                    <div style={styles.new.button} key="new-button"><Icon name="plus" style={styles.new.icon} /> new</div>
                     {newMenu}
                 </div>
             </Flexbox>

@@ -1,6 +1,7 @@
 const React = require('react')
 const {Component} = React
 const radium = require('radium')
+var Icon = require('react-fontawesome');
 
 const Flexbox = require('../UI/Flexbox')
 const styleVars = require('../style-vars')
@@ -38,7 +39,9 @@ class Login extends Component {
                     <span>Fuck yeah, it's another mail client.</span>
                 </Flexbox>
                 <Flexbox name="login" grow={1} container="column" justifyContent="center" alignItems="center">
-                    <a href="/login/google" style={styles.login}>Login with google</a>
+                    <a href="/login/google" style={styles.login}>
+                        <Icon name="google-plus" /> Login with google
+                    </a>
                 </Flexbox>
             </Flexbox>
         )
