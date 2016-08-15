@@ -47,7 +47,7 @@ function getThing(user, thingId) {
         })
 }
 
-async function newThing(user, to, body, subject) {
+async function newThing(user, to, subject, body) {
     const creator = userToAddress(user)
 
     try {

@@ -11,7 +11,7 @@ router.post('/thing', function(request, response) {
     }
 
     EndpointUtil.handlePost(request, response, ThingService.newThing, {
-        body: ['to', 'body', 'subject'],
+        body: ['to', 'subject', 'body'],
         result: false,
         errorTemplates: {
             general: 'Could not create new thing by user ${user}'
@@ -25,7 +25,7 @@ router.post('/email', function(request, response) {
     }
 
     EndpointUtil.handlePost(request, response, EmailService.sendEmail, {
-        body: ['to', 'body', 'subject'],
+        body: ['to', 'subject', 'body'],
         result: false,
         errorTemplates: {
             general: 'Could not send new email by user ${user}'
