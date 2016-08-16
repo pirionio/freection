@@ -46,3 +46,5 @@ style.css
 
 # Dist folder
 /src/server-dist/
+
+error.log*
