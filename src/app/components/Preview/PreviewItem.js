@@ -86,25 +86,27 @@ class PreviewItem extends Component {
         }
 
         return (
-            <div style={styles.hoverable} key="preview" onClick={onClick}>
-                <Flexbox shrink={0} height='70px' container='row' style={styles.container}>
-                    { circleColor ? <Flexbox width='19px' shrink={0} container='column' justifyContent="center">
-                        <Ellipse width="8xp" height="8px" color={circleColor} />
-                    </Flexbox> : null }
-                    <Flexbox width='300px' shrink={0} container='column' justifyContent="center">
-                        <Flexbox style={styles.status}>{statusPreview}</Flexbox>
-                        <Flexbox style={styles.date}>
+            <div name="preview-item-hoverable" key="preview" style={styles.hoverable} onClick={onClick}>
+                <Flexbox name="preview-item" shrink={0} height='70px' container='row' style={styles.container}>
+                    { circleColor ?
+                        <Flexbox name="preview-circle" width='19px' shrink={0} container='column' justifyContent="center">
+                            <Ellipse width="8xp" height="8px" color={circleColor} />
+                        </Flexbox> :
+                        null
+                    }
+                    <Flexbox name="left-box" width='300px' shrink={0} container='column' justifyContent="center">
+                        <Flexbox name="status" style={styles.status}>{statusPreview}</Flexbox>
+                        <Flexbox name="date" style={styles.date}>
                             {this.getDateText()}
                         </Flexbox>
                     </Flexbox>
-                    <Flexbox container="column" justifyContent="center" grow={1} style={{minWidth: 0}}>
-                        <Flexbox>
+                    <Flexbox name="center-box" container="column" justifyContent="center" grow={1} style={{minWidth: 0}}>
+                        <Flexbox name="title">
                             <strong>{title}</strong>
                         </Flexbox>
-
-                        {textPreview ? <Flexbox style={styles.text}>{textPreview}</Flexbox> : null}
+                        {textPreview ? <Flexbox name="text" style={styles.text}>{textPreview}</Flexbox> : null}
                     </Flexbox>
-                    <Flexbox container="column" justifyContent="center" shrink={0} width='250px'>
+                    <Flexbox name="right-box" container="column" justifyContent="center" shrink={0} width='250px'>
                         {this.getActions()}
                     </Flexbox>
                 </Flexbox>
