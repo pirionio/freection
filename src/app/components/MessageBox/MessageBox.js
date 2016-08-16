@@ -96,7 +96,6 @@ class MessageBox extends Component {
     }
 
     focusOnBody() {
-        console.log('focusOnBody')
         const {dispatch, messageBox} = this.props
         dispatch(MessageBoxActions.setFocus(messageBox.id, 'messageBody'))
     }
