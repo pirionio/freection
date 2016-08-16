@@ -128,6 +128,7 @@ class MessageTabs extends Component {
                 },
                 menu: {
                     position: 'absolute',
+                    top: '-75px',
                     height: '75px',
                     width: '115px',
                     backgroundColor: '#fafafa',
@@ -135,7 +136,6 @@ class MessageTabs extends Component {
                     ':hover': {}
                 },
                 menuOption: {
-                    position: 'relative',
                     height: '37px',
                     width: '100%',
                     paddingTop: '11px',
