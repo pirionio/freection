@@ -7,12 +7,12 @@ const {DoAction, DoneAction, DismissAction} = require('../Actions/Actions')
 
 class ToDoActionsBar extends Component {
     render() {
-        const {thing, currentUser, isRollover} = this.props
+        const {thing, currentUser, isRollover, preDoFunc} = this.props
 
         const actions = [
             DoAction(thing, currentUser),
             DoneAction(thing, currentUser),
-            DismissAction(thing, currentUser)
+            DismissAction(thing, currentUser, {preDoFunc})
         ]
 
         return <ActionsBar actions={actions} isRollover={isRollover} />
@@ -22,7 +22,8 @@ class ToDoActionsBar extends Component {
 ToDoActionsBar.propTypes = {
     thing: PropTypes.object.isRequired,
     currentUser: PropTypes.object.isRequired,
-    isRollover: PropTypes.bool
+    isRollover: PropTypes.bool,
+    preDoFunc: PropTypes.func
 }
 
 ToDoActionsBar.defaultProps = {

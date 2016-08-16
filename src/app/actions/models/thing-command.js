@@ -64,9 +64,12 @@ module.exports = {
         },
         {
             name: 'dismiss',
-            params: ['thing'],
+            params: ['thing', 'messageText'],
             type: 'post',
-            path: '/api/things/${thing.type.key}/${thing.id}/dismiss'
+            path: '/api/things/${thing.type.key}/${thing.id}/dismiss',
+            body: {
+                messageText: 'messageText'
+            }
         },
         {
             name: 'mark as done',

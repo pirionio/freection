@@ -46,6 +46,7 @@ router.post('/:type/:thingId/do', function(request, response) {
 router.post('/:type/:thingId/dismiss', function(request, response) {
     EndpointUtil.handlePost(request, response, getServiceByType(request).dismiss, {
         params: ['thingId'],
+        body: ['messageText'],
         result: false,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),

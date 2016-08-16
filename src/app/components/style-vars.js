@@ -15,5 +15,8 @@ module.exports = {
     redCircleColor: '#ff3a4e',
     blueCircleColor: '#448ccb',
     greenCircleColor: 'green',
-    yellowCircleColor: '#ffd200'
+    yellowCircleColor: '#ffd200',
+
+    backZIndex: 10,
+    previewInlineReplyZIndex: 100
 }

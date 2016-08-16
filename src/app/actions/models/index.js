@@ -11,5 +11,7 @@ module.exports = [
     require('./github'),
     require('./message-box'),
     require('./auth'),
-    require('./contacts')
+    require('./contacts'),
+    require('./glass-pane'),
+    require('./inline-message')
 ]

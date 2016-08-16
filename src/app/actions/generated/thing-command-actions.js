@@ -160,23 +160,28 @@ function close(thing) {
     }
 }
 
-function dismiss(thing) {
+function dismiss(thing, messageText) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.DISMISS, 
             status: ActionStatus.START,
-            thing
+            thing,
+            messageText
         })
-        return ResourceUtil.post(`/api/things/${thing.type.key}/${thing.id}/dismiss`)
+        return ResourceUtil.post(`/api/things/${thing.type.key}/${thing.id}/dismiss`, {
+                messageText: messageText
+            })
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.DISMISS, 
                 status: ActionStatus.COMPLETE,
-                thing
+                thing,
+                messageText
             }))
             .catch(() => dispatch({
                 type: ThingCommandActionsTypes.DISMISS, 
                 status: ActionStatus.ERROR,
-                thing
+                thing,
+                messageText
             }))
     }
 }

@@ -22,7 +22,7 @@ const ThingCommandActions = require('../../actions/thing-command-actions')
 const EmailCommandActions = require('../../actions/email-command-actions')
 const MessageTypes = require('../../../common/enums/message-types')
 
-const styleVars = require('../style-vars')
+const componentStyles = require('../component-styles')
 
 class MessagePanel extends Component {
     constructor(props) {
@@ -95,29 +95,8 @@ class MessagePanel extends Component {
             },
             send: {
                 position: 'absolute',
-                width: '88px',
                 bottom: '15px',
-                right: '15px',
-                button: {
-                    height: '39px',
-                    width: '100%',
-                    color: '#0e0522',
-                    outline: 'none',
-                    border: `1px solid ${styleVars.primaryColor}`,
-                    backgroundColor: 'inherit',
-                    ':focus':{
-                        border: `1px solid ${styleVars.highlightColor}`
-                    },
-                    ':hover': {
-                        cursor: 'pointer',
-                        color: styleVars.highlightColor
-                    },
-                    disabled: {
-                        backgroundColor: styleVars.disabledColor,
-                        border: '1px solid #bababa',
-                        cursor: 'not-allowed'
-                    }
-                }
+                right: '15px'
             }
         }
     }
@@ -133,11 +112,11 @@ class MessagePanel extends Component {
         const {activeMessageBox} = this.props
         const styles = this.getStyles()
         return !isNil(activeMessageBox) ?
-            <div name="send-container" style={styles.send}>
+            <div name="send-container" style={[componentStyles.sendButton, styles.send]}>
                 <button type="submit"
                         tabIndex="4"
                         disabled={this.isSendDisabled()}
-                        style={[styles.send.button, this.isSendDisabled() && styles.send.button.disabled]}>
+                        style={[componentStyles.sendButton.button, this.isSendDisabled() && componentStyles.sendButton.disabled]}>
                     Send
                 </button>
             </div> :

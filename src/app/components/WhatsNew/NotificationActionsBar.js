@@ -29,7 +29,7 @@ class NotificationActionsBar extends Component {
     }
 
     render() {
-        const {notification, currentUser, isRollover} = this.props
+        const {notification, currentUser, isRollover, preDoFunc} = this.props
 
         const doAction = DoAction(notification.thing, currentUser)
         doAction.show = doAction.show && this.showDo()
@@ -37,7 +37,7 @@ class NotificationActionsBar extends Component {
         const doneAction = DoneAction(notification.thing, currentUser)
         doneAction.show = doneAction.show && this.showDone()
 
-        const dismissAction = DismissAction(notification.thing, currentUser)
+        const dismissAction = DismissAction(notification.thing, currentUser, {preDoFunc})
         dismissAction.show = dismissAction.show && this.showDismiss()
 
         const closeAction = CloseAction(notification.thing, currentUser)
@@ -65,7 +65,8 @@ class NotificationActionsBar extends Component {
 NotificationActionsBar.propTypes = {
     notification: PropTypes.object.isRequired,
     currentUser: PropTypes.object.isRequired,
-    isRollover: PropTypes.bool
+    isRollover: PropTypes.bool,
+    preDoFunc: PropTypes.func
 }
 
 function mapStateToProps(state) {

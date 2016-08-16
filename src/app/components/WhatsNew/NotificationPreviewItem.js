@@ -16,6 +16,7 @@ class NotificationPreviewItem extends Component {
         const {notification} = this.props
 
         switch (notification.eventType.key) {
+            case EventTypes.DISMISSED.key:
             case EventTypes.COMMENT.key:
                 return <CommentPreviewText comment={notification.payload.text}
                                            numOfNewComments={notification.payload.numOfNewComments} />
@@ -81,6 +82,7 @@ class NotificationPreviewItem extends Component {
         return (<PreviewItem circleColor={this.getCircleColor()}
                              title={notification.thing.subject}
                              date={notification.createdAt}
+                             text={notification.payload.text}
                              onClick={() => dispatch(ThingPageActions.showThingPage(notification.thing))}>
             <PreviewItemStatus>
                 {this.getStatusText()}

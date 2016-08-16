@@ -8,6 +8,7 @@ const TopBar = require('../TopBar/TopBar')
 const LoginTopBar = require('../TopBar/LoginTopBar')
 const SideBar = require('../SideBar/SideBar')
 const Login = require('../Login/Login')
+const GlassPane = require('../GlassPane/GlassPane')
 const PushService = require('../../services/push-service')
 const EmailLifecycleService = require('../../services/email-lifecycle-service')
 
@@ -32,6 +33,7 @@ class App extends Component {
                         <TopBar />
                         {this.props.children}
                     </Flexbox>
+                    <GlassPane />
                 </Flexbox>
             )
         } else {

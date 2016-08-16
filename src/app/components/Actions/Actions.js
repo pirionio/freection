@@ -22,9 +22,10 @@ function DoneAction(thing, currentUser, disabled, style) {
     }
 }
 
-function DismissAction(thing, currentUser, disabled, style) {
+function DismissAction(thing, currentUser, options) {
     return {
-        component: <Action label="Dismiss" doFunc={ThingCommandActions.dismiss} item={thing} disabled={disabled} key="action-Dismiss" style={style} />,
+        component: <Action label="Dismiss" doFunc={ThingCommandActions.dismiss} preDoFunc={options.preDoFunc}
+                           item={thing} disabled={options.disabled} key="action-Dismiss" style={options.style} />,
         show: currentUser && currentUser.id === thing.to.id &&
             [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status) &&
             !thing.isSelf

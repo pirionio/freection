@@ -82,21 +82,30 @@ function doThing(user, thingId) {
     )
 }
 
-function dismiss(user, thingId) {
+async function dismiss(user, thingId, messageText) {
     const creator = userToAddress(user)
 
-    return Thing.get(thingId).run()
-        .then(validateType)
-        .then(thing => validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key ]))
-        .then(thing => {
-            return performDismiss(thing, user)
-                .then(() => Event.discardUserEvents(thingId, user.id))
-                .then(() => EventCreator.createDismissed(creator, thing, getShowNewList))
-        })
-        .catch(error => {
-            logger.error(`error while dismissing thing ${thingId} by user ${user.email}`, error)
-            throw error
-        })
+    try {
+        const thing = await Thing.get(thingId).run()
+
+        if (thing.type !== EntityTypes.THING.key)
+            throw 'InvalidEntityType'
+
+        // Validate that the status of the thing matched the action
+        validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key])
+
+        remove(thing.doers, doerId => doerId === user.id)
+        thing.payload.status = ThingStatus.DISMISS.key
+        await thing.save()
+
+        await Event.discardUserEvents(thingId, user.id)
+
+        await EventCreator.createDismissed(creator, thing, getShowNewList, messageText)
+
+    } catch(error) {
+        logger.error(`error while dismissing thing ${thingId} by user ${user.email}`, error)
+        throw error
+    }
 }
 
 async function close(user, thingId) {
@@ -336,12 +345,6 @@ function getToList(thing) {
 function performDoThing(thing, user) {
     thing.doers.push(user.id)
     thing.payload.status = ThingStatus.INPROGRESS.key
-    return thing.save()
-}
-
-function performDismiss(thing, user) {
-    remove(thing.doers, doerId => doerId === user.id)
-    thing.payload.status = ThingStatus.DISMISS.key
     return thing.save()
 }
 

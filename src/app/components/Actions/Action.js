@@ -14,8 +14,14 @@ class Action extends Component {
 
     doAction(event) {
         event.stopPropagation()
-        const {dispatch, doFunc, item} = this.props
-        dispatch(doFunc(item))
+        const {dispatch, doFunc, preDoFunc, item} = this.props
+
+        if (preDoFunc)
+            preDoFunc(result => {
+                dispatch(doFunc(item, result))
+            })
+        else
+            dispatch(doFunc(item))
     }
     
     render () {
@@ -31,6 +37,7 @@ Action.propTypes = {
     label: PropTypes.string.isRequired,
     item: PropTypes.any.isRequired,
     doFunc: PropTypes.func.isRequired,
+    preDoFunc: PropTypes.func,
     disabled: PropTypes.bool,
     style: PropTypes.object
 }

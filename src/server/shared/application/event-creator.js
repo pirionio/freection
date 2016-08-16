@@ -24,13 +24,16 @@ function createAccepted(creator, thing, getShowNewList) {
     })
 }
 
-function createDismissed(creator, thing, getShowNewList) {
+function createDismissed(creator, thing, getShowNewList, messageText) {
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.DISMISSED.key,
         createdAt: new Date(),
         creator,
-        payload: {},
+        payload: {
+            text: messageText,
+            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
+        },
         showNewList: getShowNewList(creator, thing, EventTypes.DISMISSED.key)
     })
 }

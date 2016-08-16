@@ -14,7 +14,7 @@ class ThingPageActionsBar extends Component {
     render() {
         const {thing, currentUser} = this.props
 
-        const buttonStyle = {
+        const style = {
             backgroundColor: styleVars.highlightColor,
             color: styleVars.primaryColor,
             ':hover': {
@@ -23,11 +23,11 @@ class ThingPageActionsBar extends Component {
         }
 
         const actions = [
-            DoAction(thing, currentUser, this.isDisabled(), buttonStyle),
-            DoneAction(thing, currentUser, this.isDisabled(), buttonStyle),
-            DismissAction(thing, currentUser, this.isDisabled(), buttonStyle),
-            CloseAction(thing, currentUser, this.isDisabled(), buttonStyle),
-            SendBackAction(thing, currentUser, this.isDisabled(), buttonStyle)
+            DoAction(thing, currentUser, this.isDisabled(), style),
+            DoneAction(thing, currentUser, this.isDisabled(), style),
+            DismissAction(thing, currentUser, this.isDisabled(), {style}),
+            CloseAction(thing, currentUser, this.isDisabled(), style),
+            SendBackAction(thing, currentUser, this.isDisabled(), style)
         ]
 
         return (
