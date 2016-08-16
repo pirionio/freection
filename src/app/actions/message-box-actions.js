@@ -62,11 +62,14 @@ function messageSent(messageBoxId, shouldCloseMessageBox, messagePromise) {
         }, GeneralConstants.ONGOING_ACTION_DELAY_MILLIS)
 
         messagePromise && messagePromise.then && messagePromise.then(() => {
-            const {messagePanel} = getState()
             clearTimeout(ongoingActionTimeout)
             dispatch(actions.reset('messageBox'))
             dispatch(messageSentComplete(messageBoxId, shouldCloseMessageBox))
-            dispatch(actions.change('messageBox', getActiveMessageBox(messagePanel)))
+
+            if (shouldCloseMessageBox) {
+                const {messagePanel} = getState()
+                dispatch(actions.change('messageBox', getActiveMessageBox(messagePanel)))
+            }
         })
     }
 }

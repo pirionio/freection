@@ -89,7 +89,7 @@ function messageSent(state, action) {
         case ActionStatus.COMPLETE:
             if (!action.shouldCloseMessageBox)
                 return immutable(state)
-                    .arrayMergeItem('messageBoxes', {id: action.messageBoxId}, {ongoingAction: false})
+                    .arrayMergeItem('messageBoxes', {id: action.messageBoxId}, {ongoingAction: false, message: {}})
                     .value()
 
             return immutable(state)
