@@ -11,7 +11,9 @@ const WhatsNewActions = require('../../app/actions/whats-new-actions')
 const ToDoActions = require('../../app/actions/to-do-actions')
 const FollowUpActions = require('../../app/actions/follow-up-actions')
 const AuthActions = require('../../app/actions/auth-actions')
+const ContactsActions = require('../../app/actions/contacts-actions')
 const ThingService = require('../shared/application/thing-service')
+const ContactService = require('../shared/application/contact-service')
 
 module.exports = (app) => {
     app.set('views', path.join(__dirname, 'views'));
@@ -58,6 +60,9 @@ async function getInitialState(request) {
 
         const followUps = await ThingService.getFollowUps(user)
         state = reducer(state, FollowUpActions.setState(followUps))
+
+        const contacts = await ContactService.get(user)
+        state = reducer(state, ContactsActions.setState(contacts))
     }
 
     const authState = await getAuthState(request)

@@ -8,6 +8,7 @@ const radium = require('radium')
 const find = require('lodash/find')
 const isNil = require('lodash/isNil')
 const map = require('lodash/map')
+const merge = require('lodash/merge')
 const {chain} = require('lodash/core')
 
 const MessageBoxActions = require('../../actions/message-box-actions')
@@ -29,16 +30,37 @@ class MessagePanel extends Component {
         classAutobind(this, MessagePanel.prototype)
     }
 
+    parseTo(to) {
+        // TODO: what do do with invalid emails?
+        // TODO: can we use regex?
+        const beginIndex = to.indexOf('<')
+        const endIndex = to.indexOf('>')
+
+        if (beginIndex !== -1 && endIndex !== -1 && endIndex > beginIndex) {
+            return to.substr(beginIndex + 1, endIndex - beginIndex - 1)
+        }
+
+        return to
+    }
+
+    buildMessage() {
+        const {messageBox} = this.props
+        const {message} = messageBox
+
+        const to = this.parseTo(message.to)
+        return merge(message, {to})
+    }
+
     send() {
         const {dispatch, messageBox, activeMessageBox} = this.props
 
         let promise, shouldClose = true
         switch (activeMessageBox.type.key) {
             case MessageTypes.NEW_THING.key:
-                promise = dispatch(ThingCommandActions.newThing(messageBox.message))
+                promise = dispatch(ThingCommandActions.newThing(this.buildMessage()))
                 break
             case MessageTypes.NEW_EMAIL.key:
-                promise = dispatch(EmailCommandActions.newEmail(messageBox.message))
+                promise = dispatch(EmailCommandActions.newEmail(this.buildMessage()))
                 break
             case MessageTypes.COMMENT_THING.key:
                 promise = dispatch(ThingCommandActions.comment(activeMessageBox.context.id, messageBox.message.body))

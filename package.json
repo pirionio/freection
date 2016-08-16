@@ -67,6 +67,7 @@
     "passport-strategy": "1.0.0",
     "radium": "0.18.1",
     "react": "0.14.7",
+    "react-autosuggest": "^5.0.2",
     "react-delay": "0.0.3",
     "react-document-title": "2.0.2",
     "react-dom": "0.14.7",

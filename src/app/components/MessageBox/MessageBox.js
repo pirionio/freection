@@ -7,6 +7,7 @@ const radium = require('radium')
 const isNil = require('lodash/isNil')
 
 const Flexbox = require('../UI/Flexbox')
+const To = require('./To')
 const styleVars = require('../style-vars')
 
 const MessageBoxActions = require('../../actions/message-box-actions')
@@ -79,15 +80,12 @@ class MessageBox extends Component {
         if (!this.hasTo())
             return null
 
-        return (
-            <Flexbox name="message-to" style={styles.messageTo}>
-                <Field model="messageBox.message.to">
-                    <input type="text" style={styles.textField} tabIndex="3" placeholder="To"
-                           ref={ref => this.messageTo = ref}
-                           onFocus={this.focusOnTo} />
-                </Field>
-            </Flexbox>
-        )
+        return <To model="messageBox.message.to"
+                   containerStyle={styles.messageTo}
+                   inputStyle={styles.textField}
+                   tabIndex={3}
+                   inputRef={ref =>this.messageTo = ref}
+                   onFocus={this.focusOnTo} />
     }
 
     focusOnSubject() {

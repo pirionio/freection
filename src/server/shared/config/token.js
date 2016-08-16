@@ -1,6 +1,6 @@
 const process = require('process')
 
-const version = '3'
+const version = '4'
 
 if (process.env.NODE_ENV === 'production') {
     module.exports = {

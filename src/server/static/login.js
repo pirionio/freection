@@ -7,12 +7,19 @@ const {User} = require('../shared/models')
 const config = require('../shared/config/google-oauth')
 const token = require('../shared/utils/token-strategy')
 const logger = require('../shared/utils/logger')
+const EmailParsingUtility = require('../shared/utils/email-parsing-utility')
 
 function saveNewUser(userData) {
+    const {email} = userData
+    const organization = EmailParsingUtility.getOrganization(email)
+    const username = EmailParsingUtility.getUsername(email)
+
     return User.save({
         createdAt: new Date(),
         googleId: userData.googleId,
-        email: userData.email,
+        username,
+        organization,
+        email,
         firstName: userData.firstName,
         lastName: userData.lastName,
         accessToken: userData.accessToken,
@@ -25,7 +32,9 @@ function createUserToken(user) {
         id: user.id,
         email: user.email,
         firstName: user.firstName,
-        lastName: user.lastName
+        lastName: user.lastName,
+        organization: user.organization,
+        username: user.username
     }
 }
 
