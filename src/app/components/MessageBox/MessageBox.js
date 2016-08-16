@@ -49,13 +49,13 @@ class MessageBox extends Component {
             return null
 
         return (
-            <div name="message-subject" style={styles.messageSubject}>
+            <Flexbox name="message-subject" style={styles.messageSubject}>
                 <Field model="messageBox.message.subject">
                     <input type="text" style={[styles.textField]} tabIndex="1" placeholder="Subject"
                            ref={ref => this.messageSubject = ref}
                            onFocus={this.focusOnSubject} />
                 </Field>
-            </div>
+            </Flexbox>
         )
     }
 
@@ -63,13 +63,13 @@ class MessageBox extends Component {
         const styles = this.getStyles()
 
         return (
-            <div name="message-body" grow={1} container={true} style={styles.messageBody}>
+            <Flexbox name="message-body" grow={1} container="row" style={styles.messageBody}>
                 <Field model="messageBox.message.body">
                     <textarea style={styles.textField} tabIndex="2" placeholder="Wrtie your message here"
                               ref={ref => this.messageBody = ref}
                               onFocus={this.focusOnBody} />
                 </Field>
-            </div>
+            </Flexbox>
         )
     }
 
@@ -80,13 +80,13 @@ class MessageBox extends Component {
             return null
 
         return (
-            <div name="message-to" style={styles.messageTo}>
+            <Flexbox name="message-to" style={styles.messageTo}>
                 <Field model="messageBox.message.to">
                     <input type="text" style={styles.textField} tabIndex="3" placeholder="To"
                            ref={ref => this.messageTo = ref}
                            onFocus={this.focusOnTo} />
                 </Field>
-            </div>
+            </Flexbox>
         )
     }
 
@@ -96,6 +96,7 @@ class MessageBox extends Component {
     }
 
     focusOnBody() {
+        console.log('focusOnBody')
         const {dispatch, messageBox} = this.props
         dispatch(MessageBoxActions.setFocus(messageBox.id, 'messageBody'))
     }
@@ -127,7 +128,7 @@ class MessageBox extends Component {
             },
             messageTo: {
                 height: '40px',
-                width: 'calc(100% - 70px)',
+                width: 'calc(100% - 108px)',
                 padding: '10px 10px 0',
                 ':-webkit-autofill': {
                     backgroundColor: 'inherit'
