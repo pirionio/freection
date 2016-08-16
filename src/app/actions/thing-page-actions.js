@@ -35,7 +35,7 @@ function hideThingPage() {
         dispatch(hideAction())
 
         const thingMessageBox = find(messagePanel.messageBoxes, {context: {id: thingId}})
-        thingMessageBox && dispatch(MessageBoxActions.closeMessageBox(thingMessageBox))
+        thingMessageBox && dispatch(MessageBoxActions.closeMessageBox(thingMessageBox.id))
     }
 }
 

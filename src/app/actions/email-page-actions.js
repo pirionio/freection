@@ -35,7 +35,7 @@ function hideEmailPage() {
         dispatch(hideAction())
 
         const messageBox = find(messagePanel.messageBoxes, {context: {id: threadId}})
-        messageBox && dispatch(MessageBoxActions.closeMessageBox(messageBox))
+        messageBox && dispatch(MessageBoxActions.closeMessageBox(messageBox.id))
     }
 }
 
