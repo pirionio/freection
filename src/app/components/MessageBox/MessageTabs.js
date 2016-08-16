@@ -5,6 +5,8 @@ const classAutobind = require('class-autobind').default
 const radium = require('radium')
 const Icon = require('react-fontawesome')
 
+const find = require('lodash/find')
+
 const MessageBoxActions = require('../../actions/message-box-actions')
 const MessageTypes = require('../../../common/enums/message-types')
 
@@ -33,7 +35,7 @@ class MessageTabs extends Component {
 
             return (
                 <Flexbox key={messageBox.id} container="column" justifyContent="center"
-                         style={[styles.tab, activeMessageBox.id === messageBox.id && styles.tab.active]}>
+                         style={[styles.tab, activeMessageBox && activeMessageBox.id === messageBox.id && styles.tab.active]}>
 
                     <a onClick={() => this.selectMessageBox(messageBox)} style={styles.tab.link}>
                         <TextTruncate>{messageBox.title}</TextTruncate>
@@ -56,7 +58,7 @@ class MessageTabs extends Component {
 
     closeMessageBox(messageBox) {
         const {dispatch} = this.props
-        dispatch(MessageBoxActions.closeMessageBox(messageBox))
+        dispatch(MessageBoxActions.closeMessageBox(messageBox.id))
     }
 
     getNewMenu() {
@@ -168,13 +170,13 @@ class MessageTabs extends Component {
 
 MessageTabs.propTypes = {
     messageBoxes: PropTypes.array.isRequired,
-    activeMessageBox: PropTypes.object.isRequired
+    activeMessageBox: PropTypes.object
 }
 
 function mapStateToProps(state) {
     return {
         messageBoxes: state.messagePanel.messageBoxes,
-        activeMessageBox: state.messagePanel.activeMessageBox
+        activeMessageBox: find(state.messagePanel.messageBoxes, {id: state.messagePanel.activeMessageBoxId}),
     }
 }
 

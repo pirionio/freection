@@ -5,7 +5,8 @@ const {Form} = require('react-redux-form')
 const classAutobind = require('class-autobind').default
 const radium = require('radium')
 
-const isEmpty = require('lodash/isEmpty')
+const find = require('lodash/find')
+const isNil = require('lodash/isNil')
 const map = require('lodash/map')
 const {chain} = require('lodash/core')
 
@@ -54,12 +55,12 @@ class MessagePanel extends Component {
                 break
         }
 
-        dispatch(MessageBoxActions.messageSent(activeMessageBox, shouldClose, promise))
+        dispatch(MessageBoxActions.messageSent(activeMessageBox.id, shouldClose, promise))
     }
 
     isSendDisabled() {
         const {activeMessageBox} = this.props
-        return isEmpty(activeMessageBox) || activeMessageBox.ongoingAction
+        return isNil(activeMessageBox) || activeMessageBox.ongoingAction
     }
 
     getStyles() {
@@ -101,7 +102,7 @@ class MessagePanel extends Component {
 
     getMessageBox() {
         const {activeMessageBox} = this.props
-        return isEmpty(activeMessageBox) ?
+        return isNil(activeMessageBox) ?
             <CollapsedMessageBox /> :
             <MessageBox to={activeMessageBox.context ? null : ""} subject={activeMessageBox.context ? null : ""} />
     }
@@ -109,7 +110,7 @@ class MessagePanel extends Component {
     getSendButton() {
         const {activeMessageBox} = this.props
         const styles = this.getStyles()
-        return !isEmpty(activeMessageBox) ?
+        return !isNil(activeMessageBox) ?
             <div name="send-container" style={styles.send}>
                 <button type="submit"
                         tabIndex="4"
@@ -143,14 +144,14 @@ class MessagePanel extends Component {
 
 MessagePanel.propTypes = {
     messageBoxes: PropTypes.array.isRequired,
-    activeMessageBox: PropTypes.object.isRequired,
+    activeMessageBox: PropTypes.object,
     messageBox: PropTypes.object.isRequired
 }
 
 function mapStateToProps(state) {
     return {
         messageBoxes: state.messagePanel.messageBoxes,
-        activeMessageBox: state.messagePanel.activeMessageBox,
+        activeMessageBox: find(state.messagePanel.messageBoxes, {id: state.messagePanel.activeMessageBoxId}),
         messageBox: state.messageBox
     }
 }

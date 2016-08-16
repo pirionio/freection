@@ -1,6 +1,8 @@
 const {actions} = require('react-redux-form')
+const find = require('lodash/find')
 const last = require('lodash/last')
 const isEmpty = require('lodash/isEmpty')
+const isNil = require('lodash/isNil')
 const findIndex = require('lodash/findIndex')
 const nth = require('lodash/nth')
 
@@ -17,7 +19,7 @@ function newMessageBox(messageType, context) {
     return (dispatch, getState) => {
         dispatch(newMessageBoxAction(messageType, context))
         const {messagePanel} = getState()
-        const previousMessageBox = messagePanel.activeMessageBox
+        const previousMessageBox = getActiveMessageBox(messagePanel)
         const newMessageBox = last(messagePanel.messageBoxes)
         if (newMessageBox)
             dispatch(selectMessageBox(previousMessageBox, newMessageBox))
@@ -27,73 +29,74 @@ function newMessageBox(messageType, context) {
 function selectMessageBox(currentMessageBox, selectedMessageBox) {
     return (dispatch, getState) => {
         const {messageBox} = getState()
-        dispatch(selectMessageBoxAction(currentMessageBox, selectedMessageBox, messageBox.message))
+        dispatch(selectMessageBoxAction(currentMessageBox.id, selectedMessageBox.id, messageBox.message))
         dispatch(actions.change('messageBox', selectedMessageBox))
     }
 }
 
-function closeMessageBox(messageBox) {
+function closeMessageBox(messageBoxId) {
     return (dispatch, getState) => {
         const {messagePanel} = getState()
 
         // We need to select the new active message box, only if the closed one if the currently active one.
         // First try to set the active one to the next one, if none exists (since the user closed the last message box),
         // set the previous one as the active, and as last resort set none as the active.
-        if (messagePanel.activeMessageBox.id === messageBox.id) {
-            const messageBoxIndex = findIndex(messagePanel.messageBoxes, {id: messageBox.id})
+        if (messagePanel.activeMessageBoxId === messageBoxId) {
+            const messageBoxIndex = findIndex(messagePanel.messageBoxes, {id: messageBoxId})
             const next = messageBoxIndex + 1 < messagePanel.messageBoxes.length ? messagePanel.messageBoxes[messageBoxIndex + 1] : null
             const prev = messageBoxIndex - 1 >= 0 ? messagePanel.messageBoxes[messageBoxIndex - 1] : null
             const newActiveMessageBox = next || prev || {}
-            dispatch(selectMessageBox(messageBox, newActiveMessageBox))
+            dispatch(selectMessageBox(messageBoxId, newActiveMessageBox))
         }
 
-        dispatch(closeMessageBoxAction(messageBox))
+        dispatch(closeMessageBoxAction(messageBoxId))
     }
 }
 
-function messageSent(messageBox, shouldCloseMessageBox, messagePromise) {
+function messageSent(messageBoxId, shouldCloseMessageBox, messagePromise) {
     return (dispatch, getState) => {
         // Use a timeout to create a delay in the consequences of the message send action.
         // We don't want to anything to happen if the result of the message returns very quickly (resulting in a COMPLETE event).
         const ongoingActionTimeout = setTimeout(() => {
-            dispatch(messageSentRequest(messageBox))
+            dispatch(messageSentRequest(messageBoxId))
         }, GeneralConstants.ONGOING_ACTION_DELAY_MILLIS)
 
-        dispatch(actions.submit('messageBox', messagePromise)).then(() => {
-            clearTimeout(ongoingActionTimeout)
-            dispatch(messageSentComplete(messageBox, shouldCloseMessageBox))
-
+        messagePromise && messagePromise.then && messagePromise.then(() => {
             const {messagePanel} = getState()
-            if (isEmpty(messagePanel.activeMessageBox))
-                dispatch(actions.reset('messageBox'))
-            else
-                dispatch(actions.change('messageBox', messagePanel.activeMessageBox))
+            clearTimeout(ongoingActionTimeout)
+            dispatch(actions.reset('messageBox'))
+            dispatch(messageSentComplete(messageBoxId, shouldCloseMessageBox))
+            dispatch(actions.change('messageBox', getActiveMessageBox(messagePanel)))
         })
     }
 }
 
-function messageSentRequest(messageBox) {
+function messageSentRequest(messageBoxId) {
     return {
         type: MessageBoxActionsTypes.MESSAGE_SENT,
         status: ActionStatus.START,
-        messageBox
+        messageBoxId
     }
 }
 
-function messageSentComplete(messageBox, shouldCloseMessageBox) {
+function messageSentComplete(messageBoxId, shouldCloseMessageBox) {
     return {
         type: MessageBoxActionsTypes.MESSAGE_SENT,
         status: ActionStatus.COMPLETE,
-        messageBox,
+        messageBoxId,
         shouldCloseMessageBox
     }
 }
 
-function setFocus(messageBox, focusOn) {
+function setFocus(messageBoxId, focusOn) {
     return dispatch => {
-        dispatch(setFocusAction(messageBox, focusOn))
+        dispatch(setFocusAction(messageBoxId, focusOn))
         dispatch(actions.change('messageBox.focusOn', focusOn))
     }
+}
+
+function getActiveMessageBox(messagePanel) {
+    return find(messagePanel.messageBoxes, {id: messagePanel.activeMessageBoxId}) || {}
 }
 
 module.exports = MessageBoxActions

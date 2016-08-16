@@ -7,16 +7,16 @@ module.exports = {
         },
         {
             name: 'select message box',
-            params: ['currentMessageBox', 'selectedMessageBox', 'currentMessage']
+            params: ['currentMessageBoxId', 'selectedMessageBoxId', 'currentMessage']
         },
         {
             name: 'message sent',
-            params: ['messageBox', 'shouldCloseMessageBox'],
+            params: ['messageBoxId', 'shouldCloseMessageBox'],
             type: 'custom'
         },
         {
             name: 'close message box',
-            params: ['messageBox']
+            params: ['messageBoxId']
         },
         {
             name: 'set focus',

@@ -10,20 +10,20 @@ function newMessageBox(messageType,context) {
     }
 }
 
-function selectMessageBox(currentMessageBox,selectedMessageBox,currentMessage) {
+function selectMessageBox(currentMessageBoxId,selectedMessageBoxId,currentMessage) {
     return {
         type: MessageBoxActionsTypes.SELECT_MESSAGE_BOX,
-        currentMessageBox,
-        selectedMessageBox,
+        currentMessageBoxId,
+        selectedMessageBoxId,
         currentMessage
     }
 }
 
 
-function closeMessageBox(messageBox) {
+function closeMessageBox(messageBoxId) {
     return {
         type: MessageBoxActionsTypes.CLOSE_MESSAGE_BOX,
-        messageBox
+        messageBoxId
     }
 }
 

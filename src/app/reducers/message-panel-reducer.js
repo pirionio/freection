@@ -11,7 +11,7 @@ const MessageTypes = require('../../common/enums/message-types')
 
 const initialState = {
     messageBoxes: [],
-    activeMessageBox: {}
+    activeMessageBoxId: null
 }
 
 function newMessageBox(state, action) {
@@ -49,7 +49,6 @@ function newMessageInContext(state, action, type, contextField) {
             if (existingMessageBox)
                 return immutable(state)
                     .arrayMergeItem('messageBoxes', {id: existingMessageBox.id}, {context: action[contextField]})
-                    .merge('activeMessageBox', {context: action[contextField]})
                     .value()
 
             const messageBox = {
@@ -61,7 +60,7 @@ function newMessageInContext(state, action, type, contextField) {
             }
             return immutable(state)
                 .arrayPushItem('messageBoxes', messageBox)
-                .set('activeMessageBox', messageBox)
+                .set('activeMessageBoxId', messageBox.id)
                 .value()
         default:
             return state
@@ -70,14 +69,14 @@ function newMessageInContext(state, action, type, contextField) {
 
 function closeMessageBox(state, action) {
     return immutable(state)
-        .arrayReject('messageBoxes', {id: action.messageBox.id})
+        .arrayReject('messageBoxes', {id: action.messageBoxId})
         .value()
 }
 
 function selectMessageBox(state, action) {
     return immutable(state)
-        .arrayMergeItem('messageBoxes', {id: action.currentMessageBox.id}, {message: action.currentMessage})
-        .set('activeMessageBox', action.selectedMessageBox)
+        .arrayMergeItem('messageBoxes', {id: action.currentMessageBoxId}, {message: action.currentMessage})
+        .set('activeMessageBoxId', action.selectedMessageBoxId)
         .value()
 }
 
@@ -85,17 +84,17 @@ function messageSent(state, action) {
     switch (action.status) {
         case ActionStatus.START:
             return immutable(state)
-                .merge('activeMessageBox', {ongoingAction: true})
+                .arrayMergeItem('messageBoxes', {id: action.messageBoxId}, {ongoingAction: true})
                 .value()
         case ActionStatus.COMPLETE:
             if (!action.shouldCloseMessageBox)
                 return immutable(state)
-                    .merge('activeMessageBox', {ongoingAction: false})
+                    .arrayMergeItem('messageBoxes', {id: action.messageBoxId}, {ongoingAction: false})
                     .value()
 
             return immutable(state)
-                .arrayReject('messageBoxes', {id: action.messageBox.id})
-                .set('activeMessageBox', state.messageBoxes.length > 1 ? state.messageBoxes[1] : {})
+                .arrayReject('messageBoxes', {id: action.messageBoxId})
+                .set('activeMessageBoxId', state.messageBoxes.length > 1 ? state.messageBoxes[1].id : null)
                 .value()
         default:
             return state
@@ -105,7 +104,6 @@ function messageSent(state, action) {
 function setFocus(state, action) {
     return immutable(state)
         .arrayMergeItem('messageBoxes', {id: action.messageBoxId}, {focusOn: action.focusOn})
-        .merge('activeMessageBox', {focusOn: action.focusOn})
         .value()
 }
 
