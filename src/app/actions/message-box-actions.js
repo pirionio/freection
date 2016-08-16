@@ -11,6 +11,7 @@ const {GeneralConstants, ActionStatus} = require('../constants')
 const newMessageBoxAction = MessageBoxActions.newMessageBox
 const selectMessageBoxAction = MessageBoxActions.selectMessageBox
 const closeMessageBoxAction = MessageBoxActions.closeMessageBox
+const setFocusAction = MessageBoxActions.setFocus
 
 function newMessageBox(messageType, context) {
     return (dispatch, getState) => {
@@ -88,8 +89,16 @@ function messageSentComplete(messageBox, shouldCloseMessageBox) {
     }
 }
 
+function setFocus(messageBox, focusOn) {
+    return dispatch => {
+        dispatch(setFocusAction(messageBox, focusOn))
+        dispatch(actions.change('messageBox.focusOn', focusOn))
+    }
+}
+
 module.exports = MessageBoxActions
 module.exports.newMessageBox = newMessageBox
 module.exports.selectMessageBox = selectMessageBox
 module.exports.messageSent = messageSent
 module.exports.closeMessageBox = closeMessageBox
+module.exports.setFocus = setFocus

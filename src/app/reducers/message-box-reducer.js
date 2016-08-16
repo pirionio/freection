@@ -6,6 +6,7 @@ const initialState = {
     context: null,
     title: '',
     ongoingAction: false,
+    focusOn: null,
     message: {
         to: '',
         body: '',
