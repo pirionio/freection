@@ -8,14 +8,29 @@ const immutable = require('../util/immutable')
 
 const initialState = {
     thread: {},
-    invalidationStatus: InvalidationStatus.INVALIDATED,
+    invalidationStatus: InvalidationStatus.INVALIDATED
+}
+
+function requireUpdate(state, action) {
+    
+    if (state.invalidationStatus === InvalidationStatus.FETCHED) {
+        return immutable(state)
+            .set('invalidationStatus', InvalidationStatus.REQUIRE_UPDATE)
+            .value()
+    }
+
+    return state
 }
 
 function get(state, action) {
     switch (action.status) {
         case ActionStatus.START:
+            const status = state.invalidationStatus === InvalidationStatus.REQUIRE_UPDATE ?
+                InvalidationStatus.UPDATING :
+                InvalidationStatus.FETCHING
+
             return immutable(state)
-                .set('invalidationStatus', InvalidationStatus.FETCHING)
+                .set('invalidationStatus', status)
                 .value()
         case ActionStatus.COMPLETE:
             return immutable(state)
@@ -75,6 +90,8 @@ function getInitialReadBy(event) {
 
 module.exports = (state = initialState, action) => {
     switch (action.type) {
+        case EmailPageActionTypes.REQUIRE_UPDATE:
+            return requireUpdate(state, action)
         case EmailPageActionTypes.GET_EMAIL:
             return get(state, action)
         case EmailPageActionTypes.HIDE_EMAIL_PAGE:

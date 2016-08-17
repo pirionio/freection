@@ -2,6 +2,7 @@ const SocketUtil = require('../util/socket-util')
 
 const WhatsNewActions = require('../actions/whats-new-actions')
 const EventActions = require('../actions/event-actions')
+const EmailPageActions = require('../actions/email-page-actions')
 const EventTypes = require('../../common/enums/event-types')
 
 const EmailLifecycleService = require('./email-lifecycle-service')
@@ -53,6 +54,7 @@ function listenToUpdates(pushToken, dispatch) {
     })
 
     socket.on('email-notification', () => {
+        dispatch(EmailPageActions.requireUpdate())
         EmailLifecycleService.updateUnread()
     })
 }

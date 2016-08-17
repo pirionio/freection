@@ -15,6 +15,12 @@ function hideEmailPage() {
     }
 }
 
+function requireUpdate() {
+    return {
+        type: EmailPageActionsTypes.REQUIRE_UPDATE        
+    }
+}
+
 function getEmail(emailThreadId) {
     return dispatch => {
         dispatch({
@@ -39,5 +45,6 @@ function getEmail(emailThreadId) {
 module.exports = {
     showEmailPage,
     hideEmailPage,
+    requireUpdate,
     getEmail
 }

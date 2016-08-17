@@ -12,7 +12,9 @@ const GeneralConstants = {
 const InvalidationStatus = {
     INVALIDATED: 'INVALIDATED',
     FETCHING: 'FETCHING',
-    FETCHED: 'FETCHED'
+    FETCHED: 'FETCHED',
+    REQUIRE_UPDATE: 'REQUIRE_UPDATE',
+    UPDATING: 'UPDATING'
 }
 
 module.exports = {ActionStatus, GeneralConstants, InvalidationStatus}

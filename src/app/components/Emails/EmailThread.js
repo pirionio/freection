@@ -27,6 +27,11 @@ class EmailThread extends Component {
         dispatch(EmailPageActions.getEmail(params.emailThreadId))
     }
 
+    componentDidUpdate() {
+        const {dispatch, params} = this.props
+        dispatch(EmailPageActions.getEmail(params.emailThreadId))
+    }
+
     componentWillUnmount() {
         const {dispatch} = this.props
         dispatch(EmailPageActions.hideEmailPage())

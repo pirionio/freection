@@ -9,6 +9,9 @@ module.exports = {
             name: 'hide email page'
         },
         {
+            name: 'require update'
+        },
+        {
             name: 'get email',
             type: 'get',
             path: '/emails/api/${emailThreadId}',

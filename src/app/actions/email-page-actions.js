@@ -13,7 +13,8 @@ const hideAction = EmailPageActions.hideEmailPage
 function getEmail(threadId) {
     return (dispatch, getState) => {
         const {emailPage} = getState()
-        if (emailPage.invalidationStatus === InvalidationStatus.INVALIDATED) {
+        if (emailPage.invalidationStatus === InvalidationStatus.INVALIDATED ||
+            emailPage.invalidationStatus === InvalidationStatus.REQUIRE_UPDATE) {
             return dispatch(getAction(threadId))
         }
     }
