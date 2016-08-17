@@ -11,7 +11,10 @@ function handleGet(request, response, action, options) {
 
     action(user, ...params)
         .then(result => response.json(result))
-        .catch(error => response.status(500).send(`Could not find ${options.type} for user ${user.email}: ${error.message}`))
+        .catch(error => {
+            logger.error(`Error while getting ${options.type}`, error)
+            response.status(500).send(`Could not find ${options.type} for user ${user.email}: ${error.message}`)
+        })
 }
 
 function handlePost(request, response, action, options) {
@@ -24,6 +27,8 @@ function handlePost(request, response, action, options) {
     action(user, ...params)
         .then(result => response.json(options.result ? result : {}))
         .catch(error => {
+            logger.error(generalError, error)
+
             if (error && error.name === 'DocumentNotFoundError' && notFoundError) {
                 response.status(404).send(notFoundError)
             } else {
