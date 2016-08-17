@@ -7,7 +7,8 @@ const {chain} = require('lodash/core')
 const AddressCreator = require('../application/address-creator')
 const EntityTypes = require('../../../common/enums/entity-types')
 const EventTypes = require('../../../common/enums/event-types')
-const UserTypes = require('../../../common/enums/user-types')
+
+const {SharedConstants} = require('../../../common/shared-constants')
 
 function thingToDto(thing, user, {includeEvents = true} = {}) {
 
@@ -32,7 +33,7 @@ function eventToDto(event, user, {includeThing = true} = {}) {
         id: event.id,
         thing: includeThing && event.thing && thingToDto(event.thing, user, {includeEvents: false}),
         createdAt: event.createdAt,
-        payload: [EventTypes.COMMENT.key, EventTypes.CREATED.key, EventTypes.PING.key, EventTypes.PONG.key].includes(event.eventType) ?
+        payload: SharedConstants.MESSAGE_TYPED_EVENTS.includes(event.eventType) ?
             commentPayloadToDto(event.payload, user) : event.payload,
         eventType: EventTypes[event.eventType],
         creator: event.creator,

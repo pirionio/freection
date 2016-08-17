@@ -54,7 +54,9 @@ class PreviewItem extends Component {
     }
 
     getInlineMessage() {
-        return this.state.showInlineMessage ? <InlineMessage lastMessage={this.props.text} /> : null
+        return this.state.showInlineMessage ?
+            <InlineMessage expandedMessages={this.props.expandedMessages} /> :
+            null
     }
 
     getStatus() {
@@ -155,9 +157,9 @@ PreviewItem.propTypes = {
     circleColor: PropTypes.string,
     title: PropTypes.string.isRequired,
     date: PropTypes.any.isRequired,
-    text: PropTypes.string,
     onClick: PropTypes.func.isRequired,
-    inlineMessage: PropTypes.object.isRequired
+    inlineMessage: PropTypes.object.isRequired,
+    expandedMessages: PropTypes.array
 }
 
 function mapStateToProps(state) {

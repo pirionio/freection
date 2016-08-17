@@ -1,8 +1,8 @@
 const EventActionTypes = require('../actions/types/event-action-types')
 const ThingPageActionTypes = require('../actions/types/thing-page-action-types')
 const ThingStatus = require('../../common/enums/thing-status.js')
-const EventTypes = require('../../common/enums/event-types')
 const ThingCommandActionTypes = require('../actions/types/thing-command-action-types')
+const {SharedConstants} = require('../../common/shared-constants')
 const {ActionStatus, InvalidationStatus} = require('../constants')
 const thingReducer = require('./thing-reducer')
 const isUndefined = require('lodash/isUndefined')
@@ -43,8 +43,7 @@ function get(state, action) {
             return immutable(state)
                 .set('thing', action.thing)
                 .touch('thing')
-                .arrayMergeItem('thing.events',
-                    event => [EventTypes.COMMENT.key, EventTypes.CREATED.key, EventTypes.PING.key].includes(event.eventType.key), getInitialReadBy)
+                .arrayMergeItem('thing.events', event => SharedConstants.MESSAGE_TYPED_EVENTS.includes(event.eventType.key), getInitialReadBy)
                 .set('invalidationStatus', InvalidationStatus.FETCHED)
                 .value()
         case ActionStatus.ERROR:

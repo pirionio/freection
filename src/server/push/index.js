@@ -7,7 +7,7 @@ const {Event, MailNotification} = require('../shared/models')
 const Thing = require('../shared/models/Thing')
 const {eventToDto} = require('../shared/application/transformers')
 const logger = require('../shared/utils/logger')
-const EventTypes = require('../../common/enums/event-types')
+const {SharedConstants} = require('../../common/shared-constants')
 
 module.exports = (app) => {
     const io = SocketIO(app.server, {path: '/push'})
@@ -82,7 +82,7 @@ module.exports = (app) => {
             io.to(userId).emit('notification-deleted', {id: event.id})
         })
 
-        if ([EventTypes.COMMENT.key, EventTypes.CREATED.key, EventTypes.PING.key, EventTypes.PONG.key].includes(event.eventType)) {
+        if (SharedConstants.MESSAGE_TYPED_EVENTS.includes(event.eventType)) {
             const readByUsers = difference(event.payload.readByList, oldEvent.payload.readByList)
 
             readByUsers.forEach(userId => {

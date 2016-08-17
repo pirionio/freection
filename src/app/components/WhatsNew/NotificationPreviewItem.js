@@ -3,11 +3,11 @@ const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 
 const EventTypes = require('../../../common/enums/event-types')
-const {PreviewItem, PreviewItemUser, PreviewItemTitle, PreviewItemDate, PreviewItemText, PreviewItemStatus, PreviewItemActions} =
-    require('../Preview/PreviewItem')
+const ThingPageActions = require('../../actions/thing-page-actions')
+
+const {PreviewItem, PreviewItemText, PreviewItemStatus, PreviewItemActions} = require('../Preview/PreviewItem')
 const {CommentPreviewText, PingPreviewText, BodyPreviewText} = require('../Preview/Thing')
 const NotificationActionsBar = require('./NotificationActionsBar')
-const ThingPageActions = require('../../actions/thing-page-actions')
 const styleVars = require('../style-vars')
 
 class NotificationPreviewItem extends Component {
@@ -20,7 +20,7 @@ class NotificationPreviewItem extends Component {
             case EventTypes.COMMENT.key:
             case EventTypes.PONG.key:
                 return <CommentPreviewText comment={notification.payload.text}
-                                           numOfNewComments={notification.payload.numOfNewComments} />
+                                           newNotifications={notification.payload.newNotifications} />
             case EventTypes.PING.key:
                 return <PingPreviewText />
 
@@ -30,6 +30,11 @@ class NotificationPreviewItem extends Component {
             default:
                 return <span></span>;
         }
+    }
+
+    getExpandedMessages() {
+        const {notification} = this.props
+        return notification.eventType.key !== EventTypes.PING.key ? [notification] : null
     }
 
     getStatusText() {
@@ -86,7 +91,7 @@ class NotificationPreviewItem extends Component {
         return (<PreviewItem circleColor={this.getCircleColor()}
                              title={notification.thing.subject}
                              date={notification.createdAt}
-                             text={notification.payload.text}
+                             expandedMessages={this.getExpandedMessages()}
                              onClick={() => dispatch(ThingPageActions.showThingPage(notification.thing))}>
             <PreviewItemStatus>
                 {this.getStatusText()}

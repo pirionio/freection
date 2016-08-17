@@ -55,7 +55,7 @@ class WhatsNew extends Component {
             if (oldest) {
                 notificationsToShow.push(merge(clone(oldest), {
                     payload: {
-                        numOfNewComments: commentNotifications.length
+                        newNotifications: commentNotifications
                     },
                     createdAt: newest ? newest.createdAt : oldest.createdAt
                 }))

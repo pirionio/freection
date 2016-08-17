@@ -1,10 +1,10 @@
 const React = require('react')
 const {PropTypes} = React
 
-const PingPreviewText = ({numOfNewComments}) => {
-    const unreadCount = numOfNewComments > 1 ?
+const PingPreviewText = ({newNotifications}) => {
+    const unreadCount = newNotifications.length > 1 ?
         <div className="preview-comment-unread-count">
-            (+{numOfNewComments - 1})
+            (+{newNotifications.length - 1})
         </div> : ''
 
     return (
@@ -18,10 +18,10 @@ const PingPreviewText = ({numOfNewComments}) => {
 }
 
 PingPreviewText.propTypes = {
-    numOfNewComments: PropTypes.number
+    newNotifications: PropTypes.array
 }
 PingPreviewText.defaultProps = {
-    numOfNewComments: 0
+    newNotifications: []
 }
 
 module.exports = PingPreviewText

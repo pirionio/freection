@@ -6,7 +6,7 @@ const Flexbox = require('../../UI/Flexbox')
 const styleVars = require('../../style-vars')
 const commentImage = require('../../../static/comment-square.png')
 
-const CommentPreviewText = ({comment, numOfNewComments}) => {
+const CommentPreviewText = ({comment, newNotifications}) => {
     const style = {
         icon: {
             lineHeight: styleVars.previewLineHeight,
@@ -25,9 +25,9 @@ const CommentPreviewText = ({comment, numOfNewComments}) => {
         }
     }
 
-    const unreadCount = numOfNewComments > 1 ?
+    const unreadCount = newNotifications.length > 1 ?
         <Flexbox style={style.unreadCount}>
-            (+{numOfNewComments - 1})
+            (+{newNotifications.length - 1})
         </Flexbox> : null
 
     return (
@@ -45,10 +45,10 @@ const CommentPreviewText = ({comment, numOfNewComments}) => {
 
 CommentPreviewText.propTypes = {
     comment: PropTypes.string.isRequired,
-    numOfNewComments: PropTypes.number
+    newNotifications: PropTypes.array
 }
 CommentPreviewText.defaultProps = {
-    numOfNewComments: 0
+    newNotifications: []
 }
 
 module.exports = CommentPreviewText

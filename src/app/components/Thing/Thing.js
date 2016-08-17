@@ -10,13 +10,12 @@ const isEmpty = require('lodash/isEmpty')
 
 const ThingPageActionsBar = require('./ThingPageActionsBar')
 const MessagePanel = require('../MessageBox/MessagePanel')
-
 const {FullItem, FullItemSubject, FullItemStatus, FullItemActions, FullItemUser, FullItemDate, FullItemBox} = require('../Full/FullItem')
 const TextTruncate = require('../UI/TextTruncate')
 
 const ThingPageActions = require('../../actions/thing-page-actions')
+const ThingHelper = require('../../helpers/thing-helper')
 
-const EventTypes = require('../../../common/enums/event-types')
 const {InvalidationStatus} = require('../../constants')
 
 class Thing extends Component {
@@ -71,19 +70,12 @@ class Thing extends Component {
 
     getAllComments() {
         const {thing} = this.props
-        return thing.events ?
-            thing.events.filter(event =>
-                [EventTypes.COMMENT.key, EventTypes.CREATED.key, EventTypes.PING.key, EventTypes.PONG.key].includes(event.eventType.key)) :
-            []
+        return thing.events ? ThingHelper.getAllMessages(thing) : []
     }
 
     getUnreadComments() {
         const {thing} = this.props
-        return thing.events ?
-            thing.events.filter(event =>
-                [EventTypes.COMMENT.key, EventTypes.CREATED.key, EventTypes.PING.key, EventTypes.PONG.key].includes(event.eventType.key) &&
-                !event.payload.isRead) :
-            []
+        return thing.events ? ThingHelper.getUnreadMessages(thing) : []
     }
 
     isFetching() {

@@ -2,36 +2,27 @@ const React = require('react')
 const {PropTypes} = React
 const first = require('lodash/first')
 const last = require('lodash/last')
-const includes = require('lodash/includes')
-const chain = require('lodash/core')
 
 const EventTypes = require('../../../../common/enums/event-types')
+const ThingHelper = require('../../../helpers/thing-helper')
+
 const CommentPreviewText = require('./CommentPreviewText')
 const PingPreviewText = require('./PingPreviewText')
 const BodyPreviewText = require('./BodyPreviewText')
 
-function filterEventsByRead(thing, isRead) {
-    return chain(thing.events)
-        .filter(event => 
-            [EventTypes.COMMENT.key, EventTypes.CREATED.key, EventTypes.PING.key, EventTypes.PONG.key].includes(event.eventType.key) && 
-            event.payload.isRead === isRead)
-        .sortBy('createdAt')
-        .value()
-}
-
 const ThingPreviewText = ({thing}) =>  {
-    const unreadEvents = filterEventsByRead(thing, false)
-    const readEvents = filterEventsByRead(thing, true)
+    const unreadEvents = ThingHelper.getUnreadMessages(thing)
+    const readEvents = ThingHelper.getReadMessages(thing)
 
     // If there are unread events, show the first of them.
     if (unreadEvents && unreadEvents.length) {
         const firstComment = first(unreadEvents)
 
         if (firstComment.eventType.key === EventTypes.PING.key) {
-            return <PingPreviewText numOfNewComments={unreadEvents.length}/>
+            return <PingPreviewText newNotifications={unreadEvents}/>
         } else {
             return <CommentPreviewText comment={firstComment.payload.text}
-                                       numOfNewComments={unreadEvents.length}/>
+                                       newNotifications={unreadEvents}/>
         }
     }
 

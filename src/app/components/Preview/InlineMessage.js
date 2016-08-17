@@ -25,6 +25,22 @@ class InlineMessage extends Component {
         return !inlineMessage.text
     }
 
+    getLastComments() {
+        const {expandedMessages} = this.props
+
+        const styles = this.getStyles()
+
+        return expandedMessages && expandedMessages.length ?
+            <Flexbox name="last-comments" grow={1} container="column" style={styles.expandedMessages}>
+                {expandedMessages.map(message =>
+                    <Flexbox name="comment" style={styles.expandedMessages.message} key={message.id}>
+                        <span>{message.payload.text}</span>
+                    </Flexbox>
+                )}
+            </Flexbox> :
+            null
+    }
+
     getStyles() {
         return {
             container: {
@@ -35,11 +51,13 @@ class InlineMessage extends Component {
                 width: '100%',
                 margin: 0
             },
-            lastComment: {
+            expandedMessages: {
                 width: '100%',
                 backgroundColor: '#fafafa',
-                borderTop: '1px solid #e0e0e0',
-                padding: '30px 30px'
+                message: {
+                    borderTop: '1px solid #e0e0e0',
+                    padding: '30px 30px'
+                }
             },
             message: {
                 height: '70px',
@@ -59,11 +77,7 @@ class InlineMessage extends Component {
     render() {
         const styles = this.getStyles()
 
-        const lastMessage = this.props.lastMessage ?
-            <Flexbox name="last-comment" grow={1} style={styles.lastComment}>
-                {this.props.lastMessage}
-            </Flexbox> :
-            null
+        const lastMessage = this.getLastComments()
 
         return (
             <Flexbox name="inline-reply-container" container="column" style={styles.inlineMessage}>
@@ -84,13 +98,13 @@ class InlineMessage extends Component {
                     </Flexbox>
                 </Form>
             </Flexbox>
-    )
+        )
     }
 }
 
 InlineMessage.propTypes = {
     inlineMessage: PropTypes.object.isRequired,
-    lastMessage: PropTypes.string
+    expandedMessages: PropTypes.array
 }
 
 function mapStateToProps(state) {
