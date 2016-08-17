@@ -12,6 +12,21 @@ function onMail(userId, email) {
     }, { conflict: 'replace' })
 }
 
+function onUpdate(userId, email, info) {
+    // TODO: we handle this poorly be refreshing everything, we should only sent a notification
+    // about specific issue
+    // it is so poorly implemented that it will cause a refresh after every time we click discard
+    // we might want to batch those calls for each user, to avoid to many refreshes
+
+    logger.info(`email updated for user ${email}`)
+
+    MailNotification.save({
+        id: userId,
+        type: 'UPDATE',
+        timestamp: new Date(),
+    }, { conflict: 'replace' })
+}
+
 function hello(user) {
     const existConnection = connectionCache.getConnection(user)
 
@@ -25,6 +40,7 @@ function hello(user) {
             logger.info(`created push imap connection for ${user.email}`)
 
             connection.onMail(() => onMail(user.id, user.email))
+            connection.onUpdate((seq, info) => onUpdate(user.id, user.email, info))
 
             MailNotification.save({
                 id: user.id,

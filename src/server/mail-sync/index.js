@@ -16,6 +16,10 @@ module.exports = function() {
         } else {
             const userId = doc.id
 
+            // we don't handle update notifications
+            if (doc.type === 'UPDATE')
+                return
+
             User.get(userId).run()
                 .then(user => {
                     getLastInternalDate(user)

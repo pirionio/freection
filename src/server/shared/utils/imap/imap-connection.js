@@ -62,6 +62,10 @@ class ImapConnection {
         this._connection.on('mail', callback)
     }
 
+    onUpdate(callback) {
+        this._connection.on('update', callback)
+    }
+
     parseRawMessage(rawMessage, options) {
         return new Promise((resolve, reject) => {
             const message = {}
