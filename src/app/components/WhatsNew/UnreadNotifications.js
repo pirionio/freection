@@ -42,48 +42,37 @@ class WhatsNew extends Component {
 
         // We want to aggregate notifications that belong to the very same thing. That's why we grouped them according to Thing.
         forOwn(notificationsByThing, (thingNotifications) => {
-            // The CREATED event takes precedence. If there is such an event, we'd take it, and make sure that its payload shows the first comment
-            // that also arrived. If there is no such event, we'd simply reduce the COMMENT events into a single one.
-            const createdNotification = find(thingNotifications, {eventType: {key: EventTypes.CREATED.key}})
             const commentNotifications = chain(thingNotifications)
-                .filter({eventType: {key: EventTypes.COMMENT.key}})
+                .filter(notification => [EventTypes.CREATED.key, EventTypes.COMMENT.key].includes(notification.eventType.key))
                 .sortBy('createdAt')
                 .value()
-            const oldestCommentNotification = first(commentNotifications)
-            const newestCommentNotification = last(commentNotifications)
+            const oldest = first(commentNotifications)
+            const newest = last(commentNotifications)
 
             // Notice below how the createdAt field will be taken from the newest comment we found.
             // That's because if indeed many comments arrived, we'd like the final aggregated notification to be ordered among all other notifications
             // based on the last comment that arrived. The text, however, of the notification, will be that of the FIRST comment that arrived.
-            if (createdNotification) {
-                notificationsToShow.push(merge(clone(createdNotification), {
-                    payload: {
-                        text: oldestCommentNotification ? oldestCommentNotification.payload.text  : createdNotification.thing.body,
-                        numOfNewComments: commentNotifications.length
-                    },
-                    createdAt: newestCommentNotification ? newestCommentNotification.createdAt : createdNotification.createdAt
-                }))
-            } else if (oldestCommentNotification) {
-                notificationsToShow.push(merge(clone(oldestCommentNotification), {
+            if (oldest) {
+                notificationsToShow.push(merge(clone(oldest), {
                     payload: {
                         numOfNewComments: commentNotifications.length
                     },
-                    createdAt: newestCommentNotification ? newestCommentNotification.createdAt : oldestCommentNotification.createdAt
+                    createdAt: newest ? newest.createdAt : oldest.createdAt
                 }))
             }
 
             // Here we add the rest of the notifications.
-            notificationsToShow.push(...reject(thingNotifications, notification => {
-                return notification.eventType.key === EventTypes.CREATED.key || notification.eventType.key === EventTypes.COMMENT.key;
-            }))
+            notificationsToShow.push(...reject(thingNotifications, notification => 
+                [EventTypes.CREATED.key, EventTypes.COMMENT.key].includes(notification.eventType.key)
+            ))
         })
 
         return orderBy(notificationsToShow, 'createdAt', 'desc').map(notification => {
-            if (notification.thing.type.key === EntityTypes.GITHUB.key) {
+            if (notification.thing.type.key === EntityTypes.GITHUB.key)
                 return <GithubPreviewItem notification={notification} key={notification.id} />
-            } else
-                return <NotificationPreviewItem notification={notification} key={notification.id} /> })
-
+            else
+                return <NotificationPreviewItem notification={notification} key={notification.id} />
+        })
     }
 
     getTitle() {

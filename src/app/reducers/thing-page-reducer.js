@@ -44,7 +44,7 @@ function get(state, action) {
                 .set('thing', action.thing)
                 .touch('thing')
                 .arrayMergeItem('thing.events',
-                    event => [EventTypes.COMMENT.key, EventTypes.PING.key].includes(event.eventType.key), getInitialReadBy)
+                    event => [EventTypes.COMMENT.key, EventTypes.CREATED.key, EventTypes.PING.key].includes(event.eventType.key), getInitialReadBy)
                 .set('invalidationStatus', InvalidationStatus.FETCHED)
                 .value()
         case ActionStatus.ERROR:

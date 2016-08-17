@@ -72,31 +72,18 @@ class Thing extends Component {
     getAllComments() {
         const {thing} = this.props
         return thing.events ?
-            [this.getBodyAsComment(),
-                ...thing.events.filter(event => [EventTypes.COMMENT.key, EventTypes.PING.key, EventTypes.PONG.key].includes(event.eventType.key))] :
-            [this.getBodyAsComment()]
+            thing.events.filter(event =>
+                [EventTypes.COMMENT.key, EventTypes.CREATED.key, EventTypes.PING.key, EventTypes.PONG.key].includes(event.eventType.key)) :
+            []
     }
 
     getUnreadComments() {
         const {thing} = this.props
         return thing.events ?
             thing.events.filter(event =>
-                [EventTypes.COMMENT.key, EventTypes.PING.key, EventTypes.PONG.key].includes(event.eventType.key) && !event.payload.isRead) :
+                [EventTypes.COMMENT.key, EventTypes.CREATED.key, EventTypes.PING.key, EventTypes.PONG.key].includes(event.eventType.key) &&
+                !event.payload.isRead) :
             []
-    }
-
-    getBodyAsComment() {
-        const {thing} = this.props
-        return {
-            id: thing.id,
-            creator: thing.creator,
-            createdAt: thing.createdAt,
-            payload: {
-                text: thing.body,
-                isRead: true,
-                initialIsRead: true
-            }
-        }
     }
 
     isFetching() {

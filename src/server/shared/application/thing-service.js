@@ -53,7 +53,7 @@ async function newThing(user, to, subject, body) {
     try {
         const toAddress = await getToAddress(to)
         const thing = await saveNewThing(body, subject, creator, toAddress)
-        await EventCreator.createCreated(creator, thing, getShowNewList, thing.getEmailId())
+        await EventCreator.createCreated(creator, thing, getShowNewList, body, thing.getEmailId())
 
         if (thing.isSelf()) {
             await EventCreator.createAccepted(creator, thing, getShowNewList)
