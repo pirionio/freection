@@ -39,6 +39,18 @@ module.exports = {
             }
         },
         {
+            name: 'pong',
+            params: ['thing', 'messageText'],
+            type: 'post',
+            path: '/api/things/${thing.id}/pong',
+            body: {
+                messageText: 'messageText'
+            },
+            completeParams: {
+                thing: 'thing'
+            }
+        },
+        {
             name: 'mark comment as read',
             params: ['comment'],
             type: 'post',
@@ -85,6 +97,12 @@ module.exports = {
         },
         {
             name: 'discard ping',
+            params: ['notification'],
+            type: 'post',
+            path: '/api/events/${notification.id}/discard'
+        },
+        {
+            name: 'discard pong',
             params: ['notification'],
             type: 'post',
             path: '/api/events/${notification.id}/discard'

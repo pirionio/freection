@@ -18,6 +18,7 @@ class NotificationPreviewItem extends Component {
         switch (notification.eventType.key) {
             case EventTypes.DISMISSED.key:
             case EventTypes.COMMENT.key:
+            case EventTypes.PONG.key:
                 return <CommentPreviewText comment={notification.payload.text}
                                            numOfNewComments={notification.payload.numOfNewComments} />
             case EventTypes.PING.key:
@@ -40,6 +41,8 @@ class NotificationPreviewItem extends Component {
                 return <span><strong>{creator.displayName}</strong> commented</span>
             case EventTypes.PING.key:
                 return <span><strong>{creator.displayName}</strong> pinged you</span>
+            case EventTypes.PONG.key:
+                return <span><strong>{creator.displayName}</strong> ponged you</span>
             case EventTypes.CREATED.key:
                 return <span><strong>{creator.displayName}</strong> sent you a thing</span>
             case EventTypes.DONE.key:
@@ -61,6 +64,7 @@ class NotificationPreviewItem extends Component {
         switch (notification.eventType.key) {
             case EventTypes.COMMENT.key:
             case EventTypes.PING.key:
+            case EventTypes.PONG.key:
                 return styleVars.yellowCircleColor
             case EventTypes.CREATED.key:
             case EventTypes.SENT_BACK.key:

@@ -19,6 +19,12 @@ function pingReceived(state, action) {
         .value()
 }
 
+function pongReceived(state, action) {
+    return immutable(state)
+        .arraySetOrPushItem('events', {id: action.pongEvent.id}, action.pongEvent)
+        .value()
+}
+
 function commentReadyByReceived(state, action) {
     return immutable(state)
         .arrayMergeItem('events', event => event.id === action.comment.id, {
@@ -47,6 +53,8 @@ module.exports = (state, action) => {
         case ThingCommandActionTypes.PING:
         case EventActionTypes.PINGED:
             return pingReceived(state, action)
+        case EventActionTypes.PONGED:
+            return pongReceived(state, action)
         case EventActionTypes.ACCEPTED:
         case EventActionTypes.MARKED_AS_DONE:
         case EventActionTypes.CLOSED:

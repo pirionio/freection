@@ -31,6 +31,10 @@ module.exports = {
         key: 'PING',
         label: 'Ping'
     },
+    PONG: {
+        key: 'PONG',
+        label: 'Pong'
+    },
     SENT_BACK: {
         key: 'SENT_BACK',
         label: 'Sent back'

@@ -72,14 +72,16 @@ class Thing extends Component {
     getAllComments() {
         const {thing} = this.props
         return thing.events ?
-            [this.getBodyAsComment(), ...thing.events.filter(event => [EventTypes.COMMENT.key, EventTypes.PING.key].includes(event.eventType.key))] :
+            [this.getBodyAsComment(),
+                ...thing.events.filter(event => [EventTypes.COMMENT.key, EventTypes.PING.key, EventTypes.PONG.key].includes(event.eventType.key))] :
             [this.getBodyAsComment()]
     }
 
     getUnreadComments() {
         const {thing} = this.props
         return thing.events ?
-            thing.events.filter(event => [EventTypes.COMMENT.key, EventTypes.PING.key].includes(event.eventType.key) && !event.payload.isRead) :
+            thing.events.filter(event =>
+                [EventTypes.COMMENT.key, EventTypes.PING.key, EventTypes.PONG.key].includes(event.eventType.key) && !event.payload.isRead) :
             []
     }
 

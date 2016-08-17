@@ -89,6 +89,20 @@ function createPing(creator, thing, getShowNewList) {
     })
 }
 
+function createPong(creator, thing, getShowNewList, messageText) {
+    return Event.save({
+        thingId: thing.id,
+        eventType: EventTypes.PONG.key,
+        createdAt: new Date(),
+        creator,
+        payload: {
+            text: messageText,
+            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
+        },
+        showNewList: getShowNewList(creator, thing, EventTypes.PONG.key)
+    })
+}
+
 function createSentBack(creator, thing, getShowNewList) {
     return Event.save({
         thingId: thing.id,
@@ -120,5 +134,6 @@ module.exports = {
     createComment,
     createClosed,
     createPing,
+    createPong,
     createSentBack
 }

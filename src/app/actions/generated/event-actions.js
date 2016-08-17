@@ -58,6 +58,13 @@ function pinged(pingEvent) {
     }
 }
 
+function ponged(pongEvent) {
+    return {
+        type: EventActionsTypes.PONGED,
+        pongEvent
+    }
+}
+
 function commentCreated(comment) {
     return {
         type: EventActionsTypes.COMMENT_CREATED,
@@ -81,6 +88,7 @@ module.exports = {
     dismissed,
     sentBack,
     pinged,
+    ponged,
     commentCreated,
     commentReadBy
 }

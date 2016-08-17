@@ -4,8 +4,8 @@ const {connect} = require('react-redux')
 
 const EventTypes = require('../../../common/enums/event-types')
 const ActionsBar = require('../Actions/ActionsBar')
-const {DoAction, DoneAction, DismissAction, CloseAction, SendBackAction, DiscardCommentsAction, DiscardPingAction, CancelAckAction} =
-    require('../Actions/Actions')
+const {DoAction, DoneAction, DismissAction, CloseAction, SendBackAction, DiscardCommentsAction, DiscardPingAction, DiscardPongAction, CancelAckAction,
+    PongAction} = require('../Actions/Actions')
 
 class NotificationActionsBar extends Component {
     showDo() {
@@ -27,6 +27,11 @@ class NotificationActionsBar extends Component {
         const {notification} = this.props
         return [EventTypes.CREATED.key, EventTypes.DONE.key, EventTypes.DISMISSED.key].includes(notification.eventType.key)
     }
+    
+    showPong() {
+        const {notification} = this.props
+        return [EventTypes.PING.key].includes(notification.eventType.key)
+    }
 
     render() {
         const {notification, currentUser, isRollover, preDoFunc} = this.props
@@ -43,14 +48,19 @@ class NotificationActionsBar extends Component {
         const closeAction = CloseAction(notification.thing, currentUser)
         closeAction.show = closeAction.show && this.showClose()
 
+        const pongAction = PongAction(notification.thing, currentUser, {preDoFunc})
+        pongAction.show = pongAction.show && this.showPong()
+
         const actions = [
             doAction,
             doneAction,
             dismissAction,
             closeAction,
+            pongAction,
             SendBackAction(notification.thing, currentUser),
             DiscardCommentsAction(notification),
             DiscardPingAction(notification),
+            DiscardPongAction(notification),
             CancelAckAction(notification)
         ]
 

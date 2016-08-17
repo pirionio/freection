@@ -76,6 +76,31 @@ function ping(thing) {
     }
 }
 
+function pong(thing, messageText) {
+    return dispatch => {
+        dispatch({
+            type: ThingCommandActionsTypes.PONG, 
+            status: ActionStatus.START,
+            thing,
+            messageText
+        })
+        return ResourceUtil.post(`/api/things/${thing.id}/pong`, {
+                messageText: messageText
+            })
+            .then(result => dispatch({
+                type: ThingCommandActionsTypes.PONG, 
+                status: ActionStatus.COMPLETE,
+                thing: thing
+            }))
+            .catch(() => dispatch({
+                type: ThingCommandActionsTypes.PONG, 
+                status: ActionStatus.ERROR,
+                thing,
+                messageText
+            }))
+    }
+}
+
 function markCommentAsRead(comment) {
     return dispatch => {
         dispatch({
@@ -249,6 +274,27 @@ function discardPing(notification) {
     }
 }
 
+function discardPong(notification) {
+    return dispatch => {
+        dispatch({
+            type: ThingCommandActionsTypes.DISCARD_PONG, 
+            status: ActionStatus.START,
+            notification
+        })
+        return ResourceUtil.post(`/api/events/${notification.id}/discard`)
+            .then(result => dispatch({
+                type: ThingCommandActionsTypes.DISCARD_PONG, 
+                status: ActionStatus.COMPLETE,
+                notification
+            }))
+            .catch(() => dispatch({
+                type: ThingCommandActionsTypes.DISCARD_PONG, 
+                status: ActionStatus.ERROR,
+                notification
+            }))
+    }
+}
+
 function sendBack(thing) {
     return dispatch => {
         dispatch({
@@ -274,6 +320,7 @@ module.exports = {
     comment,
     newThing,
     ping,
+    pong,
     markCommentAsRead,
     doThing,
     cancelAck,
@@ -282,5 +329,6 @@ module.exports = {
     markAsDone,
     discardComments,
     discardPing,
+    discardPong,
     sendBack
 }

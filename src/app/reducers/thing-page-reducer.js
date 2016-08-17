@@ -124,26 +124,26 @@ function markCommentAsRead(state, action) {
 }
 
 function commentChangedOrAdded(state, action) {
-    // If no thing is shown right now, or if the action does not carry an event at all, or if the event does not belong to the shown thing...
-    if (!state.thing || !action.comment || !action.comment.thing || state.thing.id !== action.comment.thing.id)
-        return state
-
-    return immutable(state)
-        .set('thing', thingReducer(state.thing, action))
-        .touch('thing')
-        .arrayMergeItem('thing.events', {id: action.comment.id}, getInitialReadBy)
-        .value()
+    return messageReceived(state, action, 'comment')
 }
 
 function pingReceived(state, action) {
+    return messageReceived(state, action, 'pingEvent')
+}
+
+function pongReceived(state, action) {
+    return messageReceived(state, action, 'pongEvent')
+}
+
+function messageReceived(state, action, messageField) {
     // If no thing is shown right now, or if the action does not carry an event at all, or if the event does not belong to the shown thing...
-    if (!state.thing || !action.pingEvent || !action.pingEvent.thing || state.thing.id !== action.pingEvent.thing.id)
+    if (!state.thing || !action[messageField] || !action[messageField].thing || state.thing.id !== action[messageField].thing.id)
         return state
 
     return immutable(state)
         .set('thing', thingReducer(state.thing, action))
         .touch('thing')
-        .arrayMergeItem('thing.events', {id: action.pingEvent.id}, getInitialReadBy)
+        .arrayMergeItem('thing.events', {id: action[messageField].id}, getInitialReadBy)
         .value()
 }
 
@@ -211,6 +211,8 @@ module.exports = (state = initialState, action) => {
             return commentChangedOrAdded(state, action)
         case EventActionTypes.PINGED:
             return pingReceived(state, action)
+        case EventActionTypes.PONGED:
+            return pongReceived(state, action)
         case EventActionTypes.ACCEPTED:
         case EventActionTypes.MARKED_AS_DONE:
         case EventActionTypes.CLOSED:

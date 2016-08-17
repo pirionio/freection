@@ -22,7 +22,7 @@ function DoneAction(thing, currentUser, disabled, style) {
     }
 }
 
-function DismissAction(thing, currentUser, options) {
+function DismissAction(thing, currentUser, options={}) {
     return {
         component: <Action label="Dismiss" doFunc={ThingCommandActions.dismiss} preDoFunc={options.preDoFunc}
                            item={thing} disabled={options.disabled} key="action-Dismiss" style={options.style} />,
@@ -57,6 +57,16 @@ function PingAction(thing, currentUser, disabled, style) {
     }
 }
 
+function PongAction(thing, currentUser, options={}) {
+    return {
+        component: <Action label="Pong" doFunc={ThingCommandActions.pong} item={thing} preDoFunc={options.preDoFunc}
+                           disabled={options.disabled} key="action-Pong" style={options.style} />,
+        show: currentUser.id !== thing.creator.id &&
+            [ThingStatus.INPROGRESS.key].includes(thing.payload.status) &&
+            !thing.isSelf
+    }
+}
+
 function DiscardCommentsAction(notification, style) {
     return {
         component: <Action label="Discard" doFunc={ThingCommandActions.discardComments} item={notification} key="action-Discard" style={style} />,
@@ -68,6 +78,13 @@ function DiscardPingAction(notification, style) {
     return {
         component: <Action label="Discard" doFunc={ThingCommandActions.discardPing} item={notification} key="action-Discard" style={style} />,
         show: notification.eventType.key === EventTypes.PING.key
+    }
+}
+
+function DiscardPongAction(notification, style) {
+    return {
+        component: <Action label="Discard" doFunc={ThingCommandActions.discardPong} item={notification} key="action-Discard" style={style} />,
+        show: notification.eventType.key === EventTypes.PONG.key
     }
 }
 
@@ -98,9 +115,11 @@ module.exports = {
     DismissAction,
     CloseAction,
     PingAction,
+    PongAction,
     SendBackAction,
     DiscardCommentsAction,
     DiscardPingAction,
+    DiscardPongAction,
     CancelAckAction,
     DiscardEmails,
     DoEmail

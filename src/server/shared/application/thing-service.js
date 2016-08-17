@@ -207,6 +207,27 @@ function ping(user, thingId) {
         })
 }
 
+async function pong(user, thingId, messageText) {
+    const creator = userToAddress(user)
+
+    try {
+        const thing = await Thing.get(thingId).run()
+        
+        validateStatus(thing, ThingStatus.INPROGRESS.key)
+
+        const event = await EventCreator.createPong(creator, thing, getShowNewList, messageText)
+
+        await Event.discardUserEventsByType(thing.id, EventTypes.PING.key, user.id)
+
+        const fullEvent = await Event.getFullEvent(event.id)
+        return eventToDto(fullEvent, user, {includeThing: false})
+
+    } catch(error) {
+        logger.error(`Error while ponging thing ${thingId} by user ${user.email}`, error)
+        throw error
+    }
+}
+
 function comment(user, thingId, commentText) {
     const creator = userToAddress(user)
 
@@ -330,6 +351,8 @@ function getShowNewList(user, thing, eventType, previousStatus) {
             return union(thing.followUpers, thing.doers, [thing.creator.id]).filter(userId => userId !== user.id)
         case EventTypes.PING.key:
             return  [...thing.doers]
+        case EventTypes.PONG.key:
+            return  [...thing.followUpers]
         case EventTypes.ACCEPTED.key:
         case EventTypes.CANCEL_ACKED.key:
             return []
@@ -392,6 +415,7 @@ module.exports = {
     close,
     cancelAck,
     ping,
+    pong,
     discardEventsByType,
     syncThingWithMessage
 }

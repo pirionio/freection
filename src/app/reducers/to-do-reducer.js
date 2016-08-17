@@ -59,22 +59,24 @@ function actionDoneOnThing(state, action) {
 }
 
 function commentChangedOrAdded(state, action) {
-    // TODO Handle FETCHING state by queuing incoming events
-    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
-        return state
-
-    return immutable(state)
-        .arraySetItem('things', {id: action.comment.thing.id}, item => thingReducer(item, action))
-        .value()
+    return messageReceived(state, action, 'comment')
 }
 
 function pingReceived(state, action) {
+    return messageReceived(state, action, 'pingEvent')
+}
+
+function pongReceived(state, action) {
+    return messageReceived(state, action, 'pongEvent')
+}
+
+function messageReceived(state, action, messageField) {
     // TODO Handle FETCHING state by queuing incoming events
     if (state.invalidationStatus !== InvalidationStatus.FETCHED)
         return state
 
     return immutable(state)
-        .arraySetItem('things', {id: action.pingEvent.thing.id}, item => thingReducer(item, action))
+        .arraySetItem('things', {id: action[messageField].thing.id}, item => thingReducer(item, action))
         .value()
 }
 
@@ -110,6 +112,8 @@ module.exports = (state = initialState, action) => {
             return commentChangedOrAdded(state, action)
         case EventActionTypes.PINGED:
             return pingReceived(state, action)
+        case EventActionTypes.PONGED:
+            return pongReceived(state, action)
         case EventActionTypes.CREATED:
         case EventActionTypes.ACCEPTED:
         case EventActionTypes.MARKED_AS_DONE:

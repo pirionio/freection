@@ -12,7 +12,7 @@ const BodyPreviewText = require('./BodyPreviewText')
 
 function filterEventsByRead(thing, isRead) {
     return chain(thing.events)
-        .filter(event => includes([EventTypes.COMMENT.key, EventTypes.PING.key], event.eventType.key) && event.payload.isRead === isRead)
+        .filter(event => [EventTypes.COMMENT.key, EventTypes.PING.key, EventTypes.PONG.key].includes(event.eventType.key) && event.payload.isRead === isRead)
         .sortBy('createdAt')
         .value()
 }

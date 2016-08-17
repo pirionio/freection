@@ -34,6 +34,10 @@ module.exports = {
             params: ['pingEvent']
         },
         {
+            name: 'ponged',
+            params: ['pongEvent']
+        },
+        {
             name: 'comment created',
             params: ['comment']
         },

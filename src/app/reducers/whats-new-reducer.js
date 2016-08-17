@@ -85,7 +85,7 @@ function discardComments(state, action) {
     }
 }
 
-function discardPing(state, action) {
+function discardSingleNotification(state, action) {
     switch (action.status) {
         case ActionStatus.START:
             return immutable(state)
@@ -134,11 +134,13 @@ module.exports = (state = initialState, action) => {
         case ThingCommandActionTypes.CLOSE:
         case ThingCommandActionTypes.SEND_BACK:
         case ThingCommandActionTypes.CANCEL_ACK:
+        case ThingCommandActionTypes.PONG:
             return removeNotificationsOfThing(state, action)
         case ThingCommandActionTypes.DISCARD_COMMENTS:
             return discardComments(state, action)
         case ThingCommandActionTypes.DISCARD_PING:
-            return discardPing(state, action)
+        case ThingCommandActionTypes.DISCARD_PONG:
+            return discardSingleNotification(state, action)
         case WhatsNewActionTypes.NOTIFICATION_RECEIVED:
             return notificationReceived(state, action)
         case WhatsNewActionTypes.NOTIFICATION_DELETED:

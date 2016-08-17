@@ -115,6 +115,19 @@ router.post('/:thingId/ping', function(request, response) {
     })
 })
 
+router.post('/:thingId/pong', function(request, response) {
+    EndpointUtil.handlePost(request, response, ThingService.pong, {
+        params: ['thingId'],
+        body: ['messageText'],
+        result: false,
+        errorTemplates: {
+            notFound: getNotFoundErrorTemplate(),
+            IllegalOperation: getIllegalOperationErrorTemplate(),
+            general: 'Could not pong thing ${thingId} by user user ${user}'
+        }
+    })
+})
+
 router.post('/:thingId/comment', function(request, response) {
     EndpointUtil.handlePost(request, response, ThingService.comment, {
         params: ['thingId'],
