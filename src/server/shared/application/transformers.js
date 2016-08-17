@@ -103,6 +103,9 @@ function emailUserToDTO(user) {
 }
 
 function subjectToDto(subject) {
+    if (!subject)
+        return subject
+
     return subject.toLowerCase().startsWith('re: ') ?
         subject.substr('re: '.length) :
         subject

@@ -31,7 +31,7 @@ module.exports = function() {
                         .catch(error => {
                             // We might don't have any emails in the mailbox, just ignore and do it next time
                             if (error !== 'NotFound')
-                                logger.error(`error while syncing user ${user.email}`)
+                                logger.error(`error while syncing user ${user.email}`, error)
                         })
                 })
                 .catch(error => {
