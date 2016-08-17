@@ -76,6 +76,18 @@ function markAsRead(user, emailUids) {
         })
 }
 
+async function markAsReadByMessageId(user, messageId) {
+
+    let connection
+    try {
+        connection = await getImapConnection(user)
+        await connection.markAsReadByMessageId(messageId)
+    } finally {
+        if (connection)
+            GoogleSmtpConnectionPool.releaseConnection(user, connection)
+    }
+}
+
 function sendEmail(user, to, subject, text, html, messageId) {
     return getSmtpConnection(user)
         .then(connection => {
@@ -210,6 +222,7 @@ function getSmtpConnection(user) {
 module.exports = {
     fetchUnreadMessages,
     fetchFullThread,
+    markAsReadByMessageId,
     markAsRead,
     sendEmail,
     sendEmailForThing,
