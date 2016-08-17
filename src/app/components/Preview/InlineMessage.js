@@ -32,11 +32,13 @@ class InlineMessage extends Component {
 
         return expandedMessages && expandedMessages.length ?
             <Flexbox name="last-comments" grow={1} container="column" style={styles.expandedMessages}>
-                {expandedMessages.map(message =>
-                    <Flexbox name="comment" style={styles.expandedMessages.message} key={message.id}>
-                        <span>{message.payload.text}</span>
-                    </Flexbox>
-                )}
+                {expandedMessages.map(message => {
+                    return message && message.payload ?
+                        <Flexbox name="comment" style={styles.expandedMessages.message} key={message.id}>
+                            <span>{message.payload.text}</span>
+                        </Flexbox> :
+                        null
+                })}
             </Flexbox> :
             null
     }

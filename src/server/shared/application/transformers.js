@@ -46,6 +46,9 @@ function userToDto(user) {
 }
 
 function commentPayloadToDto(payload, user) {
+    if (!payload.readByList)
+        return payload
+
     return Object.assign({}, payload, {
         isRead: payload.readByList.includes(user.id),
         readByList: undefined

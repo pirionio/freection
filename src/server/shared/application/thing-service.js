@@ -108,7 +108,7 @@ async function dismiss(user, thingId, messageText) {
     }
 }
 
-async function close(user, thingId) {
+async function close(user, thingId, messageText) {
     const creator = userToAddress(user)
 
     try {
@@ -134,7 +134,8 @@ async function close(user, thingId) {
 
         // Creating the close event and saving to DB
         await EventCreator.createClosed(creator, thing,
-            (user, thing, eventType) => getShowNewList(user, thing, eventType, previousStatus))
+            (user, thing, eventType) => getShowNewList(user, thing, eventType, previousStatus),
+            messageText)
     } catch(error) {
         logger.error(`error while closing thing ${thingId} by user ${user.email}:`, error)
         throw error
@@ -156,41 +157,54 @@ function cancelAck(user, thingId) {
         })
 }
 
-function markAsDone(user, thingId) {
+async function markAsDone(user, thingId, messageText) {
     const creator = userToAddress(user)
 
-    return Thing.get(thingId).run()
-        .then(thing => validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key]))
-        .then(thing => {
-            return performMarkAsDone(thing, user)
-                .then(() => Event.discardUserEvents(thingId, user.id))
-                .then(() => EventCreator.createDone(creator, thing, getShowNewList))
-                .then(() => {
-                    if (thing.isSelf()) {
-                        return EventCreator.createClosed(creator, thing, getShowNewList)
-                    }
-                })
-        })
-        .catch(error => {
-            logger.error(`Error while marking thing ${thingId} as done by user ${user.email}:`, error)
-            throw error
-        })
+    try {
+        const thing = await Thing.get(thingId).run()
+
+        // Validate that the status of the thing matched the action
+        validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key])
+
+        remove(thing.doers, doerId => doerId === user.id)
+        thing.payload.status = thing.isSelf() ? ThingStatus.CLOSE.key : ThingStatus.DONE.key
+        await thing.save()
+        
+        await Event.discardUserEvents(thingId, user.id)
+        
+        let event = await EventCreator.createDone(creator, thing, getShowNewList, messageText)
+
+        if (thing.isSelf()) {
+            event = await EventCreator.createClosed(creator, thing, getShowNewList)
+        }
+        
+        return event
+
+    } catch (error) {
+        logger.error(`Error while marking thing ${thingId} as done by user ${user.email}:`, error)
+        throw error
+    }
 }
 
-function sendBack(user, thingId) {
+async function sendBack(user, thingId, messageText) {
     const creator = userToAddress(user)
 
-    return Thing.get(thingId).run()
-        .then(thing => validateStatus(thing, [ThingStatus.DONE.key, ThingStatus.DISMISS.key]))
-        .then(thing => {
-            return performSendBack(thing)
-                .then(() => Event.discardUserEvents(thingId, user.id))
-                .then(() => EventCreator.createSentBack(creator, thing, getShowNewList))
-        })
-        .catch(error => {
-            logger.error(`Error while sending thing ${thingId} back by user ${user.email}:`, error)
-            throw error
-        })
+    try {
+        const thing = await Thing.get(thingId).run()
+
+        validateStatus(thing, [ThingStatus.DONE.key, ThingStatus.DISMISS.key])
+
+        thing.payload.status = ThingStatus.REOPENED.key
+        await thing.save()
+
+        await Event.discardUserEvents(thingId, user.id)
+
+        return await EventCreator.createSentBack(creator, thing, getShowNewList, messageText)
+
+    } catch (error) {
+        logger.error(`Error while sending thing ${thingId} back by user ${user.email}:`, error)
+        throw error
+    }
 }
 
 function ping(user, thingId) {

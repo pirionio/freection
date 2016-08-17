@@ -2,11 +2,12 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 
+const {SharedConstants} = require('../../../common/shared-constants')
 const EventTypes = require('../../../common/enums/event-types')
 const ThingPageActions = require('../../actions/thing-page-actions')
 
 const {PreviewItem, PreviewItemText, PreviewItemStatus, PreviewItemActions} = require('../Preview/PreviewItem')
-const {CommentPreviewText, PingPreviewText, BodyPreviewText} = require('../Preview/Thing')
+const {CommentPreviewText, PingPreviewText} = require('../Preview/Thing')
 const NotificationActionsBar = require('./NotificationActionsBar')
 const styleVars = require('../style-vars')
 
@@ -15,22 +16,13 @@ class NotificationPreviewItem extends Component {
     getTextElement() {
         const {notification} = this.props
 
-        switch (notification.eventType.key) {
-            case EventTypes.DISMISSED.key:
-            case EventTypes.COMMENT.key:
-            case EventTypes.PONG.key:
-                return <CommentPreviewText comment={notification.payload.text}
-                                           newNotifications={notification.payload.newNotifications} />
-            case EventTypes.PING.key:
-                return <PingPreviewText />
+        if (notification.eventType.key === EventTypes.PING.key)
+            return <PingPreviewText />
 
-            case EventTypes.CREATED.key:
-                if (notification.thing.body)
-                    return <BodyPreviewText body={notification.thing.body} />
-
-            default:
-                return <span></span>;
-        }
+        else if (SharedConstants.MESSAGE_TYPED_EVENTS.includes(notification.eventType.key))
+            return <CommentPreviewText comment={notification.payload.text}
+                                       newNotifications={notification.payload.newNotifications} />
+        return <span />
     }
 
     getExpandedMessages() {

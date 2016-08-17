@@ -2,12 +2,13 @@ const React = require('react')
 const {PropTypes, Component} = React
 const {connect} = require('react-redux')
 
-const {PreviewItem, PreviewItemUser, PreviewItemTitle, PreviewItemStatus, PreviewItemDate, PreviewItemText, PreviewItemActions} =
-    require('../Preview/PreviewItem')
-const {ThingPreviewText}= require('../Preview/Thing')
-const FollowUpActionsBar = require('./FollowUpActionsBar')
 const ThingPageActions = require('../../actions/thing-page-actions')
 const ThingStatus = require('../../../common/enums/thing-status')
+const ThingHelper = require('../../helpers/thing-helper')
+
+const {PreviewItem, PreviewItemStatus, PreviewItemText, PreviewItemActions} = require('../Preview/PreviewItem')
+const {ThingPreviewText}= require('../Preview/Thing')
+const FollowUpActionsBar = require('./FollowUpActionsBar')
 const styleVars = require('../style-vars')
 
 class FollowUpPreviewItem extends Component {
@@ -27,6 +28,12 @@ class FollowUpPreviewItem extends Component {
         }
     }
 
+    getExpandedMessages() {
+        const {thing} = this.props
+        const unreadEvents = ThingHelper.getUnreadMessages(thing)
+        return unreadEvents && unreadEvents.length ? unreadEvents : [ThingHelper.getLastMessage(thing)]
+    }
+
     render() {
         const {thing, dispatch} = this.props
 
@@ -34,6 +41,7 @@ class FollowUpPreviewItem extends Component {
             <PreviewItem circleColor={this.getCircleColor()}
                          title={thing.subject}
                          date={thing.createdAt}
+                         expandedMessages={this.getExpandedMessages()}
                          onClick={() => dispatch(ThingPageActions.showThingPage(thing))}>
                 <PreviewItemStatus>
                     <strong>{thing.to.displayName}</strong>

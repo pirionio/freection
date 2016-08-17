@@ -34,21 +34,24 @@ function createDismissed(creator, thing, getShowNewList, messageText) {
         eventType: EventTypes.DISMISSED.key,
         createdAt: new Date(),
         creator,
-        payload: {
+        payload: messageText ? {
             text: messageText,
             readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
-        },
+        } : {},
         showNewList: getShowNewList(creator, thing, EventTypes.DISMISSED.key)
     })
 }
 
-function createDone(creator, thing, getShowNewList) {
+function createDone(creator, thing, getShowNewList, messageText) {
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.DONE.key,
         createdAt: new Date(),
         creator,
-        payload: {},
+        payload: messageText ? {
+            text: messageText,
+            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
+        } : {},
         showNewList: getShowNewList(creator, thing, EventTypes.DONE.key)
     })
 }
@@ -69,13 +72,16 @@ function createComment(creator, createdAt, thing, getShowNewList, commentText, c
     })
 }
 
-function createClosed(creator, thing, getShowNewList) {
+function createClosed(creator, thing, getShowNewList, messageText) {
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.CLOSED.key,
         createdAt: new Date(),
         creator,
-        payload: {},
+        payload: messageText ? {
+            text: messageText,
+            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
+        } : {},
         showNewList: getShowNewList(creator, thing, EventTypes.CLOSED.key)
     })
 }
@@ -107,13 +113,16 @@ function createPong(creator, thing, getShowNewList, messageText) {
     })
 }
 
-function createSentBack(creator, thing, getShowNewList) {
+function createSentBack(creator, thing, getShowNewList, messageText) {
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.SENT_BACK.key,
         createdAt: new Date(),
         creator,
-        payload: {},
+        payload: messageText ? {
+            text: messageText,
+            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
+        } : {},
         showNewList: getShowNewList(creator, thing, EventTypes.SENT_BACK.key)
     })
 }

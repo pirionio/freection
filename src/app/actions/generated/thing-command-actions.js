@@ -164,23 +164,28 @@ function cancelAck(thing) {
     }
 }
 
-function close(thing) {
+function close(thing, messageText) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.CLOSE, 
             status: ActionStatus.START,
-            thing
+            thing,
+            messageText
         })
-        return ResourceUtil.post(`/api/things/${thing.type.key}/${thing.id}/close`)
+        return ResourceUtil.post(`/api/things/${thing.type.key}/${thing.id}/close`, {
+                messageText: messageText
+            })
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.CLOSE, 
                 status: ActionStatus.COMPLETE,
-                thing
+                thing,
+                messageText
             }))
             .catch(() => dispatch({
                 type: ThingCommandActionsTypes.CLOSE, 
                 status: ActionStatus.ERROR,
-                thing
+                thing,
+                messageText
             }))
     }
 }
@@ -211,23 +216,28 @@ function dismiss(thing, messageText) {
     }
 }
 
-function markAsDone(thing) {
+function markAsDone(thing, messageText) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.MARK_AS_DONE, 
             status: ActionStatus.START,
-            thing
+            thing,
+            messageText
         })
-        return ResourceUtil.post(`/api/things/${thing.id}/done`)
+        return ResourceUtil.post(`/api/things/${thing.id}/done`, {
+                messageText: messageText
+            })
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.MARK_AS_DONE, 
                 status: ActionStatus.COMPLETE,
-                thing
+                thing,
+                messageText
             }))
             .catch(() => dispatch({
                 type: ThingCommandActionsTypes.MARK_AS_DONE, 
                 status: ActionStatus.ERROR,
-                thing
+                thing,
+                messageText
             }))
     }
 }
@@ -295,23 +305,28 @@ function discardPong(notification) {
     }
 }
 
-function sendBack(thing) {
+function sendBack(thing, messageText) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.SEND_BACK, 
             status: ActionStatus.START,
-            thing
+            thing,
+            messageText
         })
-        return ResourceUtil.post(`/api/things/${thing.id}/sendback`)
+        return ResourceUtil.post(`/api/things/${thing.id}/sendback`, {
+                messageText: messageText
+            })
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.SEND_BACK, 
                 status: ActionStatus.COMPLETE,
-                thing
+                thing,
+                messageText
             }))
             .catch(() => dispatch({
                 type: ThingCommandActionsTypes.SEND_BACK, 
                 status: ActionStatus.ERROR,
-                thing
+                thing,
+                messageText
             }))
     }
 }

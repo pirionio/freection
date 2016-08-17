@@ -59,6 +59,7 @@ router.post('/:type/:thingId/dismiss', function(request, response) {
 router.post('/:thingId/done', function(request, response) {
     EndpointUtil.handlePost(request, response, ThingService.markAsDone, {
         params: ['thingId'],
+        body: ['messageText'],
         result: false,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
@@ -71,6 +72,7 @@ router.post('/:thingId/done', function(request, response) {
 router.post('/:type/:thingId/close', function(request, response) {
     EndpointUtil.handlePost(request, response, getServiceByType(request).close, {
         params: ['thingId'],
+        body: ['messageText'],
         result: false,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
@@ -94,6 +96,7 @@ router.post('/:thingId/cancelack', function(request, response) {
 router.post('/:thingId/sendback', function(request, response) {
     EndpointUtil.handlePost(request, response, ThingService.sendBack, {
         params: ['thingId'],
+        body: ['messageText'],
         result: false,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),

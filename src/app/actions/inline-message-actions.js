@@ -21,7 +21,7 @@ function close() {
 function messageSent(inlineMessage) {
     return dispatch => {
         inlineMessage.action(inlineMessage.text)
-        dispatch(actions.reset('inllineMessage'))
+        dispatch(actions.reset('inlineMessage'))
         dispatch(GlassPaneActions.hide())
     }
 }

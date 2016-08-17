@@ -8,15 +8,15 @@ const ThingStatus = require('../../../common/enums/thing-status')
 
 class FollowUpActionsBar extends Component {
     render() {
-        const {thing, currentUser, isRollover} = this.props
+        const {thing, currentUser, isRollover, preDoFunc} = this.props
 
-        const closeAction = CloseAction(thing, currentUser)
+        const closeAction = CloseAction(thing, currentUser, {preDoFunc})
         closeAction.show = currentUser && currentUser.id === thing.creator.id &&
             [ThingStatus.DONE.key, ThingStatus.DISMISS.key].includes(thing.payload.status)
 
         const actions = [
             closeAction,
-            SendBackAction(thing, currentUser),
+            SendBackAction(thing, currentUser, {preDoFunc}),
             PingAction(thing, currentUser)
         ]
 
@@ -31,7 +31,8 @@ class FollowUpActionsBar extends Component {
 FollowUpActionsBar.propTypes = {
     thing: PropTypes.object.isRequired,
     currentUser: PropTypes.object.isRequired,
-    isRollover: PropTypes.bool
+    isRollover: PropTypes.bool,
+    preDoFunc: PropTypes.func
 }
 
 FollowUpActionsBar.defaultProps = {

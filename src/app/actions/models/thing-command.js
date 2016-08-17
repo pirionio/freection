@@ -70,9 +70,12 @@ module.exports = {
         },
         {
             name: 'close',
-            params: ['thing'],
+            params: ['thing', 'messageText'],
             type: 'post',
-            path: '/api/things/${thing.type.key}/${thing.id}/close'
+            path: '/api/things/${thing.type.key}/${thing.id}/close',
+            body: {
+                messageText: 'messageText'
+            }
         },
         {
             name: 'dismiss',
@@ -85,9 +88,12 @@ module.exports = {
         },
         {
             name: 'mark as done',
-            params: ['thing'],
+            params: ['thing', 'messageText'],
             type: 'post',
-            path: '/api/things/${thing.id}/done'
+            path: '/api/things/${thing.id}/done',
+            body: {
+                messageText: 'messageText'
+            }
         },
         {
             name: 'discard comments',
@@ -109,9 +115,12 @@ module.exports = {
         },
         {
             name: 'send back',
-            params: ['thing'],
+            params: ['thing', 'messageText'],
             type: 'post',
-            path: '/api/things/${thing.id}/sendback'
+            path: '/api/things/${thing.id}/sendback',
+            body: {
+                messageText: 'messageText'
+            }
         }
     ]
 }

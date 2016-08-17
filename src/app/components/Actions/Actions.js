@@ -14,9 +14,10 @@ function DoAction(thing, currentUser, disabled, style) {
     }
 }
 
-function DoneAction(thing, currentUser, disabled, style) {
+function DoneAction(thing, currentUser, options={}) {
     return {
-        component: <Action label="Done" doFunc={ThingCommandActions.markAsDone} item={thing} disabled={disabled} key="action-Done" style={style} />,
+        component: <Action label="Done" doFunc={ThingCommandActions.markAsDone} preDoFunc={options.preDoFunc}
+                           item={thing} disabled={options.disabled} key="action-Done" style={options.style} />,
         show: currentUser.id === thing.to.id &&
             [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status)
     }
@@ -32,17 +33,19 @@ function DismissAction(thing, currentUser, options={}) {
     }
 }
 
-function CloseAction(thing, currentUser, disabled, style) {
+function CloseAction(thing, currentUser, options={}) {
     return {
-        component: <Action label="Close" doFunc={ThingCommandActions.close} item={thing} disabled={disabled} key="action-Close" style={style} />,
+        component: <Action label="Close" doFunc={ThingCommandActions.close} preDoFunc={options.preDoFunc}
+                           item={thing} disabled={options.disabled} key="action-Close" style={options.style} />,
         show: currentUser && currentUser.id === thing.creator.id &&
             [ThingStatus.DONE.key, ThingStatus.DISMISS.key, ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key].includes(thing.payload.status)
     }
 }
 
-function SendBackAction(thing, currentUser, disabled, style) {
+function SendBackAction(thing, currentUser, options={}) {
     return {
-        component: <Action label="SendBack" doFunc={ThingCommandActions.sendBack} item={thing} disabled={disabled} key="action-SendBack" style={style} />,
+        component: <Action label="SendBack" doFunc={ThingCommandActions.sendBack} preDoFunc={options.preDoFunc}
+                           item={thing} disabled={options.disabled} key="action-SendBack" style={options.style} />,
         show: currentUser.id === thing.creator.id &&
             [ThingStatus.DONE.key, ThingStatus.DISMISS.key].includes(thing.payload.status)
     }
