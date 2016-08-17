@@ -53,11 +53,11 @@ function createDone(creator, thing, getShowNewList) {
     })
 }
 
-function createComment(creator, thing, getShowNewList, commentText, commentHtml, emailId) {
+function createComment(creator, createdAt, thing, getShowNewList, commentText, commentHtml, emailId) {
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.COMMENT.key,
-        createdAt: new Date(),
+        createdAt,
         creator,
         payload: {
             emailId,

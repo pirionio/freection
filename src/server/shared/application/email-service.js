@@ -103,8 +103,10 @@ function doEmail(user, emailThreadId) {
 
             const comments = thread.messages.map(message => {
                 return {
+                    createdAt: message.createdAt,
                     html: message.payload.html,
-                    text: message.payload.text
+                    text: message.payload.text,
+                    id: message.id
                 }
             })
 
@@ -113,8 +115,8 @@ function doEmail(user, emailThreadId) {
                     EventsCreator.createCreated(creator, thing, getShowNewList)
                         .then(() => EventsCreator.createAccepted(userToAddress(user), thing, getShowNewList))
                         .then(() => comments.map(
-                            comment => EventsCreator.createComment(creator, thing, getShowNewList, comment.text,
-                                comment.html, comment.header.messageId)))
+                            comment => EventsCreator.createComment(creator, comment.createdAt, thing, getShowNewList, comment.text,
+                                comment.html, comment.id)))
                         .then(all => Promise.all(all))
 
             })

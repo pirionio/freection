@@ -234,7 +234,7 @@ function comment(user, thingId, commentText) {
     return Thing.get(thingId).run()
         .then(thing => {
             sendEmailForComment(user, thing, commentText)
-                .then(email => EventCreator.createComment(creator, thing, getShowNewList,
+                .then(email => EventCreator.createComment(creator, new Date(), thing, getShowNewList,
                     commentText, null, email && email.id))
                 .then(event => Event.getFullEvent(event.id))
                 .then(event => eventToDto(event, user, {includeThing: false}))
@@ -261,7 +261,7 @@ function syncThingWithMessage(thingId, message) {
                     .map(comment => comment.payload.emailId)
 
             if (!emailIds.includes(message.id)) {
-                return EventCreator.createComment(message.creator, thing, getShowNewList, message.payload.text,
+                return EventCreator.createComment(message.creator, message.createdAt, thing, getShowNewList, message.payload.text,
                     message.payload.html, message.id)
             }
         })
