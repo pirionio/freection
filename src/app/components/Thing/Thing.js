@@ -7,6 +7,7 @@ const {goBack} = require('react-router-redux')
 const classAutobind = require('class-autobind').default
 
 const isEmpty = require('lodash/isEmpty')
+const reject = require('lodash/reject')
 
 const ThingPageActionsBar = require('./ThingPageActionsBar')
 const MessagePanel = require('../MessageBox/MessagePanel')
@@ -16,6 +17,7 @@ const TextTruncate = require('../UI/TextTruncate')
 const ThingPageActions = require('../../actions/thing-page-actions')
 const ThingHelper = require('../../helpers/thing-helper')
 
+const EventTypes = require('../../../common/enums/event-types')
 const {InvalidationStatus} = require('../../constants')
 
 class Thing extends Component {
@@ -70,7 +72,11 @@ class Thing extends Component {
 
     getAllComments() {
         const {thing} = this.props
-        return thing.events ? ThingHelper.getAllMessages(thing) : []
+
+        // Filter out CREATED events that have no text - since we allow creating a new Thing with no body at all.
+        return thing.events ?
+            reject(ThingHelper.getAllMessages(thing), message => message.eventType.key === EventTypes.CREATED.key && !message.payload.text) :
+            []
     }
 
     getUnreadComments() {

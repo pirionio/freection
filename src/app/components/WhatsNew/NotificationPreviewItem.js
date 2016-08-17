@@ -25,7 +25,8 @@ class NotificationPreviewItem extends Component {
                 return <PingPreviewText />
 
             case EventTypes.CREATED.key:
-                return <BodyPreviewText body={notification.thing.body} />
+                if (notification.thing.body)
+                    return <BodyPreviewText body={notification.thing.body} />
 
             default:
                 return <span></span>;
