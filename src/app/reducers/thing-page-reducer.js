@@ -1,3 +1,6 @@
+const isUndefined = require('lodash/isUndefined')
+const head = require('lodash/head')
+
 const EventActionTypes = require('../actions/types/event-action-types')
 const ThingPageActionTypes = require('../actions/types/thing-page-action-types')
 const ThingStatus = require('../../common/enums/thing-status.js')
@@ -5,8 +8,6 @@ const ThingCommandActionTypes = require('../actions/types/thing-command-action-t
 const {SharedConstants} = require('../../common/shared-constants')
 const {ActionStatus, InvalidationStatus} = require('../constants')
 const thingReducer = require('./thing-reducer')
-const isUndefined = require('lodash/isUndefined')
-const head = require('lodash/head')
 
 const immutable = require('../util/immutable')
 

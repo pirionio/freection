@@ -1,4 +1,5 @@
 const isUndefined = require('lodash/isUndefined')
+const head = require('lodash/head')
 
 const EventActionTypes = require('../actions/types/event-action-types')
 const EmailPageActionTypes = require('../actions/types/email-page-action-types')
