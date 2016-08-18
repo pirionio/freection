@@ -63,10 +63,10 @@ module.exports = {
             path: '/api/things/${thing.type.key}/${thing.id}/do'
         },
         {
-            name: 'cancel ack',
+            name: 'close ack',
             params: ['thing'],
             type: 'post',
-            path: '/api/things/${thing.id}/cancelack'
+            path: '/api/things/${thing.id}/closeack'
         },
         {
             name: 'close',

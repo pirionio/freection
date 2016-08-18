@@ -30,9 +30,9 @@ function closed(thing) {
     }
 }
 
-function cancelAcked(thing) {
+function closeAcked(thing) {
     return {
-        type: EventActionsTypes.CANCEL_ACKED,
+        type: EventActionsTypes.CLOSE_ACKED,
         thing
     }
 }
@@ -90,7 +90,7 @@ module.exports = {
     accepted,
     markedAsDone,
     closed,
-    cancelAcked,
+    closeAcked,
     dismissed,
     sentBack,
     pinged,

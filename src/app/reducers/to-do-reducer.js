@@ -121,7 +121,7 @@ module.exports = (state = initialState, action) => {
             return toDo(state, action)
         case ThingCommandActionTypes.MARK_AS_DONE:
         case ThingCommandActionTypes.DISMISS:
-        case ThingCommandActionTypes.CANCEL_ACK:
+        case ThingCommandActionTypes.CLOSE_ACK:
             return actionDoneOnThing(state, action)
         case EventActionTypes.COMMENT_CREATED:
         case EventActionTypes.COMMENT_READ_BY:
@@ -135,7 +135,7 @@ module.exports = (state = initialState, action) => {
         case EventActionTypes.MARKED_AS_DONE:
         case EventActionTypes.DISMISSED:
         case EventActionTypes.CLOSED:
-        case EventActionTypes.CANCEL_ACKED:
+        case EventActionTypes.CLOSE_ACKED:
         case EventActionTypes.SENT_BACK:
             return statusChangedReceived(state, action)
         default:

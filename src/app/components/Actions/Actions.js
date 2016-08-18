@@ -91,9 +91,9 @@ function DiscardPongAction(notification, style) {
     }
 }
 
-function CancelAckAction(notification, style) {
+function CloseAckAction(notification, style) {
     return {
-        component: <Action label="Stop doing" doFunc={ThingCommandActions.cancelAck} item={notification.thing} key="action-StopDoing" style={style} />,
+        component: <Action label="Stop doing" doFunc={ThingCommandActions.closeAck} item={notification.thing} key="action-StopDoing" style={style} />,
         show: notification.eventType.key === EventTypes.CLOSED.key
     }
 }
@@ -123,7 +123,7 @@ module.exports = {
     DiscardCommentsAction,
     DiscardPingAction,
     DiscardPongAction,
-    CancelAckAction,
+    CloseAckAction,
     DiscardEmails,
     DoEmail
 }

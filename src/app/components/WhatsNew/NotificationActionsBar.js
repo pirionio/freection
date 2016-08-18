@@ -4,7 +4,8 @@ const {connect} = require('react-redux')
 
 const EventTypes = require('../../../common/enums/event-types')
 const ActionsBar = require('../Actions/ActionsBar')
-const {DoAction, DoneAction, DismissAction, CloseAction, SendBackAction, DiscardCommentsAction, DiscardPingAction, DiscardPongAction, CancelAckAction,
+const {DoAction, DoneAction, DismissAction, CloseAction, SendBackAction, DiscardCommentsAction, DiscardPingAction,
+    DiscardPongAction, CloseAckAction,
     PongAction} = require('../Actions/Actions')
 
 class NotificationActionsBar extends Component {
@@ -61,7 +62,7 @@ class NotificationActionsBar extends Component {
             DiscardCommentsAction(notification),
             DiscardPingAction(notification),
             DiscardPongAction(notification),
-            CancelAckAction(notification)
+            CloseAckAction(notification)
         ]
 
         return (

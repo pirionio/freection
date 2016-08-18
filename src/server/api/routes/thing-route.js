@@ -82,13 +82,13 @@ router.post('/:type/:thingId/close', function(request, response) {
     })
 })
 
-router.post('/:thingId/cancelack', function(request, response) {
-    EndpointUtil.handlePost(request, response, ThingService.cancelAck, {
+router.post('/:thingId/closeack', function(request, response) {
+    EndpointUtil.handlePost(request, response, ThingService.closeAck, {
         params: ['thingId'],
         result: false,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
-            general: 'Could not accept cancellation of thing ${thingId} by user user ${user}'
+            general: 'Could not accept close of thing ${thingId} by user user ${user}'
         }
     })
 })

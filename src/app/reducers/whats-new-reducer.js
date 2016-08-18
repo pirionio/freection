@@ -149,7 +149,7 @@ module.exports = (state = initialState, action) => {
         case ThingCommandActionTypes.MARK_AS_DONE:
         case ThingCommandActionTypes.CLOSE:
         case ThingCommandActionTypes.SEND_BACK:
-        case ThingCommandActionTypes.CANCEL_ACK:
+        case ThingCommandActionTypes.CLOSE_ACK:
         case ThingCommandActionTypes.PONG:
             return removeNotificationsOfThing(state, action)
         case ThingCommandActionTypes.DISCARD_COMMENTS:

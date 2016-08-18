@@ -142,17 +142,17 @@ async function close(user, thingId, messageText) {
     }
 }
 
-function cancelAck(user, thingId) {
+function closeAck(user, thingId) {
     const creator = userToAddress(user)
 
     return Thing.get(thingId).run()
         .then(thing => {
-            return performCancelAck(thing, user)
+            return performCloseAck(thing, user)
                 .then(() => Event.discardUserEventsByType(thingId, EventTypes.CLOSED.key, user.id))
-                .then(() => EventCreator.createCancelAck(creator, thing, getShowNewList))
+                .then(() => EventCreator.createCloseAck(creator, thing, getShowNewList))
         })
         .catch(error => {
-            logger.error(`error while accepting cancellation of thing ${thingId} by user ${user.email}:`, error)
+            logger.error(`error while accepting close of thing ${thingId} by user ${user.email}:`, error)
             throw error
         })
 }
@@ -368,7 +368,7 @@ function getShowNewList(user, thing, eventType, previousStatus) {
         case EventTypes.PONG.key:
             return  [...thing.followUpers]
         case EventTypes.ACCEPTED.key:
-        case EventTypes.CANCEL_ACKED.key:
+        case EventTypes.CLOSE_ACKED.key:
             return []
         default:
             throw "UnknownEventType"
@@ -396,7 +396,7 @@ function performSendBack(thing) {
     return thing.save()
 }
 
-function performCancelAck(thing, user) {
+function performCloseAck(thing, user) {
     remove(thing.doers, doerUserId => doerUserId === user.id)
     return thing.save()
 }
@@ -427,7 +427,7 @@ module.exports = {
     sendBack,
     comment,
     close,
-    cancelAck,
+    closeAck,
     ping,
     pong,
     discardEventsByType,

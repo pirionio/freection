@@ -127,14 +127,14 @@ function createSentBack(creator, thing, getShowNewList, messageText) {
     })
 }
 
-function createCancelAck(creator, thing, getShowNewList) {
+function createCloseAck(creator, thing, getShowNewList) {
     return Event.save({
         thingId: thing.id,
-        eventType: EventTypes.CANCEL_ACKED.key,
+        eventType: EventTypes.CLOSE_ACKED.key,
         createdAt: new Date(),
         creator,
         payload: {},
-        showNewList: getShowNewList(creator, thing, EventTypes.CANCEL_ACKED.key)
+        showNewList: getShowNewList(creator, thing, EventTypes.CLOSE_ACKED.key)
     })
 }
 
@@ -143,7 +143,7 @@ module.exports = {
     createAccepted,
     createDismissed,
     createDone,
-    createCancelAck,
+    createCloseAck,
     createComment,
     createClosed,
     createPing,

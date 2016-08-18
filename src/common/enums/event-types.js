@@ -23,9 +23,9 @@ module.exports = {
         key: 'CLOSED',
         label: 'Closed'
     },
-    CANCEL_ACKED: {
-        key: 'CANCEL_ACKED',
-        label: 'Cancel accepted'
+    CLOSE_ACKED: {
+        key: 'CLOSE_ACKED',
+        label: 'Close accepted'
     },
     PING: {
         key: 'PING',

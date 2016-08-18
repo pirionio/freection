@@ -37,8 +37,8 @@ function listenToUpdates(pushToken, dispatch) {
         if (event.eventType.key === EventTypes.SENT_BACK.key)
             dispatch(EventActions.sentBack(event.thing))
 
-        if (event.eventType.key === EventTypes.CANCEL_ACKED.key)
-            dispatch(EventActions.cancelAcked(event.thing))
+        if (event.eventType.key === EventTypes.CLOSE_ACKED.key)
+            dispatch(EventActions.closeAcked(event.thing))
 
         if (event.eventType.key === EventTypes.PING.key)
             dispatch(EventActions.pinged(event))
