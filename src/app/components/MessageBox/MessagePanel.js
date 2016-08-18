@@ -4,6 +4,7 @@ const {connect} = require('react-redux')
 const {Form} = require('react-redux-form')
 const classAutobind = require('class-autobind').default
 const radium = require('radium')
+const AddressParser = require('email-addresses')
 
 const find = require('lodash/find')
 const isNil = require('lodash/isNil')
@@ -81,8 +82,9 @@ class MessagePanel extends Component {
     }
 
     isSendDisabled() {
-        const {activeMessageBox} = this.props
-        return isNil(activeMessageBox) || activeMessageBox.ongoingAction
+        const {activeMessageBox, messageBox} = this.props
+        const address = messageBox && messageBox.message ? AddressParser.parseOneAddress(messageBox.message.to) : null
+        return isNil(activeMessageBox) || activeMessageBox.ongoingAction || !address
     }
 
     getStyles() {

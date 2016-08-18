@@ -1,4 +1,5 @@
 const router = require('express').Router()
+const AddressParser = require('email-addresses')
 
 const EndpointUtil = require('../../shared/utils/endpoint-util')
 const ThingService = require('../../shared/application/thing-service')
@@ -46,7 +47,16 @@ function isValid(request, response) {
         return false
     }
 
+    if (!validateEmailAddress(to)) {
+        response.status(400).send('Invalid address')
+    }
+
     return true
+}
+
+function validateEmailAddress(email) {
+    const emailAddress = AddressParser.parseOneAddress(email)
+    return !!emailAddress
 }
 
 module.exports = router
