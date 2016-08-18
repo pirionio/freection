@@ -31,37 +31,16 @@ class MessagePanel extends Component {
         classAutobind(this, MessagePanel.prototype)
     }
 
-    parseTo(to) {
-        // TODO: what do do with invalid emails?
-        // TODO: can we use regex?
-        const beginIndex = to.indexOf('<')
-        const endIndex = to.indexOf('>')
-
-        if (beginIndex !== -1 && endIndex !== -1 && endIndex > beginIndex) {
-            return to.substr(beginIndex + 1, endIndex - beginIndex - 1)
-        }
-
-        return to
-    }
-
-    buildMessage() {
-        const {messageBox} = this.props
-        const {message} = messageBox
-
-        const to = this.parseTo(message.to)
-        return merge(message, {to})
-    }
-
     send() {
         const {dispatch, messageBox, activeMessageBox} = this.props
 
         let promise, shouldClose = true
         switch (activeMessageBox.type.key) {
             case MessageTypes.NEW_THING.key:
-                promise = dispatch(ThingCommandActions.newThing(this.buildMessage()))
+                promise = dispatch(ThingCommandActions.newThing(messageBox.message))
                 break
             case MessageTypes.NEW_EMAIL.key:
-                promise = dispatch(EmailCommandActions.newEmail(this.buildMessage()))
+                promise = dispatch(EmailCommandActions.newEmail(messageBox.message))
                 break
             case MessageTypes.COMMENT_THING.key:
                 promise = dispatch(ThingCommandActions.comment(activeMessageBox.context.id, messageBox.message.body))

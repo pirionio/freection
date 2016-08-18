@@ -1,4 +1,5 @@
 const {remove, castArray, union, chain, omitBy, isNil, last} = require('lodash')
+const AddressParser = require('email-addresses')
 
 const {Event, Thing, User} = require('../models')
 const EventCreator = require('./event-creator')
@@ -287,7 +288,9 @@ function syncThingWithMessage(thingId, message) {
 }
 
 function getToAddress(to) {
-    return User.getUserByEmail(to)
+    const email = AddressParser.parseOneAddress(to).address
+
+    return User.getUserByEmail(email)
         .then(toUser => userToAddress(toUser))
         .catch(error => {
             if (error !== 'NotFound')

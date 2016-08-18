@@ -1,3 +1,5 @@
+const AddressParser = require('email-addresses')
+
 const UserTypes = require('../../../common/enums/user-types')
 
 function userToAddress(user) {
@@ -14,13 +16,24 @@ function userToAddress(user) {
 }
 
 function emailToAddress(email, name) {
+    const address = AddressParser.parseOneAddress(email)
+
+    let displayName
+
+    if (name)
+        displayName = name
+    else if (address.name)
+        displayName = address.name
+    else
+        displayName = `<${address.address}>`
+
     return {
         id: email,
         type: UserTypes.EMAIL.key,
         payload: {
-            email: email
+            email: address.address
         },
-        displayName: name ? name : `<${email}>`
+        displayName: displayName
     }
 }
 
