@@ -183,7 +183,10 @@ class ImapConnection {
     markAsReadByMessageId(messageId) {
         const criteria = [['HEADER', 'Message-ID', messageId]]
         return this._connection.searchAsync(criteria)
-            .then(results => this.markAsRead(results))
+            .then(results => {
+                if (results && results.length)
+                    this.markAsRead(results)
+            })
     }
 
     markAsRead(emailUids) {

@@ -79,6 +79,12 @@ function commentReadBy(comment) {
     }
 }
 
+function reconnected() {
+    return {
+        type: EventActionsTypes.RECONNECTED        
+    }
+}
+
 module.exports = {
     created,
     accepted,
@@ -90,5 +96,6 @@ module.exports = {
     pinged,
     ponged,
     commentCreated,
-    commentReadBy
+    commentReadBy,
+    reconnected
 }

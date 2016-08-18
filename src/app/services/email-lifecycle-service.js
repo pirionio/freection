@@ -15,6 +15,11 @@ class EmailLifecycleService {
         setInterval(this.doKeepAlive, 1000 * 60 * 1) // do keep alive every 1 minute
     }
 
+    reconnected() {
+        this._dispatch(EmailActions.hello())
+        this._dispatch(EmailActions.updateUnread())
+    }
+
     doKeepAlive() {
         ResourceUtil.post('/emails/push/keepalive', {})
             .catch(error => {

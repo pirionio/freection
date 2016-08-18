@@ -6,7 +6,8 @@ const fetchFollowUpsActions = FollowUpActions.fetchFollowUps
 const fetchFollowUps = () => {
     return (dispatch, getState) => {
         const {followUps} = getState()
-        if (followUps.invalidationStatus === InvalidationStatus.INVALIDATED) {
+        if (followUps.invalidationStatus === InvalidationStatus.INVALIDATED ||
+            followUps.invalidationStatus === InvalidationStatus.REQUIRE_UPDATE) {
             dispatch(fetchFollowUpsActions())
         }
     }

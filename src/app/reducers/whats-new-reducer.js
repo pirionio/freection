@@ -1,5 +1,6 @@
 const WhatsNewActionTypes = require('../actions/types/whats-new-action-types')
 const ThingCommandActionTypes = require('../actions/types/thing-command-action-types')
+const EventActionTypes = require('../actions/types/event-action-types')
 const {ActionStatus} = require('../constants')
 const EventTypes = require('../../common/enums/event-types')
 const {InvalidationStatus} = require('../constants')
@@ -17,15 +18,28 @@ function setState(state, action) {
     }
 }
 
+function reconnected(state, action) {
+    if (state.invalidationStatus === InvalidationStatus.FETCHED) {
+        return immutable(state)
+            .set('invalidationStatus', InvalidationStatus.REQUIRE_UPDATE)
+            .value()
+    }
+
+    return state
+}
+
 function fetchWhatsNew(state, action) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
-            setState(state, action)
+            return setState(state, action)
         case ActionStatus.START:
-            return {
-                notifications: state.notifications,
-                invalidationStatus: InvalidationStatus.FETCHING
-            }
+            const status = state.invalidationStatus === InvalidationStatus.REQUIRE_UPDATE ?
+                InvalidationStatus.UPDATING :
+                InvalidationStatus.FETCHING
+
+            return immutable(state)
+                .set('invalidationStatus', status)
+                .value()
         case ActionStatus.ERROR:
         default:
             return {
@@ -125,6 +139,8 @@ module.exports = (state = initialState, action) => {
     switch (action.type) {
         case WhatsNewActionTypes.SET_STATE:
             return setState(state, action)
+        case EventActionTypes.RECONNECTED:
+            return reconnected(state, action)
         case WhatsNewActionTypes.FETCH_WHATS_NEW:
             return fetchWhatsNew(state, action)
         case ThingCommandActionTypes.DO_THING:

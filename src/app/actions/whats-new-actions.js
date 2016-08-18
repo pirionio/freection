@@ -6,7 +6,8 @@ const fetchWhatsNewActions = WhatsNewActions.fetchWhatsNew
 const fetchWhatsNew = () => {
     return (dispatch, getState) => {
         const {whatsNew} = getState()
-        if (whatsNew.invalidationStatus === InvalidationStatus.INVALIDATED) {
+        if (whatsNew.invalidationStatus === InvalidationStatus.INVALIDATED ||
+            whatsNew.invalidationStatus === InvalidationStatus.REQUIRE_UPDATE) {
             dispatch(fetchWhatsNewActions())
         }
     }

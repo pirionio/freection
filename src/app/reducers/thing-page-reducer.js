@@ -6,6 +6,7 @@ const {SharedConstants} = require('../../common/shared-constants')
 const {ActionStatus, InvalidationStatus} = require('../constants')
 const thingReducer = require('./thing-reducer')
 const isUndefined = require('lodash/isUndefined')
+const head = require('lodash/head')
 
 const immutable = require('../util/immutable')
 
@@ -33,17 +34,50 @@ function getInitialReadBy(event) {
     }
 }
 
+function getUpdatedReadBy(event, thing) {
+    const existingThing = head(thing.events.filter(e => e.id === event.id))
+
+    if (existingThing) {
+        return {payload: {
+            initialIsRead: existingThing.payload.initialIsRead
+        }}
+    } else {
+        return getInitialReadBy(event)
+    }
+}
+
+function reconnected(state, action) {
+    if (state.invalidationStatus === InvalidationStatus.FETCHED) {
+        return immutable(state)
+            .set('invalidationStatus', InvalidationStatus.REQUIRE_UPDATE)
+            .value()
+    }
+
+    return state
+}
+
 function get(state, action) {
     switch (action.status) {
         case ActionStatus.START:
+            const status = state.invalidationStatus === InvalidationStatus.REQUIRE_UPDATE ?
+                InvalidationStatus.UPDATING :
+                InvalidationStatus.FETCHING
+
             return immutable(state)
-                .set('invalidationStatus', InvalidationStatus.FETCHING)
+                .set('invalidationStatus', status)
                 .value()
         case ActionStatus.COMPLETE:
+            const {thing} = state
+
             return immutable(state)
                 .set('thing', action.thing)
                 .touch('thing')
-                .arrayMergeItem('thing.events', event => SharedConstants.MESSAGE_TYPED_EVENTS.includes(event.eventType.key), getInitialReadBy)
+                .arrayMergeItem('thing.events', event => SharedConstants.MESSAGE_TYPED_EVENTS.includes(event.eventType.key), event => {
+                    if (state.invalidationStatus === InvalidationStatus.UPDATING)
+                        return getUpdatedReadBy(event, thing)
+                    else
+                        return getInitialReadBy(event)
+                })
                 .set('invalidationStatus', InvalidationStatus.FETCHED)
                 .value()
         case ActionStatus.ERROR:
@@ -195,6 +229,8 @@ function asyncStatusOperation(state, action, status) {
 
 module.exports = (state = initialState, action) => {
     switch (action.type) {
+        case EventActionTypes.RECONNECTED:
+            return reconnected(state, action)
         case ThingPageActionTypes.GET_THING:
             return get(state, action)
         case ThingPageActionTypes.HIDE_THING_PAGE:

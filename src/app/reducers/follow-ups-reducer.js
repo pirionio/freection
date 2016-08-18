@@ -25,13 +25,27 @@ function setState(state, action) {
         .value()
 }
 
+function reconnected(state, action) {
+    if (state.invalidationStatus === InvalidationStatus.FETCHED) {
+        return immutable(state)
+            .set('invalidationStatus', InvalidationStatus.REQUIRE_UPDATE)
+            .value()
+    }
+
+    return state
+}
+
 function fetchFollowUps(state, action) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
             return setState(state, action)
         case ActionStatus.START:
+            const status = state.invalidationStatus === InvalidationStatus.REQUIRE_UPDATE ?
+                InvalidationStatus.UPDATING :
+                InvalidationStatus.FETCHING
+
             return immutable(state)
-                .set('invalidationStatus', InvalidationStatus.FETCHING)
+                .set('invalidationStatus', status)
                 .value()
         case ActionStatus.ERROR:
         default:
@@ -93,6 +107,8 @@ module.exports = (state = initialState, action) => {
     switch (action.type) {
         case FollowUpsActionTypes.SET_STATE:
             return setState(state, action)
+        case EventActionTypes.RECONNECTED:
+            return reconnected(state, action)
         case FollowUpsActionTypes.FETCH_FOLLOW_UPS:
             return fetchFollowUps(state, action)
         case EventActionTypes.COMMENT_CREATED:

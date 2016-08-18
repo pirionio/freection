@@ -6,7 +6,8 @@ const fetchToDoActions = ToDoActions.fetchToDo
 const fetchToDo = () => {
     return (dispatch, getState) => {
         const {toDo} = getState()
-        if (toDo.invalidationStatus === InvalidationStatus.INVALIDATED) {
+        if (toDo.invalidationStatus === InvalidationStatus.INVALIDATED ||
+            toDo.invalidationStatus === InvalidationStatus.REQUIRE_UPDATE) {
             dispatch(fetchToDoActions())
         }
     }

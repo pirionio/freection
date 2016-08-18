@@ -44,6 +44,9 @@ module.exports = {
         {
             name: 'comment read by',
             params: ['comment']
+        },
+        {
+            name: 'reconnected'
         }
     ]
 }

@@ -13,7 +13,8 @@ const hideAction = ThingPageActions.hideThingPage
 function getThing(thingId) {
     return (dispatch, getState) => {
         const {thingPage} = getState()
-        if (thingPage.invalidationStatus === InvalidationStatus.INVALIDATED) {
+        if (thingPage.invalidationStatus === InvalidationStatus.INVALIDATED ||
+            thingPage.invalidationStatus === InvalidationStatus.REQUIRE_UPDATE) {
             return dispatch(getAction(thingId))
         }
     }
