@@ -17,6 +17,9 @@ module.exports = {
     greenCircleColor: 'green',
     yellowCircleColor: '#ffd200',
 
+    dropdownBackgroundColor: '#fafafa',
+    dropdownBorderColor: '#e0e0e0',
+
     backZIndex: 10,
     previewInlineReplyZIndex: 100
 }

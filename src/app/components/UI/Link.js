@@ -10,8 +10,12 @@ class Link extends Component {
     }
 
     onClick(event) {
-        const {to} = this.props
+        const {to, onClick} = this.props
         event.preventDefault()
+
+        if (onClick)
+            onClick(event)
+
         this.context.router.push(to)
     }
 
@@ -29,7 +33,8 @@ class Link extends Component {
 Link.propTypes = {
     to: PropTypes.string,
     style: PropTypes.object,
-    activeStyle: PropTypes.object
+    activeStyle: PropTypes.object,
+    onClick: PropTypes.func
 }
 Link.contextTypes = {
     router: PropTypes.object

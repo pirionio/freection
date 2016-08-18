@@ -99,10 +99,6 @@ class SideBar extends Component {
             {
                 pathname: '/followup',
                 title: 'Follow Up'
-            },
-            {
-                pathname: '/integrations/github',
-                title: 'Github'
             }
         ].map(this.getLink)
 

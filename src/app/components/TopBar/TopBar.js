@@ -10,7 +10,7 @@ const groupBy = require('lodash/groupBy')
 const reject = require('lodash/reject')
 
 const EventTypes = require('../../../common/enums/event-types')
-const UserInfo = require('./UserInfo')
+const Settings = require('./Settings')
 
 const Flexbox = require('../UI/Flexbox')
 const styleVars = require('../style-vars')
@@ -120,7 +120,10 @@ class TopBar extends Component {
                     <span>Greetings {currentUser.firstName}! </span>
                     {counts}
                 </Flexbox>
-                <UserInfo />
+                <Settings />
+                <Flexbox>
+                    <a href="/login/logout" style={{color: 'white'}}>Logout</a>
+                </Flexbox>
             </Flexbox>
         )
     }
