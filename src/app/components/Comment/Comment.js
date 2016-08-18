@@ -72,6 +72,7 @@ class Comment extends Component {
                 width: '120px'
             },
             text: {
+                lineHeight: '1.5',
                 padding: '0 10px'
             },
             date: {
