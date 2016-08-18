@@ -7,6 +7,7 @@ const radium = require('radium')
 const {chain} = require('lodash/core')
 const keys = require('lodash/keys')
 const groupBy = require('lodash/groupBy')
+const reject = require('lodash/reject')
 
 const EventTypes = require('../../../common/enums/event-types')
 const UserInfo = require('./UserInfo')
@@ -21,48 +22,67 @@ class TopBar extends Component {
     }
 
     getCreatedCount() {
-        const styles = this.getStyles()
-
-        const count = chain(this.props.newNotifications)
-            .filter(notification => notification.eventType.key === EventTypes.CREATED.key)
-            .value()
-            .length
-
-        return count ? <span style={[styles.count, styles.notLastCount]} key="created">{count} New Things</span> : null
+        return {
+            label: 'Unread Messages',
+            count: chain(this.props.newNotifications)
+                    .filter(notification => notification.eventType.key === EventTypes.CREATED.key)
+                    .value()
+                    .length
+        }
     }
 
     getCommentsCount() {
-        const styles = this.getStyles()
-
         const notifications = chain(this.props.newNotifications)
             .filter(notification => notification.eventType.key === EventTypes.COMMENT.key)
             .value()
 
-        const count = keys(groupBy(notifications, 'thingId')).length
-
-        return count ? <span style={[styles.count, styles.notLastCount]} key="comments">{count} Unread Messages</span> : null
+        return {
+            label: 'New Things',
+            count: keys(groupBy(notifications, 'thingId')).length
+        }
     }
 
     getToDoCount() {
-        const styles = this.getStyles()
-        const count = this.props.todoThings.length
-        return count ? <span style={[styles.count, styles.notLastCount]} key="todos">{count} To Dos</span> : null
+        return {
+            label: 'To Dos',
+            count: this.props.todoThings.length
+        }
     }
 
     getFollowUpCount() {
-        const styles = this.getStyles()
-        const count = this.props.followUpThings.length
-        return count ? <span style={[styles.count, styles.notLastCount]} key="follow-ups">{count} Follow Ups</span> : null
+        return {
+            label: 'Follow Ups',
+            count: this.props.followUpThings.length
+        }
     }
 
     getEmailsCount() {
-        const styles = this.getStyles()
-        const count = keys(groupBy(this.props.newEmails, 'payload.threadId')).length
-        return count ? <span key="emails" style={styles.count}>{count} Unread Emails</span> : null
+        return {
+            label: 'Unread Emails',
+            count: keys(groupBy(this.props.newEmails, 'payload.threadId')).length
+        }
     }
 
     getAllCounts() {
-        return [this.getCreatedCount(), this.getCommentsCount(), this.getToDoCount(), this.getFollowUpCount(), this.getEmailsCount()]
+        const styles = this.getStyles()
+        const counts = reject([this.getCreatedCount(), this.getCommentsCount(), this.getToDoCount(), this.getFollowUpCount(), this.getEmailsCount()],
+            {count: 0})
+
+        if (!counts.length)
+            return <span>Your workspace is clear, good job!</span>
+
+        return (
+            <span>
+                You have:
+                {
+                    counts.map((countObj, index) =>
+                        <span style={[styles.count, index < counts.length - 1 && styles.notLastCount]} key={index}>
+                            {countObj.count} {countObj.label}
+                        </span>
+                    )
+                }
+            </span>
+        )
     }
 
     getStyles() {
@@ -74,9 +94,9 @@ class TopBar extends Component {
                 color: 'white'
             },
             countSummary: {
-                fontFamily: 'Roboto Mono, monospace',
+                fontSize: '1.2em',
                 fontWeight: 500,
-                letterSpacing: '0.025em'
+                letterSpacing: '0.05em'
             },
             count: {
                 height: '13px',
@@ -97,7 +117,7 @@ class TopBar extends Component {
         return (
             <Flexbox name="top-bar" shrink={0} container="row" justifyContent="flex-end" alignItems="center" style={styles.topBar}>
                 <Flexbox name="count-summary" grow={1} style={styles.countSummary}>
-                    Greetings {currentUser.firstName}! You have:
+                    <span>Greetings {currentUser.firstName}! </span>
                     {counts}
                 </Flexbox>
                 <UserInfo />
