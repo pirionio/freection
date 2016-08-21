@@ -28,6 +28,25 @@ class FollowUpPreviewItem extends Component {
         }
     }
 
+    getStatusText() {
+        const {thing} = this.props
+
+        switch(thing.payload.status) {
+            case ThingStatus.INPROGRESS.key:
+                return <span>It's in <strong>{thing.to.displayName}</strong> todo list</span>
+            case ThingStatus.NEW.key:
+            case ThingStatus.REOPENED.key:
+                return <span>It's still in <strong>{thing.to.displayName}</strong> what's new</span>
+            case ThingStatus.DONE.key:
+                return <span><strong>{thing.to.displayName}</strong> completed the thing</span>
+            case ThingStatus.DISMISS.key:
+                return <span><strong>{thing.to.displayName}</strong> dismissed the thing</span>
+
+            default:
+                return <strong>{thing.to.displayName}</strong>
+        }
+    }
+
     getExpandedMessages() {
         const {thing} = this.props
         const unreadEvents = ThingHelper.getUnreadMessages(thing)
@@ -44,7 +63,7 @@ class FollowUpPreviewItem extends Component {
                          expandedMessages={this.getExpandedMessages()}
                          onClick={() => dispatch(ThingPageActions.showThingPage(thing))}>
                 <PreviewItemStatus>
-                    <strong>{thing.to.displayName}</strong>
+                    {this.getStatusText()}
                 </PreviewItemStatus>
                 <PreviewItemText>
                     <ThingPreviewText thing={thing}/>
