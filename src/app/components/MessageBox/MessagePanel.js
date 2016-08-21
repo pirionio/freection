@@ -8,6 +8,7 @@ const AddressParser = require('email-addresses')
 
 const find = require('lodash/find')
 const isNil = require('lodash/isNil')
+const isEmpty = require('lodash/isEmpty')
 const map = require('lodash/map')
 const merge = require('lodash/merge')
 const {chain} = require('lodash/core')
@@ -62,8 +63,10 @@ class MessagePanel extends Component {
 
     isSendDisabled() {
         const {activeMessageBox, messageBox} = this.props
-        const address = messageBox && messageBox.message ? AddressParser.parseOneAddress(messageBox.message.to) : null
-        return isNil(activeMessageBox) || activeMessageBox.ongoingAction || !address
+        const addressValid = messageBox && messageBox.message && !isEmpty(messageBox.message.to) ?
+            AddressParser.parseOneAddress(messageBox.message.to) :
+            true
+        return isNil(activeMessageBox) || activeMessageBox.ongoingAction || !addressValid
     }
 
     getStyles() {
