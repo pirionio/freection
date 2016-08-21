@@ -3,6 +3,8 @@ const {User, Thing, Event} = require('../shared/models')
 const ThingService = require('../shared/application/thing-service')
 
 const userId = '1a66ffbe-114f-4f21-bf4b-126c518be17c'
+const subject = 'Moving from equinix to AWS or Azure'
+const subject2 = 'Find alternative to broadcast for feed'
 
 async function sendThing(from, to, subject, body, accept = false) {
     const fromUser = (await User.filter({firstName: from}).run())[0]
@@ -115,9 +117,12 @@ module.exports = async function() {
     await Thing.delete().execute()
     await Event.delete().execute()
     await createUsers(user)
-    await sendThing('Kobi', 'Doron', 'Moving from equinix to AWS or Azure', 'Hi Doron,\r\n\r\nWe are paying a lot of money to equinix, please make a plan to move to AWS.', true)
-    await sendThing('Doron', 'Ronen', 'Find alternative to broadcast for feed', 'Hi Ronen,\r\n\r\nAs we are looking into moving from equinix to AWS or azure where broadcast is not available we need to look into an alternative.\r\nplease find one, take a look at NetMQ', true)
-    await sendThing('Eitan', 'Doron', 'IPhone old prices bug', 'Hi Doron,\r\n\r\n As you probably know we have a bug on production where IPhone traders trade on old prices, this is very urgent. \r\nPlease find a fix ASAP')
+    await sendThing('Kobi', 'Doron', subject, 'Hi Doron,\r\n\r\nWe are paying a lot of money to equinix, please make a plan to move to AWS.', true)
+    await sendThing('Doron', 'Ronen', subject2, 'Hi Ronen,\r\n\r\nAs we are looking into moving from equinix to AWS or azure where broadcast is not available we need to look into an alternative.\r\nplease find one, take a look at NetMQ', true)
+    await sendThing('Eitan', 'Doron', 'IPhone old prices bug', 'Hi Doron,\r\n\r\nAs you probably know we have a bug on production where IPhone traders trade on old prices, this is very urgent. \r\nPlease find a fix ASAP')
 
     console.log('generated')
 }
+
+module.exports.subject = subject
+module.exports.subject2 = subject2
