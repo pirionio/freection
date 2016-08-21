@@ -37,6 +37,13 @@ class Comment extends Component {
     }
 
     getCommentText() {
+        const preStyle = {
+            padding: 0,
+            margin: 0,
+            whiteSpace: 'pre-wrap',
+            fontFamily: 'Roboto, Arial'
+        }
+
         const {comment} = this.props
 
         if (comment.eventType && comment.eventType.key === EventTypes.PING.key)
@@ -45,7 +52,7 @@ class Comment extends Component {
         if (comment.payload.html)
             return this.parseEmailHtml(comment.payload.html)
 
-        return comment.payload.text
+        return <pre style={preStyle}>{comment.payload.text}</pre>
     }
 
     parseEmailHtml(html) {

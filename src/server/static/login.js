@@ -71,9 +71,8 @@ passport.use(new GoogleStrategy({
         refreshToken
     }
 
-    User.
-        getUserByGoogleId(userData.googleId).
-        catch(e=> {
+    User.getUserByGoogleId(userData.googleId)
+        .catch(e=> {
             if (e === "NotFound") {
                 if (userData.refreshToken) {
                     return saveNewUser(userData).
@@ -87,9 +86,26 @@ passport.use(new GoogleStrategy({
             }
             else
                 throw e
-        }).
-        then(user => cb(null, createUserToken(user))).
-        catch(err=> {
+        })
+        .then(user => {
+            if (!user.refreshToken) {
+                if (!userData.refreshToken)
+                    throw "MissingRefreshToken"
+
+                user.refreshToken = userData.refreshToken
+                user.accessToken = userData.accessToken
+                return user.save()
+            }
+
+            if (!user.accessToken) {
+                user.accessToken = userData.accessToken
+                return user.save()
+            }
+
+            return user
+        })
+        .then(user => cb(null, createUserToken(user)))
+        .catch(err=> {
             if (err === "MissingRefreshToken") {
                 logger.info(
                     `missing refresh token for new user ${userData.firstName} ${userData.lastName} ${userData.email}`)

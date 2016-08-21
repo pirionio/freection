@@ -61,6 +61,8 @@ async function newThing(user, to, subject, body) {
         }
 
         await sendEmailForThing(thing, user, toAddress, subject, body)
+
+        return thing.id
     } catch(error) {
         logger.error(`error while creating new thing for user ${user.email}`, error)
         throw error
