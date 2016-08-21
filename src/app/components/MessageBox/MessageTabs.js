@@ -6,6 +6,7 @@ const radium = require('radium')
 const Icon = require('react-fontawesome')
 
 const find = require('lodash/find')
+const isEmpty = require('lodash/isEmpty')
 
 const MessageBoxActions = require('../../actions/message-box-actions')
 const MessageTypes = require('../../../common/enums/message-types')
@@ -28,13 +29,17 @@ class MessageTabs extends Component {
     getMessageTabs() {
         const {messageBoxes, activeMessageBox} = this.props
         const styles = this.getStyles()
+
+        if (!activeMessageBox || isEmpty(activeMessageBox))
+            return null
+
         return messageBoxes.map(messageBox => {
             const closeButton = [MessageTypes.NEW_THING.key, MessageTypes.NEW_EMAIL.key].includes(messageBox.type.key) ?
                 <Icon name="times" style={styles.tab.close} onClick={() => this.closeMessageBox(messageBox)} /> :
                 null
 
             return (
-                <Flexbox key={messageBox.id} container="column" justifyContent="center"
+                <Flexbox key={messageBox.id} container="row" justifyContent="center" alignItems="center"
                          style={[styles.tab, activeMessageBox && activeMessageBox.id === messageBox.id && styles.tab.active]}>
 
                     <a onClick={() => this.selectMessageBox(messageBox)} style={styles.tab.link}>
@@ -76,6 +81,7 @@ class MessageTabs extends Component {
                      style={[styles.new.menuOption, {borderBottom: '1px solid #e0e0e0'}]}>New Thing</div>
                 <div name="new-menu-option" key="email-option" onClick={this.newEmailMessageBox}
                      style={styles.new.menuOption}>New Email</div>
+                <span style={styles.new.menu.arrow} />
             </div>
         )
     }
@@ -83,44 +89,40 @@ class MessageTabs extends Component {
     getStyles() {
         return {
             topBar: {
-                height: '37px',
-                backgroundColor: styleVars.primaryColor
+                height: '37px'
             },
             tab: {
-                position: 'relative',
                 height: '100%',
-                minWidth: '98px',
+                minWidth: '132px',
                 maxWidth: '150px',
-                color: 'white',
                 padding: '0 16px',
+                backgroundColor: styleVars.highlightColor,
+                color: 'white',
+                opacity: '0.5',
                 active: {
-                    backgroundColor: styleVars.highlightColor,
-                    color: styleVars.primaryColor
+                    opacity: '1'
                 },
                 link: {
+                    width: '100%',
                     cursor: 'pointer',
-                    textAlign: 'center'
+                    textAlign: 'center',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.07em'
                 },
                 close: {
-                    position: 'absolute',
-                    top: '1px',
-                    right: '2px',
+                    marginLeft: '20px',
                     cursor: 'pointer',
-                    fontSize: '0.8em',
                     color: 'inherit'
                 }
             },
             new: {
                 button: {
-                    height: '100%',
-                    lineHeight: '37px',
-                    width: '115px',
-                    backgroundColor: '#3b4b54',
-                    color: 'white',
-                    border: `1px solid ${styleVars.primaryColor}`,
-                    outline: 'none',
-                    textAlign: 'center',
+                    height: '23px',
+                    lineHeight: '23px',
+                    width: '60px',
+                    color: styleVars.secondaryColor,
                     cursor: 'default',
+                    letterSpacing: '0.05em',
                     ':hover': {}
                 },
                 icon: {
@@ -128,12 +130,23 @@ class MessageTabs extends Component {
                 },
                 menu: {
                     position: 'absolute',
-                    top: '-75px',
+                    right: '-15px',
+                    top: '-68px',
                     height: '75px',
                     width: '115px',
                     backgroundColor: '#fafafa',
                     border: '1px solid #e0e0e0',
-                    ':hover': {}
+                    ':hover': {},
+                    arrow: {
+                        position: 'absolute',
+                        left: '38px',
+                        bottom: '-6px',
+                        width: 0,
+                        height: 0,
+                        borderRight: '5px solid transparent',
+                        borderLeft: '5px solid transparent',
+                        borderTop: `6px solid ${styleVars.dropdownBackgroundColor}`
+                    }
                 },
                 menuOption: {
                     height: '37px',
@@ -150,17 +163,20 @@ class MessageTabs extends Component {
     }
 
     render () {
+        const {activeMessageBox} = this.props
+
         const styles = this.getStyles()
         const messageTabs = this.getMessageTabs()
         const newMenu = this.getNewMenu()
 
         return (
-            <Flexbox name="message-box-top-bar" container="row" justifyContent="flex-end" alignItems="center" style={styles.topBar}>
+            <Flexbox name="message-box-top-bar" container="row" justifyContent="flex-end" alignItems="center"
+                     style={[styles.topBar, !isEmpty(activeMessageBox) && styles.topBar.active]}>
                 <Flexbox name="message-tabs" grow={1} container="row">
                     {messageTabs}
                 </Flexbox>
                 <div name="message-new" style={styles.new}>
-                    <div style={styles.new.button} key="new-button"><Icon name="plus" style={styles.new.icon} /> new</div>
+                    <div style={styles.new.button} key="new-button"><Icon name="plus" style={styles.new.icon} /> NEW</div>
                     {newMenu}
                 </div>
             </Flexbox>

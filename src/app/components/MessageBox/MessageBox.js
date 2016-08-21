@@ -4,7 +4,9 @@ const {connect} = require('react-redux')
 const {Field} = require('react-redux-form')
 const classAutobind = require('class-autobind').default
 const radium = require('radium')
+
 const isNil = require('lodash/isNil')
+const find = require('lodash/find')
 
 const Flexbox = require('../UI/Flexbox')
 const To = require('./To')
@@ -116,7 +118,8 @@ class MessageBox extends Component {
             box: {
                 height: '200px',
                 backgroundColor: 'white',
-                border: `1px solid ${styleVars.primaryColor}`
+                border: `1px solid ${styleVars.highlightColor}`,
+                boxShadow: '0px 0px 40px 0px rgba(0, 0, 0, 0.2)'
             },
             messageSubject: {
                 height: '40px',

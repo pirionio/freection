@@ -1,7 +1,7 @@
 module.exports = {
     primaryColor: '#1e272c',
     secondaryColor: '#36474f',
-    highlightColor: '#edc214',
+    highlightColor: '#f6ab27',
     menuTextColor: '#838c91',
     backgroundColor: '#eceff2',
     watermarkColor: 'darkgrey',

@@ -72,7 +72,8 @@ class MessagePanel extends Component {
     getStyles() {
         return {
             form: {
-                width: '100%'
+                width: '100%',
+                marginBottom: '0'
             },
             panel: {
                 position: 'relative'
