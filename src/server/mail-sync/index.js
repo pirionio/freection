@@ -39,7 +39,7 @@ module.exports = function() {
                         })
                 })
                 .catch(error => {
-                    logger.error(`error while fetching userid ${userId}`)
+                    logger.error(`error while fetching userid ${userId}`, error)
                 })
         }
     }
