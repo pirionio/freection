@@ -113,7 +113,7 @@ module.exports = async function() {
     } catch (error) {
     }
 
-    await User.delete().execute()
+    await User.filter(doc => doc('id').ne(userId)).delete().execute()
     await Thing.delete().execute()
     await Event.delete().execute()
     await createUsers(user)
