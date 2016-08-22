@@ -68,7 +68,7 @@ class MessageBox extends Component {
         return (
             <Flexbox name="message-body" grow={1} container="row" style={styles.messageBody}>
                 <Field model="messageBox.message.body">
-                    <textarea style={styles.textField} tabIndex="2" placeholder="Wrtie your message here"
+                    <textarea style={styles.textField} tabIndex="2" placeholder="Write your message here"
                               ref={ref => this.messageBody = ref}
                               onFocus={this.focusOnBody} />
                 </Field>
