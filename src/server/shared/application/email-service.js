@@ -84,7 +84,7 @@ async function markAsReadByMessageId(user, messageId) {
         await connection.markAsReadByMessageId(messageId)
     } finally {
         if (connection)
-            GoogleSmtpConnectionPool.releaseConnection(user, connection)
+            GoogleImapConnectionPool.releaseConnection(user, connection)
     }
 }
 
