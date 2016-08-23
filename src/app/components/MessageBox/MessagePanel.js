@@ -16,7 +16,6 @@ const {chain} = require('lodash/core')
 const MessageBoxActions = require('../../actions/message-box-actions')
 
 const Flexbox = require('../UI/Flexbox')
-const TextTruncate = require('../UI/TextTruncate')
 const MessageBox = require('./MessageBox')
 const CollapsedMessageBox = require('./CollapsedMessageBox')
 const MessageTabs = require('./MessageTabs')
@@ -63,9 +62,10 @@ class MessagePanel extends Component {
 
     isSendDisabled() {
         const {activeMessageBox, messageBox} = this.props
-        const addressValid = messageBox && messageBox.message && !isEmpty(messageBox.message.to) ?
-            AddressParser.parseOneAddress(messageBox.message.to) :
-            true
+        const addressValid =
+            [MessageTypes.NEW_THING.key, MessageTypes.NEW_EMAIL.key].includes(activeMessageBox.type.key) && messageBox && messageBox.message ?
+                AddressParser.parseOneAddress(messageBox.message.to) :
+                true
         return isNil(activeMessageBox) || activeMessageBox.ongoingAction || !addressValid
     }
 
