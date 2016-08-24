@@ -11,12 +11,14 @@ const forOwn = require('lodash/forOwn')
 const merge = require('lodash/merge')
 const clone = require('lodash/clone')
 const map = require('lodash/map')
+const isEmpty = require('lodash/isEmpty')
 
 const EmailActions = require('../../actions/email-actions')
 
 const PreviewsContainer = require('../Preview/PreviewsContainer')
 const EmailPreviewItem = require('./EmailPreviewItem')
 const styleVars = require('../style-vars')
+const FullEmail = require('../Emails/FullEmail')
 
 class UnreadEmails extends Component {
     constructor(props) {
@@ -67,14 +69,17 @@ class UnreadEmails extends Component {
     }
 
     render() {
-        const {invalidationStatus} = this.props
+        const {invalidationStatus, fullEmailMode} = this.props
 
         return (
             <DocumentTitle title={this.getTitle()}>
                 <PreviewsContainer previewItems={this.getEmailRows()}
                                    fetchPreviews={this.fetchUnreadEmails}
                                    noPreviews={this.getNoPreviews()}
-                                   invalidationStatus={invalidationStatus} />
+                                   invalidationStatus={invalidationStatus}
+                                   fullItemMode={fullEmailMode}>
+                    <FullEmail />
+                </PreviewsContainer>
             </DocumentTitle>
         )
     }
@@ -83,14 +88,16 @@ class UnreadEmails extends Component {
 UnreadEmails.propsTypes = {
     emails: PropTypes.array.isRequired,
     currentUser: PropTypes.object.isRequired,
-    invalidationStatus: PropTypes.string.isRequired
+    invalidationStatus: PropTypes.string.isRequired,
+    fullEmailMode: PropTypes.bool.isRequired
 }
 
 function mapStateToProps(state) {
     return {
         emails: state.unreadEmails.emails,
         invalidationStatus: state.unreadEmails.invalidationStatus,
-        currentUser: state.auth
+        currentUser: state.auth,
+        fullEmailMode: !isEmpty(state.emailPage.thread)
     }
 }
 

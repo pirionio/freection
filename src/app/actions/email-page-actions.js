@@ -22,8 +22,7 @@ function getEmail(threadId) {
 
 function showEmailPage(email) {
     return dispatch => {
-        dispatch(push(`/emails/${email.payload.threadId}`))
-        dispatch(showAction(email.payload.threadId))
+        dispatch(showAction(email))
         dispatch(MessageBoxActions.newMessageBox(MessageTypes.REPLY_EMAIL, email))
     }
 }

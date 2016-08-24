@@ -57,8 +57,8 @@ class Settings extends Component {
                 left: '-62px',
                 minHeight: '50px',
                 minWidth: '130px',
-                backgroundColor: styleVars.dropdownBackgroundColor,
-                border: `1px solid ${styleVars.dropdownBorderColor}`
+                backgroundColor: styleVars.secondaryBackgroundColor,
+                border: `1px solid ${styleVars.baseBorderColor}`
             },
             menuOption: {
                 width: '100%',
@@ -79,7 +79,7 @@ class Settings extends Component {
                 height: 0,
                 borderRight: '5px solid transparent',
                 borderLeft: '5px solid transparent',
-                borderBottom: `6px solid ${styleVars.dropdownBackgroundColor}`
+                borderBottom: `6px solid ${styleVars.secondaryBackgroundColor}`
             }
         }
     }

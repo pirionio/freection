@@ -22,7 +22,6 @@ function getThing(thingId) {
 
 function showThingPage(thing) {
     return dispatch => {
-        dispatch(push(`/things/${thing.id}`))
         dispatch(showAction(thing))
         dispatch(MessageBoxActions.newMessageBox(MessageTypes.COMMENT_THING, thing))
     }

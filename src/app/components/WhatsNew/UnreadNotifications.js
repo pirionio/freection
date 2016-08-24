@@ -12,6 +12,7 @@ const reject = require('lodash/reject')
 const orderBy = require('lodash/orderBy')
 const forOwn = require('lodash/forOwn')
 const clone = require('lodash/clone')
+const isEmpty = require('lodash/isEmpty')
 const {chain} = require('lodash/core')
 
 const Page = require('../UI/Page')
@@ -19,6 +20,8 @@ const styleVars = require('../style-vars')
 const PreviewsContainer = require('../Preview/PreviewsContainer')
 const NotificationPreviewItem = require('./NotificationPreviewItem')
 const GithubPreviewItem = require('./GithubPreviewItem')
+const FullThing = require('../Thing/FullThing')
+
 const WhatsNewActions = require('../../actions/whats-new-actions')
 const EventTypes = require('../../../common/enums/event-types')
 const EntityTypes = require('../../../common/enums/entity-types')
@@ -94,14 +97,17 @@ class WhatsNew extends Component {
     }
     
     render () {
-        const {invalidationStatus} = this.props
+        const {invalidationStatus, fullThingMode} = this.props
         
         return (
             <Page title={this.getTitle()}>
                 <PreviewsContainer previewItems={this.getNotificationRows()}
                                    fetchPreviews={this.fetchWhatsNew}
                                    noPreviews={this.getNoPreviews()}
-                                   invalidationStatus={invalidationStatus} />
+                                   invalidationStatus={invalidationStatus}
+                                   fullItemMode={fullThingMode}>
+                    <FullThing />
+                </PreviewsContainer>
             </Page>
         )
     }
@@ -109,13 +115,15 @@ class WhatsNew extends Component {
 
 WhatsNew.propTypes = {
     notifications: PropTypes.array.isRequired,
-    invalidationStatus: PropTypes.string.isRequired
+    invalidationStatus: PropTypes.string.isRequired,
+    fullThingMode: PropTypes.bool.isRequired
 }
 
 function mapStateToProps(state) {
     return {
         notifications: state.whatsNew.notifications,
-        invalidationStatus: state.whatsNew.invalidationStatus
+        invalidationStatus: state.whatsNew.invalidationStatus,
+        fullThingMode: !isEmpty(state.thingPage.thing)
     }
 }
 

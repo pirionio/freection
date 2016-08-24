@@ -3,6 +3,7 @@ const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const orderBy = require('lodash/orderBy')
 const classAutobind = require('class-autobind').default
+const isEmpty = require('lodash/isEmpty')
 
 const Page = require('../UI/Page')
 const styleVars = require('../style-vars')
@@ -10,6 +11,8 @@ const PreviewsContainer = require('../Preview/PreviewsContainer')
 const ToDoActions = require('../../actions/to-do-actions')
 const ToDoPreviewItem = require('./ToDoPreviewItem')
 const GithubPreviewItem = require('./GithubPreviewItem')
+const FullThing = require('../Thing/FullThing')
+
 const EntityTypes = require('../../../common/enums/entity-types')
 
 class ToDo extends Component {
@@ -49,14 +52,17 @@ class ToDo extends Component {
     }
 
     render() {
-        const {invalidationStatus} = this.props
+        const {invalidationStatus, fullThingMode} = this.props
         
         return (
             <Page title={this.getTitle()}>
                 <PreviewsContainer previewItems={this.getThingsToDo()}
                                    fetchPreviews={this.fetchToDo}
                                    noPreviews={this.getNoPreviews()}
-                                   invalidationStatus={invalidationStatus} />
+                                   invalidationStatus={invalidationStatus}
+                                   fullItemMode={fullThingMode}>
+                    <FullThing />
+                </PreviewsContainer>
             </Page>
         )
     }
@@ -64,13 +70,15 @@ class ToDo extends Component {
 
 ToDo.propTypes = {
     things: PropTypes.array.isRequired,
-    invalidationStatus: PropTypes.string.isRequired
+    invalidationStatus: PropTypes.string.isRequired,
+    fullThingMode: PropTypes.bool.isRequired
 }
 
 function mapStateToProps (state) {
     return {
         things: state.toDo.things,
-        invalidationStatus: state.toDo.invalidationStatus
+        invalidationStatus: state.toDo.invalidationStatus,
+        fullThingMode: !isEmpty(state.thingPage.thing)
     }
 }
 

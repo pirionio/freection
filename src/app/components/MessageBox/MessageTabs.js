@@ -145,7 +145,7 @@ class MessageTabs extends Component {
                         height: 0,
                         borderRight: '5px solid transparent',
                         borderLeft: '5px solid transparent',
-                        borderTop: `6px solid ${styleVars.dropdownBackgroundColor}`
+                        borderTop: `6px solid ${styleVars.secondaryBackgroundColor}`
                     }
                 },
                 menuOption: {

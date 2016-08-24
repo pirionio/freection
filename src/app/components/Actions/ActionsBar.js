@@ -28,20 +28,28 @@ class ActionsBar extends Component {
     }
 
     render() {
-        const {isRollover} = this.props
+        const {supportRollover, isRollover} = this.props
 
         const firstAction = this.getFirstAction()
         const restOfActions = this.getRestOfActions()
 
+        if (!supportRollover) {
+            return (
+                <Flexbox name="actions-bar" container='row-reverse'>
+                    {[firstAction, ...restOfActions]}
+                </Flexbox>
+            )
+        }
+
         return (
-            <Flexbox container='row-reverse'>
+            <Flexbox name="actions-bar" container='row-reverse'>
                 {firstAction}
                 <Transition component="div"
                             enter={{opacity: isRollover ? 1 : 0}}
                             leave={{opacity: 0}}
                             appear={{opacity: 0}}>
                     <div key="rest-of-actions">
-                        <Flexbox container="row-reverse">
+                        <Flexbox name="rest-of-actions-row" container="row-reverse">
                             {restOfActions}
                         </Flexbox>
                     </div>

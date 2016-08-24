@@ -4,11 +4,13 @@ const DocumentTitle = require('react-document-title')
 const {connect} = require('react-redux')
 const orderBy = require('lodash/orderBy')
 const classAutobind = require('class-autobind').default
+const isEmpty = require('lodash/isEmpty')
 
 const PreviewsContainer = require('../Preview/PreviewsContainer')
 const styleVars = require('../style-vars')
 const FollowUpsActions = require('../../actions/follow-up-actions')
 const FollowUpPreviewItem = require('./FollowUpPreviewItem')
+const FullThing = require('../Thing/FullThing')
 
 class FollowUp extends Component {
     constructor(props) {
@@ -44,14 +46,17 @@ class FollowUp extends Component {
     }
 
     render() {
-        const {invalidationStatus} = this.props
+        const {invalidationStatus, fullThingMode} = this.props
 
         return (
             <DocumentTitle title={this.getTitle()}>
                 <PreviewsContainer previewItems={this.getThingsToFollowUp()}
                                    fetchPreviews={this.fetchFollowUps}
                                    noPreviews={this.getNoPreviews()}
-                                   invalidationStatus={invalidationStatus} />
+                                   invalidationStatus={invalidationStatus}
+                                   fullItemMode={fullThingMode}>
+                    <FullThing />
+                </PreviewsContainer>
             </DocumentTitle>
         )
     }
@@ -59,13 +64,15 @@ class FollowUp extends Component {
 
 FollowUp.propTypes = {
     things: PropTypes.array.isRequired,
-    invalidationStatus: PropTypes.string.isRequired
+    invalidationStatus: PropTypes.string.isRequired,
+    fullThingMode: PropTypes.bool.isRequired
 }
 
 const mapStateToProps = (state) => {
     return {
         things: state.followUps.followUps,
-        invalidationStatus: state.followUps.invalidationStatus
+        invalidationStatus: state.followUps.invalidationStatus,
+        fullThingMode: !isEmpty(state.thingPage.thing)
     }
 }
 

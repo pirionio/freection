@@ -5,8 +5,7 @@ const {connect} = require('react-redux')
 const TextTruncate = require('../UI/TextTruncate')
 const EmailPreviewActionBar = require('./EmailPreviewActionsBar')
 const EmailPageActions = require('../../actions/email-page-actions')
-const {PreviewItem, PreviewItemStatus, PreviewItemTitle, PreviewItemDate, PreviewItemText, PreviewItemActions} =
-    require('../Preview/PreviewItem')
+const {PreviewItem, PreviewItemStatus, PreviewItemText, PreviewItemActions} = require('../Preview/PreviewItem')
 
 class EmailPreviewItem extends Component {
     render() {

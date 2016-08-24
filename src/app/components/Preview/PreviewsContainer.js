@@ -3,6 +3,8 @@ const {Component, PropTypes} = React
 const Delay = require('react-delay')
 const radium = require('radium')
 
+const isEmpty = require('lodash/isEmpty')
+
 const {GeneralConstants, InvalidationStatus} = require('../../constants')
 
 const Flexbox = require('../UI/Flexbox')
@@ -54,7 +56,7 @@ class PreviewsContainer extends Component {
     }
 
     render () {
-        const {previewItems, invalidationStatus} = this.props
+        const {previewItems, invalidationStatus, fullItemMode, children} = this.props
 
         if (invalidationStatus === InvalidationStatus.FETCHING) {
             return (
@@ -77,6 +79,16 @@ class PreviewsContainer extends Component {
             )
         }
 
+        if (fullItemMode) {
+            return (
+                <Flexbox name="preview-container" grow={1} container="column" justifyContent="flex-end">
+                    <Flexbox name="preview-content" container="column" grow={1} style={{marginBottom: '15px'}}>
+                        {children}
+                    </Flexbox>
+                </Flexbox>
+            )
+        }
+
         return (
             <Flexbox name="preview-container" grow={1} container="column" justifyContent="flex-end">
                 <Flexbox name="preview-content" container="column" grow={1} style={{marginBottom: '15px'}}>
@@ -94,7 +106,8 @@ PreviewsContainer.propTypes = {
     previewItems: PropTypes.array.isRequired,
     fetchPreviews: PropTypes.func.isRequired,
     noPreviews: PropTypes.object.isRequired,
-    invalidationStatus: PropTypes.string.isRequired
+    invalidationStatus: PropTypes.string.isRequired,
+    fullItemMode: PropTypes.bool.isRequired
 }
 
 module.exports = radium(PreviewsContainer)

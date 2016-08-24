@@ -4,6 +4,8 @@ module.exports = {
     highlightColor: '#f6ab27',
     menuTextColor: '#838c91',
     backgroundColor: '#eceff2',
+    secondaryBackgroundColor: '#fafafa',
+    baseBorderColor: '#e0e0e0',
     watermarkColor: 'darkgrey',
     disabledColor: '#f5f4f4',
     baseBlueColor: '#448ccb',
@@ -16,10 +18,9 @@ module.exports = {
     blueCircleColor: '#448ccb',
     greenCircleColor: 'green',
     yellowCircleColor: '#ffd200',
-
-    dropdownBackgroundColor: '#fafafa',
-    dropdownBorderColor: '#e0e0e0',
+    greyCircleColor: '#646464',
 
     backZIndex: 10,
-    previewInlineReplyZIndex: 100
+    previewInlineReplyZIndex: 100,
+    fullItemZIndex: 50
 }

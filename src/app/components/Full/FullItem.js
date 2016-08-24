@@ -1,47 +1,60 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {getChildOfType, createSlots} = require('../../util/component-util')
+const radium = require('radium')
 const classAutobind = require('class-autobind').default
+const clickOutside = require('react-click-outside')
 const Delay = require('react-delay')
+const Icon = require('react-fontawesome')
 
 const Flexbox = require('../UI/Flexbox')
 const Button = require('../UI/Button')
 const CommentList = require('../Comment/CommentList')
+const Ellipse = require('../UI/Ellipse')
+const TextTruncate = require('../UI/TextTruncate')
 const styleVars = require('../style-vars')
 
 const {GeneralConstants} = require('../../constants')
 
-const slots = createSlots('FullItemSubject', 'FullItemStatus', 'FullItemActions', 'FullItemUser', 'FullItemDate', 'FullItemBox')
+const slots = createSlots('FullItemSubject', 'FullItemStatus', 'FullItemActions', 'FullItemBox')
 
 class FullItem extends  Component {
     constructor(props) {
         super(props)
         classAutobind(this, FullItem.prototype)
     }
+
+    handleClickOutside() {
+        this.props.close()
+    }
+
     getSubject() {
         return getChildOfType(this.props.children, slots.FullItemSubject)
     }
 
     getStatus() {
-        return getChildOfType(this.props.children, slots.FullItemStatus)
+        const {circleColor} = this.props
+
+        const status = getChildOfType(this.props.children, slots.FullItemStatus)
+        return status ?
+            <Flexbox name="full-item-circle" width='19px' shrink={0} container='column' justifyContent="center">
+                <Ellipse width="8xp" height="8px" color={circleColor} />
+            </Flexbox> :
+            null
     }
 
     getActions() {
-        return getChildOfType(this.props.children, slots.FullItemActions)
-    }
-
-    getUser() {
-        return getChildOfType(this.props.children, slots.FullItemUser)
-    }
-
-    getDate() {
-        return getChildOfType(this.props.children, slots.FullItemDate)
+        const actions = getChildOfType(this.props.children, slots.FullItemActions)
+        return actions ?
+            <Flexbox name="full-item-actions">
+                {actions}
+            </Flexbox> :
+            null
     }
 
     getBox() {
         return getChildOfType(this.props.children, slots.FullItemBox)
     }
-
 
     renderFetching() {
         const styles = this.getStyles()
@@ -55,9 +68,6 @@ class FullItem extends  Component {
                         </div>
                     </Delay>
                 </Flexbox>
-                <Flexbox name="full-item-close">
-                    <Button label="Back" onClick={this.props.close} style={styles.button} />
-                </Flexbox>
             </Flexbox>
         )
     }
@@ -70,9 +80,6 @@ class FullItem extends  Component {
                 <Flexbox name="full-item-error" grow={1}>
                     We are sorry, the item could not be displayed!
                 </Flexbox>
-                <Flexbox name="full-item-close">
-                    <Button label="Back" onClick={this.props.close} style={styles.button} />
-                </Flexbox>
             </Flexbox>
         )
     }
@@ -80,36 +87,29 @@ class FullItem extends  Component {
     renderContent() {
         const {messages} = this.props
 
-        const showStatus = this.getStatus()
-        const showActions = this.getActions()
+        const status = this.getStatus()
+        const actions = this.getActions()
 
         const styles = this.getStyles()
 
         return (
             <Flexbox name="full-item-content" grow={1} container="column" style={styles.item}>
-                <Flexbox name="full-item-header" style={styles.header}>
-                    <Flexbox name="full-item-header-row" container="row" alignItems="center" style={styles.headerRow}>
-                        <Flexbox grow={1} container="row" style={{minWidth: 0}}>
-                            <Flexbox name="full-item-subject" style={styles.subject}>
-                                {this.getSubject()}
-                            </Flexbox>
-                            {showStatus ? <Flexbox name="full-item-status" style={styles.status}>{this.getStatus()}</Flexbox> : null}
-                        </Flexbox>
-                        {showActions ? <Flexbox name="full-item-actions">{this.getActions()}</Flexbox> : null}
-                        <Flexbox name="full-item-close" style={styles.close}>
-                            <Button label="Back" onClick={this.props.close} style={styles.button} />
-                        </Flexbox>
+                <Flexbox name="full-item-navigation" container="row" alignItems="center" style={styles.navigation}>
+                    <Flexbox name="prev-item" style={[styles.navigation.option, styles.navigation.prev]}>
+                        <Icon name="chevron-left" style={styles.navigation.prev.arrow} />
+                        <span>Previous</span>
+                    </Flexbox>
+                    <Flexbox name="next-item" style={[styles.navigation.option, styles.navigation.next]}>
+                        <span>Next</span>
+                        <Icon name="chevron-right" style={styles.navigation.next.arrow} />
                     </Flexbox>
                 </Flexbox>
-                <Flexbox name="full-item-sub-header" style={styles.header}>
-                    <Flexbox name="full-item-header-row" container="row" alignItems="center">
-                        <Flexbox name="full-item-user" grow={1}>
-                            {this.getUser()}
-                        </Flexbox>
-                        <Flexbox name="full-item-creation-time">
-                            {this.getDate()}
-                        </Flexbox>
+                <Flexbox name="full-item-header" container="row" alignItems="center" style={styles.header}>
+                    {status}
+                    <Flexbox name="full-item-subject" grow={1} style={styles.subject}>
+                        <TextTruncate>{this.getSubject()}</TextTruncate>
                     </Flexbox>
+                    {actions}
                 </Flexbox>
                 <Flexbox name="full-item-body-container" grow={1} container="column" style={styles.content}>
                     <CommentList comments={messages} />
@@ -121,39 +121,58 @@ class FullItem extends  Component {
     getStyles() {
         return {
             page: {
-                height: '100%'
+                height: '100%',
+                position: 'relative'
             },
             item: {
-                marginBottom: '15px'
+                marginBottom: '30px',
+                padding: '0 39px',
+                backgroundColor: styleVars.secondaryBackgroundColor
+            },
+            navigation: {
+                height: '80px',
+                option: {
+                    fontSize: '0.7em',
+                    fontWeight: 'bold',
+                    color: 'black',
+                    cursor: 'pointer',
+                    textTransform: 'uppercase'
+                },
+                prev: {
+                    borderRight: '1px solid black',
+                    paddingRight: '25px',
+                    arrow: {
+                        marginRight: '25px'
+                    }
+                },
+                next: {
+                    marginLeft: '25px',
+                    arrow: {
+                        marginLeft: '25px'
+                    }
+                }
             },
             header: {
-                height: '40px',
-                padding: '0 10px',
-                backgroundColor: '#36474f',
-                color: 'white'
-            },
-            headerRow: {
-                height: '100%'
+                height: '75px'
             },
             subject: {
+                fontSize: '1.5em',
                 fontWeight: 'bold',
+                textTransform: 'uppercase',
+                color: styleVars.basePurpleColor,
                 minWidth: 0
-            },
-            status: {
-                width: '150px',
-                paddingLeft: '10px'
             },
             content: {
                 height: '100%',
                 overflowY: 'hidden',
                 marginTop: '10px'
             },
-            button: {
-                backgroundColor: styleVars.highlightColor,
-                color: styleVars.primaryColor,
-                ':hover': {
-                    color: 'white'
-                }
+            close: {
+                position: 'absolute',
+                top: '25px',
+                left: '-31px',
+                fontSize: '2em',
+                cursor: 'pointer'
             }
         }
     }
@@ -175,6 +194,9 @@ class FullItem extends  Component {
             <Flexbox name="full-item-page" container="column" style={styles.page}>
                 {content}
                 {this.getBox()}
+                <Flexbox name="close" style={styles.close}>
+                    <Icon name="times-circle" onClick={this.props.close} />
+                </Flexbox>
             </Flexbox>
         )
     }
@@ -185,8 +207,9 @@ FullItem.propTypes = {
     isFetching: PropTypes.func.isRequired,
     isEmpty: PropTypes.func.isRequired,
     close: PropTypes.func.isRequired,
+    circleColor: PropTypes.string
 }
 
 module.exports = Object.assign({
-    FullItem
+    FullItem: clickOutside(radium(FullItem))
 }, slots)

@@ -2,34 +2,32 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const DocumentTitle = require('react-document-title')
-const dateFns = require('date-fns')
-const {goBack} = require('react-router-redux')
 const classAutobind = require('class-autobind').default
 
 const isEmpty = require('lodash/isEmpty')
 
 const MessagePanel = require('../MessageBox/MessagePanel')
 
-const {FullItem, FullItemSubject, FullItemUser, FullItemDate, FullItemBox} = require('../Full/FullItem')
+const {FullItem, FullItemSubject, FullItemBox} = require('../Full/FullItem')
 const TextTruncate = require('../UI/TextTruncate')
 
 const EmailPageActions = require('../../actions/email-page-actions')
 const {InvalidationStatus} = require('../../constants')
 
-class EmailThread extends Component {
+class FullEmail extends Component {
     constructor(props) {
         super(props)
-        classAutobind(this, EmailThread.prototype)
+        classAutobind(this, FullEmail.prototype)
     }
 
     componentDidMount() {
-        const {dispatch, params} = this.props
-        dispatch(EmailPageActions.getEmail(params.emailThreadId))
+        const {dispatch, thread} = this.props
+        dispatch(EmailPageActions.getEmail(thread.payload.threadId))
     }
 
     componentDidUpdate() {
-        const {dispatch, params} = this.props
-        dispatch(EmailPageActions.getEmail(params.emailThreadId))
+        const {dispatch, thread} = this.props
+        dispatch(EmailPageActions.getEmail(thread.payload.threadId))
     }
 
     componentWillUnmount() {
@@ -39,12 +37,7 @@ class EmailThread extends Component {
 
     close() {
         const {dispatch} = this.props
-        dispatch(goBack())
-    }
-
-    getUser() {
-        const {thread} = this.props
-        return thread && thread.creator ? thread.creator.displayName : ''
+        dispatch(EmailPageActions.hideEmailPage())
     }
 
     getDocumentTitle() {
@@ -85,14 +78,8 @@ class EmailThread extends Component {
             <DocumentTitle title={this.getDocumentTitle()}>
                 <FullItem messages={this.getAllMessages()} close={this.close} isFetching={this.isFetching} isEmpty={this.isEmpty}>
                     <FullItemSubject>
-                        <TextTruncate style={{fontWeight: 'bold'}}>{thread.subject}</TextTruncate>
+                        <span>{thread.subject}</span>
                     </FullItemSubject>
-                    <FullItemUser>
-                        <span>{this.getUser()}</span>
-                    </FullItemUser>
-                    <FullItemDate>
-                        <span>{dateFns.format(thread.createdAt, 'DD-MM-YYYY HH:mm')}</span>
-                    </FullItemDate>
                     <FullItemBox>
                         <MessagePanel />
                     </FullItemBox>
@@ -102,7 +89,7 @@ class EmailThread extends Component {
     }
 }
 
-EmailThread.propTypes = {
+FullEmail.propTypes = {
     thread: PropTypes.object.isRequired,
     invalidationStatus: PropTypes.string.isRequired,
     currentUser: PropTypes.object.isRequired
@@ -116,4 +103,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(EmailThread)
+module.exports = connect(mapStateToProps)(FullEmail)

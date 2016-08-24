@@ -1,34 +1,34 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
-const DocumentTitle = require('react-document-title')
-const dateFns = require('date-fns')
-const {goBack} = require('react-router-redux')
 const classAutobind = require('class-autobind').default
+const DocumentTitle = require('react-document-title')
 
 const isEmpty = require('lodash/isEmpty')
 const reject = require('lodash/reject')
 
 const ThingPageActionsBar = require('./ThingPageActionsBar')
 const MessagePanel = require('../MessageBox/MessagePanel')
-const {FullItem, FullItemSubject, FullItemStatus, FullItemActions, FullItemUser, FullItemDate, FullItemBox} = require('../Full/FullItem')
-const TextTruncate = require('../UI/TextTruncate')
+const {FullItem, FullItemSubject, FullItemStatus, FullItemActions, FullItemBox} = require('../Full/FullItem')
+const Flexbox = require('../UI/Flexbox')
+const styleVars = require('../style-vars')
 
 const ThingPageActions = require('../../actions/thing-page-actions')
 const ThingHelper = require('../../helpers/thing-helper')
 
 const EventTypes = require('../../../common/enums/event-types')
+const ThingStatus = require('../../../common/enums/thing-status')
 const {InvalidationStatus} = require('../../constants')
 
-class Thing extends Component {
+class FullThing extends Component {
     constructor(props) {
         super(props)
-        classAutobind(this, Thing.prototype)
+        classAutobind(this, FullThing.prototype)
     }
 
     componentDidMount() {
-        const {dispatch, params} = this.props
-        dispatch(ThingPageActions.getThing(params.thingId))
+        const {dispatch, thing} = this.props
+        dispatch(ThingPageActions.getThing(thing.id))
     }
 
     componentWillUnmount() {
@@ -38,13 +38,13 @@ class Thing extends Component {
 
     componentWillReceiveProps() {
         // Will fetch messages only if needed
-        const {dispatch, params} = this.props
-        dispatch(ThingPageActions.getThing(params.thingId))
+        const {dispatch, thing} = this.props
+        dispatch(ThingPageActions.getThing(thing.id))
     }
 
     close() {
         const {dispatch} = this.props
-        dispatch(goBack())
+        dispatch(ThingPageActions.hideThingPage())
     }
 
     getThingUser() {
@@ -84,22 +84,54 @@ class Thing extends Component {
         return thing.events ? ThingHelper.getUnreadMessages(thing) : []
     }
 
+    getCircleColor() {
+        const {thing} = this.props
+
+        switch (thing.payload.status) {
+            case ThingStatus.NEW.key:
+            case ThingStatus.REOPENED.key:
+                return styleVars.blueCircleColor
+            case ThingStatus.INPROGRESS.key:
+                return styleVars.yellowCircleColor
+            case ThingStatus.DISMISS.key:
+                return styleVars.redCircleColor
+            case ThingStatus.DONE.key:
+                return styleVars.greenCircleColor
+            case ThingStatus.CLOSE.key:
+                return styleVars.greyCircleColor
+            default:
+                return 'black'
+        }
+    }
+
     isFetching() {
         return this.props.invalidationStatus === InvalidationStatus.FETCHING
     }
-    
+
     isEmpty() {
         return isEmpty(this.props.thing)
     }
 
+    getStyles() {
+        return {
+            page: {
+                height: '100%',
+                zIndex: styleVars.fullItemZIndex
+            },
+            item: {
+                backgroundColor: styleVars.secondaryBackgroundColor
+            }
+        }
+    }
+
     render() {
         const {thing} = this.props
-
         return (
             <DocumentTitle title={this.getDocumentTitle()}>
-                <FullItem messages={this.getAllComments()} close={this.close} isFetching={this.isFetching} isEmpty={this.isEmpty}>
+                <FullItem messages={this.getAllComments()} close={this.close} isFetching={this.isFetching} isEmpty={this.isEmpty} 
+                          circleColor={this.getCircleColor()}>
                     <FullItemSubject>
-                        <TextTruncate style={{fontWeight: 'bold'}}>{thing.subject}</TextTruncate>
+                        <span>{thing.subject}</span>
                     </FullItemSubject>
                     <FullItemStatus>
                         <span>({thing.payload ? thing.payload.status : ''})</span>
@@ -107,12 +139,6 @@ class Thing extends Component {
                     <FullItemActions>
                         <ThingPageActionsBar thing={thing} />
                     </FullItemActions>
-                    <FullItemUser>
-                        <span>{this.getThingUser()}</span>
-                    </FullItemUser>
-                    <FullItemDate>
-                        <span>{dateFns.format(thing.createdAt, 'DD-MM-YYYY HH:mm')}</span>
-                    </FullItemDate>
                     <FullItemBox>
                         <MessagePanel />
                     </FullItemBox>
@@ -122,7 +148,7 @@ class Thing extends Component {
     }
 }
 
-Thing.propTypes = {
+FullThing.propTypes = {
     thing: PropTypes.object.isRequired,
     invalidationStatus: PropTypes.string.isRequired,
     currentUser: PropTypes.object.isRequired
@@ -136,4 +162,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(Thing)
+module.exports = connect(mapStateToProps)(FullThing)

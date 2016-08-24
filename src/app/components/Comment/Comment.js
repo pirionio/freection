@@ -66,39 +66,44 @@ class Comment extends Component {
 
         const styles = {
             comment: {
-                minHeight: '35px',
-                padding: '10px',
+                minHeight: '79px',
+                padding: '24px 30px',
                 marginBottom: '5px',
                 backgroundColor: 'white',
-                border: `1px solid, ${styleVars.primaryColor}`
+                border: `1px solid ${styleVars.baseBorderColor}`
             },
             unread: {
                 backgroundColor: Color('rgba(232, 221, 110, 0.36)').hexString()
             },
-            creator: {
-                width: '120px'
+            header: {
+                width: '100%',
+                marginBottom: '20px'
             },
-            text: {
-                lineHeight: '1.5',
-                padding: '0 10px'
+            creator: {
+                fontWeight: 'bold'
             },
             date: {
-                width: '120px'
+                color: styleVars.baseGrayColor
+            },
+            text: {
+                lineHeight: '1.5'
             }
         }
 
         return (
             <VisibilitySensor onChange={this.onVisibilityChange} partialVisibility={true}>
-                <Flexbox name="comment-container" container="row" alignItems="flex-start"
+                <Flexbox name="comment-container" container="column" alignItems="flex-start"
                          style={[styles.comment, !comment.payload.initialIsRead && styles.unread]}>
-                    <Flexbox name="comment-creator" shrink={0} style={styles.creator}>
-                        <TextTruncate>{comment.creator.displayName} :</TextTruncate>
+                    <Flexbox name="comment-header" container="row" justifyContent="flex-end" alignItems="center" style={styles.header}>
+                        <Flexbox name="comment-creator" grow={1} shrink={0} style={styles.creator}>
+                            <TextTruncate>{comment.creator.displayName}</TextTruncate>
+                        </Flexbox>
+                        <Flexbox name="comment-date" shrink={0} style={styles.date}>
+                            {createdAt}
+                        </Flexbox>
                     </Flexbox>
                     <Flexbox name="comment-message" grow={1} style={styles.text}>
                         {this.getCommentText()}
-                    </Flexbox>
-                    <Flexbox name="comment-date" shrink={0} style={styles.date}>
-                        {createdAt}
                     </Flexbox>
                 </Flexbox>
             </VisibilitySensor>
