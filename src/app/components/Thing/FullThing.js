@@ -75,7 +75,7 @@ class FullThing extends Component {
 
         // Filter out CREATED events that have no text - since we allow creating a new Thing with no body at all.
         return thing.events ?
-            reject(ThingHelper.getAllMessages(thing), message => message.eventType.key === EventTypes.CREATED.key && !message.payload.text) :
+            reject(ThingHelper.getAllMessages(thing), message => !message.payload.text) :
             []
     }
 
