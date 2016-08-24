@@ -14,7 +14,7 @@ if (process.env.NODE_ENV === 'production') {
             }
         }],
         authKey: process.env.RDB_AUTH_KEY,
-        db: 'freection',
+        db: process.env.RDB_DB_NAME,
         timeoutError: 3000,
         buffer: 10,
         max: 100}
