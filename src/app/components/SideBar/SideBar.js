@@ -1,12 +1,12 @@
 const React = require('react')
-const {Component, PropTypes} = React
-const Link = require('../UI/Link')
-const radium = require('radium')
+const {Component} = React
 const classAutobind = require('class-autobind').default
 
-const Settings = require('../TopBar/Settings')
 const Flexbox = require('../UI/Flexbox')
 const styleVars = require('../style-vars')
+
+const NavigationMenu = require('./NavigationMenu')
+const UserSettings = require('./UserSettings')
 
 const logo = require('../../static/logo-white.png')
 
@@ -23,30 +23,6 @@ class SideBar extends Component {
                 height: '100%',
                 backgroundColor: styleVars.primaryColor
             },
-            menu: {
-                paddingTop: 34,
-                paddingLeft: 27
-            },
-            linkBox: {
-                height: '12px',
-                marginBottom: '40px',
-                position: 'relative'
-            },
-            link: {
-                fontFamily: 'Roboto Mono, monospace',
-                fontSize: '0.857em',
-                fontWeight: 500,
-                color: styleVars.menuTextColor,
-                textTransform: 'uppercase',
-                textDecoration: 'none',
-                letterSpacing: '0.05em',
-                ':hover': {
-                    color: styleVars.highlightColor
-                },
-                active: {
-                    color: 'white'
-                }
-            },
             logo: {
                 container: {
                     width: '185px',
@@ -58,82 +34,23 @@ class SideBar extends Component {
                     width: '45px',
                     height: '15px'
                 }
-            },
-            arrow: {
-                position: 'absolute',
-                right: 0,
-                top: 3,
-                width: 0,
-                height: 0,
-                borderTop: '5px solid transparent',
-                borderBottom: '5px solid transparent',
-                borderRight: `6px solid ${styleVars.backgroundColor}`
-            },
-            settings: {
-                height: '74px',
-                width: '185px',
-                margin: '0 19px',
-                borderTop: '1px solid #232e34',
-                color: 'white',
-                user: {
-                    letterSpacing: '0.1em'
-                }
             }
         }
     }
 
-    getLink({pathname, title}) {
-        const styles = this.getStyles()
-
-        console.log('pathname:', pathname, 'window:', window.location.pathname)
-        return (
-            <div name="link-box" style={styles.linkBox} key={pathname}>
-                <Link to={pathname} style={styles.link} activeStyle={styles.link.active}>
-                    {title}
-                    {window.location.pathname.startsWith(pathname) && <span style={styles.arrow}></span>}
-                </Link>
-            </div>
-        )
-    }
-
     render() {
-        const {currentUser} = this.props
         const styles = this.getStyles()
-
-        const links = [
-            {
-                pathname: '/whatsnew',
-                title: 'What\'s New'
-            },
-            {
-                pathname: '/todo',
-                title: 'To Do'
-            },
-            {
-                pathname: '/followup',
-                title: 'Follow Up'
-            }
-        ].map(this.getLink)
 
         return (
             <Flexbox name="side-bar" shrink={0} container="column" style={styles.sideBar}>
                 <Flexbox name="logo-container" container="row" justifyContent="center" alignItems="center" style={styles.logo.container}>
                     <img src={logo} style={styles.logo.image} />
                 </Flexbox>
-                <Flexbox name="menu-container" grow={1} style={styles.menu}>
-                    {links}
-                </Flexbox>
-                <Flexbox name="settings" container="row" justifyContent="space-around" alignItems="center" style={styles.settings}>
-                    <span style={styles.settings.user}>{currentUser.firstName}</span>
-                    <Settings />
-                </Flexbox>
+                <NavigationMenu />
+                <UserSettings />
             </Flexbox>
         )
     }
 }
 
-SideBar.propTypes = {
-    currentUser: PropTypes.object.isRequired
-}
-
-module.exports = radium(SideBar)
+module.exports = SideBar

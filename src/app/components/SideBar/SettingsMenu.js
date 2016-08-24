@@ -8,10 +8,10 @@ const Icon = require('react-fontawesome')
 const Link = require('../UI/Link')
 const styleVars = require('../style-vars')
 
-class Settings extends Component {
+class SettingsMenu extends Component {
     constructor(props) {
         super(props)
-        classAutobind(this, Settings.prototype)
+        classAutobind(this, SettingsMenu.prototype)
     }
 
     componentWillMount() {
@@ -97,6 +97,6 @@ class Settings extends Component {
     }
 }
 
-Settings.propTypes = {}
+SettingsMenu.propTypes = {}
 
-module.exports = clickOutside(Settings)
+module.exports = clickOutside(SettingsMenu)

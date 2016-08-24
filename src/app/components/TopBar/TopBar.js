@@ -10,7 +10,7 @@ const groupBy = require('lodash/groupBy')
 const reject = require('lodash/reject')
 
 const EventTypes = require('../../../common/enums/event-types')
-const Settings = require('./Settings')
+const Settings = require('./../SideBar/SettingsMenu')
 
 const Flexbox = require('../UI/Flexbox')
 const styleVars = require('../style-vars')
