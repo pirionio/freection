@@ -21,6 +21,7 @@ module.exports = {
     greyCircleColor: '#646464',
 
     backZIndex: 10,
-    previewInlineReplyZIndex: 100,
-    fullItemZIndex: 50
+    fullItemBlurZIndex: 40,
+    fullItemZIndex: 50,
+    previewInlineReplyZIndex: 100
 }

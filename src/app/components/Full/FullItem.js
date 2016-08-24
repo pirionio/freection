@@ -121,8 +121,14 @@ class FullItem extends  Component {
     getStyles() {
         return {
             page: {
-                height: '100%',
-                position: 'relative'
+                position: 'absolute',
+                top: 20,
+                left: 40,
+                right: 40,
+                bottom: 0,
+                zIndex: styleVars.fullItemZIndex,
+                filter: 'none',
+                boxShadow: '0px 0px 40px 0px rgba(0, 0, 0, 0.2)'
             },
             item: {
                 marginBottom: '30px',
