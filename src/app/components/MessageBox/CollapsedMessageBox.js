@@ -28,6 +28,7 @@ class CollapsedMessageBox extends Component {
                 backgroundColor: '#fafafa',
                 opacity: '0.5',
                 boxShadow: '0px 0px 40px 0px rgba(0, 0, 0, 0.2)',
+                cursor: 'text',
                 ':hover': {
                     opacity: '1'
                 }
@@ -43,8 +44,8 @@ class CollapsedMessageBox extends Component {
         const styles = this.getStyles()
 
         return (
-            <Flexbox name="message-text" container="column" justifyContent="center" style={styles.box}>
-                <span style={styles.placeholder} onClick={this.newThingMessageBox}>
+            <Flexbox name="message-text" container="column" justifyContent="center" onClick={this.newThingMessageBox} style={styles.box}>
+                <span style={styles.placeholder}>
                     Create a new Thing by typing here.
                 </span>
             </Flexbox>

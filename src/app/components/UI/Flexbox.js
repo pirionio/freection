@@ -81,7 +81,7 @@ class Flexbox extends Component {
     }
 
     render() {
-        const {children, style, name} = this.props
+        const {children, style, name, onClick} = this.props
 
         const containerStyle = [
             this.getContainerStyle(),
@@ -95,7 +95,7 @@ class Flexbox extends Component {
         ]
 
         return (
-            <div name={name} style={containerStyle}>
+            <div name={name} style={containerStyle} onClick={onClick}>
                 {children}
             </div>
         )
@@ -113,7 +113,8 @@ Flexbox.propTypes = {
     basis: PropTypes.string,
     justifyContent: PropTypes.string,
     alignItems: PropTypes.string,
-    alignSelf: PropTypes.string
+    alignSelf: PropTypes.string,
+    onClick: PropTypes.func
 }
 
 Flexbox.defaultProps = {
