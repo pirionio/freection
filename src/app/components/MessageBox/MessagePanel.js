@@ -47,7 +47,7 @@ class MessagePanel extends Component {
                 shouldClose = false
                 break
             case MessageTypes.REPLY_EMAIL.key:
-                const toEmails = map(activeMessageBox.context.to, 'payload.email')
+                const toEmails = this.getToEmails()
                 const lastMessage = chain(activeMessageBox.context.messages).sortBy('createdAt').head().clone().value()
                 const references = map(activeMessageBox.context.messages, 'id')
 
@@ -58,6 +58,14 @@ class MessagePanel extends Component {
         }
 
         dispatch(MessageBoxActions.messageSent(activeMessageBox.id, shouldClose, promise))
+    }
+
+    getToEmails() {
+        const {activeMessageBox, currentUser} = this.props
+        return chain([...activeMessageBox.context.to, activeMessageBox.context.creator])
+            .filter(user => user.payload.email !== currentUser.email)
+            .map(user => user.payload.email)
+            .value()
     }
 
     isSendDisabled() {
@@ -131,14 +139,16 @@ class MessagePanel extends Component {
 MessagePanel.propTypes = {
     messageBoxes: PropTypes.array.isRequired,
     activeMessageBox: PropTypes.object,
-    messageBox: PropTypes.object.isRequired
+    messageBox: PropTypes.object.isRequired,
+    currentUser: PropTypes.object.isRequired
 }
 
 function mapStateToProps(state) {
     return {
         messageBoxes: state.messagePanel.messageBoxes,
         activeMessageBox: find(state.messagePanel.messageBoxes, {id: state.messagePanel.activeMessageBoxId}),
-        messageBox: state.messageBox
+        messageBox: state.messageBox,
+        currentUser: state.auth
     }
 }
 
