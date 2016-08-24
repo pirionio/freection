@@ -19,88 +19,76 @@ function filterThingMessage(user, message) {
     return true
 }
 
-function fetchUnreadMessages(user) {
-    return getImapConnection(user)
-        .then(connection => {
-            return connection.getUnseenMessages(0, {includeBodies: true})
-                .then(emails => {
-                    GoogleImapConnectionPool.releaseConnection(user, connection)
-                    return emails.filter(message => filterThingMessage(user, message))
-                        .map(email=> imapEmailToDto(email, user))
-                })
-        })
-}
-
-function getEmailsSince(user, internalDate) {
-    return getImapConnection(user)
-        .then(connection => {
-            return connection.getEmailsSince(internalDate)
-                .then(emails => {
-                    GoogleImapConnectionPool.releaseConnection(user, connection)
-                    return emails.map(email => imapEmailToDto(email, user))
-                })
-        })
-}
-
-function fetchFullThread(user, emailThreadId) {
-    return getImapConnection(user)
-        .then(connection => {
-            return connection.getThreadMessages(emailThreadId)
-                .then(emails => {
-                    GoogleImapConnectionPool.releaseConnection(user, connection)
-                    return emails
-                })
-        })
-        .then(emails => prepareThread(emails, user))
-}
-
-function getLastInternalDate(user) {
-    return getImapConnection(user)
-        .then(connection => {
-            return connection.getLastEmail()
-                .then(email => {
-                    GoogleImapConnectionPool.releaseConnection(user, connection)
-                    return email.header.internalDate
-                })
-                .catch(error => {
-                    GoogleImapConnectionPool.releaseConnection(user, connection)
-                    throw error
-                })
-        })
-}
-
-function markAsRead(user, emailUids) {
-    return getImapConnection(user)
-        .then(connection => {
-            return connection.markAsRead(emailUids).then(() => GoogleImapConnectionPool.releaseConnection(user, connection))
-        })
-}
-
-async function markAsReadByMessageId(user, messageId) {
-
-    let connection
+async function fetchUnreadMessages(user) {
+    const connection = await getImapConnection(user)
     try {
-        connection = await getImapConnection(user)
-        await connection.markAsReadByMessageId(messageId)
+        const emails = await connection.getUnseenMessages(0, {includeBodies: true})
+
+        return emails.filter(message => filterThingMessage(user, message))
+            .map(email=> imapEmailToDto(email, user))
     } finally {
-        if (connection)
-            GoogleImapConnectionPool.releaseConnection(user, connection)
+        GoogleImapConnectionPool.releaseConnection(user, connection)
     }
 }
 
-function sendEmail(user, to, subject, text, html, messageId) {
-    return getSmtpConnection(user)
-        .then(connection => {
-            return connection.send(to, subject, text, html, messageId)
-                .then(email => {
-                    GoogleSmtpConnectionPool.releaseConnection(user, connection)
-                    return smtpEmailToDto(email, user, subject, text, html)
-                })
-                .catch(error => {
-                    GoogleSmtpConnectionPool.releaseConnection(user, connection)
-                    throw error
-                })
-        })
+async function getEmailsSince(user, internalDate) {
+    const connection = await getImapConnection(user)
+    try {
+        const emails = await connection.getEmailsSince(internalDate)
+
+        return emails.map(email => imapEmailToDto(email, user))
+    } finally {
+        GoogleImapConnectionPool.releaseConnection(user, connection)
+    }
+}
+
+async function fetchFullThread(user, emailThreadId) {
+    const connection = await getImapConnection(user)
+    try {
+        const emails = await connection.getThreadMessages(emailThreadId)
+
+        return prepareThread(emails, user)
+    } finally {
+        GoogleImapConnectionPool.releaseConnection(user, connection)
+    }
+}
+
+async function getLastInternalDate(user) {
+    const connection = await getImapConnection(user)
+    try {
+        const email = await connection.getLastEmail()
+        return email.header.internalDate
+    } finally {
+        GoogleImapConnectionPool.releaseConnection(user, connection)
+    }
+}
+
+async function markAsRead(user, emailUids) {
+    const connection = await getImapConnection(user)
+    try {
+        await connection.markAsRead(emailUids)
+    } finally {
+        GoogleImapConnectionPool.releaseConnection(user, connection)
+    }
+}
+
+async function markAsReadByMessageId(user, messageId) {
+    const connection = await getImapConnection(user)
+    try {
+        await connection.markAsReadByMessageId(messageId)
+    } finally {
+        GoogleImapConnectionPool.releaseConnection(user, connection)
+    }
+}
+
+async function sendEmail(user, to, subject, text, html, messageId) {
+    const connection = await getSmtpConnection(user)
+    try {
+        const email = await connection.send(to, subject, text, html, messageId)
+        return smtpEmailToDto(email, user, subject, text, html)
+    } finally {
+        GoogleSmtpConnectionPool.releaseConnection(user, connection)
+    }
 }
 
 function sendEmailForThing(user, to, subject, body, messageId) {
@@ -108,46 +96,39 @@ function sendEmailForThing(user, to, subject, body, messageId) {
     return sendEmail(user, to, subject, undefined, emailForThingHtml, messageId)
 }
 
-function doEmail(user, emailThreadId) {
-    return fetchFullThread(user, emailThreadId)
-        .then(thread => {
-            const creator = thread.creator
+async function doEmail(user, emailThreadId) {
+    const connection = await getImapConnection(user)
+    try {
+        const thread = await fetchFullThread(user, emailThreadId)
 
-            const comments = thread.messages.map(message => {
-                return {
-                    createdAt: message.createdAt,
-                    html: message.payload.html,
-                    text: message.payload.text,
-                    id: message.id
-                }
-            })
+        const creator = thread.creator
 
-            return saveNewThing(thread.subject, creator, userToAddress(user), thread.id, thread.payload.threadId).
-                then(thing => {
-                    EventsCreator.createCreated(creator, thing, getShowNewList)
-                        .then(() => EventsCreator.createAccepted(userToAddress(user), thing, getShowNewList))
-                        .then(() => comments.map(
-                            comment => EventsCreator.createComment(creator, comment.createdAt, thing, getShowNewList, comment.text,
-                                comment.html, comment.id)))
-                        .then(all => Promise.all(all))
-
-            })
+        const comments = thread.messages.map(message => {
+            return {
+                createdAt: message.createdAt,
+                html: message.payload.html,
+                text: message.payload.text,
+                id: message.id
+            }
         })
+
+        const thing = await saveNewThing(thread.subject, creator, userToAddress(user), thread.id, thread.payload.threadId)
+        await EventsCreator.createCreated(creator, thing, getShowNewList)
+        await EventsCreator.createAccepted(userToAddress(user), thing, getShowNewList)
+        await comments.map(comment => EventsCreator.createComment(creator, comment.createdAt, thing, getShowNewList, comment.text,
+                        comment.html, comment.id)).then(all => Promise.all(all))
+    } finally {
+        GoogleImapConnectionPool.releaseConnection(user, connection)
+    }
 }
 
-function replyToAll(user, to, inReplyTo, references, subject, messageText, messageHtml) {
-    return getSmtpConnection(user)
-        .then(connection => {
-            return connection.replyToAll(to, inReplyTo, references, subject, messageText, messageHtml)
-                .then(result => {
-                    GoogleSmtpConnectionPool.releaseConnection(user, connection)
-                    return smtpEmailToDto(result, user, subject, messageText, messageHtml)
-                })
-                .catch(error => {
-                    GoogleSmtpConnectionPool.releaseConnection(user, connection)
-                    throw error
-                })
-        })
+async function replyToAll(user, to, inReplyTo, references, subject, messageText, messageHtml) {
+    const connection = await getSmtpConnection(user)
+    try {
+        await connection.replyToAll(to, inReplyTo, references, subject, messageText, messageHtml)
+    } finally {
+        GoogleSmtpConnectionPool.releaseConnection(user, connection)
+    }
 }
 
 function prepareThread(emails, user) {
