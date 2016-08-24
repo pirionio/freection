@@ -13,7 +13,7 @@ class ImapConnection {
         this._connection = new imap(options)
         this._onDisconnect = null
 
-        promisify(this._connection, ['openBox', 'closeBox', 'search', 'setFlags', 'getBoxes'])
+        promisify(this._connection, ['openBox', 'closeBox', 'search', 'setFlags', 'addKeywords', 'getBoxes'])
         autobind(this, ImapConnection.prototype)
     }
 
@@ -136,12 +136,22 @@ class ImapConnection {
         })
     }
 
-    getUnseenMessages(since, options = {}) {
-        const criteria = compact(['UNSEEN', [IMAP[this._type].LABEL_FIELD, 'Inbox'], since > 0 ? ['UID', ` ${since+1}:*`] : null])
+    getUnseenMessages(joinDate) {
+        let criteria
+
+        if (joinDate) {
+            const criteriaAfter = ['SINCE', joinDate]
+            const criteriaBefore = ['AND', ['BEFORE', joinDate], 'UNSEEN']
+
+            criteria = [[IMAP[this._type].LABEL_FIELD, 'Inbox'], ['UNKEYWORD', 'FreectionDiscard'], ['OR', criteriaAfter, criteriaBefore]]
+        } else {
+            criteria = [[IMAP[this._type].LABEL_FIELD, 'Inbox'], ['UNKEYWORD', 'FreectionDiscard']]
+        }
+
         return this._connection.searchAsync(criteria)
-            .then(results => this.fetchByUids(results, options))
+            .then(results => this.fetchByUids(results, {includeBodies: true}))
             .catch(error => {
-                logger.error(`Could not find unread emails since UID ${since}`, error)
+                logger.error(`Could not find unread emails`, error)
                 throw error
             })
     }
@@ -190,11 +200,17 @@ class ImapConnection {
     }
 
     markAsRead(emailUids) {
-        return this._connection.setFlagsAsync(emailUids, IMAP[this._type].SEEN_FLAG)
+        return this._connection.addKeywordsAsync(emailUids, 'FreectionDiscard')
             .catch(error => {
                 logger.error('Could not mark emails as read', error)
                 throw error
             })
+
+        /*return this._connection.setFlagsAsync(emailUids, IMAP[this._type].SEEN_FLAG)
+            .catch(error => {
+                logger.error('Could not mark emails as read', error)
+                throw error
+            })*/
     }
 
     convertEnvelopeUser(user) {

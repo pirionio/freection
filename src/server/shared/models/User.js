@@ -14,6 +14,7 @@ const User = thinky.createModel('User', {
     accessToken: type.string(),
     refreshToken: type.string(),
     lastFetchedEmailDate: type.date(),
+    imapJoinDate: type.date(),
     integrations: {
         github: {
             active: type.boolean(),

@@ -1,10 +1,10 @@
-const {chain, some} = require('lodash/core')
+const {chain, some, isUndefined} = require('lodash/core')
 
 const GoogleImapConnectionPool = require('../utils/imap/google-imap-connection-pool')
 const GoogleSmtpConnectionPool = require('../utils/smtp/google-smtp-connection-pool')
 const EntityTypes = require('../../../common/enums/entity-types')
 const ThingStatus = require('../../../common/enums/thing-status')
-const {Thing} = require('../models')
+const {Thing, User} = require('../models')
 const EventsCreator = require('./event-creator')
 const {userToAddress} = require('./address-creator')
 const {imapEmailToDto} = require('../application/transformers')
@@ -20,9 +20,24 @@ function filterThingMessage(user, message) {
 }
 
 async function fetchUnreadMessages(user) {
+    const fullUser = await User.get(user.id).run()
+
+    if (isUndefined(fullUser.imapJoinDate)) {
+        try {
+            fullUser.imapJoinDate = await getLastInternalDate(user)
+        } catch(error) {
+            if (error !== 'NotFound') {
+                // TODO: does rethink db saves nulls?
+                fullUser.imapJoinDate = null
+            }
+        }
+
+        await fullUser.save()
+    }
+
     const connection = await getImapConnection(user)
     try {
-        const emails = await connection.getUnseenMessages(0, {includeBodies: true})
+        const emails = await connection.getUnseenMessages(fullUser.imapJoinDate)
 
         return emails.filter(message => filterThingMessage(user, message))
             .map(email=> imapEmailToDto(email, user))
