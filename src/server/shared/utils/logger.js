@@ -12,6 +12,8 @@ if (papertrailConfig.enable) {
     transports.push(new Papertrail({
         host: papertrailConfig.host,
         port: papertrailConfig.port,
+        hostname: papertrailConfig.source,
+        program: 'freection',
         handleExceptions: true
     }))
 }
