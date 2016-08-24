@@ -28,9 +28,8 @@ class App extends Component {
         if (currentUser.isAuthenticated) {
             return (
                 <Flexbox name="root" container="row" height="100%">
-                    <SideBar />
+                    <SideBar currentUser={currentUser} />
                     <Flexbox name="app-section" grow={1} container="column">
-                        <TopBar />
                         {this.props.children}
                     </Flexbox>
                     <GlassPane />

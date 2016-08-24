@@ -4,6 +4,7 @@ const Link = require('../UI/Link')
 const radium = require('radium')
 const classAutobind = require('class-autobind').default
 
+const Settings = require('../TopBar/Settings')
 const Flexbox = require('../UI/Flexbox')
 const styleVars = require('../style-vars')
 
@@ -67,6 +68,16 @@ class SideBar extends Component {
                 borderTop: '5px solid transparent',
                 borderBottom: '5px solid transparent',
                 borderRight: `6px solid ${styleVars.backgroundColor}`
+            },
+            settings: {
+                height: '74px',
+                width: '185px',
+                margin: '0 19px',
+                borderTop: '1px solid #232e34',
+                color: 'white',
+                user: {
+                    letterSpacing: '0.1em'
+                }
             }
         }
     }
@@ -74,6 +85,7 @@ class SideBar extends Component {
     getLink({pathname, title}) {
         const styles = this.getStyles()
 
+        console.log('pathname:', pathname, 'window:', window.location.pathname)
         return (
             <div name="link-box" style={styles.linkBox} key={pathname}>
                 <Link to={pathname} style={styles.link} activeStyle={styles.link.active}>
@@ -85,6 +97,7 @@ class SideBar extends Component {
     }
 
     render() {
+        const {currentUser} = this.props
         const styles = this.getStyles()
 
         const links = [
@@ -110,9 +123,17 @@ class SideBar extends Component {
                 <Flexbox name="menu-container" grow={1} style={styles.menu}>
                     {links}
                 </Flexbox>
+                <Flexbox name="settings" container="row" justifyContent="space-around" alignItems="center" style={styles.settings}>
+                    <span style={styles.settings.user}>{currentUser.firstName}</span>
+                    <Settings />
+                </Flexbox>
             </Flexbox>
         )
     }
+}
+
+SideBar.propTypes = {
+    currentUser: PropTypes.object.isRequired
 }
 
 module.exports = radium(SideBar)

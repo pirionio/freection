@@ -36,6 +36,7 @@ class Settings extends Component {
             <Flexbox name="settings-menu" grow={1} container="column" alignItems="center" style={styles.menu}>
                 <span style={styles.arrow} />
                 <Link to="/integrations" style={styles.menuOption} onClick={this.closeSettingsMenu}>Integrations</Link>
+                <a href="/login/logout" style={styles.menuOption}>Logout</a>
             </Flexbox>
         ) : null
     }
@@ -46,14 +47,13 @@ class Settings extends Component {
                 position: 'relative',
             },
             button: {
-                marginTop: '2px',
                 marginRight: '10px',
-                fontSize: '1.2em',
+                fontSize: '0.9em',
                 cursor: 'pointer'
             },
             menu: {
                 position: 'absolute',
-                bottom: '-60px',
+                top: '-120px',
                 left: '-62px',
                 minHeight: '50px',
                 minWidth: '130px',
@@ -73,13 +73,13 @@ class Settings extends Component {
             },
             arrow: {
                 position: 'absolute',
-                left: '64px',
-                top: '-6px',
+                left: '63px',
+                bottom: '-6px',
                 width: 0,
                 height: 0,
                 borderRight: '5px solid transparent',
                 borderLeft: '5px solid transparent',
-                borderBottom: `6px solid ${styleVars.secondaryBackgroundColor}`
+                borderTop: `6px solid ${styleVars.secondaryBackgroundColor}`
             }
         }
     }
@@ -90,7 +90,7 @@ class Settings extends Component {
 
         return (
             <Flexbox name="settings-container" style={styles.settings}>
-                <Icon name="cog" onClick={this.toggleSettingsMenu} style={styles.button} />
+                <Icon name="chevron-down" onClick={this.toggleSettingsMenu} style={styles.button} />
                 {menu}
             </Flexbox>
         )
