@@ -5,7 +5,11 @@ const Link = require('../UI/Link')
 const radium = require('radium')
 const classAutobind = require('class-autobind').default
 
+const keys = require('lodash/keys')
+const groupBy = require('lodash/groupBy')
+
 const Flexbox = require('../UI/Flexbox')
+const Ellipse = require('../UI/Ellipse')
 const styleVars = require('../style-vars')
 
 class NavigationMenu extends Component {
@@ -14,17 +18,50 @@ class NavigationMenu extends Component {
         classAutobind(this, NavigationMenu.prototype)
     }
 
-    getLink({pathname, title}) {
+    getLink({pathname, title, count}) {
         const styles = this.getStyles()
 
+        const countCircle = count.count ?
+            <Ellipse width="33px" height="25px" color={count.color} text={count.count} style={styles.circle} /> :
+            null
+
+        const arrow = window.location.pathname.startsWith(pathname) && <span style={styles.arrow}></span>
+
         return (
-            <div name="link-box" style={styles.linkBox} key={pathname}>
-                <Link to={pathname} style={styles.link} activeStyle={styles.link.active}>
-                    {title}
-                    {window.location.pathname.startsWith(pathname) && <span style={styles.arrow}></span>}
-                </Link>
+            <div name="link-container" key={pathname}>
+                <Flexbox name="link-row" container="row" alignItems="center" style={styles.linkRow}>
+                    <Flexbox grow={1} style={{display: 'inline-block'}}>
+                        <Link to={pathname} style={styles.link} activeStyle={styles.link.active}>{title}</Link>
+                    </Flexbox>
+                    {countCircle}
+                    {arrow}
+                </Flexbox>
             </div>
         )
+    }
+
+    getWhatsNewCount() {
+        const unreadThingsCount = keys(groupBy(this.props.newNotifications, 'thingId')).length
+        const unreadEmailsCount = keys(groupBy(this.props.newEmails, 'payload.threadId')).length
+
+        return {
+            color: styleVars.highlightColor,
+            count: unreadThingsCount + unreadEmailsCount
+        }
+    }
+
+    getToDoCount() {
+        return {
+            color: styleVars.baseBlueColor,
+            count: this.props.todoThings.length
+        }
+    }
+
+    getFollowUpCount() {
+        return {
+            color: styleVars.basePurpleColor,
+            count: this.props.followUpThings.length
+        }
     }
 
     getStyles() {
@@ -33,8 +70,8 @@ class NavigationMenu extends Component {
                 paddingTop: 34,
                 paddingLeft: 27
             },
-            linkBox: {
-                height: '12px',
+            linkRow: {
+                height: '25px',
                 marginBottom: '40px',
                 position: 'relative'
             },
@@ -53,10 +90,19 @@ class NavigationMenu extends Component {
                     color: 'white'
                 }
             },
+            circle: {
+                marginRight: '26px',
+                paddingTop: '5px',
+                textAlign: 'center',
+                borderBottomLeftRadius: '100%30px',
+                borderBottomRightRadius: '100%30px',
+                borderTopLeftRadius: '100%30px',
+                borderTopRightRadius: '100%30px'
+            },
             arrow: {
                 position: 'absolute',
                 right: 0,
-                top: 3,
+                top: 8,
                 width: 0,
                 height: 0,
                 borderTop: '5px solid transparent',
@@ -72,15 +118,18 @@ class NavigationMenu extends Component {
         const links = [
             {
                 pathname: '/whatsnew',
-                title: 'What\'s New'
+                title: 'What\'s New',
+                count: this.getWhatsNewCount()
             },
             {
                 pathname: '/todo',
-                title: 'To Do'
+                title: 'To Do',
+                count: this.getToDoCount()
             },
             {
                 pathname: '/followup',
-                title: 'Follow Up'
+                title: 'Follow Up',
+                count: this.getFollowUpCount()
             }
         ].map(this.getLink)
 
@@ -93,12 +142,20 @@ class NavigationMenu extends Component {
 }
 
 NavigationMenu.propTypes = {
-    routing: PropTypes.object.isRequired
+    routing: PropTypes.object.isRequired,
+    newNotifications: PropTypes.array.isRequired,
+    todoThings: PropTypes.array.isRequired,
+    followUpThings: PropTypes.array.isRequired,
+    newEmails: PropTypes.array.isRequired
 }
 
 function mapStateToProps(state) {
     return {
-        routing: state.routing
+        routing: state.routing,
+        newNotifications: state.whatsNew.notifications,
+        todoThings: state.toDo.things,
+        followUpThings: state.followUps.followUps,
+        newEmails: state.unreadEmails.emails
     }
 }
 
