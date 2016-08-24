@@ -24,8 +24,21 @@ class FullItem extends  Component {
         classAutobind(this, FullItem.prototype)
     }
 
-    handleClickOutside() {
-        this.props.close()
+    componentDidMount() {
+        // This is a patch - when clicking outside of the component, we attempt to close it.
+        // But if the outside click was on a link that navigates to a different state, there's no need to close it (and it
+        // might be buggy to try to).
+        // So we save the initial path of the component, and use it to detect a state change before attempting to close.
+        this.initialPath = window.location.pathname
+    }
+
+    handleClickOutside(event) {
+        // This has to happen in a timeout, since we want to perform the check only after a potential state change,
+        // which will happen in the next event-loop tick.
+        setTimeout(() => {
+            if (this.initialPath === window.location.pathname)
+                this.props.close()
+        })
     }
 
     getSubject() {

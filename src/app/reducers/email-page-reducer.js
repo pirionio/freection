@@ -24,12 +24,6 @@ function requireUpdate(state, action) {
     return state
 }
 
-function show(state, action) {
-    return immutable(state)
-        .set('thread', action.emailThread)
-        .value()
-}
-
 function get(state, action) {
     switch (action.status) {
         case ActionStatus.START:
@@ -120,8 +114,6 @@ module.exports = (state = initialState, action) => {
         case EmailPageActionTypes.REQUIRE_UPDATE:
         case EventActionTypes.RECONNECTED:
             return requireUpdate(state, action)
-        case EmailPageActionTypes.SHOW_EMAIL_PAGE:
-            return show(state, action)
         case EmailPageActionTypes.GET_EMAIL:
             return get(state, action)
         case EmailPageActionTypes.HIDE_EMAIL_PAGE:

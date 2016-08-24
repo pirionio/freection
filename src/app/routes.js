@@ -11,6 +11,8 @@ const ToDo = require('./components/ToDo/ToDo')
 const FollowUp = require('./components/FollowUp/FollowUp')
 const Integrations = require('./components/Integrations/Integrations')
 const Github = require('./components/Github/Github')
+const FullThing = require('./components/Thing/FullThing')
+const FullEmail = require('./components/Emails/FullEmail')
 
 class AppRouter extends Component {
     render() {
@@ -18,17 +20,25 @@ class AppRouter extends Component {
             <Router history={this.props.history}>
                 <Route path="/" component={App}>
                     <Route component={MainApp}>
-                        <IndexRedirect to="/whatsnew" />
-                        <Route path="/whatsnew" component={WhatsNew}>
-                            <IndexRedirect to="/whatsnew/things" />
-                            <Route path="/whatsnew/things" component={UnreadNotifications} />
-                            <Route path="/whatsnew/emails" component={UnreadEmails} />
+                        <IndexRedirect to="whatsnew" />
+                        <Route path="whatsnew" component={WhatsNew}>
+                            <IndexRedirect to="things" />
+                            <Route path="things" component={UnreadNotifications}>
+                                <Route path=":thingId" component={FullThing} />
+                            </Route>
+                            <Route path="emails" component={UnreadEmails}>
+                                <Route path=":emailThreadId" component={FullEmail} />
+                            </Route>
                         </Route>
-                        <Route path="/todo" component={ToDo} />
-                        <Route path="/followup" component={FollowUp} />
-                        <Route path="/integrations">
+                        <Route path="todo" component={ToDo}>
+                            <Route path=":thingId" component={FullThing} />
+                        </Route>
+                        <Route path="followup" component={FollowUp}>
+                            <Route path=":thingId" component={FullThing} />
+                        </Route>
+                        <Route path="integrations">
                             <IndexRoute component={Integrations} />
-                            <Route path="/integrations/github" component={Github} />
+                            <Route path="github" component={Github} />
                         </Route>
                     </Route>
                 </Route>

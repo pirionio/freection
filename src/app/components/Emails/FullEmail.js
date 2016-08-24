@@ -3,6 +3,7 @@ const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const DocumentTitle = require('react-document-title')
 const classAutobind = require('class-autobind').default
+const {goBack} = require('react-router-redux')
 
 const isEmpty = require('lodash/isEmpty')
 
@@ -21,13 +22,13 @@ class FullEmail extends Component {
     }
 
     componentDidMount() {
-        const {dispatch, thread} = this.props
-        dispatch(EmailPageActions.getEmail(thread.payload.threadId))
+        const {dispatch, params} = this.props
+        dispatch(EmailPageActions.getEmail(params.emailThreadId))
     }
 
     componentDidUpdate() {
-        const {dispatch, thread} = this.props
-        dispatch(EmailPageActions.getEmail(thread.payload.threadId))
+        const {dispatch, params} = this.props
+        dispatch(EmailPageActions.getEmail(params.emailThreadId))
     }
 
     componentWillUnmount() {
@@ -37,7 +38,7 @@ class FullEmail extends Component {
 
     close() {
         const {dispatch} = this.props
-        dispatch(EmailPageActions.hideEmailPage())
+        dispatch(goBack())
     }
 
     getDocumentTitle() {

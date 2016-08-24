@@ -22,6 +22,7 @@ function getThing(thingId) {
 
 function showThingPage(thing) {
     return dispatch => {
+        dispatch(push(`${window.location.pathname}/${thing.id}`))
         dispatch(showAction(thing))
         dispatch(MessageBoxActions.newMessageBox(MessageTypes.COMMENT_THING, thing))
     }

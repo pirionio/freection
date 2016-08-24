@@ -69,16 +69,15 @@ class UnreadEmails extends Component {
     }
 
     render() {
-        const {invalidationStatus, fullEmailMode} = this.props
+        const {invalidationStatus} = this.props
 
         return (
             <DocumentTitle title={this.getTitle()}>
                 <PreviewsContainer previewItems={this.getEmailRows()}
                                    fetchPreviews={this.fetchUnreadEmails}
                                    noPreviews={this.getNoPreviews()}
-                                   invalidationStatus={invalidationStatus}
-                                   fullItemMode={fullEmailMode}>
-                    <FullEmail />
+                                   invalidationStatus={invalidationStatus}>
+                    {this.props.children}
                 </PreviewsContainer>
             </DocumentTitle>
         )
@@ -88,16 +87,14 @@ class UnreadEmails extends Component {
 UnreadEmails.propsTypes = {
     emails: PropTypes.array.isRequired,
     currentUser: PropTypes.object.isRequired,
-    invalidationStatus: PropTypes.string.isRequired,
-    fullEmailMode: PropTypes.bool.isRequired
+    invalidationStatus: PropTypes.string.isRequired
 }
 
 function mapStateToProps(state) {
     return {
         emails: state.unreadEmails.emails,
         invalidationStatus: state.unreadEmails.invalidationStatus,
-        currentUser: state.auth,
-        fullEmailMode: !isEmpty(state.emailPage.thread)
+        currentUser: state.auth
     }
 }
 

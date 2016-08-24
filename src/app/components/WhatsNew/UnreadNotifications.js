@@ -20,7 +20,6 @@ const styleVars = require('../style-vars')
 const PreviewsContainer = require('../Preview/PreviewsContainer')
 const NotificationPreviewItem = require('./NotificationPreviewItem')
 const GithubPreviewItem = require('./GithubPreviewItem')
-const FullThing = require('../Thing/FullThing')
 
 const WhatsNewActions = require('../../actions/whats-new-actions')
 const EventTypes = require('../../../common/enums/event-types')
@@ -97,16 +96,15 @@ class WhatsNew extends Component {
     }
     
     render () {
-        const {invalidationStatus, fullThingMode} = this.props
+        const {invalidationStatus} = this.props
         
         return (
             <Page title={this.getTitle()}>
                 <PreviewsContainer previewItems={this.getNotificationRows()}
                                    fetchPreviews={this.fetchWhatsNew}
                                    noPreviews={this.getNoPreviews()}
-                                   invalidationStatus={invalidationStatus}
-                                   fullItemMode={fullThingMode}>
-                    <FullThing />
+                                   invalidationStatus={invalidationStatus}>
+                    {this.props.children}
                 </PreviewsContainer>
             </Page>
         )
@@ -115,15 +113,13 @@ class WhatsNew extends Component {
 
 WhatsNew.propTypes = {
     notifications: PropTypes.array.isRequired,
-    invalidationStatus: PropTypes.string.isRequired,
-    fullThingMode: PropTypes.bool.isRequired
+    invalidationStatus: PropTypes.string.isRequired
 }
 
 function mapStateToProps(state) {
     return {
         notifications: state.whatsNew.notifications,
-        invalidationStatus: state.whatsNew.invalidationStatus,
-        fullThingMode: !isEmpty(state.thingPage.thing)
+        invalidationStatus: state.whatsNew.invalidationStatus
     }
 }
 

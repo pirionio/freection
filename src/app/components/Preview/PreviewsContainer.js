@@ -53,10 +53,12 @@ class PreviewsContainer extends Component {
     }
 
     getPreviews() {
-        const {previewItems, fullItemMode, children} = this.props
+        const {previewItems, children} = this.props
         const styles = this.getStyles()
 
-        // When in full-item mode, we have two divs in absolute position, right next to another.
+        // We use the children props to understand if we're in full-item mode or not.
+        // The children arrive from the Router, and they would exist if the user navigated to a route that has a full-item in it.
+        // Notice that when in full-item mode, we have two divs in absolute position, right next to another.
         // One of them acts as the blurry overlay of the background, and the other is the actual content of the full item.
         // The Message Panel, in this case, is included in the full item page, so that it appears above the overlay.
 
@@ -66,10 +68,10 @@ class PreviewsContainer extends Component {
                     <Scrollable>
                         {previewItems}
                     </Scrollable>
-                    {fullItemMode ? <Flexbox name="full-item-blur" container="column" style={styles.blur} /> : null}
-                    {fullItemMode ? children : null}
+                    {children ? <Flexbox name="full-item-blur" container="column" style={styles.blur} /> : null}
+                    {children ? children : null}
                 </Flexbox>
-                {!fullItemMode ? <MessagePanel /> : null}
+                {!children ? <MessagePanel /> : null}
             </Flexbox>
         )
     }
@@ -123,8 +125,7 @@ PreviewsContainer.propTypes = {
     previewItems: PropTypes.array.isRequired,
     fetchPreviews: PropTypes.func.isRequired,
     noPreviews: PropTypes.object.isRequired,
-    invalidationStatus: PropTypes.string.isRequired,
-    fullItemMode: PropTypes.bool.isRequired
+    invalidationStatus: PropTypes.string.isRequired
 }
 
 module.exports = radium(PreviewsContainer)

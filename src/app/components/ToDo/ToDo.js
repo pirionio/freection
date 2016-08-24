@@ -11,7 +11,6 @@ const PreviewsContainer = require('../Preview/PreviewsContainer')
 const ToDoActions = require('../../actions/to-do-actions')
 const ToDoPreviewItem = require('./ToDoPreviewItem')
 const GithubPreviewItem = require('./GithubPreviewItem')
-const FullThing = require('../Thing/FullThing')
 
 const EntityTypes = require('../../../common/enums/entity-types')
 
@@ -52,16 +51,15 @@ class ToDo extends Component {
     }
 
     render() {
-        const {invalidationStatus, fullThingMode} = this.props
+        const {invalidationStatus} = this.props
         
         return (
             <Page title={this.getTitle()}>
                 <PreviewsContainer previewItems={this.getThingsToDo()}
                                    fetchPreviews={this.fetchToDo}
                                    noPreviews={this.getNoPreviews()}
-                                   invalidationStatus={invalidationStatus}
-                                   fullItemMode={fullThingMode}>
-                    <FullThing />
+                                   invalidationStatus={invalidationStatus}>
+                    {this.props.children}
                 </PreviewsContainer>
             </Page>
         )
@@ -70,15 +68,13 @@ class ToDo extends Component {
 
 ToDo.propTypes = {
     things: PropTypes.array.isRequired,
-    invalidationStatus: PropTypes.string.isRequired,
-    fullThingMode: PropTypes.bool.isRequired
+    invalidationStatus: PropTypes.string.isRequired
 }
 
 function mapStateToProps (state) {
     return {
         things: state.toDo.things,
-        invalidationStatus: state.toDo.invalidationStatus,
-        fullThingMode: !isEmpty(state.thingPage.thing)
+        invalidationStatus: state.toDo.invalidationStatus
     }
 }
 

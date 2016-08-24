@@ -57,12 +57,6 @@ function reconnected(state, action) {
     return state
 }
 
-function show(state, action) {
-    return immutable(state)
-        .set('thing', action.thing)
-        .value()
-}
-
 function get(state, action) {
     switch (action.status) {
         case ActionStatus.START:
@@ -238,8 +232,6 @@ module.exports = (state = initialState, action) => {
     switch (action.type) {
         case EventActionTypes.RECONNECTED:
             return reconnected(state, action)
-        case ThingPageActionTypes.SHOW_THING_PAGE:
-            return show(state, action)
         case ThingPageActionTypes.GET_THING:
             return get(state, action)
         case ThingPageActionTypes.HIDE_THING_PAGE:

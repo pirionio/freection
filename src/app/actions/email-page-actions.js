@@ -22,6 +22,7 @@ function getEmail(threadId) {
 
 function showEmailPage(email) {
     return dispatch => {
+        dispatch(push(`${window.location.pathname}/${email.payload.threadId}`))
         dispatch(showAction(email))
         dispatch(MessageBoxActions.newMessageBox(MessageTypes.REPLY_EMAIL, email))
     }

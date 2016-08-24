@@ -3,6 +3,7 @@ const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const classAutobind = require('class-autobind').default
 const DocumentTitle = require('react-document-title')
+const {goBack} = require('react-router-redux')
 
 const isEmpty = require('lodash/isEmpty')
 const reject = require('lodash/reject')
@@ -27,8 +28,8 @@ class FullThing extends Component {
     }
 
     componentDidMount() {
-        const {dispatch, thing} = this.props
-        dispatch(ThingPageActions.getThing(thing.id))
+        const {dispatch, params} = this.props
+        dispatch(ThingPageActions.getThing(params.thingId))
     }
 
     componentWillUnmount() {
@@ -38,13 +39,13 @@ class FullThing extends Component {
 
     componentWillReceiveProps() {
         // Will fetch messages only if needed
-        const {dispatch, thing} = this.props
-        dispatch(ThingPageActions.getThing(thing.id))
+        const {dispatch, params} = this.props
+        dispatch(ThingPageActions.getThing(params.thingId))
     }
 
     close() {
         const {dispatch} = this.props
-        dispatch(ThingPageActions.hideThingPage())
+        dispatch(goBack())
     }
 
     getThingUser() {
@@ -86,6 +87,11 @@ class FullThing extends Component {
 
     getCircleColor() {
         const {thing} = this.props
+
+        // There might not yet be a thing prop when this function is invoked.
+        // That happens because the component is shown before the fetch call is invoked and returns.
+        if (!thing || !thing.payload)
+            return 'black'
 
         switch (thing.payload.status) {
             case ThingStatus.NEW.key:
