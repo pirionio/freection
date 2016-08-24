@@ -9,8 +9,6 @@ const UnreadNotifications = require('./components/WhatsNew/UnreadNotifications')
 const UnreadEmails = require('./components/Emails/UnreadEmails')
 const ToDo = require('./components/ToDo/ToDo')
 const FollowUp = require('./components/FollowUp/FollowUp')
-const Thing = require('./components/Thing/Thing')
-const EmailThread = require('./components/Emails/EmailThread')
 const Integrations = require('./components/Integrations/Integrations')
 const Github = require('./components/Github/Github')
 
@@ -28,8 +26,6 @@ class AppRouter extends Component {
                         </Route>
                         <Route path="/todo" component={ToDo} />
                         <Route path="/followup" component={FollowUp} />
-                        <Route path="/emails/:emailThreadId" component={EmailThread} />
-                        <Route path="/things/:thingId" component={Thing} />
                         <Route path="/integrations">
                             <IndexRoute component={Integrations} />
                             <Route path="/integrations/github" component={Github} />
