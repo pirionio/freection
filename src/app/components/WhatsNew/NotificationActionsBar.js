@@ -46,7 +46,7 @@ class NotificationActionsBar extends Component {
         const dismissAction = DismissAction(notification.thing, currentUser, {preDoFunc})
         dismissAction.show = dismissAction.show && this.showDismiss()
 
-        const closeAction = CloseAction(notification.thing, currentUser, {preDoFunc})
+        const closeAction = CloseAction(notification.thing, currentUser)
         closeAction.show = closeAction.show && this.showClose()
 
         const pongAction = PongAction(notification.thing, currentUser, {preDoFunc})

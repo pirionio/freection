@@ -10,7 +10,7 @@ class FollowUpActionsBar extends Component {
     render() {
         const {thing, currentUser, isRollover, preDoFunc} = this.props
 
-        const closeAction = CloseAction(thing, currentUser, {preDoFunc})
+        const closeAction = CloseAction(thing, currentUser)
         closeAction.show = currentUser && currentUser.id === thing.creator.id &&
             [ThingStatus.DONE.key, ThingStatus.DISMISS.key].includes(thing.payload.status)
 
