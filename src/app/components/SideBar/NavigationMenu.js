@@ -140,7 +140,7 @@ class NavigationMenu extends Component {
                 title: 'Mentions',
                 count: {
                     count: 3,
-                    color: styleVars.basePinkColor
+                    color: styleVars.baseGreenColor
                 }
             }))
         }

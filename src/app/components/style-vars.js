@@ -12,6 +12,7 @@ module.exports = {
     basePurpleColor: '#7985ce',
     basePinkColor: '#ff3a4e',
     baseGrayColor: '#565656',
+    baseGreenColor: '#b7cbc0',
     previewLineHeight: 1.571,
 
     redCircleColor: '#ff3a4e',
