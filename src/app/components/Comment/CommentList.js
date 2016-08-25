@@ -4,6 +4,8 @@ const {chain, sortBy} = require('lodash/core')
 
 const Comment = require('./Comment')
 const Scrollable = require('../Scrollable/Scrollable')
+const Flexbox = require('../UI/Flexbox')
+const styleVars = require('../style-vars')
 
 class CommentList extends Component {
     componentDidMount() {
@@ -23,11 +25,42 @@ class CommentList extends Component {
     }
 
     render() {
-        const comments = sortBy(this.props.comments, 'createdAt').map(comment => (<Comment key={comment.id} comment={comment} />))
+        const {comments} = this.props
+
+        const styles = {
+            unreadTitle: {
+                height: '25px',
+                color: styleVars.highlightColor
+            }
+        }
+
+        const readComments = chain(comments)
+            .sortBy('createdAt')
+            .filter(comment => comment.payload.initialIsRead)
+            .map(comment => <Comment key={comment.id} comment={comment} />)
+            .value()
+
+        const unreadComments = chain(comments)
+            .sortBy('createdAt')
+            .filter(comment => !comment.payload.initialIsRead)
+            .map(comment => <Comment key={comment.id} comment={comment} />)
+            .value()
+
+        if (!unreadComments || !unreadComments.length) {
+            return (
+                <Scrollable stickToBottom={true} ref={scrollable => this._scrollable = scrollable}>
+                    {readComments}
+                </Scrollable>
+            )
+        }
 
         return (
             <Scrollable stickToBottom={true} ref={scrollable => this._scrollable = scrollable}>
-                {comments}
+                {readComments}
+                <Flexbox container="row" justifyContent="center" alignItems="center" style={styles.unreadTitle}>
+                    Unread Messages
+                </Flexbox>
+                {unreadComments}
             </Scrollable>
         )
     }

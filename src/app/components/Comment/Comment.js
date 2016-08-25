@@ -73,7 +73,9 @@ class Comment extends Component {
                 border: `1px solid ${styleVars.baseBorderColor}`
             },
             unread: {
-                backgroundColor: Color('rgba(232, 221, 110, 0.36)').hexString()
+                color: styleVars.highlightColor,
+                letterSpacing: '0.1em',
+                marginLeft: '5px'
             },
             header: {
                 width: '100%',
@@ -90,13 +92,20 @@ class Comment extends Component {
             }
         }
 
+        const unread = !comment.payload.initialIsRead ?
+            <Flexbox name="comment-unread" style={styles.unread}>
+                <span>***</span>
+            </Flexbox> :
+            null
+
         return (
             <VisibilitySensor onChange={this.onVisibilityChange} partialVisibility={true}>
                 <Flexbox name="comment-container" container="column" alignItems="flex-start"
-                         style={[styles.comment, !comment.payload.initialIsRead && styles.unread]}>
+                         style={styles.comment}>
                     <Flexbox name="comment-header" container="row" justifyContent="flex-end" alignItems="center" style={styles.header}>
-                        <Flexbox name="comment-creator" grow={1} shrink={0} style={styles.creator}>
+                        <Flexbox name="comment-creator" grow={1} shrink={0} container="row" alignItems="center" style={styles.creator}>
                             <TextTruncate>{comment.creator.displayName}</TextTruncate>
+                            {unread}
                         </Flexbox>
                         <Flexbox name="comment-date" shrink={0} style={styles.date}>
                             {createdAt}
