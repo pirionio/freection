@@ -5,7 +5,8 @@ const EventService = require('../shared/application/event-service')
 const EventTypes = require('../../common/enums/event-types')
 const {SharedConstants} = require('../../common/shared-constants')
 
-const userId = '1a66ffbe-114f-4f21-bf4b-126c518be17c'
+const userId = '2cf26b7e-e3a7-41d9-b476-5ad25f59bde1'
+const davidUserId = 'e4cc822f-bc8b-4839-8237-c25f10a1db29'
 
 async function sendThing(from, to, subject, body) {
     const fromUser = (await User.filter({firstName: from}).run())[0]
@@ -47,77 +48,64 @@ async function readAllComments(firstName, thingId) {
     }).map(event => EventService.markAsRead(user, event.id)))
 }
 
-async function createUsers(user) {
-    // finding the access token and refresh token if exist
-    const refreshToken = user ? user.refreshToken : null
-    let accessToken = user ? user.accessToken : null
-
+async function createUsers() {
     const users = [{
             id: userId,
             createdAt: new Date(),
-            googleId: '101686250757425128601',
-            email: 'doron.somech.leverate@gmail.com',
+            googleId: '113674947832787766592',
+            email: 'max.freection@gmail.com',
             username: 'max.levchin',
             organization: 'paypal.com',
             firstName: 'Max',
             lastName: 'Levchin',
-            refreshToken,
-            accessToken
         },
         {
+            id: davidUserId,
             createdAt: new Date(),
-            googleId: '1',
-            email: 'peter.thiel.freection@gmail.com',
-            username: 'peter.thiel',
-            organization: 'paypal.com',
-            firstName: 'Peter',
-            lastName: 'Thiel',
-            accessToken: '123',
-            refreshToken: '456'
-        },
-        {
-            createdAt: new Date(),
-            googleId: '1',
-            email: 'elon.musk.freection@gmail.com',
-            username: 'elon.musk',
-            organization: 'paypal.com',
-            firstName: 'Elon',
-            lastName: 'Musk',
-            accessToken: '123',
-            refreshToken: '456'
-        },
-        {
-            createdAt: new Date(),
-            googleId: '1',
-            email: 'steve.chen.freection@gmail.com',
-            username: 'steve.chen',
-            organization: 'paypal.com',
-            firstName: 'Steve',
-            lastName: 'Chen',
-            accessToken: '123',
-            refreshToken: '456'
-        },
-        {
-            createdAt: new Date(),
-            googleId: '1',
-            email: 'david.sacks.freection@gmail.com',
+            googleId: '111506101202178845879',
+            email: 'david.freection@gmail.com',
             username: 'David.Sacks',
             organization: 'paypal.com',
             firstName: 'David',
-            lastName: 'Sacks',
-            accessToken: '123',
-            refreshToken: '456'
+            lastName: 'Sacks'
+        },
+        {
+            id: '066c2cc8-32ad-4919-a943-d8ccc3c0db58',
+            createdAt: new Date(),
+            googleId: '107855123843159852359',
+            email: 'peter.freection@gmail.com',
+            username: 'peter.thiel',
+            organization: 'paypal.com',
+            firstName: 'Peter',
+            lastName: 'Thiel'
         },
         {
             createdAt: new Date(),
             googleId: '1',
-            email: 'jawed.karim.freection@gmail.com',
+            email: 'elon.freection@gmail.com',
+            username: 'elon.musk',
+            organization: 'paypal.com',
+            firstName: 'Elon',
+            lastName: 'Musk'
+        },
+        {
+            id: '5f9a8dcb-3ad8-40e6-9966-f92c9135b74f',
+            createdAt: new Date(),
+            googleId: '116406706736007077224',
+            email: 'steve.freection@gmail.com',
+            username: 'steve.chen',
+            organization: 'paypal.com',
+            firstName: 'Steve',
+            lastName: 'Chen'
+        },
+        {
+            createdAt: new Date(),
+            googleId: '1',
+            email: 'jawed.freection@gmail.com',
             username: 'Jawed.Karim',
             organization: 'paypal.com',
             firstName: 'Jawed',
-            lastName: 'Karim',
-            accessToken: '123',
-            refreshToken: '456'
+            lastName: 'Karim'
         }
     ]
 
@@ -125,17 +113,10 @@ async function createUsers(user) {
 }
 
 module.exports = async function() {
-    let user
-
-    try {
-        user = await User.get(userId).run()
-    } catch (error) {
-    }
-
-    await User.filter(doc => doc('id').ne(userId)).delete().execute()
+    //await User.filter(doc => doc('id').ne(userId)).delete().execute()
     await Thing.delete().execute()
     await Event.delete().execute()
-    await createUsers(user)
+    await createUsers()
 
     // American express
     const americanExpress = await sendThing('Peter', 'Max', 'Supporting American Express', 'Hi Max, \r\n\r\nIt’s growing urgent to support these, guys at the field say our churn might be related.\r\nLet’s see what it takes on engineering side.')
