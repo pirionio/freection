@@ -22,7 +22,7 @@ class NavigationMenu extends Component {
         const styles = this.getStyles()
 
         const countCircle = count.count ?
-            <Ellipse width="33px" height="25px" color={count.color} text={count.count} style={styles.circle} /> :
+            <Ellipse width="30px" height="22px" color={count.color} text={count.count} style={styles.circle} /> :
             null
 
         const arrow = window.location.pathname.startsWith(pathname) && <span style={styles.arrow}></span>
@@ -92,7 +92,7 @@ class NavigationMenu extends Component {
             },
             circle: {
                 marginRight: '26px',
-                paddingTop: '5px',
+                paddingTop: '3px',
                 textAlign: 'center',
                 borderBottomLeftRadius: '100%30px',
                 borderBottomRightRadius: '100%30px',
@@ -144,7 +144,7 @@ class NavigationMenu extends Component {
                 }
             }))
         }
-        
+
         return (
             <Flexbox name="navigation-menu-container" grow={config.isDemo ? 0 : 1} style={styles.menu}>
                 {links}
