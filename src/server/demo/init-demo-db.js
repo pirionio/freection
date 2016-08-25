@@ -181,7 +181,7 @@ module.exports = async function() {
     await sendThing('Max', 'Steve', 'What do you think about that girl you interviewed yesterday?', 'I have a following interview with her next week, would be glad to go over your remarks')
 
     // What's new
-    await sendThing('David', 'Max', 'Crash from last night', 'Hey Max\r\n\r\n, not sure if you got it, but many users could not log in tonight, can we direct them that it’s all over now?\r\nPlease keep me in the loop and let me know ASAP.')
+    await sendThing('David', 'Max', 'Crash from last night', 'Hey Max,\r\n\r\nnot sure if you got it, but many users could not log in tonight, can we direct them that it’s all over now?\r\nPlease keep me in the loop and let me know ASAP.')
     await sendThing('Steve', 'Max', 'let\'s talk about my salary', 'Hey what’s up?\r\n\r\nI’ve been in the company for a while now, I would appreciate it if we could have a talk about upgrading my salary.\r\n\r\nThank you!')
     await sendThing('Peter', 'Max', 'How many active users so far this month', 'I have a meeting soon, can’t remember the exact number we talked about last week in the meeting.')
 }
