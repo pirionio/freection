@@ -81,6 +81,7 @@ async function createUsers() {
             lastName: 'Thiel'
         },
         {
+            id: '322ac797-4086-4396-a203-2e5d1d05a0b6',
             createdAt: new Date(),
             googleId: '1',
             email: 'elon.freection@gmail.com',
@@ -100,6 +101,7 @@ async function createUsers() {
             lastName: 'Chen'
         },
         {
+            id: '79889b8f-f5f7-42af-b102-e01e60b3a393',
             createdAt: new Date(),
             googleId: '1',
             email: 'jawed.freection@gmail.com',
