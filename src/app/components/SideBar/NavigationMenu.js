@@ -1,13 +1,13 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
-const Link = require('../UI/Link')
 const radium = require('radium')
 const classAutobind = require('class-autobind').default
 
 const keys = require('lodash/keys')
 const groupBy = require('lodash/groupBy')
 
+const Link = require('../UI/Link')
 const Flexbox = require('../UI/Flexbox')
 const Ellipse = require('../UI/Ellipse')
 const styleVars = require('../style-vars')
@@ -41,7 +41,7 @@ class NavigationMenu extends Component {
     }
 
     getWhatsNewCount() {
-        const unreadThingsCount = keys(groupBy(this.props.newNotifications, 'thingId')).length
+        const unreadThingsCount = keys(groupBy(this.props.newNotifications, 'thing.id')).length
         const unreadEmailsCount = keys(groupBy(this.props.newEmails, 'payload.threadId')).length
 
         return {
