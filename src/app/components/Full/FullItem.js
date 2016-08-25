@@ -135,7 +135,7 @@ class FullItem extends  Component {
         return {
             page: {
                 position: 'absolute',
-                top: 20,
+                top: -35,
                 left: 40,
                 right: 40,
                 bottom: 0,
