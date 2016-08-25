@@ -74,7 +74,6 @@ class FullThing extends Component {
     getAllComments() {
         const {thing} = this.props
 
-        console.log(thing.events)
         // Filter out CREATED events that have no text - since we allow creating a new Thing with no body at all.
         return thing.events ?
             reject(ThingHelper.getAllMessages(thing), message => !message.payload.text && message.eventType.key !== EventTypes.PING.key) :
