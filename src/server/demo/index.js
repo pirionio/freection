@@ -13,13 +13,13 @@ async function done() {
 module.exports = (app) => {
     app.get('/demo/init', function(request, response) {
         initDemoDB()
-            .then(() => response.send('OK - Init'))
+            .then(() => response.redirect('/'))
             .catch(error => response.status(500).send(error))
     })
 
     app.get('/demo/done', function(request, response) {
         done()
-            .then(() => response.send('OK - done'))
+            .then(() => response.redirect('/'))
             .catch(error => response.status(500).send(error))
 
     })
