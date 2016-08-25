@@ -134,6 +134,17 @@ class NavigationMenu extends Component {
             }
         ].map(this.getLink)
 
+        if (config.isDemo) {
+            links.push(this.getLink({
+                pathname: '/mentions',
+                title: 'Mentions',
+                count: {
+                    count: 3,
+                    color: styleVars.basePinkColor
+                }
+            }))
+        }
+        
         return (
             <Flexbox name="navigation-menu-container" grow={config.isDemo ? 0 : 1} style={styles.menu}>
                 {links}
