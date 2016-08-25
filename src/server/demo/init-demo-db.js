@@ -25,6 +25,12 @@ async function comment(from, thingId, text) {
     await ThingService.comment(fromUser, thingId, text)
 }
 
+async function done(from, thingId, text) {
+    const fromUser = (await User.filter({firstName: from}).run())[0]
+
+    await ThingService.markAsDone(fromUser, thingId, text)
+}
+
 async function ping(firstName, thingId) {
     const user = (await User.filter({firstName: firstName}).run())[0]
     await ThingService.ping(user, thingId)
@@ -175,7 +181,7 @@ module.exports = async function() {
         await comment('Max', ie4, ':)')
         await discardComments('Max', ie4)
         await readAllComments('Max', ie4)
-        await comment('Jawed', ie4, 'This IE really sucks man...')
+        await done('Jawed', ie4, 'This IE really sucks man...')
 
         // interview
         await sendThing('Max', 'Steve', 'What do you think about that girl you interviewed yesterday?', 'I have a following interview with her next week, would be glad to go over your remarks')
