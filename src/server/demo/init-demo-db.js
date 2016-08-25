@@ -173,7 +173,7 @@ module.exports = async function() {
     await sendThing('Peter', 'Max', 'How many active users so far this month', 'I have a meeting soon, can’t remember the exact number we talked about last week in the meeting.')
 
     const peter = await User.get('066c2cc8-32ad-4919-a943-d8ccc3c0db58').run()
-    EmailService.sendEmail(peter, 'max.freection@gmail.com', 'Company Update',
+    await EmailService.sendEmail(peter, 'max.freection@gmail.com', 'Company Update',
         'Hi all,\r\n\r\n' +
         'To begin with, this was a very encouraging week!\r\n\r\n' +
         'The stagnation we had with the revenues had finally stopped and we see the increase we’d been wishing for.\r\n' +
@@ -185,12 +185,12 @@ module.exports = async function() {
         '* Say hello to Jenny Smith, our new employee at the support team.\r\n\r\nRegards, \r\n\r\nPeter')
 
     const david = await User.get(davidUserId).run()
-    EmailService.sendEmail(david, 'max.freection@gmail.com', 'Monthly Report', 'Attached hereby is the monthly report.\r\n' +
+    await EmailService.sendEmail(david, 'max.freection@gmail.com', 'Monthly Report', 'Attached hereby is the monthly report.\r\n' +
         'A few remarks:\r\n'+
         '* There is a problem with the pricing for Amazon, they claim to have been overcharged. We need to look into this ASAP. Max - please take care of this ASAP.\r\n'+
         '* We had a very peculiar peak before the Friday one, do we know if it’s real or something went wrong somewhere?\r\n'+
         '* We need to start thinking about the strategy for 2000 Q1 - Peter set up a meeting?\r\n\r\bRegards,\r\n\r\nDavid')
 
     const steve = await User.get('5f9a8dcb-3ad8-40e6-9966-f92c9135b74f').run()
-    EmailService.sendEmail(steve, 'max.freection@gmail.com', 'Ordering from Giraffe at 12:01!', 'All welcomed!')
+    await EmailService.sendEmail(steve, 'max.freection@gmail.com', 'Ordering from Giraffe at 12:01!', 'All welcomed!')
 }
