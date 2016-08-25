@@ -2,6 +2,7 @@ const process = require('process')
 const {User, Thing, Event} = require('../shared/models')
 const ThingService = require('../shared/application/thing-service')
 const EventService = require('../shared/application/event-service')
+const EmailService = require('../shared/application/email-service')
 const EventTypes = require('../../common/enums/event-types')
 const {SharedConstants} = require('../../common/shared-constants')
 
@@ -118,6 +119,9 @@ module.exports = async function() {
     await Event.delete().execute()
     await createUsers()
 
+    const user = await User.get(userId).run()
+    await EmailService.deleteAllEmails(user)
+
     // American express
     const americanExpress = await sendThing('Peter', 'Max', 'Supporting American Express', 'Hi Max, \r\n\r\nIt’s growing urgent to support these, guys at the field say our churn might be related.\r\nLet’s see what it takes on engineering side.')
     await acceptThing('Max', americanExpress)
@@ -165,4 +169,16 @@ module.exports = async function() {
     await sendThing('David', 'Max', 'Crash from last night', 'Hey Max,\r\n\r\nnot sure if you got it, but many users could not log in tonight, can we direct them that it’s all over now?\r\nPlease keep me in the loop and let me know ASAP.')
     await sendThing('Steve', 'Max', 'let\'s talk about my salary', 'Hey what’s up?\r\n\r\nI’ve been in the company for a while now, I would appreciate it if we could have a talk about upgrading my salary.\r\n\r\nThank you!')
     await sendThing('Peter', 'Max', 'How many active users so far this month', 'I have a meeting soon, can’t remember the exact number we talked about last week in the meeting.')
+
+    const peter = await User.get('066c2cc8-32ad-4919-a943-d8ccc3c0db58').run()
+    EmailService.sendEmail(peter, 'max.freection@gmail.com', 'Company Update',
+        'Hi all,\r\n\r\n' +
+        'To begin with, this was a very encouraging week!\r\n\r\n' +
+        'The stagnation we had with the revenues had finally stopped and we see the increase we’d been wishing for.\r\n' +
+        'We can also safely say that it’s not just random - we see a strong correlation between our sales efforts and this increase.\r\n' +
+        'So keep up the good work!\r\n\r\n'+
+        'Some more notes:\r\n' +
+        '* We had a peak of made transactions last Friday! :)\r\n' +
+        '* Next month are holidays, third week of December to to first week of January, we’re on vacation.\r\n' +
+        '* Say hello to Jenny Smith, our new employee at the support team.\r\n\r\nRegards, \r\n\r\nPeter')
 }

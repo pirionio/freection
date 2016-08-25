@@ -13,7 +13,7 @@ class ImapConnection {
         this._connection = new imap(options)
         this._onDisconnect = null
 
-        promisify(this._connection, ['openBox', 'closeBox', 'search', 'setFlags', 'addKeywords', 'getBoxes'])
+        promisify(this._connection, ['openBox', 'closeBox', 'search', 'setFlags', 'addKeywords', 'getBoxes', 'expunge', 'move'])
         autobind(this, ImapConnection.prototype)
     }
 
@@ -211,6 +211,19 @@ class ImapConnection {
                 logger.error('Could not mark emails as read', error)
                 throw error
             })*/
+    }
+
+    deleteAllEmails() {
+        const criteria = ['ALL']
+        return this._connection.searchAsync(criteria)
+            .then(results => {
+                if (results && results.length)
+                    return this._connection.moveAsync(results, `${IMAP[this._type].MAIN_BOX}/Trash`)
+            })
+            .catch(error => {
+                logger.error('Could not delete all emails', error)
+                throw error
+            })
     }
 
     convertEnvelopeUser(user) {

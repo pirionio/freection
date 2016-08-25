@@ -37,6 +37,10 @@ module.exports = (app) => {
         app.use(webpackHotMiddleware(compiler))
     }
 
+    app.get('/demo', function(request, response) {
+        response.render('demo')
+    })
+
     // Serve the main index file for any request that's not handled specifically,
     // to support URL navigation without hash tags.
     app.get('*', function (request, response) {

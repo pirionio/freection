@@ -106,6 +106,15 @@ async function sendEmail(user, to, subject, text, html, messageId) {
     }
 }
 
+async function deleteAllEmails(user) {
+    const connection = await getImapConnection(user)
+    try {
+        await connection.deleteAllEmails()
+    } finally {
+        GoogleImapConnectionPool.releaseConnection(user, connection)
+    }
+}
+
 function sendEmailForThing(user, to, subject, body, messageId) {
     const emailForThingHtml = getEmailForThingHtml(user, body)
     return sendEmail(user, to, subject, undefined, emailForThingHtml, messageId)
@@ -225,5 +234,6 @@ module.exports = {
     doEmail,
     replyToAll,
     getEmailsSince,
-    getLastInternalDate
+    getLastInternalDate,
+    deleteAllEmails
 }
