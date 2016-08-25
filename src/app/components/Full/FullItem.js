@@ -73,11 +73,11 @@ class FullItem extends  Component {
         const styles = this.getStyles()
 
         return (
-            <Flexbox name="full-item-content" grow={1} container="row" justifyContent="flex-end" style={styles.item}>
-                <Flexbox grow={1}>
+            <Flexbox name="full-item-content" grow={1} container="column" justifyContent="center" alignItems="center" style={styles.item}>
+                <Flexbox grow={1} container="row" alignItems="center">
                     <Delay wait={GeneralConstants.FETCHING_DELAY_MILLIS}>
                         <div className="full-item-loading">
-                            Loading, please wait.
+                            <Icon name="spinner" pulse size="4x" style={{marginLeft: '10px'}} />
                         </div>
                     </Delay>
                 </Flexbox>
