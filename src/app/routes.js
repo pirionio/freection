@@ -13,6 +13,7 @@ const Integrations = require('./components/Integrations/Integrations')
 const Github = require('./components/Github/Github')
 const FullThing = require('./components/Thing/FullThing')
 const FullEmail = require('./components/Emails/FullEmail')
+const Board = require('./components/Board/Board')
 
 class AppRouter extends Component {
     render() {
@@ -40,6 +41,9 @@ class AppRouter extends Component {
                             <IndexRoute component={Integrations} />
                             <Route path="github" component={Github} />
                         </Route>
+                        <Route path="boards/demo-board1" component={Board} />
+                        <Route path="boards/demo-board2" component={Board} />
+                        <Route path="boards/demo-board3" component={Board} />
                     </Route>
                 </Route>
             </Router>

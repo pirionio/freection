@@ -30,5 +30,6 @@ module.exports = combineReducers({
     auth,
     contacts,
     glassPane,
-    routing: routerReducer
+    routing: routerReducer,
+    config: (state = {}) => state
 })

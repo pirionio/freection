@@ -2,6 +2,8 @@ const express = require('express')
 const path = require('path')
 const jwt = require('jsonwebtoken')
 
+const {isDemo} = require('../shared/config/demo')
+
 const tokenConfig = require('../shared/config/token')
 const logger = require('../shared/utils/logger')
 const login = require('./login')
@@ -67,6 +69,9 @@ async function getInitialState(request) {
 
     const authState = await getAuthState(request)
     state = reducer(state, AuthActions.setState(authState))
+    state = Object.assign(state, {
+        config: getConfig()
+    })
 
     return state
 }
@@ -93,5 +98,11 @@ async function getAuthState(request) {
     } catch (error) {
         logger.error(`Failed to sign user ${request.user.email} for a the push service token`, error)
         return auth
+    }
+}
+
+function getConfig() {
+    return {
+        isDemo: isDemo
     }
 }

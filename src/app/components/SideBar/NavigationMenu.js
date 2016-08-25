@@ -134,7 +134,7 @@ class NavigationMenu extends Component {
         ].map(this.getLink)
 
         return (
-            <Flexbox name="navigation-menu-container" grow={1} style={styles.menu}>
+            <Flexbox name="navigation-menu-container" style={styles.menu}>
                 {links}
             </Flexbox>
         )
