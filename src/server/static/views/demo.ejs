@@ -2,15 +2,44 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Demo</title>
+    <title>Freection Demo</title>
+    <style>
+        body {
+            padding-left: 15px;
+
+            font-family: Roboto, Arial;
+            font-size: 0.875em;
+        }
+
+        form {
+            display: inline-block;
+        }
+
+        input {
+            width: 80px;
+            height: 30px;
+            background-color: #1e272c;
+            color: white;
+            border: none;
+            outline: none;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        input:hover {
+            color: #f6ab27;
+        }
+    </style>
 </head>
 <body>
+    <h1>Freection Demo</h1>
+
     <form method="post" action="/demo/init">
-        <input type="submit" value="initialize">
+        <input type="submit" value="INIT">
     </form>
 
     <form method="post" action="/demo/done">
-        <input type="submit" value="done">
+        <input type="submit" value="DONE">
     </form>
 </body>
 </html>

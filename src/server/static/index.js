@@ -38,7 +38,8 @@ module.exports = (app) => {
     }
 
     app.get('/demo', function(request, response) {
-        response.render('demo')
+        if (isDemo)
+            response.render('demo')
     })
 
     // Serve the main index file for any request that's not handled specifically,
