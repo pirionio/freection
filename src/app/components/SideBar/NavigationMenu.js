@@ -113,6 +113,7 @@ class NavigationMenu extends Component {
     }
 
     render() {
+        const {config} = this.props
         const styles = this.getStyles()
 
         const links = [
@@ -134,7 +135,7 @@ class NavigationMenu extends Component {
         ].map(this.getLink)
 
         return (
-            <Flexbox name="navigation-menu-container" style={styles.menu}>
+            <Flexbox name="navigation-menu-container" grow={config.isDemo ? 0 : 1} style={styles.menu}>
                 {links}
             </Flexbox>
         )
@@ -142,6 +143,7 @@ class NavigationMenu extends Component {
 }
 
 NavigationMenu.propTypes = {
+    config: PropTypes.object.isRequired,
     routing: PropTypes.object.isRequired,
     newNotifications: PropTypes.array.isRequired,
     todoThings: PropTypes.array.isRequired,
@@ -151,6 +153,7 @@ NavigationMenu.propTypes = {
 
 function mapStateToProps(state) {
     return {
+        config: state.config,
         routing: state.routing,
         newNotifications: state.whatsNew.notifications,
         todoThings: state.toDo.things,
