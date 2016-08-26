@@ -46,7 +46,7 @@ class SideBar extends Component {
 
         return (
             <Flexbox name="side-bar" shrink={0} container="column" style={styles.sideBar}>
-                <Flexbox name="logo-container" container="row" alignItems="center" style={styles.logo.container}>
+                <Flexbox name="logo-container" container="row" justifyContent="center" alignItems="center" style={styles.logo.container}>
                     <img src={logo} style={styles.logo.image} />
                 </Flexbox>
                 <NavigationMenu />
