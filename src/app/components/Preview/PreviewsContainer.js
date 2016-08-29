@@ -48,7 +48,7 @@ class PreviewsContainer extends Component {
                         <span style={[styles.noPreviews.logo, {color: noPreviews.logoColor}]}>***</span>
                     </Flexbox>
                 </Flexbox>
-                <Flexbox container="column" alignSelf="center">
+                <Flexbox container="column" alignSelf="center"  style={styles.messagePanel}>
                     <MessagePanel />
                 </Flexbox>
             </Flexbox>
@@ -75,7 +75,7 @@ class PreviewsContainer extends Component {
                     {children ? children : null}
                 </Flexbox>
                 {!children ?
-                    <Flexbox container="column" alignSelf="center">
+                    <Flexbox container="column" alignSelf="center" style={styles.messagePanel}>
                         <MessagePanel />
                     </Flexbox> :
                     null}
@@ -110,6 +110,10 @@ class PreviewsContainer extends Component {
                     marginBottom: '15px',
                     textAlign: 'center'
                 }
+            },
+            messagePanel: {
+                width: '100%',
+                padding: '0 40px'
             }
         }
     }

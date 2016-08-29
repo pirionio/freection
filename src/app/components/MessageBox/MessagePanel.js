@@ -81,7 +81,7 @@ class MessagePanel extends Component {
     getStyles() {
         return {
             form: {
-                width: '700px',
+                padding: '0 39px',
                 marginBottom: '0'
             },
             panel: {
