@@ -19,5 +19,8 @@ module.exports = {
                 loader: 'json'
             }
         ]
+    },
+    node: {
+        fs: "empty"
     }
 }

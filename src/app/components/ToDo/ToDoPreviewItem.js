@@ -6,7 +6,7 @@ const ThingStatus = require('../../../common/enums/thing-status')
 const ThingPageActions = require('../../actions/thing-page-actions')
 const ThingHelper = require('../../helpers/thing-helper')
 
-const {PreviewItem, PreviewItemStatus, PreviewItemText, PreviewItemActions} = require('../Preview/PreviewItem')
+const {PreviewItem, PreviewItemUser, PreviewItemText, PreviewItemActions} = require('../Preview/PreviewItem')
 const {ThingPreviewText}= require('../Preview/Thing')
 const ToDoActionsBar = require('./ToDoActionsBar')
 const styleVars = require('../style-vars')
@@ -43,9 +43,9 @@ class TodoPreviewItem extends Component {
                          date={thing.createdAt}
                          expandedMessages={this.getExpandedMessages()}
                          onClick={() => dispatch(ThingPageActions.showThingPage(thing))}>
-                <PreviewItemStatus>
+                <PreviewItemUser>
                     <strong>{thing.creator.displayName}</strong>
-                </PreviewItemStatus>
+                </PreviewItemUser>
                 <PreviewItemText>
                     <ThingPreviewText thing={thing}/>
                 </PreviewItemText>

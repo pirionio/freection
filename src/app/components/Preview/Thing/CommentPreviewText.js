@@ -32,9 +32,6 @@ const CommentPreviewText = ({comment, newNotifications}) => {
 
     return (
         <Flexbox container={true}>
-            <Flexbox style={style.icon} container="column" justifyContent="center">
-                <img src={commentImage} />
-            </Flexbox>
             <Flexbox style={{minWidth: 0}}>
                 <TextTruncate style={style.textTruncate}>{comment}</TextTruncate>
             </Flexbox>

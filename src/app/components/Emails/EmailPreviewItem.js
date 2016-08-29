@@ -5,7 +5,7 @@ const {connect} = require('react-redux')
 const TextTruncate = require('../UI/TextTruncate')
 const EmailPreviewActionBar = require('./EmailPreviewActionsBar')
 const EmailPageActions = require('../../actions/email-page-actions')
-const {PreviewItem, PreviewItemStatus, PreviewItemText, PreviewItemActions} = require('../Preview/PreviewItem')
+const {PreviewItem, PreviewItemUser, PreviewItemText, PreviewItemActions} = require('../Preview/PreviewItem')
 
 class EmailPreviewItem extends Component {
     render() {
@@ -15,9 +15,9 @@ class EmailPreviewItem extends Component {
             <PreviewItem title={email.subject}
                          date={email.createdAt}
                          onClick={() => dispatch(EmailPageActions.showEmailPage(email))}>
-                <PreviewItemStatus>
+                <PreviewItemUser>
                     <strong>{email.creator.displayName}</strong>
-                </PreviewItemStatus>
+                </PreviewItemUser>
                 <PreviewItemText>
                     <TextTruncate>{email.payload.text}</TextTruncate>
                 </PreviewItemText>

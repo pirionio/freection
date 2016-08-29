@@ -11,9 +11,11 @@ const InlineMessageActions = require('../../actions/inline-message-actions')
 const InlineMessage = require('./InlineMessage')
 const Flexbox = require('../UI/Flexbox')
 const Ellipse = require('../UI/Ellipse')
+const TextTruncate = require('../UI/TextTruncate')
 const styleVars = require('../style-vars')
 
-const slots = createSlots('PreviewItemText', 'PreviewItemActions')
+const PreviewItemText = require('./PreviewItemText')
+const slots = createSlots('PreviewItemActions', 'PreviewItemUser')
 
 const PreviewItemStatus = ({status, children}) => {
     if (status)
@@ -37,14 +39,17 @@ class PreviewItem extends Component {
             this.setState({showInlineMessage: false})
     }
 
+    isRollover() {
+        return radium.getState(this.state, 'preview', ':hover')
+    }
+
     getPreviewText() {
-        return getChildOfType(this.props.children, slots.PreviewItemText)
+        return getChildOfType(this.props.children, PreviewItemText)
     }
 
     getActions() {
         const original = getChildOfType(this.props.children, slots.PreviewItemActions)
-        const isRollover = radium.getState(this.state, 'preview', ':hover')
-        return React.cloneElement(original, {isRollover: isRollover, preDoFunc: this.openInlineMessage})
+        return React.cloneElement(original, {isRollover: this.isRollover(), preDoFunc: this.openInlineMessage})
     }
 
     openInlineMessage(action) {
@@ -61,6 +66,10 @@ class PreviewItem extends Component {
 
     getStatus() {
         return getChildOfType(this.props.children, PreviewItemStatus)
+    }
+
+    getUser() {
+        return getChildOfType(this.props.children, slots.PreviewItemUser)
     }
 
     getDateText() {
@@ -82,7 +91,7 @@ class PreviewItem extends Component {
             container: {
                 width: '100%',
                 marginBottom: '5px',
-                backgroundColor: '#FAFAFA',
+                backgroundColor: styleVars.secondaryBackgroundColor,
                 border: '1px solid #e0e0e0',
                 withInlineReply: {
                     position: 'absolute',
@@ -95,18 +104,46 @@ class PreviewItem extends Component {
                 cursor: 'pointer'
             },
             preview: {
+                height: '50px',
                 paddingLeft: '30px',
                 paddingRight: '30px'
             },
-            text: {
-                lineHeight: styleVars.previewLineHeight
+            leftBox: {
+                width: '160px',
+                padding: '4px 0',
+                withStatus: {
+                    width: '250px'
+                }
             },
-            status: {
-                lineHeight: styleVars.previewLineHeight
+            centerBox: {
+                padding: '4px 0',
+                minWidth: 0
+            },
+            rightBox: {
+                width: '120px',
+                rollover: {
+                    width: 'inherit',
+                    minWidth: '120px',
+                    maxWidth: '287px'
+                }
+            },
+            circle: {
+                width: '8px',
+                height: '8px',
+                rollover: {
+                    width: '12px',
+                    height: '12px',
+                    marginLeft: '-2px'
+                },
+                container: {
+                    width: '19px'
+                }
+            },
+            text: {
+                color: styleVars.baseGrayColor
             },
             date:{
-                color: styleVars.baseGrayColor,
-                lineHeight: styleVars.previewLineHeight
+                color: styleVars.baseGrayColor
             }
         }
     }
@@ -115,34 +152,42 @@ class PreviewItem extends Component {
         const {circleColor, title, onClick} = this.props
 
         const statusPreview = this.getStatus()
+        const userPreview = this.getUser()
         const textPreview = this.getPreviewText()
         const inlineMessage = this.getInlineMessage()
 
         const styles = this.getStyles()
+        const isRollover = this.isRollover()
 
         return (
             <div name="preview-item-container" style={[styles.container, this.state.showInlineMessage && styles.container.withInlineReply]}>
                 <div name="preview-item-hoverable" key="preview" style={styles.hoverable} onClick={onClick}>
-                    <Flexbox name="preview-item" shrink={0} height='70px' container='row' style={styles.preview}>
+                    <Flexbox name="preview-item" shrink={0} container='row' style={styles.preview}>
                         { circleColor ?
-                            <Flexbox name="preview-circle" width='19px' shrink={0} container='column' justifyContent="center">
-                                <Ellipse width="8xp" height="8px" color={circleColor} />
+                            <Flexbox name="preview-circle" shrink={0} container='column' justifyContent="center" style={styles.circle.container}>
+                                <Ellipse color={circleColor} style={!isRollover ? styles.circle : styles.circle.rollover} />
                             </Flexbox> :
                             null
                         }
-                        <Flexbox name="left-box" width='300px' shrink={0} container='column' justifyContent="center">
-                            <Flexbox name="status" style={styles.status}>{statusPreview}</Flexbox>
+                        <Flexbox name="left-box" shrink={0} container='column' justifyContent="space-around"
+                                 style={[styles.leftBox, !!statusPreview && styles.leftBox.withStatus]}>
+                            {
+                                statusPreview ?
+                                    <Flexbox name="status">{statusPreview}</Flexbox> :
+                                    <Flexbox name="user">{userPreview}</Flexbox>
+                            }
                             <Flexbox name="date" style={styles.date}>
                                 {this.getDateText()}
                             </Flexbox>
                         </Flexbox>
-                        <Flexbox name="center-box" container="column" justifyContent="center" grow={1} style={{minWidth: 0}}>
+                        <Flexbox name="center-box" container="column" justifyContent="space-around" grow={1} style={styles.centerBox}>
                             <Flexbox name="title">
-                                <strong>{title}</strong>
+                                <TextTruncate><strong>{title}</strong></TextTruncate>
                             </Flexbox>
                             {textPreview ? <Flexbox name="text" style={styles.text}>{textPreview}</Flexbox> : null}
                         </Flexbox>
-                        <Flexbox name="right-box" container="column" justifyContent="center" shrink={0} width='250px'>
+                        <Flexbox name="right-box" container="column" justifyContent="center" shrink={0}
+                                 style={[styles.rightBox, isRollover && styles.rightBox.rollover]}>
                             {this.getActions()}
                         </Flexbox>
                     </Flexbox>
@@ -170,5 +215,6 @@ function mapStateToProps(state) {
 
 module.exports = Object.assign({
     PreviewItem: connect(mapStateToProps)(radium(PreviewItem)),
+    PreviewItemText,
     PreviewItemStatus
 }, slots)

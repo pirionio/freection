@@ -41,6 +41,14 @@ class ActionsBar extends Component {
             )
         }
 
+        if (!isRollover) {
+            return (
+                <Flexbox name="actions-bar" container='row-reverse'>
+                    {firstAction}
+                </Flexbox>
+            )
+        }
+
         return (
             <Flexbox name="actions-bar" container='row-reverse'>
                 {firstAction}
