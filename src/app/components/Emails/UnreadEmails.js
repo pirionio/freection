@@ -12,9 +12,12 @@ const merge = require('lodash/merge')
 const clone = require('lodash/clone')
 const map = require('lodash/map')
 const isEmpty = require('lodash/isEmpty')
+const toPairs = require('lodash/toPairs')
 
+const PreviewHelper = require('../../helpers/preview-helper')
 const EmailActions = require('../../actions/email-actions')
 
+const Flexbox = require('../UI/Flexbox')
 const PreviewsContainer = require('../Preview/PreviewsContainer')
 const EmailPreviewItem = require('./EmailPreviewItem')
 const styleVars = require('../style-vars')
@@ -23,7 +26,7 @@ const FullEmail = require('../Emails/FullEmail')
 class UnreadEmails extends Component {
     constructor(props) {
         super(props)
-        classAutobind(this)
+        classAutobind(this, UnreadEmails.prototype)
     }
 
     getTitle() {
@@ -40,12 +43,12 @@ class UnreadEmails extends Component {
     }
 
     getEmailRows() {
-        let emailRows = []
+        let aggregatedEmails = []
 
         const emailsByThreadId = groupBy(this.props.emails, 'payload.threadId')
         forOwn(emailsByThreadId, (threadEmails) => {
             const lastEmail = chain(threadEmails).sortBy('createdAt').head().clone().value()
-            emailRows.push(merge(lastEmail, {
+            aggregatedEmails.push(merge(lastEmail, {
                 entityId: lastEmail.payload.threadId,
                 payload: {
                     emailUids: map(threadEmails, 'payload.uid')
@@ -53,9 +56,38 @@ class UnreadEmails extends Component {
             }))
         })
 
-        return orderBy(emailRows, 'createdAt', 'desc').map(email =>
-            <EmailPreviewItem email={email} currentUser={this.props.currentUser} key={email.id} />
+        return this.groupEmailsByDate(aggregatedEmails)
+    }
+
+    groupEmailsByDate(aggregatedEmails) {
+        const styles = this.getStyles()
+
+        const groupedEmails = PreviewHelper.groupByDate(aggregatedEmails, this.buildPreviewItem)
+
+        const emailsToShow = chain(toPairs(groupedEmails))
+            .filter(([groupTitle, emails]) => !isEmpty(emails))
+            .map(([groupTitle, emails], index) => {
+                return (
+                    <Flexbox name={`container-${groupTitle}`} key={`container-${groupTitle}`}>
+                        <Flexbox name="group-title" container="row" alignItems="center" style={[styles.header, index === 0 && styles.header.first]}>
+                            {groupTitle}
+                        </Flexbox>
+                        {emails}
+                    </Flexbox>
+                )
+            })
+            .value()
+
+        return (
+            <Flexbox container="column" grow={1}>
+                {emailsToShow}
+            </Flexbox>
         )
+
+    }
+
+    buildPreviewItem(email) {
+        return <EmailPreviewItem email={email} currentUser={this.props.currentUser} key={email.id} />
     }
 
     getNoPreviews() {
@@ -65,6 +97,21 @@ class UnreadEmails extends Component {
                 'Hmm, sorry, we don\'t have a good joke for this part.'
             ],
             logoColor: styleVars.basePinkColor
+        }
+    }
+
+    getStyles() {
+        return {
+            header: {
+                color: '#515151',
+                textTransform: 'uppercase',
+                marginTop: '26px',
+                marginBottom: '13px',
+                marginLeft: '1px',
+                first: {
+                    marginTop: 0
+                }
+            }
         }
     }
 

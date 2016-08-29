@@ -13,22 +13,26 @@ const orderBy = require('lodash/orderBy')
 const forOwn = require('lodash/forOwn')
 const clone = require('lodash/clone')
 const isEmpty = require('lodash/isEmpty')
+const toPairs = require('lodash/toPairs')
 const {chain} = require('lodash/core')
 
+const Flexbox = require('../UI/Flexbox')
 const Page = require('../UI/Page')
 const styleVars = require('../style-vars')
 const PreviewsContainer = require('../Preview/PreviewsContainer')
 const NotificationPreviewItem = require('./NotificationPreviewItem')
 const GithubPreviewItem = require('./GithubPreviewItem')
 
+const PreviewHelper = require('../../helpers/preview-helper')
 const WhatsNewActions = require('../../actions/whats-new-actions')
 const EventTypes = require('../../../common/enums/event-types')
 const EntityTypes = require('../../../common/enums/entity-types')
+const {PreviewDateGroups} = require('../../constants')
 
 class WhatsNew extends Component {
     constructor(props) {
         super(props)
-        classAutobind(this)
+        classAutobind(this, WhatsNew.prototype)
     }
 
     fetchWhatsNew() {
@@ -40,7 +44,7 @@ class WhatsNew extends Component {
         const {notifications} = this.props
         const notificationsByThing = groupBy(notifications, notification => notification.thing.id)
 
-        let notificationsToShow = []
+        let aggregatedNotifications = []
 
         // We want to aggregate notifications that belong to the very same thing. That's why we grouped them according to Thing.
         forOwn(notificationsByThing, (thingNotifications) => {
@@ -55,7 +59,7 @@ class WhatsNew extends Component {
             // That's because if indeed many comments arrived, we'd like the final aggregated notification to be ordered among all other notifications
             // based on the last comment that arrived. The text, however, of the notification, will be that of the FIRST comment that arrived.
             if (oldest) {
-                notificationsToShow.push(merge(clone(oldest), {
+                aggregatedNotifications.push(merge(clone(oldest), {
                     payload: {
                         newNotifications: commentNotifications
                     },
@@ -64,17 +68,48 @@ class WhatsNew extends Component {
             }
 
             // Here we add the rest of the notifications.
-            notificationsToShow.push(...reject(thingNotifications, notification => 
+            aggregatedNotifications.push(...reject(thingNotifications, notification =>
                 [EventTypes.CREATED.key, EventTypes.COMMENT.key].includes(notification.eventType.key)
             ))
         })
 
-        return orderBy(notificationsToShow, 'createdAt', 'desc').map(notification => {
-            if (notification.thing.type.key === EntityTypes.GITHUB.key)
-                return <GithubPreviewItem notification={notification} key={notification.id} />
-            else
-                return <NotificationPreviewItem notification={notification} key={notification.id} />
-        })
+        if (!aggregatedNotifications || !aggregatedNotifications.length)
+            return []
+
+        return this.groupNotificationsByDate(aggregatedNotifications)
+    }
+    
+    groupNotificationsByDate(aggregatedNotifications) {
+        const styles = this.getStyles()
+
+        const groupedNotifications = PreviewHelper.groupByDate(aggregatedNotifications, this.buildPreviewItem)
+
+        const notificationsToShow = chain(toPairs(groupedNotifications))
+            .filter(([groupTitle, notifications]) => !isEmpty(notifications))
+            .map(([groupTitle, notifications], index) => {
+                return (
+                    <Flexbox name={`container-${groupTitle}`} key={`container-${groupTitle}`}>
+                        <Flexbox name="group-title" container="row" alignItems="center" style={[styles.header, index === 0 && styles.header.first]}>
+                            {groupTitle}
+                        </Flexbox>
+                        {notifications}
+                    </Flexbox>
+                )
+            })
+            .value()
+
+        return (
+            <Flexbox container="column" grow={1}>
+                {notificationsToShow}
+            </Flexbox>
+        )
+
+    }
+
+    buildPreviewItem(notification) {
+        return notification.thing.type.key === EntityTypes.GITHUB.key ?
+            <GithubPreviewItem notification={notification} key={notification.id} /> :
+            <NotificationPreviewItem notification={notification} key={notification.id} />
     }
 
     getTitle() {
@@ -94,7 +129,22 @@ class WhatsNew extends Component {
             logoColor: styleVars.highlightColor
         }
     }
-    
+
+    getStyles() {
+        return {
+            header: {
+                color: '#515151',
+                textTransform: 'uppercase',
+                marginTop: '26px',
+                marginBottom: '13px',
+                marginLeft: '1px',
+                first: {
+                    marginTop: 0
+                }
+            }
+        }
+    }
+
     render () {
         const {invalidationStatus} = this.props
         

@@ -4,6 +4,7 @@ const Delay = require('react-delay')
 const radium = require('radium')
 
 const isEmpty = require('lodash/isEmpty')
+const isArray = require('lodash/isArray')
 
 const {GeneralConstants, InvalidationStatus} = require('../../constants')
 
@@ -114,7 +115,7 @@ class PreviewsContainer extends Component {
         if (invalidationStatus === InvalidationStatus.FETCHING)
             return this.getFetching()
 
-        if (!previewItems || !previewItems.length)
+        if (!previewItems || (isArray(previewItems) && !previewItems.length))
             return this.getNoPreviews()
 
         return this.getPreviews()
@@ -122,7 +123,7 @@ class PreviewsContainer extends Component {
 }
 
 PreviewsContainer.propTypes = {
-    previewItems: PropTypes.array.isRequired,
+    previewItems: PropTypes.any.isRequired,
     fetchPreviews: PropTypes.func.isRequired,
     noPreviews: PropTypes.object.isRequired,
     invalidationStatus: PropTypes.string.isRequired

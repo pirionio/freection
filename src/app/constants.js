@@ -17,4 +17,16 @@ const InvalidationStatus = {
     UPDATING: 'UPDATING'
 }
 
-module.exports = {ActionStatus, GeneralConstants, InvalidationStatus}
+const PreviewDateGroups = {
+    TODAY: 'TODAY',
+    YESTERDAY: 'YESTERDAY',
+    LAST_WEEK: 'LAST WEEK',
+    OLDER: 'OLDER'
+}
+
+module.exports = {
+    ActionStatus,
+    GeneralConstants,
+    InvalidationStatus,
+    PreviewDateGroups
+}
