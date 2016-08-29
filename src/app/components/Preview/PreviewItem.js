@@ -139,11 +139,18 @@ class PreviewItem extends Component {
                     width: '19px'
                 }
             },
+            subject: {
+                marginRight: '0'
+            },
             text: {
-                color: styleVars.baseGrayColor
+                minWidth: 0
             },
             date:{
                 color: styleVars.baseGrayColor
+            },
+            separator: {
+                width: '13px',
+                textAlign: 'center'
             }
         }
     }
@@ -176,15 +183,13 @@ class PreviewItem extends Component {
                                     <Flexbox name="status">{statusPreview}</Flexbox> :
                                     <Flexbox name="user">{userPreview}</Flexbox>
                             }
-                            <Flexbox name="date" style={styles.date}>
-                                {this.getDateText()}
-                            </Flexbox>
                         </Flexbox>
-                        <Flexbox name="center-box" container="column" justifyContent="space-around" grow={1} style={styles.centerBox}>
-                            <Flexbox name="title">
+                        <Flexbox name="center-box" container="row" justifyContent="flex-start" alignItems="center" grow={1} style={styles.centerBox}>
+                            <Flexbox name="subject" style={styles.subject}>
                                 <TextTruncate><strong>{title}</strong></TextTruncate>
                             </Flexbox>
-                            {textPreview ? <Flexbox name="text" style={styles.text}>{textPreview}</Flexbox> : null}
+                            <Flexbox grow={0} shrink={0} style={styles.separator}>•</Flexbox>
+                            {textPreview ? <Flexbox name="text" grow={1} style={styles.text}>{textPreview}</Flexbox> : null}
                         </Flexbox>
                         <Flexbox name="right-box" container="column" justifyContent="center" shrink={0}
                                  style={[styles.rightBox, isRollover && styles.rightBox.rollover]}>

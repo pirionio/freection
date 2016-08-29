@@ -4,24 +4,17 @@ const {PropTypes} = React
 const TextTruncate = require('../../UI/TextTruncate')
 const Flexbox = require('../../UI/Flexbox')
 const styleVars = require('../../style-vars')
-const commentImage = require('../../../static/comment-square.png')
 
 const CommentPreviewText = ({comment, newNotifications}) => {
     const style = {
-        icon: {
-            lineHeight: styleVars.previewLineHeight,
-            marginRight: '12px'
-        },
         unreadCount: {
             color: styleVars.baseGrayColor,
             marginLeft: '6px',
-            fontSize: '0.9em',
-            lineHeight: styleVars.previewLineHeight
+            fontSize: '0.85em'
         },
         textTruncate: {
             display: 'inline-block',
-            width:'100%',
-            lineHeight: styleVars.previewLineHeight
+            width:'100%'
         }
     }
 
@@ -31,7 +24,7 @@ const CommentPreviewText = ({comment, newNotifications}) => {
         </Flexbox> : null
 
     return (
-        <Flexbox container={true}>
+        <Flexbox container="row" alignItems="center">
             <Flexbox style={{minWidth: 0}}>
                 <TextTruncate style={style.textTruncate}>{comment}</TextTruncate>
             </Flexbox>
@@ -41,7 +34,7 @@ const CommentPreviewText = ({comment, newNotifications}) => {
 }
 
 CommentPreviewText.propTypes = {
-    comment: PropTypes.string.isRequired,
+    comment: PropTypes.string,
     newNotifications: PropTypes.array
 }
 CommentPreviewText.defaultProps = {

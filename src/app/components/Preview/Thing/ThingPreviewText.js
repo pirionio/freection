@@ -37,7 +37,7 @@ const ThingPreviewText = ({thing}) =>  {
         }
     }
 
-    return <BodyPreviewText body={thing.body}/>
+    return null
 }
 ThingPreviewText.propTypes = {
     thing: PropTypes.object.isRequired
