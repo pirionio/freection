@@ -48,7 +48,9 @@ class PreviewsContainer extends Component {
                         <span style={[styles.noPreviews.logo, {color: noPreviews.logoColor}]}>***</span>
                     </Flexbox>
                 </Flexbox>
-                <MessagePanel />
+                <Flexbox container="column" alignSelf="center">
+                    <MessagePanel />
+                </Flexbox>
             </Flexbox>
         )
     }
