@@ -11,6 +11,7 @@ const isNil = require('lodash/isNil')
 const isEmpty = require('lodash/isEmpty')
 const map = require('lodash/map')
 const merge = require('lodash/merge')
+const some = require('lodash/some')
 const {chain} = require('lodash/core')
 
 const MessageBoxActions = require('../../actions/message-box-actions')
@@ -80,7 +81,7 @@ class MessagePanel extends Component {
     getStyles() {
         return {
             form: {
-                width: '100%',
+                width: '700px',
                 marginBottom: '0'
             },
             panel: {
@@ -90,6 +91,9 @@ class MessagePanel extends Component {
                 position: 'absolute',
                 bottom: '15px',
                 right: '15px'
+            },
+            notFullItemBox: {
+                boxShadow: '0px 0px 40px 0px rgba(0, 0, 0, 0.15)'
             }
         }
     }
@@ -116,6 +120,11 @@ class MessagePanel extends Component {
             null
     }
 
+    isFullItemMode() {
+        const {messageBoxes} = this.props
+        return some(messageBoxes, messageBox => [MessageTypes.COMMENT_THING.key, MessageTypes.REPLY_EMAIL.key].includes(messageBox.type.key))
+    }
+
     render () {
         const styles = this.getStyles()
 
@@ -127,7 +136,9 @@ class MessagePanel extends Component {
                 <Flexbox name="message-panel" container="row" style={styles.panel}>
                     <Flexbox name="message-box" grow={1} container="column">
                         <MessageTabs />
-                        {messageBox}
+                        <Flexbox container="column" style={[!this.isFullItemMode() && styles.notFullItemBox]}>
+                            {messageBox}
+                        </Flexbox>
                     </Flexbox>
                     {sendButton}
                 </Flexbox>

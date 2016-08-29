@@ -72,7 +72,11 @@ class PreviewsContainer extends Component {
                     {children ? <Flexbox name="full-item-blur" container="column" style={styles.blur} /> : null}
                     {children ? children : null}
                 </Flexbox>
-                {!children ? <MessagePanel /> : null}
+                {!children ?
+                    <Flexbox container="column" alignSelf="center">
+                        <MessagePanel />
+                    </Flexbox> :
+                    null}
             </Flexbox>
         )
     }
@@ -87,7 +91,7 @@ class PreviewsContainer extends Component {
                 backgroundColor: styleVars.secondaryBackgroundColor,
                 filter: 'blur(50px)',
                 position: 'absolute',
-                top: 0,
+                top: '-35px',
                 left: 0,
                 right: 0,
                 bottom: 0,

@@ -27,7 +27,6 @@ class CollapsedMessageBox extends Component {
                 height: '70px',
                 backgroundColor: '#fafafa',
                 opacity: '0.5',
-                boxShadow: '0px 0px 40px 0px rgba(0, 0, 0, 0.2)',
                 cursor: 'text',
                 ':hover': {
                     opacity: '1'

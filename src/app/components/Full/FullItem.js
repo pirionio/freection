@@ -212,7 +212,9 @@ class FullItem extends  Component {
         return (
             <Flexbox name="full-item-page" container="column" style={styles.page}>
                 {content}
-                {this.getBox()}
+                <Flexbox container="column" alignSelf="center">
+                    {this.getBox()}
+                </Flexbox>
                 <Flexbox name="close" style={styles.close}>
                     <Icon name="times-circle" onClick={this.props.close} />
                 </Flexbox>

@@ -118,8 +118,7 @@ class MessageBox extends Component {
             box: {
                 height: '200px',
                 backgroundColor: 'white',
-                border: `1px solid ${styleVars.highlightColor}`,
-                boxShadow: '0px 0px 40px 0px rgba(0, 0, 0, 0.2)'
+                border: `1px solid ${styleVars.highlightColor}`
             },
             messageSubject: {
                 height: '40px',
