@@ -8,6 +8,7 @@ class WhatsNew extends Component {
     getStyles() {
         return {
             container: {
+                position: 'relative'
             },
             menu: {
                 height: '30px',

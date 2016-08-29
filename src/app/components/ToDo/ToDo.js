@@ -54,7 +54,7 @@ class ToDo extends Component {
         const {invalidationStatus} = this.props
         
         return (
-            <Page title={this.getTitle()}>
+            <Page title={this.getTitle()} style={{position: 'relative'}}>
                 <PreviewsContainer previewItems={this.getThingsToDo()}
                                    fetchPreviews={this.fetchToDo}
                                    noPreviews={this.getNoPreviews()}

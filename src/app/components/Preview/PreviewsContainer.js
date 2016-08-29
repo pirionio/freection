@@ -84,7 +84,6 @@ class PreviewsContainer extends Component {
     getStyles() {
         return {
             container: {
-                position: 'relative'
             },
             blur: {
                 height: '100%',

@@ -1,11 +1,11 @@
 const React = require('react')
 const {Component, PropTypes} = React
-const DocumentTitle = require('react-document-title')
 const {connect} = require('react-redux')
 const orderBy = require('lodash/orderBy')
 const classAutobind = require('class-autobind').default
 const isEmpty = require('lodash/isEmpty')
 
+const Page = require('../UI/Page')
 const PreviewsContainer = require('../Preview/PreviewsContainer')
 const styleVars = require('../style-vars')
 const FollowUpsActions = require('../../actions/follow-up-actions')
@@ -48,7 +48,7 @@ class FollowUp extends Component {
         const {invalidationStatus} = this.props
 
         return (
-            <DocumentTitle title={this.getTitle()}>
+            <Page title={this.getTitle()} style={{position: 'relative'}}>
                 <PreviewsContainer previewItems={this.getThingsToFollowUp()}
                                    fetchPreviews={this.fetchFollowUps}
                                    noPreviews={this.getNoPreviews()}
@@ -56,7 +56,7 @@ class FollowUp extends Component {
                     {this.props.children}
 
                 </PreviewsContainer>
-            </DocumentTitle>
+            </Page>
         )
     }
 }
