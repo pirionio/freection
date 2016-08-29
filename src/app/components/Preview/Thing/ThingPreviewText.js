@@ -8,7 +8,6 @@ const ThingHelper = require('../../../helpers/thing-helper')
 
 const CommentPreviewText = require('./CommentPreviewText')
 const PingPreviewText = require('./PingPreviewText')
-const BodyPreviewText = require('./BodyPreviewText')
 
 const ThingPreviewText = ({thing}) =>  {
     const unreadEvents = ThingHelper.getUnreadMessages(thing)
