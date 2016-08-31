@@ -2,6 +2,7 @@ const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const config = require('./webpack.config')
 
+config.devtool = 'source-map'
 config.plugins = [
     ...config.plugins,
     new ExtractTextPlugin('style.css'),
