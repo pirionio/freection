@@ -9,6 +9,8 @@ const ThingPageActions = require('../../actions/thing-page-actions')
 const {PreviewItem, PreviewItemText, PreviewItemStatus, PreviewItemActions} = require('../Preview/PreviewItem')
 const {CommentPreviewText, PingPreviewText} = require('../Preview/Thing')
 const NotificationActionsBar = require('./NotificationActionsBar')
+const TextSeparator = require('../UI/TextSeparator')
+const Flexbox = require('../UI/Flexbox')
 const styleVars = require('../style-vars')
 
 class NotificationPreviewItem extends Component {
@@ -16,13 +18,23 @@ class NotificationPreviewItem extends Component {
     getTextElement() {
         const {notification} = this.props
 
+        let text = null
+
         if (notification.eventType.key === EventTypes.PING.key)
-            return <PingPreviewText />
+            text = <PingPreviewText />
 
         else if (SharedConstants.MESSAGE_TYPED_EVENTS.includes(notification.eventType.key))
-            return <CommentPreviewText comment={notification.payload.text}
+            text = <CommentPreviewText comment={notification.payload.text}
                                        newNotifications={notification.payload.newNotifications} />
-        return <span />
+        if (text) {
+            return (
+                <Flexbox container="row">
+                    <Flexbox shrink={0}><TextSeparator /></Flexbox>
+                    <Flexbox grow={1} style={{minWidth: 0}}>{text}</Flexbox>
+                </Flexbox>)
+        }
+
+        return null
     }
 
     getExpandedMessages() {

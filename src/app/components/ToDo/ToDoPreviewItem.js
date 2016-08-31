@@ -37,6 +37,8 @@ class TodoPreviewItem extends Component {
     render() {
         const {thing, dispatch} = this.props
 
+        const textPreview = <ThingPreviewText thing={thing}/>
+
         return (
             <PreviewItem circleColor={this.getCircleColor()}
                          title={thing.subject}
@@ -46,9 +48,7 @@ class TodoPreviewItem extends Component {
                 <PreviewItemUser>
                     <strong>{thing.creator.displayName}</strong>
                 </PreviewItemUser>
-                <PreviewItemText>
-                    <ThingPreviewText thing={thing}/>
-                </PreviewItemText>
+                { textPreview ? <PreviewItemText>{textPreview}</PreviewItemText> : null }
                 <PreviewItemActions>
                     <ToDoActionsBar thing={thing}/>
                 </PreviewItemActions>

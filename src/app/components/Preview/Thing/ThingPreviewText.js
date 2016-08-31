@@ -8,35 +8,45 @@ const ThingHelper = require('../../../helpers/thing-helper')
 
 const CommentPreviewText = require('./CommentPreviewText')
 const PingPreviewText = require('./PingPreviewText')
+const TextSeparator = require('../../UI/TextSeparator')
+const Flexbox = require('../../UI/Flexbox')
 
 const ThingPreviewText = ({thing}) =>  {
     const unreadEvents = ThingHelper.getUnreadMessages(thing)
     const readEvents = ThingHelper.getReadMessages(thing)
 
-    // If there are unread events, show the first of them.
+    let text = null
+
     if (unreadEvents && unreadEvents.length) {
+        // If there are unread events, show the first of them.
         const firstComment = first(unreadEvents)
 
         if (firstComment.eventType.key === EventTypes.PING.key) {
-            return <PingPreviewText newNotifications={unreadEvents}/>
+            text = <PingPreviewText newNotifications={unreadEvents}/>
         } else {
-            return <CommentPreviewText comment={firstComment.payload.text}
+            text = <CommentPreviewText comment={firstComment.payload.text}
                                        newNotifications={unreadEvents}/>
         }
-    }
-
-    // If there are only read events, show the last of them.
-    if (readEvents && readEvents.length) {
+    } else if (readEvents && readEvents.length) {
+        // If there are only read events, show the last of them.
         const lastComment = last(readEvents)
 
         if (lastComment.eventType.key === EventTypes.PING.key) {
-            return <PingPreviewText />
+            text = <PingPreviewText />
         } else {
-            return <CommentPreviewText comment={lastComment.payload.text}/>
+            text = <CommentPreviewText comment={lastComment.payload.text}/>
         }
     }
 
-    return <span></span>
+    if (text) {
+        return (
+            <Flexbox container="row">
+                <Flexbox shrink={0}><TextSeparator /></Flexbox>
+                <Flexbox grow={1} style={{minWidth: 0}}>{text}</Flexbox>
+            </Flexbox>)
+    }
+
+    return null
 }
 ThingPreviewText.propTypes = {
     thing: PropTypes.object.isRequired

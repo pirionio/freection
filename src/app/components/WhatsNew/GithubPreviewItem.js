@@ -6,9 +6,25 @@ const {PreviewItem, PreviewItemStatus, PreviewItemTitle, PreviewItemDate, Previe
     require('../Preview/PreviewItem')
 const GithubActionsBar = require('./GithubActionsBar')
 const TextTruncate = require('../UI/TextTruncate')
+const TextSeparator = require('../UI/TextSeparator')
+const Flexbox = require('../UI/Flexbox')
 const styleVars = require('../style-vars')
 
 class GithubPreviewItem extends Component {
+    getTextElement() {
+        const {notification} = this.props
+
+        if (notification.thing.body) {
+            return (
+                <Flexbox container="row">
+                    <Flexbox shrink={0}><TextSeparator /></Flexbox>
+                    <Flexbox grow={1} style={{minWidth: 0}}><TextTruncate>{notification.thing.body}</TextTruncate></Flexbox>
+                </Flexbox>)
+        }
+
+        return null
+    }
+
     render() {
         const {notification} = this.props
 
@@ -30,7 +46,7 @@ class GithubPreviewItem extends Component {
                     {text}
                 </PreviewItemStatus>
                 <PreviewItemText>
-                    <TextTruncate>{notification.thing.body}</TextTruncate>
+                    {this.getTextElement()}
                 </PreviewItemText>
                 <PreviewItemActions>
                     <GithubActionsBar notification={notification}/>

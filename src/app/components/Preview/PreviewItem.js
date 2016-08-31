@@ -147,10 +147,6 @@ class PreviewItem extends Component {
             },
             date:{
                 color: styleVars.baseGrayColor
-            },
-            separator: {
-                width: '13px',
-                textAlign: 'center'
             }
         }
     }
@@ -188,7 +184,6 @@ class PreviewItem extends Component {
                             <Flexbox name="subject" style={styles.subject}>
                                 <TextTruncate><strong>{title}</strong></TextTruncate>
                             </Flexbox>
-                            <Flexbox grow={0} shrink={0} style={styles.separator}>•</Flexbox>
                             {textPreview ? <Flexbox name="text" grow={1} style={styles.text}>{textPreview}</Flexbox> : null}
                         </Flexbox>
                         <Flexbox name="right-box" container="column" justifyContent="center" shrink={0}

@@ -9,6 +9,20 @@ const ThingStatus = require('../../../common/enums/thing-status')
 const styleVars = require('../style-vars')
 
 class GithubTodoPreviewItem extends Component {
+    getTextElement() {
+        const {thing} = this.props
+
+        if (thing.body) {
+            return (
+                <Flexbox container="row">
+                    <Flexbox shrink={0}><TextSeparator /></Flexbox>
+                    <Flexbox grow={1} style={{minWidth: 0}}><TextTruncate>{thing.body}</TextTruncate></Flexbox>
+                </Flexbox>)
+        }
+
+        return null
+    }
+
     getCircleColor() {
         const {thing} = this.props
 
@@ -37,7 +51,7 @@ class GithubTodoPreviewItem extends Component {
                     <strong>{thing.creator.displayName}</strong>
                 </PreviewItemStatus>
                 <PreviewItemText>
-                    <TextTruncate>{thing.body}</TextTruncate>
+                    {this.getTextElement()}
                 </PreviewItemText>
                 <PreviewItemActions>
                     <GithubActionsBar thing={thing}/>
