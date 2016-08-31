@@ -20,7 +20,7 @@ function listenToUpdates(pushToken, dispatch) {
             dispatch(EventActions.commentCreated(event))
 
         if (event.eventType.key === EventTypes.CREATED.key)
-            dispatch(EventActions.created(event.thing))
+            dispatch(EventActions.created(event))
 
         if (event.eventType.key === EventTypes.ACCEPTED.key)
             dispatch(EventActions.accepted(event.thing))

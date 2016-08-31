@@ -3,7 +3,7 @@ module.exports = {
     actions: [
         {
             name: 'created',
-            params: ['thing']
+            params: ['event']
         },
         {
             name: 'accepted',

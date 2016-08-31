@@ -2,10 +2,10 @@ const EventActionsTypes = require('../types/event-action-types')
 const {ActionStatus} = require('../../constants')
 const ResourceUtil = require('../../util/resource-util')
 
-function created(thing) {
+function created(event) {
     return {
         type: EventActionsTypes.CREATED,
-        thing
+        event
     }
 }
 

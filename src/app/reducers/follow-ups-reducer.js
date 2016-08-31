@@ -86,6 +86,15 @@ function messageReceived(state, action, messageField) {
         .value()
 }
 
+function created(state, action) {
+    // let's add the event to the thing
+    const thing = immutable(action.event.thing)
+        .set('events', [action.event])
+        .value()
+
+    return statusChangedReceived(state, Object.assign({}, action, {thing}))
+}
+
 function statusChangedReceived(state, action) {
     if (state.invalidationStatus !== InvalidationStatus.FETCHED)
         return state
@@ -119,6 +128,7 @@ module.exports = (state = initialState, action) => {
         case EventActionTypes.PONGED:
             return pongReceived(state, action)
         case EventActionTypes.CREATED:
+            return created(state, action)
         case EventActionTypes.ACCEPTED:
         case EventActionTypes.MARKED_AS_DONE:
         case EventActionTypes.DISMISSED:
