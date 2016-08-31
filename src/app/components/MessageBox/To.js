@@ -24,9 +24,10 @@ class To extends Component {
             return []
 
         const valueLowCase = value.toLowerCase()
-        const { contacts } = this.props
+        const { contacts, currentUser} = this.props
+        const withMe = [...contacts, { displayName: 'Me', payload: { email: currentUser.email}}]
 
-        const filtered = contacts.filter(contact => {
+        const filtered = withMe.filter(contact => {
             const nameParts = contact.displayName.toLowerCase().split(' ')
 
             return some(nameParts, part => part.startsWith(valueLowCase))
@@ -130,6 +131,7 @@ class To extends Component {
 
 To.propTypes = {
     contacts: PropTypes.array.isRequired,
+    currentUser: PropTypes.object.isRequired,
     value: PropTypes.string,
     model: PropTypes.string.isRequired,
     containerStyle: PropTypes.object,
@@ -146,6 +148,7 @@ To.defaultProps = {
 function mapStateToProps(state, {model}) {
     return {
         contacts: state.contacts,
+        currentUser: state.auth,
         value: get(state, model)
     }
 }
