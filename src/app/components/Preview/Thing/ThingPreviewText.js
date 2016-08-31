@@ -36,7 +36,7 @@ const ThingPreviewText = ({thing}) =>  {
         }
     }
 
-    return null
+    return <span></span>
 }
 ThingPreviewText.propTypes = {
     thing: PropTypes.object.isRequired
