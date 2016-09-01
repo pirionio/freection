@@ -15,37 +15,41 @@ const FullThing = require('./components/Thing/FullThing')
 const FullEmail = require('./components/Emails/FullEmail')
 const Board = require('./components/Board/Board')
 
+const routes = (
+    <Route path="/" component={App}>
+        <Route component={MainApp}>
+            <IndexRedirect to="whatsnew" />
+            <Route path="whatsnew" component={WhatsNew}>
+                <IndexRedirect to="things" />
+                <Route path="things" component={UnreadNotifications}>
+                    <Route path=":thingId" component={FullThing} />
+                </Route>
+                <Route path="emails" component={UnreadEmails}>
+                    <Route path=":emailThreadId" component={FullEmail} />
+                </Route>
+            </Route>
+            <Route path="todo" component={ToDo}>
+                <Route path=":thingId" component={FullThing} />
+            </Route>
+            <Route path="followup" component={FollowUp}>
+                <Route path=":thingId" component={FullThing} />
+            </Route>
+            <Route path="integrations">
+                <IndexRoute component={Integrations} />
+                <Route path="github" component={Github} />
+            </Route>
+            <Route path="boards/demo-board1" component={Board} />
+            <Route path="boards/demo-board2" component={Board} />
+            <Route path="boards/demo-board3" component={Board} />
+        </Route>
+    </Route>
+)
+
 class AppRouter extends Component {
     render() {
         return (
             <Router history={this.props.history}>
-                <Route path="/" component={App}>
-                    <Route component={MainApp}>
-                        <IndexRedirect to="whatsnew" />
-                        <Route path="whatsnew" component={WhatsNew}>
-                            <IndexRedirect to="things" />
-                            <Route path="things" component={UnreadNotifications}>
-                                <Route path=":thingId" component={FullThing} />
-                            </Route>
-                            <Route path="emails" component={UnreadEmails}>
-                                <Route path=":emailThreadId" component={FullEmail} />
-                            </Route>
-                        </Route>
-                        <Route path="todo" component={ToDo}>
-                            <Route path=":thingId" component={FullThing} />
-                        </Route>
-                        <Route path="followup" component={FollowUp}>
-                            <Route path=":thingId" component={FullThing} />
-                        </Route>
-                        <Route path="integrations">
-                            <IndexRoute component={Integrations} />
-                            <Route path="github" component={Github} />
-                        </Route>
-                        <Route path="boards/demo-board1" component={Board} />
-                        <Route path="boards/demo-board2" component={Board} />
-                        <Route path="boards/demo-board3" component={Board} />
-                    </Route>
-                </Route>
+                {routes}
             </Router>
         )
     }
