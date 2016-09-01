@@ -3,7 +3,7 @@ const {PropTypes} = React
 
 const ActionsBar = require('../Actions/ActionsBar')
 const {DismissAction, CloseAction} = require('../Actions/Actions')
-const ThingStatus = require('../../../common/enums/thing-status')
+import ThingStatus from '../../../common/enums/thing-status'
 
 const GithubActionsBar = ({thing, isRollover}) => {
     const dismissAction = DismissAction(thing)

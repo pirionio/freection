@@ -6,9 +6,9 @@ const {toString} = require('lodash')
 
 const ThingStatus = require('../../common/enums/thing-status')
 import logger from '../shared/utils/logger'
-const UserTypes = require('../../common/enums/user-types')
+import UserTypes from '../../common/enums/user-types'
 
-router.post('/', function(request, response) {
+router.post('/', (request, response) => {
     const eventType = request.get('X-GitHub-Event')
 
     switch (eventType) {
@@ -69,7 +69,7 @@ function handleAssigned(payload) {
     const fullName = payload.repository.full_name
 
     // We only handle issues with state set to open
-    if (state != 'open')
+    if (state !== 'open')
         return
 
     User.getUserByGithubId(githubUserId)

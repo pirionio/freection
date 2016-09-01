@@ -17,8 +17,8 @@ const styleVars = require('../style-vars')
 const ThingPageActions = require('../../actions/thing-page-actions')
 const ThingHelper = require('../../helpers/thing-helper')
 
-const EventTypes = require('../../../common/enums/event-types')
-const ThingStatus = require('../../../common/enums/thing-status')
+import EventTypes from '../../../common/enums/event-types'
+import ThingStatus from '../../../common/enums/thing-status'
 const {InvalidationStatus} = require('../../constants')
 
 class FullThing extends Component {

@@ -86,8 +86,8 @@ export default class ConnectionPool {
     getFullUser(user) {
         if (user.refreshToken)
             return Promise.resolve(user)
-        else
-            return User.get(user.id).run()
+
+        return User.get(user.id).run()
     }
 
     getNewAccessToken(user) {

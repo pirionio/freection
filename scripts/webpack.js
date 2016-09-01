@@ -5,6 +5,6 @@ if (process.env.NODE_ENV === 'production') {
     const webpackConfig = require('../config/webpack.prod.config')
     console.log('compiling webpack...')
     webpack(webpackConfig, function(err, stats) {
-        console.log(stats.toString("errors-only"))
+        console.log(stats.toString('errors-only'))
     })
 }

@@ -1,4 +1,4 @@
-import {template,zipObject,merge} from 'lodash/template'
+import {template, zipObject, merge} from 'lodash'
 import logger from '../../shared/utils/logger'
 
 export function handleGet(request, response, action, options) {
@@ -29,13 +29,13 @@ export function handlePost(request, response, action, options) {
             if (error && error.name === 'DocumentNotFoundError' && notFoundError) {
                 response.status(404).send(notFoundError)
             } else {
-                response.status(500).send(generalError + `: ${error.message}`)
+                response.status(500).send(`${generalError}: ${error.message}`)
             }
         })
 }
 
 function getParams(request, options) {
-    let params = []
+    const params = []
 
     options.params && options.params.forEach(paramName => params.push(request.params[paramName]))
     options.body && options.body.forEach(paramName => params.push(request.body[paramName]))

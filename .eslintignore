@@ -1,0 +1,3 @@
+src/app/actions/generated/*.js
+scripts/*.js
+src/app/**

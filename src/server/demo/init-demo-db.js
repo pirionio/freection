@@ -3,9 +3,8 @@ import * as EventService from '../shared/application/event-service'
 import * as EmailService from '../shared/application/email-service'
 import {User, Thing, Event} from '../shared/models'
 
-const process = require('process')
-const EventTypes = require('../../common/enums/event-types')
-const {SharedConstants} = require('../../common/shared-constants')
+import EventTypes from '../../common/enums/event-types'
+import SharedConstants from '../../common/shared-constants'
 
 const userId = '2cf26b7e-e3a7-41d9-b476-5ad25f59bde1'
 const davidUserId = 'e4cc822f-bc8b-4839-8237-c25f10a1db29'
@@ -51,7 +50,8 @@ async function readAllComments(firstName, thingId) {
 }
 
 async function createUsers() {
-    const users = [{
+    const users = [
+        {
             id: userId,
             createdAt: new Date(),
             googleId: '113674947832787766592',

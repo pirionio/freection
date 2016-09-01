@@ -1,6 +1,6 @@
 const fs = require('fs')
 const models = require('../src/app/actions/models')
-const {camelCase, snakeCase, toUpper, repeat, isString,
+const {camelCase, snakeCase, toUpper, repeat,
     upperFirst, kebabCase, isFunction, toPairs} = require('lodash')
 
 function generateActionsCode(model) {
@@ -36,7 +36,7 @@ function generateExportCode(actions) {
     return `module.exports = {\r\n` +
             `    ${actions.filter(action => action.type != 'custom')
                 .map(action => getFunctionName(action.name)).join(',\r\n    ')}\r\n` +
-            `}`
+            '}'
 }
 
 function generateActionCode(modelName, action) {
@@ -133,7 +133,7 @@ function generateTypesCode(model) {
             const typeName = getTypeName(action.name)
             return `${typeName}: '${modelName}_${typeName}'`
         }).join(',\r\n    ')}\r\n` +
-        `}`
+        '}'
 
     fs.writeFileSync(typesPath, code)
 }

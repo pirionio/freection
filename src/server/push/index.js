@@ -6,9 +6,9 @@ const SocketIO = require('socket.io')
 const socketioJwt = require('socketio-jwt')
 const {union, difference} = require('lodash')
 const {eventToDto} = require('../shared/application/transformers')
-const {SharedConstants} = require('../../common/shared-constants')
+import SharedConstants from '../../common/shared-constants'
 
-module.exports = (app) => {
+module.exports = app => {
     const io = SocketIO(app.server, {path: '/push'})
 
     acceptConnections()

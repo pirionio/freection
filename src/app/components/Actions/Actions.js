@@ -3,8 +3,8 @@ const React = require('react')
 const ThingCommandActions = require('../../actions/thing-command-actions')
 const EmailCommandActions = require('../../actions/email-command-actions')
 const Action = require('./Action')
-const ThingStatus = require('../../../common/enums/thing-status')
-const EventTypes = require('../../../common/enums/event-types')
+import ThingStatus from '../../../common/enums/thing-status'
+import EventTypes from '../../../common/enums/event-types'
 
 function DoAction(thing, currentUser, disabled, style) {
     return {

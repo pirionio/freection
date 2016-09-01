@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     FREECTION: {
         key: 'FREECTION',
         label: 'Freection'

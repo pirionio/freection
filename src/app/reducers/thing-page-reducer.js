@@ -3,9 +3,9 @@ const head = require('lodash/head')
 
 const EventActionTypes = require('../actions/types/event-action-types')
 const ThingPageActionTypes = require('../actions/types/thing-page-action-types')
-const ThingStatus = require('../../common/enums/thing-status.js')
+import ThingStatus from '../../common/enums/thing-status.js'
 const ThingCommandActionTypes = require('../actions/types/thing-command-action-types')
-const {SharedConstants} = require('../../common/shared-constants')
+import SharedConstants from '../../common/shared-constants'
 const {ActionStatus, InvalidationStatus} = require('../constants')
 const thingReducer = require('./thing-reducer')
 

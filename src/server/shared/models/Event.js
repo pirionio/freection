@@ -17,11 +17,11 @@ const Event = thinky.createModel('Event', {
 })
 
 Event.ensureIndex('thingId', {multi: true})
-Event.ensureIndex('thingIdEventType', function(doc) {
+Event.ensureIndex('thingIdEventType', doc => {
     return [doc('thingId'), doc('eventType')]
 })
 
-Event.ensureIndex('whatsnew', function(doc) {
+Event.ensureIndex('whatsnew', doc => {
     return doc('showNewList')
 }, {multi: true})
 
@@ -36,42 +36,42 @@ Event.defineStatic('getAllChanges', function() {
 })
 
 Event.defineStatic('getWhatsNew', function(userId) {
-    return this.getAll(userId, {index: 'whatsnew'}).
-        getJoin({thing: true}).
-        run()
-    })
+    return this.getAll(userId, {index: 'whatsnew'})
+        .getJoin({thing: true})
+        .run()
+})
 
-Event.defineStatic('discardUserEvents', function (thingId, userId) {
+Event.defineStatic('discardUserEvents', function(thingId, userId) {
     return this.getAll(thingId, {index: 'thingId'})
         .update(event => {
             return {
-                showNewList: event("showNewList").filter(readerUserId => readerUserId.ne(userId))
+                showNewList: event('showNewList').filter(readerUserId => readerUserId.ne(userId))
             }
         }).run()
 })
 
-Event.defineStatic('discardThingEvents', function (thingId) {
+Event.defineStatic('discardThingEvents', function(thingId) {
     return this.getAll(thingId, {index: 'thingId'})
-        .update(event => {
+        .update(() => {
             return {
                 showNewList: []
             }
         }).run()
 })
 
-Event.defineStatic('discardUserEventsByType', function (thingId, eventType, userId) {
+Event.defineStatic('discardUserEventsByType', function(thingId, eventType, userId) {
     return this.getAll([thingId, eventType], {index: 'thingIdEventType'})
         .update(event => {
             return {
-                showNewList: event("showNewList").filter(readerUserId => readerUserId.ne(userId))
+                showNewList: event('showNewList').filter(readerUserId => readerUserId.ne(userId))
             }
         }).run()
 })
 
-Event.defineStatic('discardUserEventById', function (eventId, userId) {
+Event.defineStatic('discardUserEventById', function(eventId, userId) {
     return this.get(eventId).update(event => {
         return {
-            showNewList: event("showNewList").filter(readerUserId => readerUserId.ne(userId))
+            showNewList: event('showNewList').filter(readerUserId => readerUserId.ne(userId))
         }
     }).run()
 })
@@ -86,9 +86,9 @@ Event.defineStatic('markAsRead', function(eventId, userId) {
     }).run()
 })
 
-Event.defineStatic('getThingEmailIds', function (thingId) {
+Event.defineStatic('getThingEmailIds', function(thingId) {
     return this.getAll(thingId, {index: 'thingId'}).orderBy('createdAt').pluck({payload: {emailId: true}}).execute()
-        .then(events => events.map(event=> event.payload.emailId))
+        .then(events => events.map(event => event.payload.emailId))
 })
 
 export default Event

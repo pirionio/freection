@@ -5,7 +5,7 @@ const ToDoActionTypes = require('../actions/types/to-do-action-types')
 const ThingCommandActionTypes = require('../actions/types/thing-command-action-types')
 const EventActionTypes = require('../actions/types/event-action-types')
 const {ActionStatus, InvalidationStatus} = require('../constants')
-const EventTypes = require('../../common/enums/event-types')
+import EventTypes from '../../common/enums/event-types'
 const thingReducer = require('./thing-reducer')
 const immutable = require('../util/immutable')
 

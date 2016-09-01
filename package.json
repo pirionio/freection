@@ -14,7 +14,8 @@
     "init-demo": "babel-node scripts/init-demo-db.js --presets babel-async-preset",
     "dev": "nodemon --watch src/server src/server/index.js --exec babel-node --presets babel-async-preset",
     "generate": "node scripts/generate-actions.js",
-    "postinstall": "node scripts/webpack"
+    "postinstall": "node scripts/webpack",
+    "lint": "./node_modules/.bin/eslint ."
   },
   "repository": {
     "type": "git",
@@ -102,7 +103,11 @@
     "xoauth2": "1.2.0"
   },
   "devDependencies": {
+    "babel-eslint": "6.1.2",
     "chai": "3.5.0",
+    "eslint": "3.4.0",
+    "eslint-plugin-import": "1.14.0",
+    "eslint-plugin-react": "6.2.0",
     "mocha": "2.5.3",
     "nodemon": "1.10.0",
     "react-hot-loader": "1.3.0",

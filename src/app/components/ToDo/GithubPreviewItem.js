@@ -5,7 +5,7 @@ const {PreviewItem, PreviewItemTitle, PreviewItemStatus, PreviewItemDate, Previe
     require('../Preview/PreviewItem')
 const GithubActionsBar = require('./GithubActionsBar')
 const TextTruncate = require('../UI/TextTruncate')
-const ThingStatus = require('../../../common/enums/thing-status')
+import ThingStatus from '../../../common/enums/thing-status'
 const styleVars = require('../style-vars')
 
 class GithubTodoPreviewItem extends Component {

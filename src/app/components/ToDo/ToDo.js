@@ -12,7 +12,7 @@ const ToDoActions = require('../../actions/to-do-actions')
 const ToDoPreviewItem = require('./ToDoPreviewItem')
 const GithubPreviewItem = require('./GithubPreviewItem')
 
-const EntityTypes = require('../../../common/enums/entity-types')
+import EntityTypes from '../../../common/enums/entity-types'
 
 class ToDo extends Component {
     constructor(props) {

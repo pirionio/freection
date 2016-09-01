@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     THING: {
         key: 'THING',
         label: 'Thing'

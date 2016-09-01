@@ -21,7 +21,7 @@ app.use(token.initialize(passport, {secret: tokenConfig.secret}))
 
 app.start = () => {
     app.set('port', (process.env.PORT || 3000))
-    app.server.listen(app.get('port'), function () {
+    app.server.listen(app.get('port'), () => {
         logger.info(`Running in ${app.get('env')} mode on port ${app.get('port')}`)
     })
 }

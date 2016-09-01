@@ -3,34 +3,34 @@ const router = require('express').Router()
 import * as ThingService from '../../shared/application/thing-service'
 import * as GithubThingService from '../../shared/application/github-thing-service'
 import * as EndpointUtil from '../../shared/utils/endpoint-util'
-const EntityTypes = require('../../../common/enums/entity-types')
+import EntityTypes from '../../../common/enums/entity-types'
 
-router.get('/whatsnew', function(request, response) {
+router.get('/whatsnew', (request, response) => {
     EndpointUtil.handleGet(request, response, ThingService.getWhatsNew, {
         type: 'What\'s New'
     })
 })
 
-router.get('/do', function(request, response) {
+router.get('/do', (request, response) => {
     EndpointUtil.handleGet(request, response, ThingService.getToDo, {
         type: 'To Dos'
     })
 })
 
-router.get('/followups', function(request, response) {
+router.get('/followups', (request, response) => {
     EndpointUtil.handleGet(request, response, ThingService.getFollowUps, {
         type: 'Follow Ups'
     })
 })
 
-router.get('/:thingId', function(request, response) {
+router.get('/:thingId', (request, response) => {
     EndpointUtil.handleGet(request, response, ThingService.getThing, {
         type: 'thing',
         params: ['thingId']
     })
 })
 
-router.post('/:type/:thingId/do', function(request, response) {
+router.post('/:type/:thingId/do', (request, response) => {
     EndpointUtil.handlePost(request, response, getServiceByType(request).doThing, {
         params: ['thingId'],
         result: false,
@@ -42,7 +42,7 @@ router.post('/:type/:thingId/do', function(request, response) {
     })
 })
 
-router.post('/:type/:thingId/dismiss', function(request, response) {
+router.post('/:type/:thingId/dismiss', (request, response) => {
     EndpointUtil.handlePost(request, response, getServiceByType(request).dismiss, {
         params: ['thingId'],
         body: ['messageText'],
@@ -55,7 +55,7 @@ router.post('/:type/:thingId/dismiss', function(request, response) {
     })
 })
 
-router.post('/:thingId/done', function(request, response) {
+router.post('/:thingId/done', (request, response) => {
     EndpointUtil.handlePost(request, response, ThingService.markAsDone, {
         params: ['thingId'],
         body: ['messageText'],
@@ -68,7 +68,7 @@ router.post('/:thingId/done', function(request, response) {
     })
 })
 
-router.post('/:type/:thingId/close', function(request, response) {
+router.post('/:type/:thingId/close', (request, response) => {
     EndpointUtil.handlePost(request, response, getServiceByType(request).close, {
         params: ['thingId'],
         body: ['messageText'],
@@ -81,7 +81,7 @@ router.post('/:type/:thingId/close', function(request, response) {
     })
 })
 
-router.post('/:thingId/closeack', function(request, response) {
+router.post('/:thingId/closeack', (request, response) => {
     EndpointUtil.handlePost(request, response, ThingService.closeAck, {
         params: ['thingId'],
         result: false,
@@ -92,7 +92,7 @@ router.post('/:thingId/closeack', function(request, response) {
     })
 })
 
-router.post('/:thingId/sendback', function(request, response) {
+router.post('/:thingId/sendback', (request, response) => {
     EndpointUtil.handlePost(request, response, ThingService.sendBack, {
         params: ['thingId'],
         body: ['messageText'],
@@ -105,7 +105,7 @@ router.post('/:thingId/sendback', function(request, response) {
     })
 })
 
-router.post('/:thingId/ping', function(request, response) {
+router.post('/:thingId/ping', (request, response) => {
     EndpointUtil.handlePost(request, response, ThingService.ping, {
         params: ['thingId'],
         result: true,
@@ -117,7 +117,7 @@ router.post('/:thingId/ping', function(request, response) {
     })
 })
 
-router.post('/:thingId/pong', function(request, response) {
+router.post('/:thingId/pong', (request, response) => {
     EndpointUtil.handlePost(request, response, ThingService.pong, {
         params: ['thingId'],
         body: ['messageText'],
@@ -130,7 +130,7 @@ router.post('/:thingId/pong', function(request, response) {
     })
 })
 
-router.post('/:thingId/comment', function(request, response) {
+router.post('/:thingId/comment', (request, response) => {
     EndpointUtil.handlePost(request, response, ThingService.comment, {
         params: ['thingId'],
         body: ['commentText'],
@@ -142,7 +142,7 @@ router.post('/:thingId/comment', function(request, response) {
     })
 })
 
-router.post('/:thingId/discard/:eventType', function(request, response) {
+router.post('/:thingId/discard/:eventType', (request, response) => {
     EndpointUtil.handlePost(request, response, ThingService.discardEventsByType, {
         params: ['thingId', 'eventType'],
         result: false,
@@ -166,8 +166,8 @@ function getServiceByType(request) {
 
     if (type === EntityTypes.GITHUB.key)
         return GithubThingService
-    else
-        return ThingService
+
+    return ThingService
 }
 
 module.exports = router

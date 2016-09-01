@@ -1,4 +1,4 @@
-import {castArray, remove} from 'lodash'
+import {castArray} from 'lodash'
 
 import { Event, Thing } from '../models'
 import * as EventCreator from './event-creator'
@@ -25,9 +25,9 @@ export function doThing(user, thingId) {
         .then(thing => EventCreator.createAccepted(creator, thing, getShowNewList))
         .then(() => Event.discardUserEvents(thingId, user.id))
         .catch(error => {
-                logger.error(`error while setting user ${user.email} as doer of github thing ${thingId}:`, error)
-                throw error
-            }
+            logger.error(`error while setting user ${user.email} as doer of github thing ${thingId}:`, error)
+            throw error
+        }
         )
 }
 
@@ -141,13 +141,13 @@ function getShowNewList(user, thing, eventType) {
         case EventTypes.CLOSED.key:
             return []
         default:
-            throw "UnknownEventType"
+            throw 'UnknownEventType'
     }
 }
 
 function validateStatus(thing, allowedStatuses) {
     if (!castArray(allowedStatuses).includes(thing.payload.status))
-        throw "IllegalOperation"
+        throw 'IllegalOperation'
 
     return thing
 }

@@ -1,7 +1,7 @@
 const React = require('react')
 const {Component, PropTypes} = React
 
-const EventTypes = require('../../../common/enums/event-types')
+import EventTypes from '../../../common/enums/event-types'
 const {PreviewItem, PreviewItemStatus, PreviewItemTitle, PreviewItemDate, PreviewItemText, PreviewItemActions} =
     require('../Preview/PreviewItem')
 const GithubActionsBar = require('./GithubActionsBar')

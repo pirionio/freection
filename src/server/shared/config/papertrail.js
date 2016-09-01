@@ -2,7 +2,7 @@ import process from 'process'
 
 let config
 
-if (process.env.NODE_ENV == 'production') {
+if (process.env.NODE_ENV === 'production') {
     const host = process.env.PPRTRL_HOST
     const port = process.env.PPRTRL_PORT
     const source = process.env.PPRTRL_SOURCE

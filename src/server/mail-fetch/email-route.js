@@ -2,7 +2,6 @@ const router = require('express').Router()
 
 import * as EndpointUtil from '../shared/utils/endpoint-util'
 import * as EmailService from '../shared/application/email-service'
-import logger from '../shared/utils/logger'
 
 router.get('/unread', (request, response) => {
     EndpointUtil.handleGet(request, response, EmailService.fetchUnreadMessages, {

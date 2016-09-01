@@ -17,8 +17,8 @@ const ContactsActions = require('../../app/actions/contacts-actions')
 import * as ThingService from '../shared/application/thing-service'
 import * as ContactService from '../shared/application/contact-service'
 
-module.exports = (app) => {
-    app.set('views', path.join(__dirname, 'views'));
+module.exports = app => {
+    app.set('views', path.join(__dirname, 'views'))
     app.set('view engine', 'ejs')
 
     // Serve static
@@ -37,14 +37,14 @@ module.exports = (app) => {
         app.use(webpackHotMiddleware(compiler))
     }
 
-    app.get('/demo', function(request, response) {
+    app.get('/demo', (request, response) => {
         if (isDemo)
             response.render('demo')
     })
 
     // Serve the main index file for any request that's not handled specifically,
     // to support URL navigation without hash tags.
-    app.get('*', function (request, response) {
+    app.get('*', (request, response) => {
         getInitialState(request)
             .then(state => response.render('index', { state }))
             .catch(error => {
@@ -72,7 +72,7 @@ async function getInitialState(request) {
         state = reducer(state, ContactsActions.setState(contacts))
     }
 
-    const authState = await getAuthState(request)
+    const authState = getAuthState(request)
     state = reducer(state, AuthActions.setState(authState))
     state = Object.assign(state, {
         config: getConfig()
@@ -81,7 +81,7 @@ async function getInitialState(request) {
     return state
 }
 
-async function getAuthState(request) {
+function getAuthState(request) {
     const auth = {
         isAuthenticated: request.isAuthenticated()
     }
@@ -95,7 +95,7 @@ async function getAuthState(request) {
     auth.lastName = request.user.lastName
     auth.email = request.user.email
 
-    var tokenOptions = request.user.exp ? {} : {expiresIn: '30 days'}
+    const tokenOptions = request.user.exp ? {} : {expiresIn: '30 days'}
     try {
         // TODO: this is synchronous function call, we might want to call async version of it
         auth.pushToken = jwt.sign(request.user, tokenConfig.pushSecret, tokenOptions)

@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     CREATED: {
         key: 'CREATED',
         label: 'Created'

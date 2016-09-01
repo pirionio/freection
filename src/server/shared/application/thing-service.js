@@ -307,8 +307,8 @@ function sendEmailForThing(thing, user, toAddress, subject, body) {
         const messageId = thing.getEmailId()
         return EmailService.sendEmailForThing(user, toAddress.payload.email, subject, body, messageId)
     }
-    else
-        return Promise.resolve(null)
+
+    return Promise.resolve(null)
 }
 
 function sendEmailForComment(user, thing, commentText) {
@@ -362,8 +362,8 @@ function getShowNewList(user, thing, eventType, previousStatus) {
         case EventTypes.CLOSED.key:
             if ([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(previousStatus))
                 return union(thing.doers, getToList(thing))
-            else
-                return thing.doers
+
+            return thing.doers
         case EventTypes.SENT_BACK.key:
             return union(thing.doers, getToList(thing))
         case EventTypes.COMMENT.key:
@@ -376,7 +376,7 @@ function getShowNewList(user, thing, eventType, previousStatus) {
         case EventTypes.CLOSE_ACKED.key:
             return []
         default:
-            throw "UnknownEventType"
+            throw 'UnknownEventType'
     }
 }
 
@@ -397,7 +397,7 @@ function performCloseAck(thing, user) {
 
 function validateStatus(thing, allowedStatuses) {
     if (!castArray(allowedStatuses).includes(thing.payload.status))
-        throw "IllegalOperation"
+        throw 'IllegalOperation'
 
     return thing
 }

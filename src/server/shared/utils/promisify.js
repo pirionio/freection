@@ -1,20 +1,15 @@
 function promisifyMethod(method, obj) {
-    return function() {
-        const args = []
+    return function(...args) {
 
-        for (const arg of arguments) {
-            args.push(arg)
-        }
-
-        return new Promise(function(resolve, reject) {
-            args.push(function(err, result) {
+        return new Promise((resolve, reject) => {
+            const callback = (err, result) => {
                 if (err)
                     reject(err)
                 else
                     resolve(result)
-            })
+            }
 
-            method.apply(obj, args);
+            method.apply(obj, [...args, callback])
         })
     }
 }

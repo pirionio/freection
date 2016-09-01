@@ -7,8 +7,7 @@ import {chain} from 'lodash/core'
 import {emailToAddress} from '../application/address-creator'
 import EntityTypes from '../../../common/enums/entity-types'
 import EventTypes from '../../../common/enums/event-types'
-
-import {SharedConstants} from '../../../common/shared-constants'
+import SharedConstants from '../../../common/shared-constants'
 
 export function thingToDto(thing, user, {includeEvents = true} = {}) {
 

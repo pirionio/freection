@@ -1,6 +1,6 @@
 import AddressParser from 'email-addresses'
 
-const UserTypes = require('../../../common/enums/user-types')
+import UserTypes from '../../../common/enums/user-types'
 
 export function userToAddress(user) {
     return {

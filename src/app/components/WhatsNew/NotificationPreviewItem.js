@@ -2,8 +2,8 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 
-const {SharedConstants} = require('../../../common/shared-constants')
-const EventTypes = require('../../../common/enums/event-types')
+import SharedConstants from '../../../common/shared-constants'
+import EventTypes from '../../../common/enums/event-types'
 const ThingPageActions = require('../../actions/thing-page-actions')
 
 const {PreviewItem, PreviewItemText, PreviewItemStatus, PreviewItemActions} = require('../Preview/PreviewItem')

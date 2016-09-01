@@ -1,7 +1,7 @@
 const chain = require('lodash/core')
 const last = require('lodash/last')
 
-const {SharedConstants} = require('../../common/shared-constants')
+import SharedConstants from '../../common/shared-constants'
 
 function getAllMessages(thing) {
     return chain(thing.events)

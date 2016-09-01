@@ -1,5 +1,5 @@
 const github = require('./github')
 
-module.exports = (app) => {
+module.exports = app => {
     app.use('/webhook/github', github)
 }

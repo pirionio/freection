@@ -22,7 +22,7 @@ const styleVars = require('../style-vars')
 
 const ThingHelper = require('../../helpers/thing-helper')
 const MessageBoxActions = require('../../actions/message-box-actions')
-const ThingStatus = require('../../../common/enums/thing-status')
+import ThingStatus from '../../../common/enums/thing-status'
 const MessageTypes = require('../../../common/enums/message-types')
 
 class Board extends Component {

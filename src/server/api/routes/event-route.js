@@ -3,7 +3,7 @@ const router = require('express').Router()
 import * as EventService from '../../shared/application/event-service'
 import * as EndpointUtil from '../../shared/utils/endpoint-util'
 
-router.post('/:eventId/discard', function(request, response) {
+router.post('/:eventId/discard', (request, response) => {
     EndpointUtil.handlePost(request, response, EventService.discard, {
         params: ['eventId'],
         result: false,
@@ -14,7 +14,7 @@ router.post('/:eventId/discard', function(request, response) {
     })
 })
 
-router.post('/:eventId/markasread', function(request, response) {
+router.post('/:eventId/markasread', (request, response) => {
     EndpointUtil.handlePost(request, response, EventService.markAsRead, {
         params: ['eventId'],
         result: true,

@@ -40,7 +40,7 @@ export async function fetchUnreadMessages(user) {
         const emails = await connection.getUnseenMessages(fullUser.imapJoinDate)
 
         return emails.filter(message => filterThingMessage(user, message))
-            .map(email=> imapEmailToDto(email, user))
+            .map(email => imapEmailToDto(email, user))
     } finally {
         GoogleImapConnectionPool.releaseConnection(user, connection)
     }

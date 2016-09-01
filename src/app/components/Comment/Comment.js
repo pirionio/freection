@@ -8,7 +8,7 @@ const radium = require('radium')
 const classAutobind = require('class-autobind').default
 
 const HtmlUtil = require('../../util/html-util')
-const EventTypes = require('../../../common/enums/event-types')
+import EventTypes from '../../../common/enums/event-types'
 const ThingCommandActions = require('../../actions/thing-command-actions')
 
 const Flexbox = require('../UI/Flexbox')

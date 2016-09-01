@@ -3,7 +3,7 @@ const {PropTypes} = React
 const first = require('lodash/first')
 const last = require('lodash/last')
 
-const EventTypes = require('../../../../common/enums/event-types')
+import EventTypes from '../../../../common/enums/event-types'
 const ThingHelper = require('../../../helpers/thing-helper')
 
 const CommentPreviewText = require('./CommentPreviewText')

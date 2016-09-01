@@ -5,7 +5,7 @@ const ToDoActions = require('../actions/to-do-actions')
 const FollowUpActions = require('../actions/follow-up-actions')
 const EventActions = require('../actions/event-actions')
 const EmailPageActions = require('../actions/email-page-actions')
-const EventTypes = require('../../common/enums/event-types')
+import EventTypes from '../../common/enums/event-types'
 
 const EmailLifecycleService = require('./email-lifecycle-service')
 

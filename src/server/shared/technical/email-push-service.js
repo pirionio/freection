@@ -12,7 +12,7 @@ function onMail(userId, email) {
     }, { conflict: 'replace' })
 }
 
-function onUpdate(userId, email, info) {
+function onUpdate(userId, email) {
     // TODO: we handle this poorly be refreshing everything, we should only sent a notification
     // about specific issue
     // it is so poorly implemented that it will cause a refresh after every time we click discard

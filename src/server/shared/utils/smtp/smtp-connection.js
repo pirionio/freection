@@ -1,5 +1,5 @@
-var nodemailer = require('nodemailer')
-var htmlToText = require('nodemailer-html-to-text').htmlToText
+const nodemailer = require('nodemailer')
+const htmlToText = require('nodemailer-html-to-text').htmlToText
 const autobind = require('class-autobind').default
 
 const promisify = require('../promisify')

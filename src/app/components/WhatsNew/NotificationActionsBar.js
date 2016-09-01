@@ -2,7 +2,7 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 
-const EventTypes = require('../../../common/enums/event-types')
+import EventTypes from '../../../common/enums/event-types'
 const ActionsBar = require('../Actions/ActionsBar')
 const {DoAction, DoneAction, DismissAction, CloseAction, SendBackAction, DiscardCommentsAction, DiscardPingAction,
     DiscardPongAction, CloseAckAction,

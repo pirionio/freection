@@ -28,30 +28,30 @@ const User = thinky.createModel('User', {
 
 User.ensureIndex('googleId')
 User.ensureIndex('email')
-User.ensureIndex('githubUserId', function(doc) {
+User.ensureIndex('githubUserId', doc => {
     return doc('integrations')('github')('userId')
 })
 User.ensureIndex('organization')
 
 User.defineStatic('getUserByGoogleId', function(googleId) {
-  return this.getAll(googleId, {index: 'googleId'}).run().then(users => {
-      if (users.length == 0)
-          throw "NotFound"
-
-      return users[0]
-  })
-})
-
-User.defineStatic('getUserByEmail', function(email) {
-    return this.getAll(email, {index:'email'}).run().then(users => {
-        if (users.length == 0)
-            throw "NotFound"
+    return this.getAll(googleId, {index: 'googleId'}).run().then(users => {
+        if (users.length === 0)
+            throw 'NotFound'
 
         return users[0]
     })
 })
 
-User.defineStatic('appendGithubRepository', function (userId, fullName) {
+User.defineStatic('getUserByEmail', function(email) {
+    return this.getAll(email, {index:'email'}).run().then(users => {
+        if (users.length === 0)
+            throw 'NotFound'
+
+        return users[0]
+    })
+})
+
+User.defineStatic('appendGithubRepository', function(userId, fullName) {
     return this.get(userId).update(user => {
         return {
             integrations: {
@@ -66,7 +66,7 @@ User.defineStatic('appendGithubRepository', function (userId, fullName) {
     }).run()
 })
 
-User.defineStatic('removeGithubRepository', function (userId, fullName) {
+User.defineStatic('removeGithubRepository', function(userId, fullName) {
     return this.get(userId).update(user => {
         return {
             integrations: {
@@ -81,14 +81,14 @@ User.defineStatic('removeGithubRepository', function (userId, fullName) {
 
 User.defineStatic('getUserByGithubId', function(githubId) {
     return this.getAll(githubId, {index:'githubUserId'}).run().then(users => {
-        if (users.length == 0)
-            throw "NotFound"
+        if (users.length === 0)
+            throw 'NotFound'
 
         return users[0]
     })
 })
 
-User.defineStatic('getOrganizationUsers', function (organization) {
+User.defineStatic('getOrganizationUsers', function(organization) {
     return this.getAll(organization, {index:'organization'}).run()
 })
 

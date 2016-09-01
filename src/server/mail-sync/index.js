@@ -7,8 +7,8 @@ const {last} = require('lodash')
 import logger from '../shared/utils/logger'
 
 module.exports = function() {
-    MailNotification.changes().
-        then(changes => changes.each(onChange))
+    MailNotification.changes()
+        .then(changes => changes.each(onChange))
 
     function onChange(error, doc) {
         if (error) {
@@ -57,8 +57,8 @@ module.exports = function() {
         if (!user.lastFetchedEmailDate) {
             return EmailService.getLastInternalDate(user)
                 .then(lastFetchedEmailDate => dateFns.subDays(lastFetchedEmailDate, 1))
-        } else {
-            return Promise.resolve(user.lastFetchedEmailDate)
         }
+
+        return Promise.resolve(user.lastFetchedEmailDate)
     }
 }

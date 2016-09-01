@@ -28,7 +28,7 @@ export function createAccepted(creator, thing, getShowNewList) {
     })
 }
 
-function createDismissed(creator, thing, getShowNewList, messageText) {
+export function createDismissed(creator, thing, getShowNewList, messageText) {
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.DISMISSED.key,

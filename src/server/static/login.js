@@ -54,14 +54,14 @@ function generateOAuth2Url(prompt, loginHint) {
         scope: scope.join(' ')
     }, prompt ? { prompt } : {}, loginHint ? {login_hint: loginHint} : {})
 
-    return oauthUrl + '?' + querystring.stringify(options)
+    return `${oauthUrl}?${querystring.stringify(options)}`
 }
 
 passport.use(new GoogleStrategy({
     clientID: config.clientID,
     clientSecret: config.clientSecret,
     callbackURL: config.callbackURL
-}, function (accessToken, refreshToken, profile, cb) {
+}, (accessToken, refreshToken, profile, cb) => {
 
     const userData = {
         googleId: profile.id,
@@ -73,25 +73,23 @@ passport.use(new GoogleStrategy({
     }
 
     User.getUserByGoogleId(userData.googleId)
-        .catch(e=> {
-            if (e === "NotFound") {
-                if (userData.refreshToken) {
-                    return saveNewUser(userData).
-                        then(user => {
-                            logger.info(`new user ${user.firstName} ${user.lastName} ${user.email}`)
-                            return user
-                        })
-                } else {
-                    throw "MissingRefreshToken"
-                }
-            }
-            else
+        .catch(e => {
+            if (e !== 'NotFound')
                 throw e
+
+            if (!userData.refreshToken)
+                throw 'MissingRefreshToken'
+
+            return saveNewUser(userData)
+                .then(user => {
+                    logger.info(`new user ${user.firstName} ${user.lastName} ${user.email}`)
+                    return user
+                })
         })
         .then(user => {
             if (!user.refreshToken) {
                 if (!userData.refreshToken)
-                    throw "MissingRefreshToken"
+                    throw 'MissingRefreshToken'
 
                 user.refreshToken = userData.refreshToken
                 user.accessToken = userData.accessToken
@@ -106,8 +104,8 @@ passport.use(new GoogleStrategy({
             return user
         })
         .then(user => cb(null, createUserToken(user)))
-        .catch(err=> {
-            if (err === "MissingRefreshToken") {
+        .catch(err => {
+            if (err === 'MissingRefreshToken') {
                 logger.info(
                     `missing refresh token for new user ${userData.firstName} ${userData.lastName} ${userData.email}`)
                 cb(null, {missingRefreshToken:true, email: userData.email})
@@ -119,13 +117,13 @@ passport.use(new GoogleStrategy({
 
 router.get('/logout', token.logout({redirect: '/'}))
 
-router.get('/google', function(request, response) {
+router.get('/google', (request, response) => {
     const redirectUrl = generateOAuth2Url()
     response.redirect(302, redirectUrl)
 })
 
 router.get('/google/callback',
-    passport.authenticate('google', {session: false, failureRedirect: '/login'}), function(request, response, next) {
+    passport.authenticate('google', {session: false, failureRedirect: '/login'}), (request, response, next) => {
         if (request.user.missingRefreshToken) {
             const redirectUrl = generateOAuth2Url('consent', request.user.email)
             response.redirect(302, redirectUrl)

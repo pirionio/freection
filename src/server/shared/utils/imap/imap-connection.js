@@ -1,13 +1,13 @@
 import imap from 'imap'
 import {MailParser} from 'mailparser'
-import {chain, compact} from 'lodash'
+import {chain} from 'lodash'
 import autobind from 'class-autobind'
 
 import logger from '../logger'
 import promisify from '../promisify'
 import {IMAP} from '../../constants'
 
-class ImapConnection {
+export default class ImapConnection {
     constructor(type, options) {
         this._type = type
         this._connection = new imap(options)
@@ -29,7 +29,7 @@ class ImapConnection {
                         const allMailName = chain(mainBox.children)
                             .toPairs()
                             .filter(box => box[1].attribs && box[1].attribs.includes(IMAP[this._type].ALL_ATTRIBUTE))
-                            .map(box=> box[0])
+                            .map(box => box[0])
                             .head()
                             .value()
 
@@ -67,7 +67,7 @@ class ImapConnection {
     }
 
     parseRawMessage(rawMessage, options) {
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
             const message = {}
             const parser = new MailParser()
 
@@ -98,7 +98,7 @@ class ImapConnection {
             })
 
             if (options.includeBodies) {
-                rawMessage.on('body', (stream, info) => {
+                rawMessage.on('body', stream => {
                     stream.on('data', chunk => {
                         parser.write(chunk)
                     })
@@ -115,7 +115,7 @@ class ImapConnection {
         return new Promise((resolve, reject) => {
             const promises = []
 
-            if (uids.length == 0) {
+            if (uids.length === 0) {
                 resolve([])
                 return
             }
@@ -151,7 +151,7 @@ class ImapConnection {
         return this._connection.searchAsync(criteria)
             .then(results => this.fetchByUids(results, {includeBodies: true}))
             .catch(error => {
-                logger.error(`Could not find unread emails`, error)
+                logger.error('Could not find unread emails', error)
                 throw error
             })
     }
@@ -177,8 +177,8 @@ class ImapConnection {
             .then(emails => {
                 if (emails && emails.length > 0)
                     return emails[0]
-                else
-                    throw 'NotFound'
+
+                throw 'NotFound'
             })
     }
 
@@ -234,5 +234,3 @@ class ImapConnection {
         }
     }
 }
-
-module.exports = ImapConnection

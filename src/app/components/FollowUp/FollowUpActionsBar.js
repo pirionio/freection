@@ -4,7 +4,7 @@ const {connect} = require('react-redux')
 
 const ActionsBar = require('../Actions/ActionsBar')
 const {CloseAction, SendBackAction, PingAction} = require('../Actions/Actions')
-const ThingStatus = require('../../../common/enums/thing-status')
+import ThingStatus from '../../../common/enums/thing-status'
 
 class FollowUpActionsBar extends Component {
     render() {

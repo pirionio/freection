@@ -11,9 +11,8 @@ async function done() {
     await ThingService.markAsDone(fromUser, thing.id, 'This IE really sucks man...')
 }
 
-
-module.exports = (app) => {
-    app.post('/demo/init', function(request, response) {
+module.exports = app => {
+    app.post('/demo/init', (request, response) => {
         initDemoDB()
             .then(() => response.redirect('/demo'))
             .catch(error => {
@@ -22,7 +21,7 @@ module.exports = (app) => {
             })
     })
 
-    app.post('/demo/done', function(request, response) {
+    app.post('/demo/done', (request, response) => {
         done()
             .then(() => response.redirect('/demo'))
             .catch(error => response.status(500).send(error))

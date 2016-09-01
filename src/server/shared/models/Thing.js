@@ -25,15 +25,15 @@ const Thing = thinky.createModel('Thing', {
     type: type.string()
 })
 
-Thing.ensureIndex('followUpers', function(doc) {
+Thing.ensureIndex('followUpers', doc => {
     return doc('followUpers')
 }, {multi:true})
 
-Thing.ensureIndex('doers', function(doc) {
+Thing.ensureIndex('doers', doc => {
     return doc('doers')
 }, {multi:true})
 
-Thing.ensureIndex('githubIssueId', function(doc) {
+Thing.ensureIndex('githubIssueId', doc => {
     return thinky.r.branch(doc('type').eq('GITHUB'), doc('payload')('id'), null)
 })
 

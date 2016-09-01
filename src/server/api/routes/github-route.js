@@ -4,13 +4,13 @@ import config from '../../shared/config/github'
 const router = require('express').Router()
 const querystring = require('querystring')
 const fetch = require('node-fetch')
-const {chain, toString} = require('lodash')
+const {toString} = require('lodash')
 
 import logger from '../../shared/utils/logger'
 
 const githubAPIUrl = 'https://api.github.com'
 
-router.get('/', function(request, response) {
+router.get('/', (request, response) => {
     const {user} = request
 
     User.get(user.id).run()
@@ -38,12 +38,12 @@ router.get('/', function(request, response) {
         })
 })
 
-router.get('/integrate', function (request, response) {
+router.get('/integrate', (request, response) =>  {
     const redirectUrl = generateOAuth2Url()
     response.redirect(302, redirectUrl)
 })
 
-router.get('/callback', function (request, response) {
+router.get('/callback', (request, response) =>  {
     const {code} = request.query
     const {user} = request
 
@@ -57,10 +57,10 @@ router.get('/callback', function (request, response) {
                         logger.error(`error while integrating github for user ${user.email}`, error)
                         response.sendStatus(500)
                     })
-        })
+            })
 })
 
-router.post('/enableRepository/:owner/:name', function(request, response) {
+router.post('/enableRepository/:owner/:name', (request, response) => {
     const {owner, name} = request.params
     const fullName = `${owner}/${name}`
 
@@ -69,7 +69,7 @@ router.post('/enableRepository/:owner/:name', function(request, response) {
         .then(user => {
             return writeHook(user.integrations.github.accessToken, fullName)
                 .catch(error => {
-                    if (error.status != 422) // We ignore hook is already created
+                    if (error.status !== 422) // We ignore hook is already created
                         throw error
                 })
         })
@@ -82,7 +82,7 @@ router.post('/enableRepository/:owner/:name', function(request, response) {
         })
 })
 
-router.post('/disableRepository/:owner/:name', function(request, response) {
+router.post('/disableRepository/:owner/:name', (request, response) => {
     const {owner, name} = request.params
     const fullName = `${owner}/${name}`
 
@@ -108,7 +108,7 @@ function generateOAuth2Url() {
         allow_signup: false
     }
 
-    return oauthUrl + '?' + querystring.stringify(options)
+    return `${oauthUrl}?${querystring.stringify(options)}`
 }
 
 function getAccessTokenFromGithub(code) {
@@ -157,8 +157,8 @@ function repositoryToDTO(repository, userRepositories) {
 function checkGithubActivated(user) {
     if (user.integrations && user.integrations.github && user.integrations.github.active)
         return user
-    else
-        throw "GithubNotActivated"
+
+    throw 'GithubNotActivated'
 }
 
 function getUserId(access_token) {
@@ -199,14 +199,13 @@ function githubRequest(access_token, method, path, body) {
         .then(response => {
             if (response.status >= 200 && response.status < 400)
                 return response
-            else {
-                return response.text().then(text => {
-                    const error = new Error(response.statusText)
-                    error.response = text
-                    error.status = response.status
-                    throw error
-                })
-            }
+
+            return response.text().then(text => {
+                const error = new Error(response.statusText)
+                error.response = text
+                error.status = response.status
+                throw error
+            })
         })
 }
 

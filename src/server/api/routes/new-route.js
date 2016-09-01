@@ -4,9 +4,8 @@ const AddressParser = require('email-addresses')
 import * as EndpointUtil from '../../shared/utils/endpoint-util'
 import * as ThingService from '../../shared/application/thing-service'
 import * as EmailService from '../../shared/application/email-service'
-import logger from '../../shared/utils/logger'
 
-router.post('/thing', function(request, response) {
+router.post('/thing', (request, response) => {
     if (!isValid(request, response)) {
         return
     }
@@ -20,7 +19,7 @@ router.post('/thing', function(request, response) {
     })
 })
 
-router.post('/email', function(request, response) {
+router.post('/email', (request, response) => {
     if (!isValid(request, response)) {
         return
     }
@@ -38,12 +37,12 @@ function isValid(request, response) {
     const {to, subject} = request.body
 
     if (!to) {
-        response.status(400).send("to field is missing")
+        response.status(400).send('to field is missing')
         return false
     }
 
     if (!subject) {
-        response.status(400).send("subject field is missing")
+        response.status(400).send('subject field is missing')
         return false
     }
 

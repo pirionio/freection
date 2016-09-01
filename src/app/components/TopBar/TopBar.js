@@ -9,7 +9,7 @@ const keys = require('lodash/keys')
 const groupBy = require('lodash/groupBy')
 const reject = require('lodash/reject')
 
-const EventTypes = require('../../../common/enums/event-types')
+import EventTypes from '../../../common/enums/event-types'
 const Settings = require('./../SideBar/SettingsMenu')
 
 const Flexbox = require('../UI/Flexbox')

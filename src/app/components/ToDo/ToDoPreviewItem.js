@@ -2,7 +2,7 @@ const React = require('react')
 const {PropTypes, Component} = React
 const {connect} = require('react-redux')
 
-const ThingStatus = require('../../../common/enums/thing-status')
+import ThingStatus from '../../../common/enums/thing-status'
 const ThingPageActions = require('../../actions/thing-page-actions')
 const ThingHelper = require('../../helpers/thing-helper')
 

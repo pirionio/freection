@@ -25,8 +25,8 @@ const GithubPreviewItem = require('./GithubPreviewItem')
 
 const PreviewHelper = require('../../helpers/preview-helper')
 const WhatsNewActions = require('../../actions/whats-new-actions')
-const EventTypes = require('../../../common/enums/event-types')
-const EntityTypes = require('../../../common/enums/entity-types')
+import EventTypes from '../../../common/enums/event-types'
+import EntityTypes from '../../../common/enums/entity-types'
 const {PreviewDateGroups} = require('../../constants')
 
 class WhatsNew extends Component {
