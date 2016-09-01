@@ -1,4 +1,4 @@
-const thinky = require('./thinky')
+import thinky from './thinky'
 const type = thinky.type
 
 const MailNotification = thinky.createModel('MailNotification', {
@@ -7,4 +7,4 @@ const MailNotification = thinky.createModel('MailNotification', {
     type: type.string()
 })
 
-module.exports = MailNotification
+export default MailNotification

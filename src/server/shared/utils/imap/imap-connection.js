@@ -1,11 +1,11 @@
-const imap = require('imap')
-const {MailParser} = require('mailparser')
-const {chain, compact} = require('lodash')
-const autobind = require('class-autobind').default
+import imap from 'imap'
+import {MailParser} from 'mailparser'
+import {chain, compact} from 'lodash'
+import autobind from 'class-autobind'
 
-const logger = require('../logger')
-const promisify = require('../promisify')
-const {IMAP} = require('../../constants')
+import logger from '../logger'
+import promisify from '../promisify'
+import {IMAP} from '../../constants'
 
 class ImapConnection {
     constructor(type, options) {

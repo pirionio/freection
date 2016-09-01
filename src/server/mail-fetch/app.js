@@ -1,4 +1,4 @@
-const app = require('../shared')
+import app from '../shared'
 
 require('./index')(app)
 

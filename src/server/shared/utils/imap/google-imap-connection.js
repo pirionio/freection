@@ -1,6 +1,6 @@
-const ImapConnection = require('./imap-connection')
+import ImapConnection from './imap-connection'
 
-class GoogleImapConnection extends ImapConnection {
+export default class GoogleImapConnection extends ImapConnection {
     constructor(user, accessToken) {
         const char1 = String.fromCharCode(1)
         const xoauth2 = `user=${user.email}${char1}auth=Bearer ${accessToken}${char1}${char1}`
@@ -13,5 +13,3 @@ class GoogleImapConnection extends ImapConnection {
         })
     }
 }
-
-module.exports = GoogleImapConnection

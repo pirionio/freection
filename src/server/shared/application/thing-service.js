@@ -1,18 +1,18 @@
-const {remove, castArray, union, chain, omitBy, isNil, last} = require('lodash')
-const AddressParser = require('email-addresses')
+import {remove, castArray, union, chain, omitBy, isNil, last} from 'lodash'
+import AddressParser from 'email-addresses'
 
-const {Event, Thing, User} = require('../models')
-const EventCreator = require('./event-creator')
-const {eventToDto, thingToDto} = require('../application/transformers')
-const ThingStatus = require('../../../common/enums/thing-status')
-const EntityTypes = require('../../../common/enums/entity-types')
-const EventTypes = require('../../../common/enums/event-types')
-const UserTypes = require('../../../common/enums/user-types')
-const {userToAddress, emailToAddress} = require('./address-creator')
-const EmailService = require('./email-service')
-const logger = require('../utils/logger')
+import {Event, Thing, User} from '../models'
+import * as EventCreator from './event-creator'
+import {eventToDto, thingToDto} from '../application/transformers'
+import ThingStatus from '../../../common/enums/thing-status'
+import EntityTypes from '../../../common/enums/entity-types'
+import EventTypes from '../../../common/enums/event-types'
+import UserTypes from '../../../common/enums/user-types'
+import {userToAddress, emailToAddress} from './address-creator'
+import * as EmailService from './email-service'
+import logger from '../utils/logger'
 
-function getWhatsNew(user) {
+export function getWhatsNew(user) {
     return Event.getWhatsNew(user.id)
         .then(events => events.map(event => eventToDto(event, user)))
         .catch(error => {
@@ -21,7 +21,7 @@ function getWhatsNew(user) {
         })
 }
 
-function getToDo(user) {
+export function getToDo(user) {
     return Thing.getUserToDos(user.id)
         .then(things => things.map(thing => thingToDto(thing, user)))
         .catch(error => {
@@ -30,7 +30,7 @@ function getToDo(user) {
         })
 }
 
-function getFollowUps(user) {
+export function getFollowUps(user) {
     return Thing.getUserFollowUps(user.id)
         .then(followUps => followUps.map(thing => thingToDto(thing, user)))
         .catch(error => {
@@ -39,7 +39,7 @@ function getFollowUps(user) {
         })
 }
 
-function getThing(user, thingId) {
+export function getThing(user, thingId) {
     return Thing.getFullThing(thingId)
         .then(thing => thingToDto(thing, user))
         .catch(error => {
@@ -48,7 +48,7 @@ function getThing(user, thingId) {
         })
 }
 
-async function newThing(user, to, subject, body) {
+export async function newThing(user, to, subject, body) {
     const creator = userToAddress(user)
 
     try {
@@ -69,7 +69,7 @@ async function newThing(user, to, subject, body) {
     }
 }
 
-function doThing(user, thingId) {
+export function doThing(user, thingId) {
     const creator = userToAddress(user)
 
     return Thing.get(thingId).run()
@@ -85,7 +85,7 @@ function doThing(user, thingId) {
     )
 }
 
-async function dismiss(user, thingId, messageText) {
+export async function dismiss(user, thingId, messageText) {
     const creator = userToAddress(user)
 
     try {
@@ -111,7 +111,7 @@ async function dismiss(user, thingId, messageText) {
     }
 }
 
-async function close(user, thingId, messageText) {
+export async function close(user, thingId, messageText) {
     const creator = userToAddress(user)
 
     try {
@@ -145,7 +145,7 @@ async function close(user, thingId, messageText) {
     }
 }
 
-function closeAck(user, thingId) {
+export function closeAck(user, thingId) {
     const creator = userToAddress(user)
 
     return Thing.get(thingId).run()
@@ -160,7 +160,7 @@ function closeAck(user, thingId) {
         })
 }
 
-async function markAsDone(user, thingId, messageText) {
+export async function markAsDone(user, thingId, messageText) {
     const creator = userToAddress(user)
 
     try {
@@ -189,7 +189,7 @@ async function markAsDone(user, thingId, messageText) {
     }
 }
 
-async function sendBack(user, thingId, messageText) {
+export async function sendBack(user, thingId, messageText) {
     const creator = userToAddress(user)
 
     try {
@@ -210,7 +210,7 @@ async function sendBack(user, thingId, messageText) {
     }
 }
 
-function ping(user, thingId) {
+export function ping(user, thingId) {
     const creator = userToAddress(user)
 
     return Thing.get(thingId).run()
@@ -224,7 +224,7 @@ function ping(user, thingId) {
         })
 }
 
-async function pong(user, thingId, messageText) {
+export async function pong(user, thingId, messageText) {
     const creator = userToAddress(user)
 
     try {
@@ -245,7 +245,7 @@ async function pong(user, thingId, messageText) {
     }
 }
 
-function comment(user, thingId, commentText) {
+export function comment(user, thingId, commentText) {
     const creator = userToAddress(user)
 
     return Thing.get(thingId).run()
@@ -262,7 +262,7 @@ function comment(user, thingId, commentText) {
         })
 }
 
-function discardEventsByType(user, thingId, eventType) {
+export function discardEventsByType(user, thingId, eventType) {
     return Event.discardUserEventsByType(thingId, eventType, user.id)
         .catch(error => {
             logger.error(`Could not discard events of type ${eventType} unread by user ${user.email} for thing ${thingId}`, error)
@@ -270,7 +270,7 @@ function discardEventsByType(user, thingId, eventType) {
         })
 }
 
-function syncThingWithMessage(thingId, message) {
+export function syncThingWithMessage(thingId, message) {
     return Thing.getFullThing(thingId)
         .then(thing => {
             const emailIds =
@@ -390,17 +390,6 @@ function performDoThing(thing, user) {
     return thing.save()
 }
 
-function performMarkAsDone(thing, user) {
-    remove(thing.doers, doerId => doerId === user.id)
-    thing.payload.status = thing.isSelf() ? ThingStatus.CLOSE.key : ThingStatus.DONE.key
-    return thing.save()
-}
-
-function performSendBack(thing) {
-    thing.payload.status = ThingStatus.REOPENED.key
-    return thing.save()
-}
-
 function performCloseAck(thing, user) {
     remove(thing.doers, doerUserId => doerUserId === user.id)
     return thing.save()
@@ -418,23 +407,4 @@ function validateType(thing) {
         throw 'InvalidEntityType'
 
     return thing
-}
-
-module.exports = {
-    getWhatsNew,
-    getToDo,
-    getFollowUps,
-    getThing,
-    newThing,
-    doThing,
-    dismiss,
-    markAsDone,
-    sendBack,
-    comment,
-    close,
-    closeAck,
-    ping,
-    pong,
-    discardEventsByType,
-    syncThingWithMessage
 }

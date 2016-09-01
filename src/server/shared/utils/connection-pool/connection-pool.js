@@ -1,16 +1,15 @@
-const OAuth2 = require('google-auth-library/lib/auth/oauth2client')
-const Pool = require('generic-pool').Pool
-const autobind = require('class-autobind').default
-const forOwn = require('lodash/forOwn')
+import config from '../../config/google-oauth'
+import {User} from '../../models'
 
-const promisify = require('../promisify')
-const logger = require('../logger')
+import OAuth2 from 'google-auth-library/lib/auth/oauth2client'
+import {Pool} from 'generic-pool'
+import autobind from 'class-autobind'
+import {forOwn} from 'lodash'
 
-const config = require('../../config/google-oauth')
+import promisify from '../promisify'
+import logger from '../logger'
 
-const User = require('../../models/User')
-
-class ConnectionPool {
+export default class ConnectionPool {
     constructor(connectionCreator, options) {
         this._connectionCreator = connectionCreator
         this._options = options
@@ -144,5 +143,3 @@ class ConnectionPool {
         })
     }
 }
-
-module.exports = ConnectionPool

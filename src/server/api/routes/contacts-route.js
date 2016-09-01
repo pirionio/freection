@@ -1,7 +1,7 @@
 const router = require('express').Router()
 
-const EndpointUtil = require('../../shared/utils/endpoint-util')
-const ContactService = require('../../shared/application/contact-service')
+import * as EndpointUtil from '../../shared/utils/endpoint-util'
+import * as ContactService from '../../shared/application/contact-service'
 
 router.get('/', function(request, response) {
     EndpointUtil.handleGet(request, response, ContactService.get, {

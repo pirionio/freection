@@ -1,7 +1,5 @@
-const thinky = require('./thinky')
+import thinky from './thinky'
 const type = thinky.type
-
-const User = require('./User')
 
 const Event = thinky.createModel('Event', {
     id: type.string(),
@@ -93,4 +91,4 @@ Event.defineStatic('getThingEmailIds', function (thingId) {
         .then(events => events.map(event=> event.payload.emailId))
 })
 
-module.exports = Event
+export default Event

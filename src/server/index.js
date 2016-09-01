@@ -1,5 +1,5 @@
-const app = require('./shared')
-const {isDemo} = require('./shared/config/demo')
+import app from './shared'
+import {isDemo} from './shared/config/demo'
 
 if (isDemo)
     require('./demo')(app)

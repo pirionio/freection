@@ -1,8 +1,8 @@
-const {Event} = require('../models')
-const logger = require('../utils/logger')
-const EmailService = require('./email-service')
+import {Event} from '../models'
+import logger from '../utils/logger'
+import * as EmailService from './email-service'
 
-function discard(user, eventId) {
+export function discard(user, eventId) {
     return Event.discardUserEventById(eventId, user.id)
         .catch(error => {
             logger.error(`Could not discard event ${eventId} unread by user ${user.email}`, error)
@@ -10,7 +10,7 @@ function discard(user, eventId) {
         })
 }
 
-async function markAsRead(user, eventId) {
+export async function markAsRead(user, eventId) {
     try {
         await Event.markAsRead(eventId, user.id)
 
@@ -23,9 +23,4 @@ async function markAsRead(user, eventId) {
         throw error
     }
 
-}
-
-module.exports = {
-    discard,
-    markAsRead
 }

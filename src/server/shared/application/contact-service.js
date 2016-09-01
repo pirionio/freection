@@ -1,8 +1,8 @@
-const {reject} = require('lodash')
-const {User} = require('../models')
-const {userToAddress} = require('./address-creator')
+import {reject} from 'lodash'
+import {User} from '../models'
+import {userToAddress} from './address-creator'
 
-async function get(user) {
+export async function get(user) {
     const organizationsUsers = await User.getOrganizationUsers(user.organization)
     const withoutMe = reject(organizationsUsers, orgUser => orgUser.id === user.id)
 

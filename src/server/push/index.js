@@ -1,12 +1,11 @@
+import tokenConfig from '../shared/config/token'
+import {Event, MailNotification} from '../shared/models'
+import logger from '../shared/utils/logger'
+
 const SocketIO = require('socket.io')
 const socketioJwt = require('socketio-jwt')
 const {union, difference} = require('lodash')
-
-const tokenConfig = require('../shared/config/token')
-const {Event, MailNotification} = require('../shared/models')
-const Thing = require('../shared/models/Thing')
 const {eventToDto} = require('../shared/application/transformers')
-const logger = require('../shared/utils/logger')
 const {SharedConstants} = require('../../common/shared-constants')
 
 module.exports = (app) => {

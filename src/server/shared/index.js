@@ -1,12 +1,12 @@
 'use strict'
-const express = require('express')
-const http = require('http')
-const passport = require('passport')
-const bodyParser = require('body-parser')
-const cookieParser = require('cookie-parser')
-const token = require('./utils/token-strategy')
-const tokenConfig = require('./config/token')
-const logger = require('./utils/logger')
+import express from 'express'
+import http from 'http'
+import passport from 'passport'
+import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
+import token from './utils/token-strategy'
+import tokenConfig from './config/token'
+import logger from './utils/logger'
 
 // Configure express
 const app = new express()
@@ -26,4 +26,4 @@ app.start = () => {
     })
 }
 
-module.exports = app
+export default app

@@ -6,7 +6,7 @@ const EventRoute = require('./event-route')
 const GithubRoute = require('./github-route')
 const ContactsRoute = require('./contacts-route')
 
-const token = require('../../shared/utils/token-strategy')
+import token from '../../shared/utils/token-strategy'
 
 router.use('/', token.auth())
 router.use('/new', NewRoute)

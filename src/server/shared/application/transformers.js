@@ -1,16 +1,16 @@
-const parseReply = require('parse-reply')
-const pick = require('lodash/pick')
-const trimStart = require('lodash/trimStart')
-const trimEnd = require('lodash/trimEnd')
-const {chain} = require('lodash/core')
+import parseReply from 'parse-reply'
+import pick from 'lodash/pick'
+import trimStart from 'lodash/trimStart'
+import trimEnd from 'lodash/trimEnd'
+import {chain} from 'lodash/core'
 
-const AddressCreator = require('../application/address-creator')
-const EntityTypes = require('../../../common/enums/entity-types')
-const EventTypes = require('../../../common/enums/event-types')
+import {emailToAddress} from '../application/address-creator'
+import EntityTypes from '../../../common/enums/entity-types'
+import EventTypes from '../../../common/enums/event-types'
 
-const {SharedConstants} = require('../../../common/shared-constants')
+import {SharedConstants} from '../../../common/shared-constants'
 
-function thingToDto(thing, user, {includeEvents = true} = {}) {
+export function thingToDto(thing, user, {includeEvents = true} = {}) {
 
     return {
         id: thing.id,
@@ -28,7 +28,7 @@ function thingToDto(thing, user, {includeEvents = true} = {}) {
     }
 }
 
-function eventToDto(event, user, {includeThing = true} = {}) {
+export function eventToDto(event, user, {includeThing = true} = {}) {
     return {
         id: event.id,
         thing: includeThing && event.thing && thingToDto(event.thing, user, {includeEvents: false}),
@@ -41,7 +41,7 @@ function eventToDto(event, user, {includeThing = true} = {}) {
     }
 }
 
-function userToDto(user) {
+export function userToDto(user) {
     return pick(user, ['id', 'firstName', 'lastName', 'email'])
 }
 
@@ -55,7 +55,7 @@ function commentPayloadToDto(payload, user) {
     })
 }
 
-function imapEmailToDto(email, user) {
+export function imapEmailToDto(email, user) {
     // TODO We don't know how differ the read status of a comment, and the discard of new email notifications.
     // Our app has these two different options, while a regular mail has only a single state (the \\Seen flag).
     // We decided for the meantime to set this flag in the discard flow, meaning that in the comments list - emails will
@@ -103,7 +103,7 @@ function getRelatedThingId(email, user) {
 
 function emailUserToDTO(user) {
     const email = `${user.username }@${user.organization}`
-    return AddressCreator.emailToAddress(email, user.name)
+    return emailToAddress(email, user.name)
 }
 
 function subjectToDto(subject) {
@@ -114,5 +114,3 @@ function subjectToDto(subject) {
         subject.substr('re: '.length) :
         subject
 }
-
-module.exports = {thingToDto, eventToDto, userToDto, imapEmailToDto}

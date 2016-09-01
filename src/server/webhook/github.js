@@ -1,10 +1,11 @@
+import {User, Thing} from './../shared/models'
+import * as GithubThingService from '../shared/application/github-thing-service'
+
 const router = require('express').Router()
 const {toString} = require('lodash')
 
-const GithubThingService = require('../shared/application/github-thing-service')
 const ThingStatus = require('../../common/enums/thing-status')
-const {User, Thing} = require('./../shared/models')
-const logger = require('../shared/utils/logger')
+import logger from '../shared/utils/logger'
 const UserTypes = require('../../common/enums/user-types')
 
 router.post('/', function(request, response) {

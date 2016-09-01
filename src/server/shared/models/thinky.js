@@ -1,4 +1,4 @@
-const config = require('../config/thinky')
-const thinky = require('thinky')(config)
+import config from '../config/thinky'
+import Thinky from 'thinky'
 
-module.exports = thinky
+export default Thinky(config)

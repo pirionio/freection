@@ -1,10 +1,7 @@
-const template = require('lodash/template')
-const zipObject = require('lodash/zipObject')
-const merge = require('lodash/merge')
+import {template,zipObject,merge} from 'lodash/template'
+import logger from '../../shared/utils/logger'
 
-const logger = require('../../shared/utils/logger')
-
-function handleGet(request, response, action, options) {
+export function handleGet(request, response, action, options) {
     const user = request.user
 
     const params = getParams(request, options)
@@ -17,7 +14,7 @@ function handleGet(request, response, action, options) {
         })
 }
 
-function handlePost(request, response, action, options) {
+export function handlePost(request, response, action, options) {
     const {user} = request
 
     const params = getParams(request, options)
@@ -62,9 +59,4 @@ function getTemplateOptions(options, user, params) {
     return merge({
         user: user.email,
     }, zipObject(options.params, params), zipObject(options.body, params))
-}
-
-module.exports = {
-    handleGet,
-    handlePost
 }

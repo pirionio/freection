@@ -1,9 +1,9 @@
-const thinky = require('./thinky')
+import thinky from './thinky'
 
-const Thing = require('./Thing')
-const User = require('./User')
-const Event = require('./Event')
-const MailNotification = require('./MailNotification')
+import Thing from './Thing'
+import User from './User'
+import Event from './Event'
+import MailNotification from './MailNotification'
 
 // Relations must be done in a separate file, because there might be circular references between Models.
 Thing.hasMany(Event, 'events', 'id', 'thingId')
@@ -13,5 +13,5 @@ function uuid() {
     return thinky.r.uuid().run()
 }
 
-module.exports = {Thing, User, Event, MailNotification, uuid}
+export {Thing, User, Event, MailNotification, uuid}
 

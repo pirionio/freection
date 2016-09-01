@@ -2,10 +2,10 @@ const express = require('express')
 const path = require('path')
 const jwt = require('jsonwebtoken')
 
-const {isDemo} = require('../shared/config/demo')
+import {isDemo} from '../shared/config/demo'
 
-const tokenConfig = require('../shared/config/token')
-const logger = require('../shared/utils/logger')
+import tokenConfig from '../shared/config/token'
+import logger from '../shared/utils/logger'
 const login = require('./login')
 
 const reducer = require('../../app/reducers')
@@ -14,8 +14,8 @@ const ToDoActions = require('../../app/actions/to-do-actions')
 const FollowUpActions = require('../../app/actions/follow-up-actions')
 const AuthActions = require('../../app/actions/auth-actions')
 const ContactsActions = require('../../app/actions/contacts-actions')
-const ThingService = require('../shared/application/thing-service')
-const ContactService = require('../shared/application/contact-service')
+import * as ThingService from '../shared/application/thing-service'
+import * as ContactService from '../shared/application/contact-service'
 
 module.exports = (app) => {
     app.set('views', path.join(__dirname, 'views'));

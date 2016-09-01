@@ -1,6 +1,6 @@
-const ConnectionPool = require('../connection-pool/connection-pool')
-const GoogleImapConnection = require('./google-imap-connection')
-const {IMAP} = require('../../constants')
+import ConnectionPool from '../connection-pool/connection-pool'
+import GoogleImapConnection from './google-imap-connection'
+import {IMAP} from '../../constants'
 
 class GoogleImapConnectionPool extends ConnectionPool {
     constructor() {
@@ -17,20 +17,14 @@ function createConnection(user, accessToken) {
     return new GoogleImapConnection(user, accessToken)
 }
 
-function getConnection(user) {
+export function getConnection(user) {
     return pool.getConnection(user)
 }
 
-function closeConnection(user) {
+export function closeConnection(user) {
     return pool.closeConnection(user)
 }
 
-function releaseConnection(user, connection) {
+export function releaseConnection(user, connection) {
     return pool.releaseConnection(user, connection)
-}
-
-module.exports = {
-    getConnection,
-    closeConnection,
-    releaseConnection
 }

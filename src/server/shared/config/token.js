@@ -1,16 +1,20 @@
-const process = require('process')
+import process from 'process'
 
 const version = '4'
 
+let config
+
 if (process.env.NODE_ENV === 'production') {
-    module.exports = {
+    config = {
         secret: 'process.env.HTTP_TOKEN_SECRET' + version,
         pushSecret: 'process.env.PUSH_TOKEN_SECRET' + version
     }
 } else {
-    module.exports = {
+    config = {
         secret: 'JustSomeRandomText' + version,
         pushSecret: 'AnotherRandomText' + version
     }
 }
+
+export default config
 

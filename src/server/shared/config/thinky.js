@@ -1,11 +1,13 @@
-const path = require('path')
-const fs = require('fs')
-const process = require('process')
+import path from 'path'
+import fs from 'fs'
+import process from 'process'
+
+let config = {}
 
 if (process.env.NODE_ENV === 'production') {
     const publicKey = fs.readFileSync(path.join(__dirname,'/compose-publickey.crt')).toString().trim()
 
-    module.exports = {
+    config = {
         servers: [{
             host: 'aws-us-east-1-portal.16.dblayer.com',
             port: 11239,
@@ -18,6 +20,6 @@ if (process.env.NODE_ENV === 'production') {
         timeoutError: 3000,
         buffer: 10,
         max: 100}
-} else {
-    module.exports = {}
 }
+
+export default config

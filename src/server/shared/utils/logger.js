@@ -1,6 +1,6 @@
-const winston = require('winston')
-const Papertrail = require('winston-papertrail').Papertrail
-const papertrailConfig = require('../config/papertrail')
+import winston from 'winston'
+import {Papertrail} from 'winston-papertrail'
+import papertrailConfig from '../config/papertrail'
 
 const transports = [
     new winston.transports.Console({
@@ -18,6 +18,4 @@ if (papertrailConfig.enable) {
     }))
 }
 
-const logger = new winston.Logger({transports})
-
-module.exports = logger
+export default new winston.Logger({transports})

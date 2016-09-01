@@ -1,8 +1,8 @@
-const {Event} = require('../models')
-const EventTypes = require('../../../common/enums/event-types')
-const UserTypes = require('../../../common/enums/user-types')
+import {Event} from '../models'
+import EventTypes from '../../../common/enums/event-types'
+import UserTypes from '../../../common/enums/user-types'
 
-function createCreated(creator, thing, getShowNewList, body, emailId) {
+export function createCreated(creator, thing, getShowNewList, body, emailId) {
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.CREATED.key,
@@ -17,7 +17,7 @@ function createCreated(creator, thing, getShowNewList, body, emailId) {
     })
 }
 
-function createAccepted(creator, thing, getShowNewList) {
+export function createAccepted(creator, thing, getShowNewList) {
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.ACCEPTED.key,
@@ -42,7 +42,7 @@ function createDismissed(creator, thing, getShowNewList, messageText) {
     })
 }
 
-function createDone(creator, thing, getShowNewList, messageText) {
+export function createDone(creator, thing, getShowNewList, messageText) {
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.DONE.key,
@@ -56,7 +56,7 @@ function createDone(creator, thing, getShowNewList, messageText) {
     })
 }
 
-function createComment(creator, createdAt, thing, getShowNewList, commentText, commentHtml, emailId) {
+export function createComment(creator, createdAt, thing, getShowNewList, commentText, commentHtml, emailId) {
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.COMMENT.key,
@@ -72,7 +72,7 @@ function createComment(creator, createdAt, thing, getShowNewList, commentText, c
     })
 }
 
-function createClosed(creator, thing, getShowNewList, messageText) {
+export function createClosed(creator, thing, getShowNewList, messageText) {
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.CLOSED.key,
@@ -86,7 +86,7 @@ function createClosed(creator, thing, getShowNewList, messageText) {
     })
 }
 
-function createPing(creator, thing, getShowNewList) {
+export function createPing(creator, thing, getShowNewList) {
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.PING.key,
@@ -99,7 +99,7 @@ function createPing(creator, thing, getShowNewList) {
     })
 }
 
-function createPong(creator, thing, getShowNewList, messageText) {
+export function createPong(creator, thing, getShowNewList, messageText) {
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.PONG.key,
@@ -113,7 +113,7 @@ function createPong(creator, thing, getShowNewList, messageText) {
     })
 }
 
-function createSentBack(creator, thing, getShowNewList, messageText) {
+export function createSentBack(creator, thing, getShowNewList, messageText) {
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.SENT_BACK.key,
@@ -127,7 +127,7 @@ function createSentBack(creator, thing, getShowNewList, messageText) {
     })
 }
 
-function createCloseAck(creator, thing, getShowNewList) {
+export function createCloseAck(creator, thing, getShowNewList) {
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.CLOSE_ACKED.key,
@@ -136,17 +136,4 @@ function createCloseAck(creator, thing, getShowNewList) {
         payload: {},
         showNewList: getShowNewList(creator, thing, EventTypes.CLOSE_ACKED.key)
     })
-}
-
-module.exports = {
-    createCreated,
-    createAccepted,
-    createDismissed,
-    createDone,
-    createCloseAck,
-    createComment,
-    createClosed,
-    createPing,
-    createPong,
-    createSentBack
 }

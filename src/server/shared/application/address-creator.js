@@ -1,8 +1,8 @@
-const AddressParser = require('email-addresses')
+import AddressParser from 'email-addresses'
 
 const UserTypes = require('../../../common/enums/user-types')
 
-function userToAddress(user) {
+export function userToAddress(user) {
     return {
         id: user.id,
         type: UserTypes.FREECTION.key,
@@ -15,7 +15,7 @@ function userToAddress(user) {
     }
 }
 
-function emailToAddress(email, name) {
+export function emailToAddress(email, name) {
     const address = AddressParser.parseOneAddress(email)
 
     let displayName
@@ -36,5 +36,3 @@ function emailToAddress(email, name) {
         displayName: displayName
     }
 }
-
-module.exports = {userToAddress, emailToAddress}

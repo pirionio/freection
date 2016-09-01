@@ -1,7 +1,8 @@
+import * as ThingService from '../shared/application/thing-service'
+import {User, Thing} from '../shared/models'
+
 const initDemoDB = require('./init-demo-db')
-const {User, Thing, Event} = require('../shared/models')
-const ThingService = require('../shared/application/thing-service')
-const logger = require('../shared/utils/logger')
+import logger from '../shared/utils/logger'
 
 async function done() {
     const fromUser = (await User.filter({firstName: 'Jawed'}).run())[0]

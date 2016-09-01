@@ -1,11 +1,12 @@
+import { User } from '../../shared/models'
+import config from '../../shared/config/github'
+
 const router = require('express').Router()
 const querystring = require('querystring')
 const fetch = require('node-fetch')
 const {chain, toString} = require('lodash')
 
-const { User } = require('../../shared/models')
-const logger = require('../../shared/utils/logger')
-const config = require('../../shared/config/github')
+import logger from '../../shared/utils/logger'
 
 const githubAPIUrl = 'https://api.github.com'
 

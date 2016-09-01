@@ -1,6 +1,6 @@
-const logger = require('../utils/logger')
+import logger from '../utils/logger'
 
-function getIsDemo() {
+export function getIsDemo() {
     if (process.env.NODE_ENV !== 'production' || (process.env.NODE_ENV === 'production' && process.env.DEMO === '1')) {
         logger.info('Demo is ON')
 
@@ -10,6 +10,4 @@ function getIsDemo() {
     return false
 }
 
-module.exports = {
-    isDemo: getIsDemo()
-}
+export const isDemo = getIsDemo()

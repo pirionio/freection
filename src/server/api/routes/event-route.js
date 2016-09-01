@@ -1,7 +1,7 @@
 const router = require('express').Router()
 
-const EventService = require('../../shared/application/event-service')
-const EndpointUtil = require('../../shared/utils/endpoint-util')
+import * as EventService from '../../shared/application/event-service'
+import * as EndpointUtil from '../../shared/utils/endpoint-util'
 
 router.post('/:eventId/discard', function(request, response) {
     EndpointUtil.handlePost(request, response, EventService.discard, {

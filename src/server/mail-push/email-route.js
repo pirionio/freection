@@ -1,7 +1,8 @@
+import * as  EmailPushService from '../shared/technical/email-push-service'
+
 const router = require('express').Router()
 
-const EmailPushService = require('../shared/technical/email-push-service')
-const logger = require('../shared/utils/logger')
+import logger from '../shared/utils/logger'
 
 router.post('/hello', (request, response) => {
     EmailPushService.hello(request.user)

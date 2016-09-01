@@ -2,12 +2,9 @@ var nodemailer = require('nodemailer')
 var htmlToText = require('nodemailer-html-to-text').htmlToText
 const autobind = require('class-autobind').default
 
-const logger = require('../logger')
 const promisify = require('../promisify')
 
-const config = require('../../config/google-oauth')
-
-class SmtpConnection {
+export default class SmtpConnection {
     constructor(user, options) {
         this._transport = nodemailer.createTransport({
             service: options.service,
@@ -60,5 +57,3 @@ class SmtpConnection {
 function createFromAddress(user) {
     return `${user.firstName} ${user.lastName} <${user.email}>`
 }
-
-module.exports = SmtpConnection

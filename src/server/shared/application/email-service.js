@@ -1,13 +1,13 @@
-const {chain, some, isUndefined} = require('lodash/core')
+import {chain, some, isUndefined} from 'lodash/core'
 
-const GoogleImapConnectionPool = require('../utils/imap/google-imap-connection-pool')
-const GoogleSmtpConnectionPool = require('../utils/smtp/google-smtp-connection-pool')
-const EntityTypes = require('../../../common/enums/entity-types')
-const ThingStatus = require('../../../common/enums/thing-status')
-const {Thing, User} = require('../models')
-const EventsCreator = require('./event-creator')
-const {userToAddress} = require('./address-creator')
-const {imapEmailToDto} = require('../application/transformers')
+import * as GoogleImapConnectionPool from '../utils/imap/google-imap-connection-pool'
+import * as GoogleSmtpConnectionPool from '../utils/smtp/google-smtp-connection-pool'
+import EntityTypes from '../../../common/enums/entity-types'
+import ThingStatus from '../../../common/enums/thing-status'
+import {Thing, User} from '../models'
+import * as EventsCreator from './event-creator'
+import {userToAddress} from './address-creator'
+import {imapEmailToDto} from '../application/transformers'
 
 function filterThingMessage(user, message) {
     const domain = user.email.substring(user.email.indexOf('@'))
@@ -19,7 +19,7 @@ function filterThingMessage(user, message) {
     return true
 }
 
-async function fetchUnreadMessages(user) {
+export async function fetchUnreadMessages(user) {
     const fullUser = await User.get(user.id).run()
 
     if (isUndefined(fullUser.imapJoinDate)) {
@@ -46,7 +46,7 @@ async function fetchUnreadMessages(user) {
     }
 }
 
-async function getEmailsSince(user, internalDate) {
+export async function getEmailsSince(user, internalDate) {
     const connection = await getImapConnection(user)
     try {
         const emails = await connection.getEmailsSince(internalDate)
@@ -57,7 +57,7 @@ async function getEmailsSince(user, internalDate) {
     }
 }
 
-async function fetchFullThread(user, emailThreadId) {
+export async function fetchFullThread(user, emailThreadId) {
     const connection = await getImapConnection(user)
     try {
         const emails = await connection.getThreadMessages(emailThreadId)
@@ -68,7 +68,7 @@ async function fetchFullThread(user, emailThreadId) {
     }
 }
 
-async function getLastInternalDate(user) {
+export async function getLastInternalDate(user) {
     const connection = await getImapConnection(user)
     try {
         const email = await connection.getLastEmail()
@@ -78,7 +78,7 @@ async function getLastInternalDate(user) {
     }
 }
 
-async function markAsRead(user, emailUids) {
+export async function markAsRead(user, emailUids) {
     const connection = await getImapConnection(user)
     try {
         await connection.markAsRead(emailUids)
@@ -87,7 +87,7 @@ async function markAsRead(user, emailUids) {
     }
 }
 
-async function markAsReadByMessageId(user, messageId) {
+export async function markAsReadByMessageId(user, messageId) {
     const connection = await getImapConnection(user)
     try {
         await connection.markAsReadByMessageId(messageId)
@@ -96,7 +96,7 @@ async function markAsReadByMessageId(user, messageId) {
     }
 }
 
-async function sendEmail(user, to, subject, text, html, messageId) {
+export async function sendEmail(user, to, subject, text, html, messageId) {
     const connection = await getSmtpConnection(user)
     try {
         const email = await connection.send(to, subject, text, html, messageId)
@@ -106,7 +106,7 @@ async function sendEmail(user, to, subject, text, html, messageId) {
     }
 }
 
-async function deleteAllEmails(user) {
+export async function deleteAllEmails(user) {
     const connection = await getImapConnection(user)
     try {
         await connection.deleteAllEmails()
@@ -115,12 +115,12 @@ async function deleteAllEmails(user) {
     }
 }
 
-function sendEmailForThing(user, to, subject, body, messageId) {
+export function sendEmailForThing(user, to, subject, body, messageId) {
     const emailForThingHtml = getEmailForThingHtml(user, body)
     return sendEmail(user, to, subject, undefined, emailForThingHtml, messageId)
 }
 
-async function doEmail(user, emailThreadId) {
+export async function doEmail(user, emailThreadId) {
     const connection = await getImapConnection(user)
     try {
         const thread = await fetchFullThread(user, emailThreadId)
@@ -146,7 +146,7 @@ async function doEmail(user, emailThreadId) {
     }
 }
 
-async function replyToAll(user, to, inReplyTo, references, subject, messageText, messageHtml) {
+export async function replyToAll(user, to, inReplyTo, references, subject, messageText, messageHtml) {
     const connection = await getSmtpConnection(user)
     try {
         await connection.replyToAll(to, inReplyTo, references, subject, messageText, messageHtml)
@@ -222,18 +222,4 @@ function getImapConnection(user) {
 
 function getSmtpConnection(user) {
     return GoogleSmtpConnectionPool.getConnection(user)
-}
-
-module.exports = {
-    fetchUnreadMessages,
-    fetchFullThread,
-    markAsReadByMessageId,
-    markAsRead,
-    sendEmail,
-    sendEmailForThing,
-    doEmail,
-    replyToAll,
-    getEmailsSince,
-    getLastInternalDate,
-    deleteAllEmails
 }

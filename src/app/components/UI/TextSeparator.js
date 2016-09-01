@@ -7,7 +7,7 @@ const TextSeparator = () => {
             textAlign: 'center'
     }}
 
-    return <div shrink={0} style={style.separator}>•</div>
+    return <div style={style.separator}>•</div>
 }
 
 module.exports = TextSeparator

@@ -1,21 +1,21 @@
-const {castArray, remove} = require('lodash')
+import {castArray, remove} from 'lodash'
 
-const { Event, Thing } = require('../models')
-const EventCreator = require('./event-creator')
-const ThingStatus = require('../../../common/enums/thing-status')
-const EntityTypes = require('../../../common/enums/entity-types')
-const EventTypes = require('../../../common/enums/event-types')
-const logger = require('../utils/logger')
-const {userToAddress} = require('./address-creator')
+import { Event, Thing } from '../models'
+import * as EventCreator from './event-creator'
+import ThingStatus from '../../../common/enums/thing-status'
+import EntityTypes from '../../../common/enums/entity-types'
+import EventTypes from '../../../common/enums/event-types'
+import logger from '../utils/logger'
+import {userToAddress} from './address-creator'
 
-function newThing(creator, toUser, subject, body, id, number, url) {
+export function newThing(creator, toUser, subject, body, id, number, url) {
     saveNewThing(creator, userToAddress(toUser), subject, body, id, number, url)
         .then(thing => {
             return EventCreator.createCreated(creator, thing, getShowNewList)
         })
 }
 
-function doThing(user, thingId) {
+export function doThing(user, thingId) {
     const creator = userToAddress(user)
 
     return Thing.get(thingId).run()
@@ -31,7 +31,7 @@ function doThing(user, thingId) {
         )
 }
 
-function markAsDone(creator, thing) {
+export function markAsDone(creator, thing) {
     validateStatus(thing, ThingStatus.INPROGRESS.key)
 
     return performMarkAsDone(thing)
@@ -42,7 +42,7 @@ function markAsDone(creator, thing) {
         })
 }
 
-function closeByGithub(creator, thing) {
+export function closeByGithub(creator, thing) {
     validateStatus(thing, ThingStatus.NEW.key)
 
     return performClose(thing)
@@ -54,7 +54,7 @@ function closeByGithub(creator, thing) {
         })
 }
 
-function dismiss(user, thingId) {
+export function dismiss(user, thingId) {
     const creator = userToAddress(user)
 
     return Thing.get(thingId).run()
@@ -72,7 +72,7 @@ function dismiss(user, thingId) {
         })
 }
 
-function close(user, thingId) {
+export function close(user, thingId) {
     const creator = userToAddress(user)
 
     return Thing.get(thingId).run()
@@ -158,5 +158,3 @@ function validateType(thing) {
 
     return thing
 }
-
-module.exports = {newThing, doThing, markAsDone, dismiss, close, closeByGithub}

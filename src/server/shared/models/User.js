@@ -1,6 +1,5 @@
-const thinky = require('./thinky')
+import thinky from './thinky'
 const type = thinky.type
-
 
 const User = thinky.createModel('User', {
     id: type.string(),
@@ -93,4 +92,4 @@ User.defineStatic('getOrganizationUsers', function (organization) {
     return this.getAll(organization, {index:'organization'}).run()
 })
 
-module.exports = User
+export default User

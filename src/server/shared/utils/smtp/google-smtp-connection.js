@@ -1,6 +1,6 @@
-const SmtpConnection = require('./smtp-connection')
+import SmtpConnection from './smtp-connection'
 
-class GoogleSmtpConnection extends SmtpConnection {
+export default class GoogleSmtpConnection extends SmtpConnection {
     constructor(user, accessToken) {
         super(user, {
             service: 'gmail',
@@ -8,5 +8,3 @@ class GoogleSmtpConnection extends SmtpConnection {
         })
     }
 }
-
-module.exports = GoogleSmtpConnection

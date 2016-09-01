@@ -1,9 +1,6 @@
-const thinky = require('./thinky')
-const type = thinky.type
+import thinky from './thinky'
 
-const User = require('./User')
-const EventTypes = require('../../../common/enums/event-types')
-const EntityTypes = require('../../../common/enums/entity-types')
+const type = thinky.type
 
 const Thing = thinky.createModel('Thing', {
     id: type.string(),
@@ -67,4 +64,4 @@ Thing.define('getEmailId', function () {
     return `thing/${this.id}${domain}`
 })
 
-module.exports = Thing
+export default Thing

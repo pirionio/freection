@@ -1,6 +1,6 @@
-const connectionCache = require('../utils/imap/google-imap-connection-cache')
-const {User, MailNotification} = require('../models')
-const logger = require('../utils/logger')
+import * as connectionCache from '../utils/imap/google-imap-connection-cache'
+import {User, MailNotification} from '../models'
+import logger from '../utils/logger'
 
 function onMail(userId, email) {
     logger.info(`new emails for user ${email}`)
@@ -27,7 +27,7 @@ function onUpdate(userId, email, info) {
     }, { conflict: 'replace' })
 }
 
-function hello(user) {
+export function hello(user) {
     const existConnection = connectionCache.getConnection(user)
 
     // If connection exist we just continue
@@ -50,10 +50,8 @@ function hello(user) {
         })
 }
 
-function keepAlive(user) {
+export function keepAlive(user) {
     // If connection doesn't exist we throw an exception
     if (!connectionCache.resetTtl(user))
         throw 'NoConnection'
 }
-
-module.exports = {hello, keepAlive}

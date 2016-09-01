@@ -1,13 +1,14 @@
+import {User} from '../shared/models'
+import config from '../shared/config/google-oauth'
+import * as EmailParsingUtility from '../shared/utils/email-parsing-utility'
+
 const router = require('express').Router()
 const passport = require('passport')
 const GoogleStrategy = require('passport-google-oauth20').Strategy
 const querystring = require('querystring')
 
-const {User} = require('../shared/models')
-const config = require('../shared/config/google-oauth')
-const token = require('../shared/utils/token-strategy')
-const logger = require('../shared/utils/logger')
-const EmailParsingUtility = require('../shared/utils/email-parsing-utility')
+import token from '../shared/utils/token-strategy'
+import logger from '../shared/utils/logger'
 
 function saveNewUser(userData) {
     const {email} = userData

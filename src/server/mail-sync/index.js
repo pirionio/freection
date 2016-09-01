@@ -1,10 +1,10 @@
+import * as EmailService from '../shared/application/email-service'
+import * as ThingService from '../shared/application/thing-service'
+import {MailNotification, User} from '../shared/models'
+
 const dateFns = require('date-fns')
 const {last} = require('lodash')
-
-const EmailService = require('../shared/application/email-service')
-const ThingService = require('../shared/application/thing-service')
-const {MailNotification, Thing, User} = require('../shared/models')
-const logger = require('../shared/utils/logger')
+import logger from '../shared/utils/logger'
 
 module.exports = function() {
     MailNotification.changes().

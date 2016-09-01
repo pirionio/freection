@@ -1,9 +1,8 @@
 const router = require('express').Router()
 
-const ThingService = require('../../shared/application/thing-service')
-const GithubThingService = require('../../shared/application/github-thing-service')
-const EventService = require('../../shared/application/event-service')
-const EndpointUtil = require('../../shared/utils/endpoint-util')
+import * as ThingService from '../../shared/application/thing-service'
+import * as GithubThingService from '../../shared/application/github-thing-service'
+import * as EndpointUtil from '../../shared/utils/endpoint-util'
 const EntityTypes = require('../../../common/enums/entity-types')
 
 router.get('/whatsnew', function(request, response) {

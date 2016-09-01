@@ -1,10 +1,10 @@
-const NodeCache = require( "node-cache" )
-const OAuth2 = require('google-auth-library/lib/auth/oauth2client')
+import NodeCache from 'node-cache'
+import OAuth2 from 'google-auth-library/lib/auth/oauth2client'
 
-const GoogleImapConnection = require('./google-imap-connection')
-const config = require('../../config/google-oauth')
-const promisify = require('../promisify')
-const logger = require('../logger')
+import GoogleImapConnection from './google-imap-connection'
+import config from '../../config/google-oauth'
+import promisify from '../promisify'
+import logger from '../logger'
 
 const connectionCache = new NodeCache({ stdTTL: 30 * 60, useClones: false})
 
@@ -15,15 +15,15 @@ function onDeleted(email, connection) {
     connection.close()
 }
 
-function resetTtl(user) {
+export function resetTtl(user) {
     return connectionCache.ttl(user.email)
 }
 
-function getConnection(user) {
+export function getConnection(user) {
     return connectionCache.get(user.email)
 }
 
-function createConnection(user) {
+export function createConnection(user) {
     return getNewAccessToken(user)
         .then(accessToken => {
             const connection = new GoogleImapConnection(user, accessToken)
@@ -49,6 +49,3 @@ function getNewAccessToken(user) {
     oauth2.setCredentials({refresh_token: user.refreshToken})
     return oauth2.getAccessTokenAsync()
 }
-
-module.exports = {getConnection, createConnection, resetTtl}
-

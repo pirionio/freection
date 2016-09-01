@@ -1,4 +1,4 @@
-function promisify(method, obj) {
+function promisifyMethod(method, obj) {
     return function() {
         const args = []
 
@@ -19,12 +19,12 @@ function promisify(method, obj) {
     }
 }
 
-module.exports = function(obj, methods) {
+export default function promisify(obj, methods) {
     for (const methodName of methods) {
         const method = obj[methodName]
 
         if (method) {
-            obj[`${methodName}Async`] = promisify(method, obj)
+            obj[`${methodName}Async`] = promisifyMethod(method, obj)
         }
     }
 

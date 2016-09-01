@@ -1,7 +1,5 @@
-'use strict'
-
-const jwt = require('jsonwebtoken')
-const Strategy = require('passport-strategy')
+import jwt from 'jsonwebtoken'
+import Strategy from 'passport-strategy'
 
 class TokenStrategy extends Strategy {
     constructor() {
@@ -163,15 +161,18 @@ class Token {
     }
 }
 
+
+/**
+ * Expose classes.
+ */
+export {
+    Token,
+    TokenStrategy as Strategy
+}
+
 /**
  * Export default singleton.
  *
  * @api public
  */
-module.exports = module.exports = new Token()
-
-/**
- * Expose classes.
- */
-module.exports.Token = Token
-module.exports.Strategy = TokenStrategy
+export default new Token()

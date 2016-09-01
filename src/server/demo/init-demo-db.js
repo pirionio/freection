@@ -1,8 +1,9 @@
+import * as ThingService from '../shared/application/thing-service'
+import * as EventService from '../shared/application/event-service'
+import * as EmailService from '../shared/application/email-service'
+import {User, Thing, Event} from '../shared/models'
+
 const process = require('process')
-const {User, Thing, Event} = require('../shared/models')
-const ThingService = require('../shared/application/thing-service')
-const EventService = require('../shared/application/event-service')
-const EmailService = require('../shared/application/email-service')
 const EventTypes = require('../../common/enums/event-types')
 const {SharedConstants} = require('../../common/shared-constants')
 

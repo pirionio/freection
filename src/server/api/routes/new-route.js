@@ -1,10 +1,10 @@
 const router = require('express').Router()
 const AddressParser = require('email-addresses')
 
-const EndpointUtil = require('../../shared/utils/endpoint-util')
-const ThingService = require('../../shared/application/thing-service')
-const EmailService = require('../../shared/application/email-service')
-const logger = require('../../shared/utils/logger')
+import * as EndpointUtil from '../../shared/utils/endpoint-util'
+import * as ThingService from '../../shared/application/thing-service'
+import * as EmailService from '../../shared/application/email-service'
+import logger from '../../shared/utils/logger'
 
 router.post('/thing', function(request, response) {
     if (!isValid(request, response)) {
