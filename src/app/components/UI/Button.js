@@ -1,6 +1,5 @@
 const React = require('react')
 const {Component, PropTypes} = React
-const radium = require('radium')
 
 const styleVars = require('../style-vars')
 
@@ -49,4 +48,4 @@ Button.defaultProps = {
     type: 'text'
 }
 
-module.exports = radium(Button)
+module.exports = Button

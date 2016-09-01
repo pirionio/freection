@@ -4,7 +4,6 @@ const dateFns = require('date-fns')
 const VisibilitySensor = require('react-visibility-sensor')
 const {connect} = require('react-redux')
 const classnames = require('classnames')
-const radium = require('radium')
 const classAutobind = require('class-autobind').default
 
 const HtmlUtil = require('../../util/html-util')
@@ -131,4 +130,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-module.exports = connect(mapStateToProps)(radium(Comment))
+module.exports = connect(mapStateToProps)(Comment)

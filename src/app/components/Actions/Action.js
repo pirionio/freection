@@ -2,7 +2,6 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const classAutobind = require('class-autobind').default
-const radium = require('radium')
 
 const Button = require('../UI/Button')
 
@@ -46,4 +45,4 @@ Action.defaultProps = {
     disabled: false
 }
 
-module.exports = connect()(radium(Action))
+module.exports = connect()(Action)

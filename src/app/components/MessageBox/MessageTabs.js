@@ -2,7 +2,6 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const classAutobind = require('class-autobind').default
-const radium = require('radium')
 const Icon = require('react-fontawesome')
 
 const find = require('lodash/find')
@@ -69,8 +68,8 @@ class MessageTabs extends Component {
     getNewMenu() {
         const styles = this.getStyles()
 
-        const isNewRollover = radium.getState(this.state, 'new-button', ':hover')
-        const isMenuRollover = radium.getState(this.state, 'new-menu', ':hover')
+        const isNewRollover = false
+        const isMenuRollover = false
 
         if (!isNewRollover && !isMenuRollover)
             return null
@@ -196,4 +195,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(radium(MessageTabs))
+module.exports = connect(mapStateToProps)(MessageTabs)

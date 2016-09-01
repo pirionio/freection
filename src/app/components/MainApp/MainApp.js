@@ -1,6 +1,5 @@
 const React = require('react')
 const {Component} = React
-const radium = require('radium')
 const Flexbox = require('../UI/Flexbox')
 const styleVars = require('../style-vars')
 
@@ -36,4 +35,4 @@ class MainApp extends Component {
 MainApp.propTypes = {
 }
 
-module.exports = radium(MainApp)
+module.exports = MainApp

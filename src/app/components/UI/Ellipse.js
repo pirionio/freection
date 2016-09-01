@@ -1,24 +1,13 @@
 const React = require('react')
 const {PropTypes} = React
-const merge = require('lodash/merge')
+const useSheet = require('react-jss').default
+const classNames = require('classnames')
 
-const Ellipse = ({width, height, color, text, style}) => {
-    const finalStyle = merge({},
-        {
-            display: 'inline-block',
-            borderRadius: '50%',
-            marginRight: '11px'
-        },
-        style,
-        {
-            width,
-            height,
-            backgroundColor: color
-        }
-    )
+const Ellipse = ({color, text, className, oval, sheet: {classes}}) => {
+    const ellipseClass = classNames(className ? className : classes.base, oval && classes.oval)
 
     return (
-        <div style={finalStyle}>
+        <div className={ellipseClass} style={{backgroundColor: color}}>
             {text}
         </div>
     )
@@ -26,10 +15,23 @@ const Ellipse = ({width, height, color, text, style}) => {
 
 Ellipse.propTypes = {
     color: PropTypes.string.isRequired,
-    width: PropTypes.string,
-    height: PropTypes.string,
     text: PropTypes.any,
-    style: PropTypes.object
+    className: PropTypes.string,
+    oval: PropTypes.bool
 }
 
-module.exports = Ellipse
+const style = {
+    oval: {
+        borderBottomLeftRadius: '100%30px',
+        borderBottomRightRadius: '100%30px',
+        borderTopLeftRadius: '100%30px',
+        borderTopRightRadius: '100%30px'
+    },
+    base: {
+        display: 'inline-block',
+        borderRadius: '50%',
+        marginRight: 11
+    }
+}
+
+module.exports = useSheet(Ellipse, style)

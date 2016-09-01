@@ -2,7 +2,6 @@ const React = require('react')
 const {Component, PropTypes} = React
 const classAutobind = require('class-autobind').default
 const {connect} = require('react-redux')
-const radium = require('radium')
 
 const MessageBoxActions = require('../../actions/message-box-actions')
 const MessageTypes = require('../../../common/enums/message-types')
@@ -52,4 +51,4 @@ class CollapsedMessageBox extends Component {
     }
 }
 
-module.exports = connect()(radium(CollapsedMessageBox))
+module.exports = connect()(CollapsedMessageBox)

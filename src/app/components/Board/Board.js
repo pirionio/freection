@@ -1,7 +1,6 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
-const radium = require('radium')
 const classAutobind = require('class-autobind').default
 const DocumentTitle = require('react-document-title')
 const clickOutside = require('react-click-outside')
@@ -316,4 +315,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(clickOutside(radium(Board)))
+module.exports = connect(mapStateToProps)(clickOutside(Board))

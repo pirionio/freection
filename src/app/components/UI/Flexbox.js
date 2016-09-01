@@ -1,11 +1,11 @@
 const React = require('react')
 const {PropTypes, Component} = React
-const radium = require('radium')
-const classnames = require('classnames')
+const classNames = require('classnames')
+
 const isString = require('lodash/isString')
+const merge = require('lodash/merge')
 
 class Flexbox extends Component {
-
     getContainerStyle() {
         const {container} = this.props
         if (container) {
@@ -81,21 +81,21 @@ class Flexbox extends Component {
     }
 
     render() {
-        const {children, style, name, onClick} = this.props
+        const {children, className, name, onClick, container} = this.props
 
-        const containerStyle = [
-            this.getContainerStyle(),
-            this.getFlexStyle(),
-            this.getJustifyContent(),
-            this.getAlignItems(),
-            this.getAlignSelf(),
-            this.getWidthStyle(),
-            this.getHeightStyle(),
-            style
-        ]
+        const style = merge({}, {
+            display: container ? 'flex' : undefined,
+            flexDirection: container ? container : undefined,
+            flexGrow: this.props.grow,
+            flexShrink: this.props.shrink,
+            flexBasis: this.props.basis,
+            justifyContent: this.props.justifyContent,
+            alignItems: this.props.alignItems,
+            alignSelf: this.props.alignSelf
+        })
 
         return (
-            <div name={name} style={containerStyle} onClick={onClick}>
+            <div name={name} style={style} className={className} onClick={onClick}>
                 {children}
             </div>
         )
@@ -104,10 +104,8 @@ class Flexbox extends Component {
 
 Flexbox.propTypes = {
     name: PropTypes.string,
-    style: PropTypes.object,
+    className: PropTypes.string,
     container: PropTypes.any,
-    width: PropTypes.string,
-    height: PropTypes.string,
     grow: PropTypes.number,
     shrink: PropTypes.number,
     basis: PropTypes.string,
@@ -124,4 +122,4 @@ Flexbox.defaultProps = {
     basis: 'auto'
 }
 
-module.exports = radium(Flexbox)
+module.exports = Flexbox

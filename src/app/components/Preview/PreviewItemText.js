@@ -1,6 +1,5 @@
 const React = require('react')
 const {Component} = React
-const radium = require('radium')
 const classAutobind = require('class-autobind').default
 const SizeMe = require('react-sizeme').default
 const autoprefixer = require('autoprefixer')
@@ -54,4 +53,4 @@ class PreviewItemText extends Component {
     }
 }
 
-module.exports = SizeMe()(radium(PreviewItemText))
+module.exports = SizeMe()(PreviewItemText)

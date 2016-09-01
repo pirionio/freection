@@ -1,7 +1,6 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {getChildOfType, createSlots} = require('../../util/component-util')
-const radium = require('radium')
 const classAutobind = require('class-autobind').default
 const clickOutside = require('react-click-outside')
 const Delay = require('react-delay')
@@ -230,5 +229,5 @@ FullItem.propTypes = {
 }
 
 module.exports = Object.assign({
-    FullItem: clickOutside(radium(FullItem))
+    FullItem: clickOutside(FullItem)
 }, slots)

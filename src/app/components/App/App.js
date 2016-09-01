@@ -1,7 +1,6 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
-const radium = require('radium')
 
 const Flexbox = require('../UI/Flexbox')
 const TopBar = require('../TopBar/TopBar')
@@ -56,4 +55,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-module.exports = connect(mapStateToProps)(radium(App))
+module.exports = connect(mapStateToProps)(App)

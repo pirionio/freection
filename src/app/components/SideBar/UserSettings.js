@@ -2,6 +2,7 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const classAutobind = require('class-autobind').default
+const useSheet = require('react-jss').default
 
 const Flexbox = require('../UI/Flexbox')
 const SettingsMenu = require('./SettingsMenu')
@@ -12,30 +13,27 @@ class UserSettings extends Component {
         classAutobind(this, UserSettings.prototype)
     }
 
-    getStyles() {
-        return {
-            settings: {
-                height: '74px',
-                width: '185px',
-                margin: '0 19px',
-                borderTop: '1px solid #232e34',
-                color: 'white',
-                user: {
-                    letterSpacing: '0.1em'
-                }
-            }
-        }
-    }
-
     render() {
-        const {currentUser} = this.props
-        const styles = this.getStyles()
+        const {currentUser, sheet: {classes}} = this.props
         return (
-            <Flexbox name="settings" container="row" justifyContent="space-around" alignItems="center" style={styles.settings}>
-                <span style={styles.settings.user}>{currentUser.firstName}</span>
+            <Flexbox name="settings" container="row" justifyContent="space-around" alignItems="center" className={classes.settings}>
+                <span className={classes.user}>{currentUser.firstName}</span>
                 <SettingsMenu />
             </Flexbox>
         )
+    }
+}
+
+const style = {
+    settings: {
+        height: 74,
+        width: 185,
+        margin: [0, 19],
+        borderTop: '1px solid #232e34',
+        color: 'white'
+    },
+    user: {
+        letterSpacing: '0.1em'
     }
 }
 
@@ -49,4 +47,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(UserSettings)
+module.exports = useSheet(connect(mapStateToProps)(UserSettings), style)

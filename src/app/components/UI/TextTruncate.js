@@ -1,6 +1,5 @@
 const React = require('react')
 const {PropTypes, Component} = React
-const radium = require('radium')
 
 class TextTruncate extends Component {
     render() {
@@ -22,4 +21,4 @@ TextTruncate.propTypes = {
     style: PropTypes.object
 }
 
-module.exports = radium(TextTruncate)
+module.exports = TextTruncate

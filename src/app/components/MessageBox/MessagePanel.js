@@ -3,7 +3,6 @@ const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const {Form} = require('react-redux-form')
 const classAutobind = require('class-autobind').default
-const radium = require('radium')
 const AddressParser = require('email-addresses')
 
 const find = require('lodash/find')
@@ -163,4 +162,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(radium(MessagePanel))
+module.exports = connect(mapStateToProps)(MessagePanel)

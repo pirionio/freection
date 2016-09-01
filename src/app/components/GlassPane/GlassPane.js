@@ -1,7 +1,6 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
-const radium = require('radium')
 const classAutobind = require('class-autobind').default
 
 const GlassPaneActions = require('../../actions/glass-pane-actions')
@@ -59,4 +58,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(radium(GlassPane))
+module.exports = connect(mapStateToProps)(GlassPane)
