@@ -45,6 +45,6 @@ style.css
 /src/public/bundle.js
 
 # Dist folder
-/src/server-dist/
+dist/
 
 error.log*
