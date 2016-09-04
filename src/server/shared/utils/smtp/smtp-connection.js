@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer')
 const htmlToText = require('nodemailer-html-to-text').htmlToText
 const autobind = require('class-autobind').default
 
-const promisify = require('../promisify')
+import promisify from '../promisify'
 
 export default class SmtpConnection {
     constructor(user, options) {
