@@ -2,6 +2,7 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const classAutobind = require('class-autobind').default
+const useSheet = require('react-jss').default
 
 const GithubActions = require('../../actions/github-actions')
 
@@ -25,22 +26,22 @@ class Repository extends Component {
     }
 
     render() {
-        const {repository} = this.props
+        const {repository, sheet: {classes}} = this.props
 
         return (
-            <Flexbox name="github-repository" container="row" alignItems="center" style={{marginBottom: '10px'}}>
+            <Flexbox name="github-repository" container="row" alignItems="center" className={classes.repository}>
                 <label>
                     <input type="checkbox"
                            disabled={repository.posting}
                            onChange={event => this.toggleRepository(repository.fullName, event.target.checked)}
                            checked={repository.enabled}
-                           style={{marginRight: '5px'}} />
+                           className={classes.checkbox} />
                     {repository.fullName}
                 </label>
                 {
                     repository.posting ?
                         <Delay wait={150}>
-                            <Icon name="spinner" pulse style={{marginLeft: '10px'}} />
+                            <Icon name="spinner" pulse className={classes.icon} />
                         </Delay>
                         : null
                 }
@@ -49,8 +50,20 @@ class Repository extends Component {
     }
 }
 
+const style = {
+    repository: {
+        marginBottom: 10
+    },
+    checkbox: {
+        marginRight: 5
+    },
+    icon: {
+        marginLeft: 10
+    }
+}
+
 Repository.propTypes = {
     repository: PropTypes.object
 }
 
-module.exports = connect()(Repository)
+module.exports = useSheet(connect()(Repository), style)

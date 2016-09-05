@@ -1,11 +1,12 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {getChildOfType, createSlots} = require('../../util/component-util')
-const radium = require('radium')
 const classAutobind = require('class-autobind').default
 const clickOutside = require('react-click-outside')
 const Delay = require('react-delay')
 const Icon = require('react-fontawesome')
+const useSheet = require('react-jss').default
+const classNames = require('classnames')
 
 const Flexbox = require('../UI/Flexbox')
 const Button = require('../UI/Button')
@@ -46,12 +47,12 @@ class FullItem extends  Component {
     }
 
     getStatus() {
-        const {circleColor} = this.props
+        const {circleColor, sheet: {classes}} = this.props
 
         const status = getChildOfType(this.props.children, slots.FullItemStatus)
         return status ?
             <Flexbox name="full-item-circle" width='19px' shrink={0} container='column' justifyContent="center">
-                <Ellipse width="8xp" height="8px" color={circleColor} />
+                <Ellipse className={classes.statusCircle} color={circleColor} />
             </Flexbox> :
             null
     }
@@ -70,14 +71,14 @@ class FullItem extends  Component {
     }
 
     renderFetching() {
-        const styles = this.getStyles()
+        const {sheet: {classes}} = this.props
 
         return (
-            <Flexbox name="full-item-content" grow={1} container="column" justifyContent="center" alignItems="center" style={styles.item}>
+            <Flexbox name="full-item-content" grow={1} container="column" justifyContent="center" alignItems="center" classNames={classes.item}>
                 <Flexbox grow={1} container="row" alignItems="center">
                     <Delay wait={GeneralConstants.FETCHING_DELAY_MILLIS}>
                         <div className="full-item-loading">
-                            <Icon name="spinner" pulse size="4x" style={{marginLeft: '10px'}} />
+                            <Icon name="spinner" pulse size="4x" className={classes.loadingIcon} />
                         </div>
                     </Delay>
                 </Flexbox>
@@ -86,10 +87,10 @@ class FullItem extends  Component {
     }
 
     renderError() {
-        const styles = this.getStyles()
+        const {sheet: {classes}} = this.props
 
         return (
-            <Flexbox name="full-item-content" grow={1} container="row" justifyContent="flex-end" style={styles.item}>
+            <Flexbox name="full-item-content" grow={1} container="row" justifyContent="flex-end" className={classes.item}>
                 <Flexbox name="full-item-error" grow={1}>
                     We are sorry, the item could not be displayed!
                 </Flexbox>
@@ -98,106 +99,42 @@ class FullItem extends  Component {
     }
 
     renderContent() {
-        const {messages} = this.props
+        const {messages, sheet: {classes}} = this.props
 
         const status = this.getStatus()
         const actions = this.getActions()
 
-        const styles = this.getStyles()
+        const prevClass = classNames(classes.navigationOption, classes.prev)
+        const nextClass = classNames(classes.navigationOption, classes.next)
 
         return (
-            <Flexbox name="full-item-content" grow={1} container="column" style={styles.item}>
-                <Flexbox name="full-item-navigation" container="row" alignItems="center" style={styles.navigation}>
-                    <Flexbox name="prev-item" style={[styles.navigation.option, styles.navigation.prev]}>
-                        <Icon name="chevron-left" style={styles.navigation.prev.arrow} />
+            <Flexbox name="full-item-content" grow={1} container="column" className={classes.item}>
+                <Flexbox name="full-item-navigation" container="row" alignItems="center" className={classes.navigationBar}>
+                    <Flexbox name="prev-item" className={prevClass}>
+                        <Icon name="chevron-left" className={classes.prevArrow} />
                         <span>Previous</span>
                     </Flexbox>
-                    <Flexbox name="next-item" style={[styles.navigation.option, styles.navigation.next]}>
+                    <Flexbox name="next-item" className={nextClass}>
                         <span>Next</span>
-                        <Icon name="chevron-right" style={styles.navigation.next.arrow} />
+                        <Icon name="chevron-right" className={classes.nextArrow} />
                     </Flexbox>
                 </Flexbox>
-                <Flexbox name="full-item-header" container="row" alignItems="center" style={styles.header}>
+                <Flexbox name="full-item-header" container="row" alignItems="center" className={classes.header}>
                     {status}
-                    <Flexbox name="full-item-subject" grow={1} style={styles.subject}>
+                    <Flexbox name="full-item-subject" grow={1} className={classes.subject}>
                         <TextTruncate>{this.getSubject()}</TextTruncate>
                     </Flexbox>
                     {actions}
                 </Flexbox>
-                <Flexbox name="full-item-body-container" grow={1} container="column" style={styles.content}>
+                <Flexbox name="full-item-body-container" grow={1} container="column" className={classes.content}>
                     <CommentList comments={messages} />
                 </Flexbox>
             </Flexbox>
         )
     }
 
-    getStyles() {
-        return {
-            page: {
-                position: 'absolute',
-                top: -35,
-                left: 40,
-                right: 40,
-                bottom: 0,
-                zIndex: styleVars.fullItemZIndex,
-                filter: 'none',
-                boxShadow: '0px 0px 40px 0px rgba(0, 0, 0, 0.2)'
-            },
-            item: {
-                marginBottom: '30px',
-                padding: '0 39px',
-                backgroundColor: styleVars.secondaryBackgroundColor
-            },
-            navigation: {
-                height: '80px',
-                option: {
-                    fontSize: '0.7em',
-                    fontWeight: 'bold',
-                    color: 'black',
-                    cursor: 'pointer',
-                    textTransform: 'uppercase'
-                },
-                prev: {
-                    borderRight: '1px solid black',
-                    paddingRight: '25px',
-                    arrow: {
-                        marginRight: '25px'
-                    }
-                },
-                next: {
-                    marginLeft: '25px',
-                    arrow: {
-                        marginLeft: '25px'
-                    }
-                }
-            },
-            header: {
-                height: '75px'
-            },
-            subject: {
-                fontSize: '1.5em',
-                fontWeight: 'bold',
-                textTransform: 'uppercase',
-                color: styleVars.basePurpleColor,
-                minWidth: 0
-            },
-            content: {
-                height: '100%',
-                overflowY: 'hidden',
-                marginTop: '10px'
-            },
-            close: {
-                position: 'absolute',
-                top: '25px',
-                left: '-31px',
-                fontSize: '2em',
-                cursor: 'pointer'
-            }
-        }
-    }
-
     render() {
-        const {isFetching, isEmpty} = this.props
+        const {isFetching, isEmpty, sheet: {classes}} = this.props
 
         let content
         if (isFetching())
@@ -207,17 +144,85 @@ class FullItem extends  Component {
         else
             content = this.renderContent()
 
-        const styles = this.getStyles()
-
         return (
-            <Flexbox name="full-item-page" container="column" style={styles.page}>
+            <Flexbox name="full-item-page" container="column" className={classes.page}>
                 {content}
                 {this.getBox()}
-                <Flexbox name="close" style={styles.close}>
+                <Flexbox name="close" className={classes.close}>
                     <Icon name="times-circle" onClick={this.props.close} />
                 </Flexbox>
             </Flexbox>
         )
+    }
+}
+
+const style = {
+    page: {
+        position: 'absolute',
+        top: -35,
+        left: 40,
+        right: 40,
+        bottom: 0,
+        zIndex: styleVars.fullItemZIndex,
+        filter: 'none',
+        boxShadow: '0px 0px 40px 0px rgba(0, 0, 0, 0.2)'
+    },
+    item: {
+        marginBottom: 30,
+        padding: [0, 39],
+        backgroundColor: styleVars.secondaryBackgroundColor
+    },
+    navigationBar: {
+        height: 80
+    },
+    navigationOption: {
+        fontSize: '0.7em',
+        fontWeight: 'bold',
+        color: 'black',
+        cursor: 'pointer',
+        textTransform: 'uppercase'
+    },
+    prev: {
+        borderRight: '1px solid black',
+        paddingRight: 25
+    },
+    prevArrow: {
+        marginRight: 25
+    },
+    next: {
+        marginLeft: 25
+    },
+    nextArrow: {
+        marginLeft: 25
+    },
+    header: {
+        height: 75
+    },
+    subject: {
+        fontSize: '1.5em',
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
+        color: styleVars.basePurpleColor,
+        minWidth: 0
+    },
+    content: {
+        height: '100%',
+        overflowY: 'hidden',
+        marginTop: '10px'
+    },
+    statusCircle: {
+        height: 8,
+        width: 8
+    },
+    close: {
+        position: 'absolute',
+        top: '25px',
+        left: '-31px',
+        fontSize: '2em',
+        cursor: 'pointer'
+    },
+    loadingIcon: {
+        marginLeft: 10
     }
 }
 
@@ -230,5 +235,5 @@ FullItem.propTypes = {
 }
 
 module.exports = Object.assign({
-    FullItem: clickOutside(radium(FullItem))
+    FullItem: useSheet(clickOutside(FullItem), style)
 }, slots)

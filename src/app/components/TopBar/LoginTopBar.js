@@ -1,5 +1,6 @@
 const React = require('react')
 const {Component} = React
+const useSheet = require('react-jss').default
 
 const Flexbox = require('../UI/Flexbox')
 const styleVars = require('../style-vars')
@@ -11,30 +12,27 @@ class LoginTopBar extends Component {
         super(props)
     }
 
-    getStyles() {
-        return {
-            topBar: {
-                height: '75px',
-                padding: '0 47px 0 55px',
-                backgroundColor: styleVars.secondaryColor,
-                color: 'white'
-            },
-            image: {
-                width: '412px',
-                height: '30px'
-            }
-        }
-    }
-
     render () {
-        const styles = this.getStyles()
-
+        const {sheet: {classes}} = this.props
         return (
-            <Flexbox name="top-bar" shrink={0} container="row" justifyContent="center" alignItems="center" style={styles.topBar}>
-                <img src={Logo} style={styles.image} />
+            <Flexbox name="top-bar" shrink={0} container="row" justifyContent="center" alignItems="center" className={classes.topBar}>
+                <img src={Logo} className={classes.image} />
             </Flexbox>
         )
     }
 }
 
-module.exports = LoginTopBar
+const style = {
+    topBar: {
+        height: 75,
+        padding: [0, 47, 0, 55],
+        backgroundColor: styleVars.secondaryColor,
+        color: 'white'
+    },
+    image: {
+        width: 412,
+        height: 30
+    }
+}
+
+module.exports = useSheet(LoginTopBar, style)

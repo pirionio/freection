@@ -48,7 +48,7 @@ class TodoPreviewItem extends Component {
                 <PreviewItemUser>
                     <strong>{thing.creator.displayName}</strong>
                 </PreviewItemUser>
-                { textPreview ? <PreviewItemText>{textPreview}</PreviewItemText> : null }
+                <PreviewItemText>{textPreview}</PreviewItemText>
                 <PreviewItemActions>
                     <ToDoActionsBar thing={thing}/>
                 </PreviewItemActions>

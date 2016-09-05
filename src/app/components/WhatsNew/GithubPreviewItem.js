@@ -1,9 +1,9 @@
 const React = require('react')
 const {Component, PropTypes} = React
+const useSheet = require('react-jss').default
 
 import EventTypes from '../../../common/enums/event-types'
-const {PreviewItem, PreviewItemStatus, PreviewItemTitle, PreviewItemDate, PreviewItemText, PreviewItemActions} =
-    require('../Preview/PreviewItem')
+const {PreviewItem, PreviewItemStatus, PreviewItemText, PreviewItemActions} = require('../Preview/PreviewItem')
 const GithubActionsBar = require('./GithubActionsBar')
 const TextTruncate = require('../UI/TextTruncate')
 const TextSeparator = require('../UI/TextSeparator')
@@ -12,13 +12,17 @@ const styleVars = require('../style-vars')
 
 class GithubPreviewItem extends Component {
     getTextElement() {
-        const {notification} = this.props
+        const {notification, sheet: {classes}} = this.props
 
         if (notification.thing.body) {
             return (
                 <Flexbox container="row">
                     <Flexbox shrink={0}><TextSeparator /></Flexbox>
-                    <Flexbox grow={1} style={{minWidth: 0}}><TextTruncate>{notification.thing.body}</TextTruncate></Flexbox>
+                    <Flexbox grow={1} className={classes.textRow}>
+                        <TextTruncate>
+                            {notification.thing.body}
+                        </TextTruncate>
+                    </Flexbox>
                 </Flexbox>)
         }
 
@@ -56,8 +60,14 @@ class GithubPreviewItem extends Component {
     }
 }
 
+const style = {
+    textRow: {
+        minWidth: 0
+    }
+}
+
 GithubPreviewItem.propTypes = {
     notification: PropTypes.object.isRequired
 }
 
-module.exports = GithubPreviewItem
+module.exports = useSheet(GithubPreviewItem, style)

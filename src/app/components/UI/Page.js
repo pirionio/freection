@@ -1,16 +1,19 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const DocumentTitle = require('react-document-title')
-const radium = require('radium')
+const useSheet = require('react-jss').default
+const classNames = require('classnames')
 
 const Flexbox = require('./Flexbox')
 
 class Page extends Component {
     render() {
-        const {title, style, children} = this.props
+        const {title, className, children, sheet: {classes}} = this.props
+
+        const containerClassName = classNames(classes.container, className)
 
         return (
-            <Flexbox grow={1} container="column" style={[{width: '100%'}, style]}>
+            <Flexbox grow={1} container="column" className={containerClassName}>
                 <DocumentTitle title={title} />
                 {children}
             </Flexbox>
@@ -18,15 +21,21 @@ class Page extends Component {
     }
 }
 
+const style = {
+    container: {
+        width: '100%'
+    }
+}
+
 Page.propTypes = {
     title: PropTypes.string,
-    style: PropTypes.object
+    className: PropTypes.string
 }
 
 Page.defaultProps = {
     title: ''
 }
 
-module.exports = radium(Page)
+module.exports = useSheet(Page, style)
 
 

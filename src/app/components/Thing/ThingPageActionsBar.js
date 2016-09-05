@@ -4,7 +4,6 @@ const {connect} = require('react-redux')
 
 const ActionsBar = require('../Actions/ActionsBar')
 const {DoAction, DoneAction, DismissAction, CloseAction, SendBackAction} = require('../Actions/Actions')
-const styleVars = require('../style-vars')
 
 class ThingPageActionsBar extends Component {
     isDisabled() {

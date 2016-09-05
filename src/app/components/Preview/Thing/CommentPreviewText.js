@@ -1,36 +1,40 @@
 const React = require('react')
 const {PropTypes} = React
+const useSheet = require('react-jss').default
 
 const TextTruncate = require('../../UI/TextTruncate')
 const Flexbox = require('../../UI/Flexbox')
 const styleVars = require('../../style-vars')
 
-const CommentPreviewText = ({comment, newNotifications}) => {
-    const style = {
-        unreadCount: {
-            color: styleVars.baseGrayColor,
-            marginLeft: '6px',
-            fontSize: '0.85em'
-        },
-        textTruncate: {
-            display: 'inline-block',
-            width:'100%'
-        }
-    }
-
+const CommentPreviewText = ({comment, newNotifications, sheet: {classes}}) => {
     const unreadCount = newNotifications.length > 1 ?
-        <Flexbox style={style.unreadCount}>
+        <Flexbox className={classes.unreadCount}>
             (+{newNotifications.length - 1})
         </Flexbox> : null
 
     return (
         <Flexbox container="row" alignItems="center">
-            <Flexbox style={{minWidth: 0}}>
-                <TextTruncate style={style.textTruncate}>{comment}</TextTruncate>
+            <Flexbox className={classes.textRow}>
+                <TextTruncate className={classes.textTruncate}>{comment}</TextTruncate>
             </Flexbox>
             { unreadCount }
         </Flexbox>
     )
+}
+
+const style = {
+    unreadCount: {
+        color: styleVars.baseGrayColor,
+        marginLeft: 6,
+        fontSize: '0.85em'
+    },
+    textRow: {
+        minWidth: 0
+    },
+    textTruncate: {
+        display: 'inline-block',
+        width:'100%'
+    }
 }
 
 CommentPreviewText.propTypes = {
@@ -41,4 +45,4 @@ CommentPreviewText.defaultProps = {
     newNotifications: []
 }
 
-module.exports = CommentPreviewText
+module.exports = useSheet(CommentPreviewText, style)

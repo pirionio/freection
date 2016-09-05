@@ -1,31 +1,17 @@
 const React = require('react')
 const {Component} = React
-const radium = require('radium')
+const useSheet = require('react-jss').default
+
 const Flexbox = require('../UI/Flexbox')
 const styleVars = require('../style-vars')
 
 class MainApp extends Component {
     render () {
-        const style = {
-            container: {
-                minWidth: 0,
-                padding: '35px 35px 0 0',
-                backgroundColor: styleVars.backgroundColor
-            },
-            content: {
-                width: '100%',
-                maxWidth: '1178px'
-            },
-            padding: {
-                minWidth:'35px',
-                maxWidth: '130px'
-            }
-        }
-
+        const {sheet: {classes}} = this.props
         return (
-            <Flexbox name="main-app" grow={1} container="row" style={style.container} >
-                <Flexbox name="main-app-padding" grow={1} style={style.padding} />
-                <Flexbox name="main-app-content" container="column" style={style.content}>
+            <Flexbox name="main-app" grow={1} container="row" className={classes.container}>
+                <Flexbox name="main-app-padding" grow={1} className={classes.padding} />
+                <Flexbox name="main-app-content" container="column" className={classes.content}>
                     {this.props.children}
                 </Flexbox>
             </Flexbox>
@@ -33,7 +19,23 @@ class MainApp extends Component {
     }
 }
 
+const style = {
+    container: {
+        minWidth: 0,
+        padding: [35, 35, 0, 0],
+        backgroundColor: styleVars.backgroundColor
+    },
+    content: {
+        width: '100%',
+        maxWidth: 1178,
+    },
+    padding: {
+        minWidth: 35,
+        maxWidth: 130
+    }
+}
+
 MainApp.propTypes = {
 }
 
-module.exports = radium(MainApp)
+module.exports = useSheet(MainApp, style)

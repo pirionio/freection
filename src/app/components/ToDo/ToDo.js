@@ -3,6 +3,8 @@ const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const orderBy = require('lodash/orderBy')
 const classAutobind = require('class-autobind').default
+const useSheet = require('react-jss').default
+
 const isEmpty = require('lodash/isEmpty')
 
 const Page = require('../UI/Page')
@@ -51,10 +53,10 @@ class ToDo extends Component {
     }
 
     render() {
-        const {invalidationStatus} = this.props
+        const {invalidationStatus, sheet: {classes}} = this.props
         
         return (
-            <Page title={this.getTitle()} style={{position: 'relative'}}>
+            <Page title={this.getTitle()} className={classes.page}>
                 <PreviewsContainer previewItems={this.getThingsToDo()}
                                    fetchPreviews={this.fetchToDo}
                                    noPreviews={this.getNoPreviews()}
@@ -63,6 +65,12 @@ class ToDo extends Component {
                 </PreviewsContainer>
             </Page>
         )
+    }
+}
+
+const style = {
+    page: {
+        position: 'relative'
     }
 }
 
@@ -78,4 +86,4 @@ function mapStateToProps (state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(ToDo)
+module.exports = useSheet(connect(mapStateToProps)(ToDo), style)

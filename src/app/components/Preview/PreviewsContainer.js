@@ -1,7 +1,7 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const Delay = require('react-delay')
-const radium = require('radium')
+const useSheet = require('react-jss').default
 
 const isEmpty = require('lodash/isEmpty')
 const isArray = require('lodash/isArray')
@@ -34,21 +34,20 @@ class PreviewsContainer extends Component {
     }
 
     getNoPreviews() {
-        const {noPreviews} = this.props
-        const styles = this.getStyles()
+        const {noPreviews, sheet: {classes}} = this.props
 
-        const texts = noPreviews.texts.map((text, index) => <span key={`text-${index}`} style={styles.noPreviews.text}>{text}</span>)
+        const texts = noPreviews.texts.map((text, index) => <span key={`text-${index}`} className={classes.noPreviewsText}>{text}</span>)
 
         return (
-            <Flexbox name="preview-container" grow={1} container="column" justifyContent="flex-end" style={styles.container}>
+            <Flexbox name="preview-container" grow={1} container="column" justifyContent="flex-end">
                 <Flexbox name="preview-content" grow={1} container="column" justifyContent="center" alignItems="center">
                     <Flexbox container="column">
-                        <span style={[styles.noPreviews.logo, {color: noPreviews.logoColor}]}>***</span>
+                        <span className={classes.noPreviewsLogo} style={{color: noPreviews.logoColor}}>***</span>
                         {texts}
-                        <span style={[styles.noPreviews.logo, {color: noPreviews.logoColor}]}>***</span>
+                        <span className={classes.noPreviewsLogo} style={{color: noPreviews.logoColor}}>***</span>
                     </Flexbox>
                 </Flexbox>
-                <Flexbox container="column" alignSelf="center"  style={styles.messagePanel}>
+                <Flexbox container="column" alignSelf="center" className={classes.messagePanel}>
                     <MessagePanel />
                 </Flexbox>
             </Flexbox>
@@ -56,8 +55,7 @@ class PreviewsContainer extends Component {
     }
 
     getPreviews() {
-        const {previewItems, children} = this.props
-        const styles = this.getStyles()
+        const {previewItems, children, sheet: {classes}} = this.props
 
         // We use the children props to understand if we're in full-item mode or not.
         // The children arrive from the Router, and they would exist if the user navigated to a route that has a full-item in it.
@@ -66,56 +64,21 @@ class PreviewsContainer extends Component {
         // The Message Panel, in this case, is included in the full item page, so that it appears above the overlay.
 
         return (
-            <Flexbox name="preview-container" grow={1} container="column" justifyContent="flex-end" style={styles.container}>
+            <Flexbox name="preview-container" grow={1} container="column" justifyContent="flex-end">
                 <Flexbox name="preview-content" container="column" grow={1} style={{marginBottom: '15px'}}>
                     <Scrollable>
                         {previewItems}
                     </Scrollable>
-                    {children ? <Flexbox name="full-item-blur" container="column" style={styles.blur} /> : null}
+                    {children ? <Flexbox name="full-item-blur" container="column" className={classes.blur} /> : null}
                     {children ? children : null}
                 </Flexbox>
                 {!children ?
-                    <Flexbox container="column" alignSelf="center" style={styles.messagePanel}>
+                    <Flexbox container="column" alignSelf="center" className={classes.messagePanel}>
                         <MessagePanel />
                     </Flexbox> :
                     null}
             </Flexbox>
         )
-    }
-
-    getStyles() {
-        return {
-            container: {
-            },
-            blur: {
-                height: '100%',
-                backgroundColor: styleVars.secondaryBackgroundColor,
-                filter: 'blur(50px)',
-                position: 'absolute',
-                top: '-35px',
-                left: 0,
-                right: 0,
-                bottom: 0,
-                zIndex: styleVars.fullItemBlurZIndex
-            },
-            noPreviews: {
-                logo: {
-                    fontSize: '1.4em',
-                    marginBottom: '15px',
-                    textAlign: 'center'
-                },
-                text: {
-                    color: styleVars.watermarkColor,
-                    fontSize: '3em',
-                    marginBottom: '15px',
-                    textAlign: 'center'
-                }
-            },
-            messagePanel: {
-                width: '100%',
-                padding: '0 40px'
-            }
-        }
     }
 
     render () {
@@ -131,6 +94,36 @@ class PreviewsContainer extends Component {
     }
 }
 
+const style = {
+    blur: {
+        height: '100%',
+        backgroundColor: styleVars.secondaryBackgroundColor,
+        '-webkit-filter': 'blur(50px)',
+        filter: 'blur(50px)',
+        position: 'absolute',
+        top: -35,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: styleVars.fullItemBlurZIndex
+    },
+    noPreviewsText: {
+        color: styleVars.watermarkColor,
+        fontSize: '3em',
+        marginBottom: 15,
+        textAlign: 'center'
+    },
+    noPreviewsLogo: {
+        fontSize: '1.4em',
+        marginBottom: 15,
+        textAlign: 'center'
+    },
+    messagePanel: {
+        width: '100%',
+        padding: [0, 40]
+    }
+}
+
 PreviewsContainer.propTypes = {
     previewItems: PropTypes.any.isRequired,
     fetchPreviews: PropTypes.func.isRequired,
@@ -138,4 +131,4 @@ PreviewsContainer.propTypes = {
     invalidationStatus: PropTypes.string.isRequired
 }
 
-module.exports = radium(PreviewsContainer)
+module.exports = useSheet(PreviewsContainer, style)
