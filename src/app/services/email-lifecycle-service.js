@@ -9,10 +9,12 @@ class EmailLifecycleService {
     initialize(dispatch) {
         this._dispatch = dispatch
 
-        dispatch(EmailActions.hello())
-        dispatch(EmailActions.fetchUnread())
+        dispatch(EmailActions.hello()).then(() => {
+            // Do keep alive every 1 minute, only once hello is successful.
+            setInterval(this.doKeepAlive, 1000 * 60 * 1)
+        })
 
-        setInterval(this.doKeepAlive, 1000 * 60 * 1) // do keep alive every 1 minute
+        dispatch(EmailActions.fetchUnread())
     }
 
     reconnected() {

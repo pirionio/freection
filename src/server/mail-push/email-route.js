@@ -6,7 +6,7 @@ import logger from '../shared/utils/logger'
 
 router.post('/hello', (request, response) => {
     EmailPushService.hello(request.user)
-        .then(() => response.json())
+        .then(() => response.json({}))
         .catch(error => {
             logger.info(`mail-push - hello - error thrown when trying to open push IMAP connection for ${request.user.email}`, error)
             response.status(500).send('error thrown when try to initiate push for user')
