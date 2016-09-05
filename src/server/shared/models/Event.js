@@ -1,4 +1,5 @@
 import thinky from './thinky'
+
 const type = thinky.type
 
 const Event = thinky.createModel('Event', {

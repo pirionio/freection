@@ -1,12 +1,13 @@
-const router = require('express').Router()
-
-const NewRoute = require('./new-route')
-const ThingRoute = require('./thing-route')
-const EventRoute = require('./event-route')
-const GithubRoute = require('./github-route')
-const ContactsRoute = require('./contacts-route')
+import {Router} from 'express'
 
 import token from '../../shared/utils/token-strategy'
+import NewRoute from './new-route'
+import ThingRoute from './thing-route'
+import EventRoute from './event-route'
+import GithubRoute from './github-route'
+import ContactsRoute from './contacts-route'
+
+const router = Router()
 
 router.use('/', token.auth())
 router.use('/new', NewRoute)
@@ -15,4 +16,4 @@ router.use('/events', EventRoute)
 router.use('/github', GithubRoute)
 router.use('/contacts', ContactsRoute)
 
-module.exports = router
+export default router

@@ -7,7 +7,7 @@ const ThingPageActionTypes = require('../actions/types/thing-page-action-types')
 const EmailPageActionTypes = require('../actions/types/email-page-action-types')
 const immutable = require('../util/immutable')
 const {ActionStatus} = require('../constants')
-const MessageTypes = require('../../common/enums/message-types')
+import MessageTypes from '../../common/enums/message-types'
 
 const initialState = {
     messageBoxes: [],

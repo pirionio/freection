@@ -22,7 +22,7 @@ const CollapsedMessageBox = require('./CollapsedMessageBox')
 const MessageTabs = require('./MessageTabs')
 const ThingCommandActions = require('../../actions/thing-command-actions')
 const EmailCommandActions = require('../../actions/email-command-actions')
-const MessageTypes = require('../../../common/enums/message-types')
+import MessageTypes from '../../../common/enums/message-types'
 
 const componentStyles = require('../component-styles')
 

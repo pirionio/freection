@@ -4,7 +4,7 @@ const find = require('lodash/find')
 const EmailPageActions = require('./generated/email-page-actions')
 const MessageBoxActions = require('./message-box-actions')
 const {InvalidationStatus} = require('../constants')
-const MessageTypes = require('../../common/enums/message-types')
+import MessageTypes from '../../common/enums/message-types'
 
 const getAction = EmailPageActions.getEmail
 const showAction = EmailPageActions.showEmailPage

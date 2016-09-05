@@ -10,7 +10,7 @@ const find = require('lodash/find')
 const isEmpty = require('lodash/isEmpty')
 
 const MessageBoxActions = require('../../actions/message-box-actions')
-const MessageTypes = require('../../../common/enums/message-types')
+import MessageTypes from '../../../common/enums/message-types'
 
 const Flexbox = require('../UI/Flexbox')
 const TextTruncate = require('../UI/TextTruncate')

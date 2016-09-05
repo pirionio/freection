@@ -1,12 +1,12 @@
+import dateFns from 'date-fns'
+import {last} from 'lodash'
+
 import * as EmailService from '../shared/application/email-service'
 import * as ThingService from '../shared/application/thing-service'
 import {MailNotification, User} from '../shared/models'
-
-const dateFns = require('date-fns')
-const {last} = require('lodash')
 import logger from '../shared/utils/logger'
 
-module.exports = function() {
+export function configure() {
     MailNotification.changes()
         .then(changes => changes.each(onChange))
 

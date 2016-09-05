@@ -1,9 +1,10 @@
-'use strict'
-import express from 'express'
 import http from 'http'
+
+import express from 'express'
 import passport from 'passport'
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
+
 import token from './utils/token-strategy'
 import tokenConfig from './config/token'
 import logger from './utils/logger'

@@ -5,7 +5,7 @@ const {connect} = require('react-redux')
 const useSheet = require('react-jss').default
 
 const MessageBoxActions = require('../../actions/message-box-actions')
-const MessageTypes = require('../../../common/enums/message-types')
+import MessageTypes from '../../../common/enums/message-types'
 
 const Flexbox = require('../UI/Flexbox')
 const styleVars = require('../style-vars')

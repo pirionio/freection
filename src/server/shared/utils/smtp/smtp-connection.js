@@ -1,6 +1,6 @@
-const nodemailer = require('nodemailer')
-const htmlToText = require('nodemailer-html-to-text').htmlToText
-const autobind = require('class-autobind').default
+import nodemailer from 'nodemailer'
+import {htmlToText} from 'nodemailer-html-to-text'
+import autobind from 'class-autobind'
 
 import promisify from '../promisify'
 

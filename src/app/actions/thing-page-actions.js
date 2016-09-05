@@ -4,7 +4,7 @@ const find = require('lodash/find')
 const ThingPageActions = require('./generated/thing-page-actions')
 const MessageBoxActions = require('./message-box-actions')
 const {InvalidationStatus} = require('../constants')
-const MessageTypes = require('../../common/enums/message-types')
+import MessageTypes from '../../common/enums/message-types'
 
 const getAction = ThingPageActions.getThing
 const showAction = ThingPageActions.showThingPage
