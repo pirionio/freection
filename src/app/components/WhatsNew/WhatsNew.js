@@ -1,46 +1,21 @@
 const React = require('react')
-const {Component, PropTypes} = React
+const {Component} = React
+const useSheet = require('react-jss').default
 
 const Link = require('../UI/Link')
 const Flexbox = require('../UI/Flexbox')
 
 class WhatsNew extends Component {
-    getStyles() {
-        return {
-            container: {
-                position: 'relative'
-            },
-            menu: {
-                height: '30px',
-                paddingBottom: '15px',
-                borderBottom: '1px solid #d7d7d7',
-                marginBottom: '22px'
-            },
-            menuItem: {
-            },
-            link: {
-                paddingBottom: '12px',
-                marginRight: '33px',
-                color: 'black',
-                textDecoration: 'none'
-            },
-            activeLink: {
-                fontWeight: '600',
-                borderBottom: '2px solid #36474f'
-            }
-        }
-    }
-
     render() {
-        const styles = this.getStyles()
+        const {sheet: {classes}} = this.props
 
         return (
-            <Flexbox name="whats-new-container" grow={1} container="column" style={styles.container}>
-                <Flexbox name="whats-new-menu" shrink={0} style={styles.menu} alignItems="flex-start">
-                    <Link to="/whatsnew/things" style={styles.link} activeStyle={styles.activeLink}>
+            <Flexbox name="whats-new-container" grow={1} container="column" className={classes.container}>
+                <Flexbox name="whats-new-menu" shrink={0} alignItems="flex-start" className={classes.menu}>
+                    <Link to="/whatsnew/things" className={classes.link} activeClassName={classes.activeLink}>
                         Things
                     </Link>
-                    <Link to="/whatsnew/emails" style={styles.link} activeStyle={styles.activeLink}>
+                    <Link to="/whatsnew/emails" className={classes.link} activeClassName={classes.activeLink}>
                         Emails
                     </Link>
                 </Flexbox>
@@ -50,4 +25,28 @@ class WhatsNew extends Component {
     }
 }
 
-module.exports = WhatsNew
+const style = {
+    container: {
+        position: 'relative'
+    },
+    menu: {
+        height: 30,
+        paddingBottom: 15,
+        borderBottom: '1px solid #d7d7d7',
+        marginBottom: 22
+    },
+    menuItem: {
+    },
+    link: {
+        paddingBottom: 12,
+        marginRight: 33,
+        color: 'black',
+        textDecoration: 'none'
+    },
+    activeLink: {
+        fontWeight: '600',
+        borderBottom: '2px solid #36474f'
+    }
+}
+
+module.exports = useSheet(WhatsNew, style)

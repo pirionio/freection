@@ -1,12 +1,12 @@
 const React = require('react')
 const {Component, PropTypes} = React
-const radium = require('radium')
+const classAutobind = require('class-autobind').default
+const classNames = require('classnames')
 
 class Link extends Component {
     constructor(props, context) {
         super(props, context)
-
-        this.onClick = this.onClick.bind(this)
+        classAutobind(this, Link.prototype)
     }
 
     onClick(event) {
@@ -20,24 +20,27 @@ class Link extends Component {
     }
 
     render() {
-        const {children, to, style, activeStyle} = this.props
+        const {children, to, className, activeClassName} = this.props
         const {router} = this.context
 
         const href = router.createHref(to)
         const isActive = router.isActive(to, false)
 
-        return (<a href={href} onClick={this.onClick} style={[style, isActive && activeStyle]}>{children}</a>)
+        const classes = classNames(className, isActive && activeClassName)
+
+        return (<a href={href} onClick={this.onClick} className={classes}>{children}</a>)
     }
 }
 
 Link.propTypes = {
     to: PropTypes.string,
-    style: PropTypes.object,
-    activeStyle: PropTypes.object,
+    className: PropTypes.string,
+    activeClassName: PropTypes.string,
     onClick: PropTypes.func
 }
+
 Link.contextTypes = {
     router: PropTypes.object
 }
 
-module.exports = radium(Link)
+module.exports = Link

@@ -1,101 +1,24 @@
 const React = require('react')
 const {PropTypes, Component} = React
-const radium = require('radium')
-const classnames = require('classnames')
-const isString = require('lodash/isString')
+const merge = require('lodash/merge')
 
 class Flexbox extends Component {
-
-    getContainerStyle() {
-        const {container} = this.props
-        if (container) {
-            if (isString(container)) {
-                return {
-                    display: 'flex',
-                    flexDirection: container
-                }
-            } else {
-                return {
-                    display: 'flex'
-                }
-            }
-        }
-
-        return {}
-    }
-
-    getWidthStyle() {
-        const {width} = this.props
-
-        if (width)
-            return {width}
-
-        return {}
-    }
-
-    getHeightStyle() {
-        const {height} = this.props
-
-        if (height)
-            return {height}
-
-        return {}
-    }
-
-    getFlexStyle() {
-        const { grow, shrink, basis } = this.props
-
-        return {
-            flex: `${grow} ${shrink} ${basis}`
-        }
-    }
-
-    getJustifyContent() {
-        const {justifyContent} = this.props
-
-        if (justifyContent) {
-            return {justifyContent}
-        }
-
-        return {}
-    }
-
-    getAlignItems() {
-        const {alignItems} = this.props
-
-        if (alignItems) {
-            return {alignItems}
-        }
-
-        return {}
-    }
-
-    getAlignSelf() {
-        const {alignSelf} = this.props
-
-        if (alignSelf) {
-            return {alignSelf}
-        }
-
-        return {}
-    }
-
     render() {
-        const {children, style, name, onClick} = this.props
+        const {children, className, style, name, onClick, container} = this.props
 
-        const containerStyle = [
-            this.getContainerStyle(),
-            this.getFlexStyle(),
-            this.getJustifyContent(),
-            this.getAlignItems(),
-            this.getAlignSelf(),
-            this.getWidthStyle(),
-            this.getHeightStyle(),
-            style
-        ]
+        const finalStyle = merge({}, {
+            display: container ? 'flex' : undefined,
+            flexDirection: container ? container : undefined,
+            flexGrow: this.props.grow,
+            flexShrink: this.props.shrink,
+            flexBasis: this.props.basis,
+            justifyContent: this.props.justifyContent,
+            alignItems: this.props.alignItems,
+            alignSelf: this.props.alignSelf
+        }, style)
 
         return (
-            <div name={name} style={containerStyle} onClick={onClick}>
+            <div name={name} style={finalStyle} className={className} onClick={onClick}>
                 {children}
             </div>
         )
@@ -104,10 +27,9 @@ class Flexbox extends Component {
 
 Flexbox.propTypes = {
     name: PropTypes.string,
+    className: PropTypes.string,
     style: PropTypes.object,
     container: PropTypes.any,
-    width: PropTypes.string,
-    height: PropTypes.string,
     grow: PropTypes.number,
     shrink: PropTypes.number,
     basis: PropTypes.string,
@@ -124,4 +46,4 @@ Flexbox.defaultProps = {
     basis: 'auto'
 }
 
-module.exports = radium(Flexbox)
+module.exports = Flexbox

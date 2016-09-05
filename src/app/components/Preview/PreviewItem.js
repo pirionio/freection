@@ -2,9 +2,9 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const {getChildOfType, createSlots} = require('../../util/component-util')
-const dateFns = require('date-fns')
-const radium = require('radium')
 const classAutobind = require('class-autobind').default
+const useSheet = require('react-jss').default
+const classNames = require('classnames')
 
 const InlineMessageActions = require('../../actions/inline-message-actions')
 
@@ -31,6 +31,7 @@ PreviewItemStatus.propTypes = {
 class PreviewItem extends Component {
     constructor(props) {
         super(props)
+        this.state = {showInlineMessage: false}
         classAutobind(this, PreviewItem.prototype)
     }
 
@@ -39,17 +40,13 @@ class PreviewItem extends Component {
             this.setState({showInlineMessage: false})
     }
 
-    isRollover() {
-        return radium.getState(this.state, 'preview', ':hover')
-    }
-
     getPreviewText() {
         return getChildOfType(this.props.children, PreviewItemText)
     }
 
     getActions() {
         const original = getChildOfType(this.props.children, slots.PreviewItemActions)
-        return React.cloneElement(original, {isRollover: this.isRollover(), preDoFunc: this.openInlineMessage})
+        return React.cloneElement(original, {preDoFunc: this.openInlineMessage})
     }
 
     openInlineMessage(action) {
@@ -72,129 +69,120 @@ class PreviewItem extends Component {
         return getChildOfType(this.props.children, slots.PreviewItemUser)
     }
 
-    getDateText() {
-        const {date} = this.props
-
-        const time = dateFns.format(date, 'HH:mm')
-
-        if (dateFns.isToday(date)) {
-            return <span>Today at {time}</span>
-        } else if (dateFns.isYesterday(date)) {
-            return <span>Yesterday at {time}</span>
-        } else {
-            return <span>{dateFns.format(date, 'DD MMM YYYY')} at {time}</span>
-        }
-    }
-
-    getStyles() {
-        return {
-            container: {
-                width: '100%',
-                marginBottom: '5px',
-                backgroundColor: styleVars.secondaryBackgroundColor,
-                border: '1px solid #e0e0e0',
-                withInlineReply: {
-                    position: 'absolute',
-                    zIndex: styleVars.previewInlineReplyZIndex
-                }
-            },
-            hoverable: {
-                width: '100%',
-                ':hover': {},
-                cursor: 'pointer'
-            },
-            preview: {
-                height: '50px',
-                paddingLeft: '30px',
-                paddingRight: '30px'
-            },
-            leftBox: {
-                width: '160px',
-                padding: '4px 0',
-                withStatus: {
-                    width: '250px'
-                }
-            },
-            centerBox: {
-                padding: '4px 0',
-                minWidth: 0
-            },
-            rightBox: {
-                width: '120px',
-                rollover: {
-                    width: 'inherit',
-                    minWidth: '120px',
-                    maxWidth: '287px'
-                }
-            },
-            circle: {
-                width: '8px',
-                height: '8px',
-                rollover: {
-                    width: '12px',
-                    height: '12px',
-                    marginLeft: '-2px'
-                },
-                container: {
-                    width: '19px'
-                }
-            },
-            subject: {
-                marginRight: '0'
-            },
-            text: {
-                minWidth: 0
-            },
-            date:{
-                color: styleVars.baseGrayColor
-            }
-        }
-    }
-
     render() {
-        const {circleColor, title, onClick} = this.props
+        const {circleColor, title, onClick, sheet: {classes}} = this.props
 
         const statusPreview = this.getStatus()
         const userPreview = this.getUser()
         const textPreview = this.getPreviewText()
         const inlineMessage = this.getInlineMessage()
 
-        const styles = this.getStyles()
-        const isRollover = this.isRollover()
+        const containerClass = classNames(classes.container, {
+            'withInlineReply': this.state.showInlineMessage
+        })
+        const leftBoxClass = classNames(classes.leftBox, {
+            'withStatus': !!statusPreview
+        })
 
         return (
-            <div name="preview-item-container" style={[styles.container, this.state.showInlineMessage && styles.container.withInlineReply]}>
-                <div name="preview-item-hoverable" key="preview" style={styles.hoverable} onClick={onClick}>
-                    <Flexbox name="preview-item" shrink={0} container='row' style={styles.preview}>
-                        { circleColor ?
-                            <Flexbox name="preview-circle" shrink={0} container='column' justifyContent="center" style={styles.circle.container}>
-                                <Ellipse color={circleColor} style={!isRollover ? styles.circle : styles.circle.rollover} />
-                            </Flexbox> :
-                            null
+            <div name="preview-item-container" className={containerClass}>
+                <Flexbox name="preview-item" shrink={0} container='row' className={classes.preview} onClick={onClick}>
+                    { circleColor ?
+                        <Flexbox name="preview-circle" shrink={0} container='column' justifyContent="center" className={classes.circleContainer}>
+                            <Ellipse color={circleColor} className={classes.circle} />
+                        </Flexbox> :
+                        null
+                    }
+                    <Flexbox name="left-box" shrink={0} container='column' justifyContent="space-around" className={leftBoxClass}>
+                        {
+                            statusPreview ?
+                                <Flexbox name="status">{statusPreview}</Flexbox> :
+                                <Flexbox name="user">{userPreview}</Flexbox>
                         }
-                        <Flexbox name="left-box" shrink={0} container='column' justifyContent="space-around"
-                                 style={[styles.leftBox, !!statusPreview && styles.leftBox.withStatus]}>
-                            {
-                                statusPreview ?
-                                    <Flexbox name="status">{statusPreview}</Flexbox> :
-                                    <Flexbox name="user">{userPreview}</Flexbox>
-                            }
-                        </Flexbox>
-                        <Flexbox name="center-box" container="row" justifyContent="flex-start" alignItems="center" grow={1} style={styles.centerBox}>
-                            <Flexbox name="subject" style={styles.subject}>
-                                <TextTruncate><strong>{title}</strong></TextTruncate>
-                            </Flexbox>
-                            {textPreview ? <Flexbox name="text" grow={1} style={styles.text}>{textPreview}</Flexbox> : null}
-                        </Flexbox>
-                        <Flexbox name="right-box" container="column" justifyContent="center" shrink={0}
-                                 style={[styles.rightBox, isRollover && styles.rightBox.rollover]}>
-                            {this.getActions()}
-                        </Flexbox>
                     </Flexbox>
-                </div>
+                    <Flexbox name="center-box" container="row" justifyContent="flex-start" alignItems="center" grow={1} className={classes.centerBox}>
+                        <Flexbox name="subject" className={classes.subject}>
+                            <TextTruncate><strong>{title}</strong></TextTruncate>
+                        </Flexbox>
+                        {textPreview ? <Flexbox name="text" grow={1} className={classes.text}>{textPreview}</Flexbox> : null}
+                    </Flexbox>
+                    <Flexbox name="right-box" container="column" justifyContent="center" shrink={0} className={classes.rightBox}>
+                        {this.getActions()}
+                    </Flexbox>
+                </Flexbox>
                 {inlineMessage}
             </div>
         )
+    }
+}
+
+const style = {
+    container: {
+        width: '100%',
+        marginBottom: 5,
+        backgroundColor: styleVars.secondaryBackgroundColor,
+        border: {
+            weight: 1,
+            style: 'sold',
+            color: styleVars.baseBorderColor
+        },
+        '&.withInlineReply': {
+            position: 'absolute',
+            zIndex: styleVars.previewInlineReplyZIndex
+        },
+        '&:hover': {
+            width: '100%',
+            cursor: 'pointer',
+            '& $rightBox': {
+                width: 'inherit',
+                minWidth: 120,
+                maxWidth: 287
+            },
+            '& $circle': {
+                width: 12,
+                height: 12,
+                marginLeft: -2
+            },
+            '& .restOfActions': {
+                display: 'block'
+            }
+        }
+    },
+    preview: {
+        height: 50,
+        paddingLeft: 30,
+        paddingRight: 30
+    },
+    leftBox: {
+        width: 160,
+        padding: [4, 0],
+        '&.withStatus': {
+            width: 250
+        }
+    },
+    centerBox: {
+        padding: [4, 0],
+        minWidth: 0
+    },
+    rightBox: {
+        width: 120
+    },
+    circleContainer: {
+        width: 19
+    },
+    circle: {
+        width: 8,
+        height: 8,
+        marginRight: 11
+    },
+    subject: {
+        marginRight: 0
+    },
+    text: {
+        minWidth: 0
+    },
+    date:{
+        color: styleVars.baseGrayColor
     }
 }
 
@@ -214,7 +202,7 @@ function mapStateToProps(state) {
 }
 
 module.exports = Object.assign({
-    PreviewItem: connect(mapStateToProps)(radium(PreviewItem)),
+    PreviewItem: useSheet(connect(mapStateToProps)(PreviewItem), style),
     PreviewItemText,
     PreviewItemStatus
 }, slots)

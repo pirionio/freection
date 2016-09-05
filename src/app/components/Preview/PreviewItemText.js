@@ -1,11 +1,8 @@
 const React = require('react')
 const {Component} = React
-const radium = require('radium')
 const classAutobind = require('class-autobind').default
 const SizeMe = require('react-sizeme').default
-const autoprefixer = require('autoprefixer')
-const postcssJs = require('postcss-js')
-const prefixer = postcssJs.sync([autoprefixer])
+const useSheet = require('react-jss').default
 
 const styleVars = require('../style-vars')
 
@@ -22,41 +19,39 @@ class PreviewItemText extends Component {
         this.fade = (nextProps.size.width < this.props.size.width)
     }
 
-    getStyles() {
-        return {
-            text: {
-                position: 'relative'
-            },
-            fade: prefixer({
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                width: '65px',
-                height: '100%',
-                background: `linear-gradient(to right, rgba(255,255,255,0) 0%, ${styleVars.secondaryBackgroundColor} 80%, ${styleVars.secondaryBackgroundColor} 100%)`,
-                pointerEvents: 'none'
-            })
-        }
-    }
-
     render() {
         const {children} = this.props
 
         if (!children)
             return null
 
-        const styles = this.getStyles()
+        const {sheet: {classes}} = this.props
 
         if (!this.fade)
             return React.Children.only(children)
 
         return (
-            <div name="text-preview" style={styles.text}>
+            <div name="text-preview" className={classes.text}>
                 {children}
-                <div name="text-fade" style={styles.fade}></div>
+                <div name="text-fade" className={classes.fade}></div>
             </div>
         )
     }
 }
 
-module.exports = SizeMe()(radium(PreviewItemText))
+const style = {
+    text: {
+        position: 'relative'
+    },
+    fade: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        width: 65,
+        height: '100%',
+        background: `linear-gradient(to right, rgba(255,255,255,0) 0%, ${styleVars.secondaryBackgroundColor} 80%, ${styleVars.secondaryBackgroundColor} 100%)`,
+        pointerEvents: 'none'
+    }
+}
+
+module.exports = useSheet(SizeMe()(PreviewItemText), style)

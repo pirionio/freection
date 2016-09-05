@@ -5,6 +5,8 @@ const head = require('lodash/head')
 const Flexbox = require('../UI/Flexbox')
 const classAutobind = require('class-autobind').default
 const Transition = require('react-motion-ui-pack')
+const useSheet = require('react-jss').default
+const classNames = require('classnames')
 
 class ActionsBar extends Component {
     constructor(props) {
@@ -28,7 +30,7 @@ class ActionsBar extends Component {
     }
 
     render() {
-        const {supportRollover, isRollover} = this.props
+        const {supportRollover, sheet: {classes}} = this.props
 
         const firstAction = this.getFirstAction()
         const restOfActions = this.getRestOfActions()
@@ -41,22 +43,16 @@ class ActionsBar extends Component {
             )
         }
 
-        if (!isRollover) {
-            return (
-                <Flexbox name="actions-bar" container='row-reverse'>
-                    {firstAction}
-                </Flexbox>
-            )
-        }
+        const restOfActionsClass = classNames(classes.restOfActions, 'restOfActions')
 
         return (
             <Flexbox name="actions-bar" container='row-reverse'>
                 {firstAction}
                 <Transition component="div"
-                            enter={{opacity: isRollover ? 1 : 0}}
+                            enter={{opacity: 1}}
                             leave={{opacity: 0}}
                             appear={{opacity: 0}}>
-                    <div key="rest-of-actions">
+                    <div key="rest-of-actions" className={restOfActionsClass}>
                         <Flexbox name="rest-of-actions-row" container="row-reverse">
                             {restOfActions}
                         </Flexbox>
@@ -67,15 +63,19 @@ class ActionsBar extends Component {
     }
 }
 
+const style = {
+    restOfActions: {
+        display: 'none'
+    }
+}
+
 ActionsBar.propTypes = {
     actions: PropTypes.array.isRequired,
-    supportRollover: PropTypes.bool,
-    isRollover: PropTypes.bool
+    supportRollover: PropTypes.bool
 }
 
 ActionsBar.defaultProps = {
-    supportRollover: true,
-    isRollover: false
+    supportRollover: true
 }
 
-module.exports = ActionsBar
+module.exports = useSheet(ActionsBar, style)

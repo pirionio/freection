@@ -2,8 +2,9 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const classAutobind = require('class-autobind').default
-const radium = require('radium')
 const Icon = require('react-fontawesome')
+const useSheet = require('react-jss').default
+const classNames = require('classnames')
 
 const find = require('lodash/find')
 const isEmpty = require('lodash/isEmpty')
@@ -27,22 +28,21 @@ class MessageTabs extends Component {
     }
 
     getMessageTabs() {
-        const {messageBoxes, activeMessageBox} = this.props
-        const styles = this.getStyles()
+        const {messageBoxes, activeMessageBox, sheet: {classes}} = this.props
 
         if (!activeMessageBox || isEmpty(activeMessageBox))
             return null
 
         return messageBoxes.map(messageBox => {
             const closeButton = [MessageTypes.NEW_THING.key, MessageTypes.NEW_EMAIL.key].includes(messageBox.type.key) ?
-                <Icon name="times" style={styles.tab.close} onClick={() => this.closeMessageBox(messageBox)} /> :
+                <Icon name="times" className={classes.tabClose} onClick={() => this.closeMessageBox(messageBox)} /> :
                 null
 
-            return (
-                <Flexbox key={messageBox.id} container="row" justifyContent="center" alignItems="center"
-                         style={[styles.tab, activeMessageBox && activeMessageBox.id === messageBox.id && styles.tab.active]}>
+            const tabClass = classNames(classes.tab, activeMessageBox && activeMessageBox.id === messageBox.id && classes.tabActive)
 
-                    <a onClick={() => this.selectMessageBox(messageBox)} style={styles.tab.link}>
+            return (
+                <Flexbox key={messageBox.id} container="row" justifyContent="center" alignItems="center" className={tabClass}>
+                    <a onClick={() => this.selectMessageBox(messageBox)} className={classes.tabLink}>
                         <TextTruncate>{messageBox.title}</TextTruncate>
                     </a>
                     {closeButton}
@@ -67,120 +67,121 @@ class MessageTabs extends Component {
     }
 
     getNewMenu() {
-        const styles = this.getStyles()
+        const {sheet: {classes}} = this.props
 
-        const isNewRollover = radium.getState(this.state, 'new-button', ':hover')
-        const isMenuRollover = radium.getState(this.state, 'new-menu', ':hover')
-
-        if (!isNewRollover && !isMenuRollover)
-            return null
+        const thingOptionClass = classNames(classes.menuOption, classes.thingOption)
 
         return (
-            <div name="new-menu" key="new-menu" style={styles.new.menu}>
-                <div name="new-menu-option" key="thing-option" onClick={this.newThingMessageBox}
-                     style={[styles.new.menuOption, {borderBottom: '1px solid #e0e0e0'}]}>New Thing</div>
-                <div name="new-menu-option" key="email-option" onClick={this.newEmailMessageBox}
-                     style={styles.new.menuOption}>New Email</div>
-                <span style={styles.new.menu.arrow} />
+            <div name="new-menu" key="new-menu" className={classes.newMenu}>
+                <div name="new-menu-option" key="thing-option" onClick={this.newThingMessageBox} className={thingOptionClass}>New Thing</div>
+                <div name="new-menu-option" key="email-option" onClick={this.newEmailMessageBox} className={classes.menuOption}>New Email</div>
+                <span className={classes.menuArrow} />
             </div>
         )
     }
 
-    getStyles() {
-        return {
-            topBar: {
-                height: '37px'
-            },
-            tab: {
-                height: '100%',
-                minWidth: '132px',
-                maxWidth: '150px',
-                padding: '0 16px',
-                backgroundColor: styleVars.highlightColor,
-                color: 'white',
-                opacity: '0.5',
-                active: {
-                    opacity: '1'
-                },
-                link: {
-                    width: '100%',
-                    cursor: 'pointer',
-                    textAlign: 'center',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.07em'
-                },
-                close: {
-                    marginLeft: '20px',
-                    cursor: 'pointer',
-                    color: 'inherit'
-                }
-            },
-            new: {
-                button: {
-                    height: '23px',
-                    lineHeight: '23px',
-                    width: '60px',
-                    color: styleVars.secondaryColor,
-                    cursor: 'default',
-                    letterSpacing: '0.05em',
-                    ':hover': {}
-                },
-                icon: {
-                    fontSize: '0.7em'
-                },
-                menu: {
-                    position: 'absolute',
-                    right: '-15px',
-                    top: '-68px',
-                    height: '75px',
-                    width: '115px',
-                    backgroundColor: '#fafafa',
-                    border: '1px solid #e0e0e0',
-                    ':hover': {},
-                    arrow: {
-                        position: 'absolute',
-                        left: '38px',
-                        bottom: '-6px',
-                        width: 0,
-                        height: 0,
-                        borderRight: '5px solid transparent',
-                        borderLeft: '5px solid transparent',
-                        borderTop: `6px solid ${styleVars.secondaryBackgroundColor}`
-                    }
-                },
-                menuOption: {
-                    height: '37px',
-                    width: '100%',
-                    paddingTop: '11px',
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                    ':hover': {
-                        backgroundColor: '#ebe9e9'
-                    }
-                }
-            }
-        }
-    }
-
     render () {
-        const {activeMessageBox} = this.props
+        const {activeMessageBox, sheet: {classes}} = this.props
 
-        const styles = this.getStyles()
         const messageTabs = this.getMessageTabs()
         const newMenu = this.getNewMenu()
 
         return (
-            <Flexbox name="message-box-top-bar" container="row" justifyContent="flex-end" alignItems="center"
-                     style={[styles.topBar, !isEmpty(activeMessageBox) && styles.topBar.active]}>
+            <Flexbox name="message-box-top-bar" container="row" justifyContent="flex-end" alignItems="center" className={classes.topBar}>
                 <Flexbox name="message-tabs" grow={1} container="row">
                     {messageTabs}
                 </Flexbox>
-                <div name="message-new" style={styles.new}>
-                    <div style={styles.new.button} key="new-button"><Icon name="plus" style={styles.new.icon} /> NEW</div>
+                <div name="message-new" className={classes.newSection}>
+                    <div className={classes.newButton} key="new-button">
+                        <Icon name="plus" className={classes.newIcon} />
+                        NEW
+                    </div>
                     {newMenu}
                 </div>
             </Flexbox>
         )
+    }
+}
+
+const style = {
+    topBar: {
+        height: 37
+    },
+    tab: {
+        height: '100%',
+        minWidth: 132,
+        maxWidth: 150,
+        padding: [0, 16],
+        backgroundColor: styleVars.highlightColor,
+        color: 'white',
+        opacity: 0.5
+    },
+    tabActive: {
+        opacity: 1
+    },
+    tabLink: {
+        width: '100%',
+        cursor: 'pointer',
+        textAlign: 'center',
+        textTransform: 'uppercase',
+        letterSpacing: '0.07em'
+    },
+    tabClose: {
+        marginLeft: 20,
+        cursor: 'pointer',
+        color: 'inherit'
+    },
+    newSection: {
+        '&:hover': {
+            '& $newMenu': {
+                display: 'block'
+            }
+        }
+    },
+    newButton: {
+        height: 23,
+        lineHeight: 2,
+        width: 60,
+        color: styleVars.secondaryColor,
+        cursor: 'default',
+        letterSpacing: '0.05em'
+    },
+    newIcon: {
+        fontSize: '0.7em',
+        marginRight: '3px',
+    },
+    newMenu: {
+        display: 'none',
+        position: 'absolute',
+        right: -15,
+        top: -68,
+        height: 75,
+        width: 115,
+        backgroundColor: '#fafafa',
+        border: '1px solid #e0e0e0'
+    },
+    menuArrow: {
+        position: 'absolute',
+        left: 38,
+        bottom: -6,
+        width: 0,
+        height: 0,
+        borderRight: '5px solid transparent',
+        borderLeft: '5px solid transparent',
+        borderTop: `6px solid ${styleVars.secondaryBackgroundColor}`
+    },
+    menuOption: {
+        height: 37,
+        width: '100%',
+        paddingTop: 11,
+        textAlign: 'center',
+        cursor: 'pointer',
+        '&:hover': {
+            backgroundColor: '#ebe9e9'
+        }
+    },
+    thingOption: {
+        borderBottom: '1px solid #e0e0e0'
     }
 }
 
@@ -196,4 +197,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(radium(MessageTabs))
+module.exports = useSheet(connect(mapStateToProps)(MessageTabs), style)

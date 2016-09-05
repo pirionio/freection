@@ -1,34 +1,35 @@
 const React = require('react')
 const {PropTypes} = React
+const useSheet = require('react-jss').default
 
 const Flexbox = require('../../UI/Flexbox')
 const styleVars = require('../../style-vars')
 
-const PingPreviewText = ({newNotifications}) => {
-    const style = {
-        unreadCount: {
-            color: styleVars.baseGrayColor,
-            marginLeft: '6px',
-            fontSize: '0.85em'
-        },
-        text: {
-            display: 'inline-block'
-        }
-    }
-
+const PingPreviewText = ({newNotifications, sheet: {classes}}) => {
     const unreadCount = newNotifications.length > 1 ?
-        <Flexbox style={style.unreadCount}>
+        <Flexbox className={classes.unreadCount}>
             (+{newNotifications.length - 1})
         </Flexbox> : null
 
     return (
         <Flexbox container="row" alignItems="center">
-            <Flexbox style={style.text}>
+            <Flexbox className={classes.text}>
                Ping!
             </Flexbox>
             {unreadCount}
         </Flexbox>
     )
+}
+
+const style = {
+    unreadCount: {
+        color: styleVars.baseGrayColor,
+        marginLeft: 6,
+        fontSize: '0.85em'
+    },
+    text: {
+        display: 'inline-block'
+    }
 }
 
 PingPreviewText.propTypes = {
@@ -38,4 +39,4 @@ PingPreviewText.defaultProps = {
     newNotifications: []
 }
 
-module.exports = PingPreviewText
+module.exports = useSheet(PingPreviewText, style)

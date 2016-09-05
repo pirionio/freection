@@ -1,6 +1,7 @@
 const React = require('react')
 const {PropTypes, Component} = React
 const {connect} = require('react-redux')
+const useSheet = require('react-jss').default
 
 const TextTruncate = require('../UI/TextTruncate')
 const EmailPreviewActionBar = require('./EmailPreviewActionsBar')
@@ -11,13 +12,15 @@ const Flexbox = require('../UI/Flexbox')
 
 class EmailPreviewItem extends Component {
     getTextElement() {
-        const {email} = this.props
+        const {email, sheet: {classes}} = this.props
 
         if (email.payload.text) {
             return (
                 <Flexbox container="row">
                     <Flexbox shrink={0}><TextSeparator /></Flexbox>
-                    <Flexbox grow={1} style={{minWidth: 0}}><TextTruncate>{email.payload.text}</TextTruncate></Flexbox>
+                    <Flexbox grow={1} className={classes.textRow}>
+                        <TextTruncate>{email.payload.text}</TextTruncate>
+                    </Flexbox>
                 </Flexbox>)
         }
 
@@ -45,8 +48,14 @@ class EmailPreviewItem extends Component {
     }
 }
 
+const style = {
+    textRow: {
+        minWidth: 0
+    }
+}
+
 EmailPreviewItem.propTypes = {
     email: PropTypes.object.isRequired
 }
 
-module.exports = connect()(EmailPreviewItem)
+module.exports = useSheet(connect()(EmailPreviewItem), style)

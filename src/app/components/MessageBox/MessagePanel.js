@@ -3,14 +3,14 @@ const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const {Form} = require('react-redux-form')
 const classAutobind = require('class-autobind').default
-const radium = require('radium')
 const AddressParser = require('email-addresses')
+const useSheet = require('react-jss').default
+const classNames = require('classnames')
 
 const find = require('lodash/find')
 const isNil = require('lodash/isNil')
 const isEmpty = require('lodash/isEmpty')
 const map = require('lodash/map')
-const merge = require('lodash/merge')
 const some = require('lodash/some')
 const {chain} = require('lodash/core')
 
@@ -72,30 +72,11 @@ class MessagePanel extends Component {
     isSendDisabled() {
         const {activeMessageBox, messageBox} = this.props
         const addressValid =
-            [MessageTypes.NEW_THING.key, MessageTypes.NEW_EMAIL.key].includes(activeMessageBox.type.key) && messageBox && messageBox.message ?
+            activeMessageBox && messageBox && messageBox.message &&
+            [MessageTypes.NEW_THING.key, MessageTypes.NEW_EMAIL.key].includes(activeMessageBox.type.key) ?
                 AddressParser.parseOneAddress(messageBox.message.to) :
                 true
         return isNil(activeMessageBox) || activeMessageBox.ongoingAction || !addressValid
-    }
-
-    getStyles() {
-        return {
-            form: {
-                padding: '0 39px',
-                marginBottom: '0'
-            },
-            panel: {
-                position: 'relative'
-            },
-            send: {
-                position: 'absolute',
-                bottom: '15px',
-                right: '15px'
-            },
-            notFullItemBox: {
-                boxShadow: '0px 0px 40px 0px rgba(0, 0, 0, 0.15)'
-            }
-        }
     }
 
     getMessageBox() {
@@ -106,14 +87,17 @@ class MessagePanel extends Component {
     }
 
     getSendButton() {
-        const {activeMessageBox} = this.props
-        const styles = this.getStyles()
+        const {activeMessageBox, sheet: {classes}} = this.props
+        
+        const sendClass = classNames(classes.sendButtonContainer, classes.send)
+        const buttonClass = classNames(classes.sendButton, this.isSendDisabled() && componentStyles.disabledSendButton)
+        
         return !isNil(activeMessageBox) ?
-            <div name="send-container" style={[componentStyles.sendButton, styles.send]}>
+            <div name="send-container" className={sendClass}>
                 <button type="submit"
                         tabIndex="4"
                         disabled={this.isSendDisabled()}
-                        style={[componentStyles.sendButton.button, this.isSendDisabled() && componentStyles.sendButton.disabled]}>
+                        className={buttonClass}>
                     Send
                 </button>
             </div> :
@@ -126,17 +110,19 @@ class MessagePanel extends Component {
     }
 
     render () {
-        const styles = this.getStyles()
+        const {sheet: {classes}} = this.props
 
         const messageBox = this.getMessageBox()
         const sendButton = this.getSendButton()
 
+        const messageBoxClass = classNames(!this.isFullItemMode() && classes.notFullItemBox)
+
         return (
-            <Form model="messageBox" onSubmit={this.send} style={styles.form}>
-                <Flexbox name="message-panel" container="row" style={styles.panel}>
+            <Form model="messageBox" onSubmit={this.send} className={classes.form}>
+                <Flexbox name="message-panel" container="row" className={classes.panel}>
                     <Flexbox name="message-box" grow={1} container="column">
                         <MessageTabs />
-                        <Flexbox container="column" style={[!this.isFullItemMode() && styles.notFullItemBox]}>
+                        <Flexbox container="column" className={messageBoxClass}>
                             {messageBox}
                         </Flexbox>
                     </Flexbox>
@@ -146,6 +132,24 @@ class MessagePanel extends Component {
         )
     }
 }
+
+const style = Object.assign({
+    form: {
+        padding: [0, 39],
+        marginBottom: 0
+    },
+    panel: {
+        position: 'relative'
+    },
+    send: {
+        position: 'absolute',
+        bottom: 15,
+        right: 15
+    },
+    notFullItemBox: {
+        boxShadow: '0px 0px 40px 0px rgba(0, 0, 0, 0.15)'
+    }
+}, componentStyles)
 
 MessagePanel.propTypes = {
     messageBoxes: PropTypes.array.isRequired,
@@ -163,4 +167,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(radium(MessagePanel))
+module.exports = useSheet(connect(mapStateToProps)(MessagePanel), style)

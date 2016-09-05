@@ -2,6 +2,8 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const classAutobind = require('class-autobind').default
+const useSheet = require('react-jss').default
+const classNames = require('classnames')
 
 const groupBy = require('lodash/groupBy')
 const find = require('lodash/find')
@@ -27,7 +29,6 @@ const PreviewHelper = require('../../helpers/preview-helper')
 const WhatsNewActions = require('../../actions/whats-new-actions')
 import EventTypes from '../../../common/enums/event-types'
 import EntityTypes from '../../../common/enums/entity-types'
-const {PreviewDateGroups} = require('../../constants')
 
 class WhatsNew extends Component {
     constructor(props) {
@@ -80,16 +81,17 @@ class WhatsNew extends Component {
     }
     
     groupNotificationsByDate(aggregatedNotifications) {
-        const styles = this.getStyles()
+        const {sheet: {classes}} = this.props
 
         const groupedNotifications = PreviewHelper.groupByDate(aggregatedNotifications, this.buildPreviewItem)
 
         const notificationsToShow = chain(toPairs(groupedNotifications))
             .filter(([groupTitle, notifications]) => !isEmpty(notifications))
             .map(([groupTitle, notifications], index) => {
+                const titleClass = classNames(classes.header, index === 0 && classes.first)
                 return (
                     <Flexbox name={`container-${groupTitle}`} key={`container-${groupTitle}`}>
-                        <Flexbox name="group-title" container="row" alignItems="center" style={[styles.header, index === 0 && styles.header.first]}>
+                        <Flexbox name="group-title" container="row" alignItems="center" className={titleClass}>
                             {groupTitle}
                         </Flexbox>
                         {notifications}
@@ -130,21 +132,6 @@ class WhatsNew extends Component {
         }
     }
 
-    getStyles() {
-        return {
-            header: {
-                color: '#515151',
-                textTransform: 'uppercase',
-                marginTop: '26px',
-                marginBottom: '13px',
-                marginLeft: '1px',
-                first: {
-                    marginTop: 0
-                }
-            }
-        }
-    }
-
     render () {
         const {invalidationStatus} = this.props
         
@@ -161,6 +148,19 @@ class WhatsNew extends Component {
     }
 }
 
+const style = {
+    header: {
+        color: '#515151',
+        textTransform: 'uppercase',
+        marginTop: 26,
+        marginBottom: 13,
+        marginLeft: 1
+    },
+    first: {
+        marginTop: 0
+    }
+}
+
 WhatsNew.propTypes = {
     notifications: PropTypes.array.isRequired,
     invalidationStatus: PropTypes.string.isRequired
@@ -173,4 +173,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(WhatsNew)
+module.exports = useSheet(connect(mapStateToProps)(WhatsNew), style)

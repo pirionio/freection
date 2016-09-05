@@ -3,6 +3,8 @@ const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const {Form, Field} = require('react-redux-form')
 const classAutobind = require('class-autobind').default
+const useSheet = require('react-jss').default
+const classNames = require('classnames')
 
 const Flexbox = require('../UI/Flexbox')
 const componentStyles = require('../component-styles')
@@ -26,15 +28,13 @@ class InlineMessage extends Component {
     }
 
     getLastComments() {
-        const {expandedMessages} = this.props
-
-        const styles = this.getStyles()
+        const {expandedMessages, sheet: {classes}} = this.props
 
         return expandedMessages && expandedMessages.length ?
-            <Flexbox name="last-comments" grow={1} container="column" style={styles.expandedMessages}>
+            <Flexbox name="last-comments" grow={1} container="column" className={classes.expandedMessages}>
                 {expandedMessages.map(message => {
                     return message && message.payload ?
-                        <Flexbox name="comment" style={styles.expandedMessages.message} key={message.id}>
+                        <Flexbox name="comment" className={classes.singleMessage} key={message.id}>
                             <span>{message.payload.text}</span>
                         </Flexbox> :
                         null
@@ -43,57 +43,25 @@ class InlineMessage extends Component {
             null
     }
 
-    getStyles() {
-        return {
-            container: {
-                width: '100%',
-                maxHeight: '295px'
-            },
-            form: {
-                width: '100%',
-                margin: 0
-            },
-            expandedMessages: {
-                width: '100%',
-                backgroundColor: '#fafafa',
-                message: {
-                    borderTop: '1px solid #e0e0e0',
-                    padding: '30px 30px'
-                }
-            },
-            message: {
-                height: '70px',
-                backgroundColor: 'white',
-                borderTop: '1px solid #e0e0e0',
-                padding: '0 30px'
-            },
-            textField: {
-                width: '100%',
-                border: 'none',
-                outline: 'none',
-                resize: 'none'
-            }
-        }
-    }
-
     render() {
-        const styles = this.getStyles()
+        const {sheet: {classes}} = this.props
 
         const lastMessage = this.getLastComments()
 
+        const buttonClass = classNames(classes.sendButton, this.isSendDisabled() && classes.disabledSendButton)
+        
         return (
-            <Flexbox name="inline-reply-container" container="column" style={styles.inlineMessage}>
+            <Flexbox name="inline-reply-container" container="column" className={classes.inlineMessage}>
                 {lastMessage}
-                <Form model="inlineMessage" onSubmit={this.send} style={styles.form}>
-                    <Flexbox name="message" container="row" alignItems="center" style={styles.message}>
+                <Form model="inlineMessage" onSubmit={this.send} className={classes.form}>
+                    <Flexbox name="message" container="row" alignItems="center" className={classes.messageBox}>
                         <Flexbox name="textarea" grow={1}>
                             <Field model="inlineMessage.text">
-                                <input type="text" style={styles.textField} placeholder="You must write an explanation" autoFocus />
+                                <input type="text" className={classes.textField} placeholder="You must write an explanation" autoFocus />
                             </Field>
                         </Flexbox>
-                        <Flexbox name="send" style={componentStyles.sendButton}>
-                            <button type="submit" disabled={this.isSendDisabled()}
-                                    style={[componentStyles.sendButton.button, this.isSendDisabled() && componentStyles.sendButton.disabled]}>
+                        <Flexbox name="send" className={classes.sendButtonContainer}>
+                            <button type="submit" disabled={this.isSendDisabled()} className={buttonClass}>
                                 Send
                             </button>
                         </Flexbox>
@@ -103,6 +71,37 @@ class InlineMessage extends Component {
         )
     }
 }
+
+const style = Object.assign({
+    container: {
+        width: '100%',
+        maxHeight: 295
+    },
+    form: {
+        width: '100%',
+        margin: 0
+    },
+    expandedMessages: {
+        width: '100%',
+        backgroundColor: '#fafafa'
+    },
+    singleMessage: {
+        borderTop: '1px solid #e0e0e0',
+        padding: 30
+    },
+    messageBox: {
+        height: 70,
+        backgroundColor: 'white',
+        borderTop: '1px solid #e0e0e0',
+        padding: [0, 30]
+    },
+    textField: {
+        width: '100%',
+        border: 'none',
+        outline: 'none',
+        resize: 'none'
+    }
+}, componentStyles)
 
 InlineMessage.propTypes = {
     inlineMessage: PropTypes.object.isRequired,
@@ -115,4 +114,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(InlineMessage)
+module.exports = useSheet(connect(mapStateToProps)(InlineMessage), style)

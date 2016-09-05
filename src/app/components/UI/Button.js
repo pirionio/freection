@@ -1,37 +1,37 @@
 const React = require('react')
 const {Component, PropTypes} = React
-const radium = require('radium')
+const useSheet = require('react-jss').default
 
 const styleVars = require('../style-vars')
 
 class Button extends Component {
     render() {
-        const {label, onClick, disabled, type, style, tabIndex} = this.props
-
-        const buttonStyle = {
-            margin: '0 0 0 28px',
-            border: `1px solid ${styleVars.secondaryColor}`,
-            backgroundColor: 'rgba(0, 0, 0, 0)',
-            textTransform: 'uppercase',
-            fontWeight: '500',
-            fontSize: '0.75em',
-            height: '27px',
-            padding: '8px 16px',
-            cursor: 'hand',
-
-            ':focus':{
-                outline: 'none',
-            },
-
-            ':hover': {
-                backgroundColor: styleVars.secondaryColor,
-                color: 'white'
-            }
-        }
+        const {label, onClick, disabled, type, tabIndex, sheet: {classes}} = this.props
 
         return (
-            <button type={type} style={[buttonStyle, style]} onClick={onClick} disabled={disabled} tabIndex={tabIndex}>{label}</button>
+            <button type={type} className={classes.button} onClick={onClick} disabled={disabled} tabIndex={tabIndex}>{label}</button>
         )
+    }
+}
+
+const style = {
+    button: {
+        margin: [0, 0, 0, 28],
+        border: `1px solid ${styleVars.secondaryColor}`,
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+        textTransform: 'uppercase',
+        fontWeight: '500',
+        fontSize: '0.75em',
+        height: 27,
+        padding: [8, 16],
+        cursor: 'hand',
+        '&:focus':{
+            outline: 'none',
+        },
+        '&:hover': {
+            backgroundColor: styleVars.secondaryColor,
+            color: 'white'
+        }
     }
 }
 
@@ -40,7 +40,6 @@ Button.propTypes = {
     onClick: PropTypes.func,
     disabled: PropTypes.bool,
     type: PropTypes.string,
-    style: PropTypes.object,
     tabIndex: PropTypes.string
 }
 
@@ -49,4 +48,4 @@ Button.defaultProps = {
     type: 'text'
 }
 
-module.exports = radium(Button)
+module.exports = useSheet(Button, style)

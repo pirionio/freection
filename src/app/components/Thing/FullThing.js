@@ -48,18 +48,6 @@ class FullThing extends Component {
         dispatch(goBack())
     }
 
-    getThingUser() {
-        const {thing, currentUser} = this.props
-
-        if (this.isEmpty())
-            return ''
-
-        if (thing.creator.id === currentUser.id)
-            return thing.to.displayName
-
-        return thing.creator.displayName
-    }
-
     getDocumentTitle() {
         const {thing} = this.props
 
@@ -116,18 +104,6 @@ class FullThing extends Component {
 
     isEmpty() {
         return isEmpty(this.props.thing)
-    }
-
-    getStyles() {
-        return {
-            page: {
-                height: '100%',
-                zIndex: styleVars.fullItemZIndex
-            },
-            item: {
-                backgroundColor: styleVars.secondaryBackgroundColor
-            }
-        }
     }
 
     render() {

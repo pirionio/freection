@@ -1,8 +1,8 @@
 const React = require('react')
 const {PropTypes, Component} = React
+const useSheet = require('react-jss').default
 
-const {PreviewItem, PreviewItemUser, PreviewItemText, PreviewItemActions} =
-    require('../Preview/PreviewItem')
+const {PreviewItem, PreviewItemUser, PreviewItemText, PreviewItemActions} = require('../Preview/PreviewItem')
 const GithubActionsBar = require('./GithubActionsBar')
 const TextTruncate = require('../UI/TextTruncate')
 import ThingStatus from '../../../common/enums/thing-status'
@@ -10,13 +10,17 @@ const styleVars = require('../style-vars')
 
 class GithubTodoPreviewItem extends Component {
     getTextElement() {
-        const {thing} = this.props
+        const {thing, sheet: {classes}} = this.props
 
         if (thing.body) {
             return (
                 <Flexbox container="row">
                     <Flexbox shrink={0}><TextSeparator /></Flexbox>
-                    <Flexbox grow={1} style={{minWidth: 0}}><TextTruncate>{thing.body}</TextTruncate></Flexbox>
+                    <Flexbox grow={1} className={classes.textRow}>
+                        <TextTruncate>
+                            {thing.body}
+                        </TextTruncate>
+                    </Flexbox>
                 </Flexbox>)
         }
 
@@ -61,8 +65,14 @@ class GithubTodoPreviewItem extends Component {
     }
 }
 
+const style = {
+    textRow: {
+        minWidth: 0
+    }
+}
+
 GithubTodoPreviewItem.propTypes = {
     thing: PropTypes.object.isRequired
 }
 
-module.exports = GithubTodoPreviewItem
+module.exports = useSheet(GithubTodoPreviewItem, style)
