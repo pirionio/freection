@@ -1,3 +1,5 @@
 src/app/actions/generated/*.js
 scripts/*.js
+config/*.js
 src/app/**
+dist/

@@ -8,5 +8,3 @@ export async function get(user) {
 
     return withoutMe.map(userToAddress)
 }
-
-module.exports = {get}

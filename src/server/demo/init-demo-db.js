@@ -116,7 +116,7 @@ async function createUsers() {
     await User.save(users, {conflict: 'update'})
 }
 
-module.exports = async function() {
+export default async function() {
     //await User.filter(doc => doc('id').ne(userId)).delete().execute()
     await Thing.delete().execute()
     await Event.delete().execute()

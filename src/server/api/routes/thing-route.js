@@ -1,9 +1,10 @@
-const router = require('express').Router()
-
+import {Router} from 'express'
 import * as ThingService from '../../shared/application/thing-service'
 import * as GithubThingService from '../../shared/application/github-thing-service'
 import * as EndpointUtil from '../../shared/utils/endpoint-util'
 import EntityTypes from '../../../common/enums/entity-types'
+
+const router = Router()
 
 router.get('/whatsnew', (request, response) => {
     EndpointUtil.handleGet(request, response, ThingService.getWhatsNew, {
@@ -170,4 +171,4 @@ function getServiceByType(request) {
     return ThingService
 }
 
-module.exports = router
+export default router

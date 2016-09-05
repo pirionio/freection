@@ -1,23 +1,26 @@
-const express = require('express')
-const path = require('path')
-const jwt = require('jsonwebtoken')
-
+import express from 'express'
+import path from 'path'
+import jwt from 'jsonwebtoken'
 import {isDemo} from '../shared/config/demo'
-
 import tokenConfig from '../shared/config/token'
 import logger from '../shared/utils/logger'
-const login = require('./login')
+import login from './login'
+import * as ThingService from '../shared/application/thing-service'
+import * as ContactService from '../shared/application/contact-service'
 
+/* eslint-disable import/no-commonjs */
+
+// TODO: change to import one when changing app to import as well
 const reducer = require('../../app/reducers')
 const WhatsNewActions = require('../../app/actions/whats-new-actions')
 const ToDoActions = require('../../app/actions/to-do-actions')
 const FollowUpActions = require('../../app/actions/follow-up-actions')
 const AuthActions = require('../../app/actions/auth-actions')
 const ContactsActions = require('../../app/actions/contacts-actions')
-import * as ThingService from '../shared/application/thing-service'
-import * as ContactService from '../shared/application/contact-service'
 
-module.exports = app => {
+/* eslint-enable import/no-commonjs */
+
+export function configure(app) {
     app.set('views', path.join(__dirname, 'views'))
     app.set('view engine', 'ejs')
 

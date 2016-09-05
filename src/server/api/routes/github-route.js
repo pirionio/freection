@@ -1,13 +1,12 @@
+import {Router} from 'express'
+import querystring from 'querystring'
+import fetch from 'node-fetch'
+import {toString} from 'lodash'
 import { User } from '../../shared/models'
 import config from '../../shared/config/github'
-
-const router = require('express').Router()
-const querystring = require('querystring')
-const fetch = require('node-fetch')
-const {toString} = require('lodash')
-
 import logger from '../../shared/utils/logger'
 
+const router = Router()
 const githubAPIUrl = 'https://api.github.com'
 
 router.get('/', (request, response) => {
@@ -209,4 +208,4 @@ function githubRequest(access_token, method, path, body) {
         })
 }
 
-module.exports = router
+export default router

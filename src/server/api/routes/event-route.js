@@ -1,7 +1,8 @@
-const router = require('express').Router()
-
+import {Router} from 'express'
 import * as EventService from '../../shared/application/event-service'
 import * as EndpointUtil from '../../shared/utils/endpoint-util'
+
+const router = Router()
 
 router.post('/:eventId/discard', (request, response) => {
     EndpointUtil.handlePost(request, response, EventService.discard, {
@@ -29,4 +30,4 @@ function getNotFoundErrorTemplate() {
     return 'Could not find event ${eventId}'
 }
 
-module.exports = router
+export default router
