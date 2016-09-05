@@ -1,13 +1,14 @@
 const React = require('react')
+const useSheet = require('react-jss').default
 
-const TextSeparator = () => {
-    const style = {
-        separator: {
-            width: '13px',
-            textAlign: 'center'
-    }}
-
-    return <div style={style.separator}>•</div>
+const TextSeparator = ({sheet: {classes}}) => {
+    return <div className={classes.separator}>•</div>
 }
 
-module.exports = TextSeparator
+const style = {
+    separator: {
+        width: 13,
+        textAlign: 'center'
+}}
+
+module.exports = useSheet(TextSeparator, style)

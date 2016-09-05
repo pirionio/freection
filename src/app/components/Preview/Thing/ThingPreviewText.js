@@ -1,5 +1,7 @@
 const React = require('react')
 const {PropTypes} = React
+const useSheet = require('react-jss').default
+
 const first = require('lodash/first')
 const last = require('lodash/last')
 
@@ -11,7 +13,7 @@ const PingPreviewText = require('./PingPreviewText')
 const TextSeparator = require('../../UI/TextSeparator')
 const Flexbox = require('../../UI/Flexbox')
 
-const ThingPreviewText = ({thing}) =>  {
+const ThingPreviewText = ({thing, sheet: {classes}}) =>  {
     const unreadEvents = ThingHelper.getUnreadMessages(thing)
     const readEvents = ThingHelper.getReadMessages(thing)
 
@@ -42,14 +44,21 @@ const ThingPreviewText = ({thing}) =>  {
         return (
             <Flexbox container="row">
                 <Flexbox shrink={0}><TextSeparator /></Flexbox>
-                <Flexbox grow={1} style={{minWidth: 0}}>{text}</Flexbox>
+                <Flexbox grow={1} className={classes.textRow}>{text}</Flexbox>
             </Flexbox>)
     }
 
     return null
 }
+
+const style = {
+    textRow: {
+        minWidth: 0
+    }
+}
+
 ThingPreviewText.propTypes = {
     thing: PropTypes.object.isRequired
 }
 
-module.exports = ThingPreviewText
+module.exports = useSheet(ThingPreviewText, style)

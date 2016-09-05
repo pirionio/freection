@@ -1,8 +1,8 @@
 const React = require('react')
-const {Component, PropTypes} = React
+const {Component} = React
 const classAutobind = require('class-autobind').default
 const {connect} = require('react-redux')
-const radium = require('radium')
+const useSheet = require('react-jss').default
 
 const MessageBoxActions = require('../../actions/message-box-actions')
 const MessageTypes = require('../../../common/enums/message-types')
@@ -21,30 +21,12 @@ class CollapsedMessageBox extends Component {
         dispatch(MessageBoxActions.newMessageBox(MessageTypes.NEW_THING))
     }
 
-    getStyles() {
-        return {
-            box: {
-                height: '70px',
-                backgroundColor: '#fafafa',
-                opacity: '0.5',
-                cursor: 'text',
-                ':hover': {
-                    opacity: '1'
-                }
-            },
-            placeholder: {
-                paddingLeft: '10px',
-                color: styleVars.watermarkColor
-            }
-        }
-    }
-
     render () {
-        const styles = this.getStyles()
-
+        const {sheet: {classes}} = this.props
+        
         return (
-            <Flexbox name="message-text" container="column" justifyContent="center" onClick={this.newThingMessageBox} style={styles.box}>
-                <span style={styles.placeholder}>
+            <Flexbox name="message-text" container="column" justifyContent="center" onClick={this.newThingMessageBox} className={classes.box}>
+                <span className={classes.placeholder}>
                     Create a new Thing by typing here.
                 </span>
             </Flexbox>
@@ -52,4 +34,20 @@ class CollapsedMessageBox extends Component {
     }
 }
 
-module.exports = connect()(radium(CollapsedMessageBox))
+const style = {
+    box: {
+        height: '70px',
+        backgroundColor: '#fafafa',
+        opacity: '0.5',
+        cursor: 'text',
+        ':hover': {
+            opacity: '1'
+        }
+    },
+    placeholder: {
+        paddingLeft: '10px',
+        color: styleVars.watermarkColor
+    }
+}
+
+module.exports = useSheet(connect()(CollapsedMessageBox), style)

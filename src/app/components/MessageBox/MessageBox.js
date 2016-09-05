@@ -3,7 +3,7 @@ const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const {Field} = require('react-redux-form')
 const classAutobind = require('class-autobind').default
-const radium = require('radium')
+const useSheet = require('react-jss').default
 
 const isNil = require('lodash/isNil')
 const find = require('lodash/find')
@@ -46,15 +46,15 @@ class MessageBox extends Component {
     }
 
     getSubject() {
-        const styles = this.getStyles()
+        const {sheet: {classes}} = this.props
 
         if (!this.hasSubject())
             return null
 
         return (
-            <Flexbox name="message-subject" style={styles.messageSubject}>
+            <Flexbox name="message-subject" className={classes.messageSubject}>
                 <Field model="messageBox.message.subject">
-                    <input type="text" style={[styles.textField]} tabIndex="1" placeholder="Subject"
+                    <input type="text" className={classes.textField} tabIndex="1" placeholder="Subject"
                            ref={ref => this.messageSubject = ref}
                            onFocus={this.focusOnSubject} />
                 </Field>
@@ -63,12 +63,12 @@ class MessageBox extends Component {
     }
 
     getBody() {
-        const styles = this.getStyles()
+        const {sheet: {classes}} = this.props
 
         return (
-            <Flexbox name="message-body" grow={1} container="row" style={styles.messageBody}>
+            <Flexbox name="message-body" grow={1} container="row" className={classes.messageBody}>
                 <Field model="messageBox.message.body">
-                    <textarea style={styles.textField} tabIndex="2" placeholder="Write your message here"
+                    <textarea className={classes.textField} tabIndex="2" placeholder="Write your message here"
                               ref={ref => this.messageBody = ref}
                               onFocus={this.focusOnBody} />
                 </Field>
@@ -77,14 +77,14 @@ class MessageBox extends Component {
     }
 
     getTo() {
-        const styles = this.getStyles()
+        const {sheet: {classes}} = this.props
 
         if (!this.hasTo())
             return null
 
         return <To model="messageBox.message.to"
-                   containerStyle={styles.messageTo}
-                   inputStyle={styles.textField}
+                   containerClassName={classes.messageTo}
+                   inputClassName={classes.textField}
                    tabIndex={3}
                    inputRef={ref =>this.messageTo = ref}
                    onFocus={this.focusOnTo} />
@@ -113,52 +113,50 @@ class MessageBox extends Component {
         return !isNil(this.props.to)
     }
 
-    getStyles() {
-        return {
-            box: {
-                height: '200px',
-                backgroundColor: 'white',
-                border: `1px solid ${styleVars.highlightColor}`
-            },
-            messageSubject: {
-                height: '40px',
-                width: '100%',
-                padding: '10px 10px 0'
-            },
-            messageTo: {
-                height: '40px',
-                width: 'calc(100% - 108px)',
-                padding: '10px 10px 0',
-                ':-webkit-autofill': {
-                    backgroundColor: 'inherit'
-                }
-            },
-            messageBody: {
-                padding: '10px 10px'
-            },
-            textField: {
-                width: '100%',
-                border: 'none',
-                outline: 'none',
-                resize: 'none'
-            }
-        }
-    }
-
     render () {
-        const styles = this.getStyles()
+        const {sheet: {classes}} = this.props
 
         const subject = this.getSubject()
         const body = this.getBody()
         const to = this.getTo()
 
         return (
-            <Flexbox name="message-text" grow={1} style={styles.box} container="column">
+            <Flexbox name="message-text" grow={1} className={classes.box} container="column">
                 {subject}
                 {body}
                 {to}
             </Flexbox>
         )
+    }
+}
+
+const style = {
+    box: {
+        height: 200,
+        backgroundColor: 'white',
+        border: `1px solid ${styleVars.highlightColor}`
+    },
+    messageSubject: {
+        height: 40,
+        width: '100%',
+        padding: [10, 10, 0]
+    },
+    messageTo: {
+        height: 40,
+        width: 'calc(100% - 108px)',
+        padding: [10, 10, 0],
+        '&:-webkit-autofill': {
+            backgroundColor: 'inherit'
+        }
+    },
+    messageBody: {
+        padding: 10
+    },
+    textField: {
+        width: '100%',
+        border: 'none',
+        outline: 'none',
+        resize: 'none'
     }
 }
 
@@ -174,4 +172,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(radium(MessageBox))
+module.exports = useSheet(connect(mapStateToProps)(MessageBox), style)

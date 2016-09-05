@@ -1,6 +1,7 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
+const useSheet = require('react-jss').default
 
 import SharedConstants from '../../../common/shared-constants'
 import EventTypes from '../../../common/enums/event-types'
@@ -16,7 +17,7 @@ const styleVars = require('../style-vars')
 class NotificationPreviewItem extends Component {
 
     getTextElement() {
-        const {notification} = this.props
+        const {notification, sheet: {classes}} = this.props
 
         let text = null
 
@@ -30,7 +31,7 @@ class NotificationPreviewItem extends Component {
             return (
                 <Flexbox container="row">
                     <Flexbox shrink={0}><TextSeparator /></Flexbox>
-                    <Flexbox grow={1} style={{minWidth: 0}}>{text}</Flexbox>
+                    <Flexbox grow={1} className={classes.textRow}>{text}</Flexbox>
                 </Flexbox>)
         }
 
@@ -109,8 +110,14 @@ class NotificationPreviewItem extends Component {
     }
 }
 
+const style = {
+    textRow: {
+        minWidth: 0
+    }
+}
+
 NotificationPreviewItem.propTypes = {
     notification: PropTypes.object.isRequired
 }
 
-module.exports = connect()(NotificationPreviewItem)
+module.exports = useSheet(connect()(NotificationPreviewItem), style)

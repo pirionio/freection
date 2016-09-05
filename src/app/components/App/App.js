@@ -1,10 +1,9 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
-const radium = require('radium')
+const useSheet = require('react-jss').default
 
 const Flexbox = require('../UI/Flexbox')
-const TopBar = require('../TopBar/TopBar')
 const LoginTopBar = require('../TopBar/LoginTopBar')
 const SideBar = require('../SideBar/SideBar')
 const Login = require('../Login/Login')
@@ -23,11 +22,11 @@ class App extends Component {
     }
 
     render () {
-        const {currentUser} = this.props
+        const {currentUser, sheet: {classes}} = this.props
 
         if (currentUser.isAuthenticated) {
             return (
-                <Flexbox name="root" container="row" height="100%">
+                <Flexbox name="root" container="row" className={classes.container}>
                     <SideBar currentUser={currentUser} />
                     <Flexbox name="app-section" grow={1} container="column">
                         {this.props.children}
@@ -37,12 +36,18 @@ class App extends Component {
             )
         } else {
             return (
-                <Flexbox name="root" container="column" height="100%">
+                <Flexbox name="root" container="column" className={classes.container}>
                     <LoginTopBar />
                     <Login />
                 </Flexbox>
             )
         }
+    }
+}
+
+const style = {
+    container: {
+        height: '100%'
     }
 }
 
@@ -56,4 +61,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-module.exports = connect(mapStateToProps)(radium(App))
+module.exports = useSheet(connect(mapStateToProps)(App), style)

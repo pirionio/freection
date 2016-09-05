@@ -35,7 +35,7 @@ class NotificationActionsBar extends Component {
     }
 
     render() {
-        const {notification, currentUser, isRollover, preDoFunc} = this.props
+        const {notification, currentUser, preDoFunc} = this.props
 
         const doAction = DoAction(notification.thing, currentUser)
         doAction.show = doAction.show && this.showDo()
@@ -67,7 +67,7 @@ class NotificationActionsBar extends Component {
 
         return (
             <div>
-                <ActionsBar actions={actions} isRollover={isRollover} />
+                <ActionsBar actions={actions} />
             </div>
         )
     }
@@ -76,7 +76,6 @@ class NotificationActionsBar extends Component {
 NotificationActionsBar.propTypes = {
     notification: PropTypes.object.isRequired,
     currentUser: PropTypes.object.isRequired,
-    isRollover: PropTypes.bool,
     preDoFunc: PropTypes.func
 }
 

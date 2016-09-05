@@ -1,6 +1,7 @@
 const ReactDOM = require('react-dom')
 const React = require('react')
 const {Component, PropTypes} = React
+
 const keys = require('lodash/keys')
 const last = require('lodash/last')
 
@@ -43,7 +44,9 @@ class Scrollable extends Component {
             return React.cloneElement(element, {ref: element.key})
         })
 
-        const styles = {
+        // We must not use JSS here, because it's used with a decorator,
+        // and using a decorator disables us from calling methods of this component from outside.
+        const style = {
             container: {
                 position: 'relative',
                 overflowY: 'hidden'
@@ -57,14 +60,15 @@ class Scrollable extends Component {
         }
 
         return (
-            <Flexbox name="scrollable-container" container="column" grow={1} style={styles.container}>
-                <Flexbox name="scrollable-content" style={styles.content}>
+            <Flexbox name="scrollable-container" container="column" grow={1} style={style.container}>
+                <Flexbox name="scrollable-content" style={style.content}>
                     {childrenToRender}
                 </Flexbox>
             </Flexbox>
         )
     }
 }
+
 
 Scrollable.propTypes = {
     children: PropTypes.node.isRequired,

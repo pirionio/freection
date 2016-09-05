@@ -2,6 +2,7 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const classAutobind = require('class-autobind').default
+const useSheet = require('react-jss').default
 
 const GithubActions = require('../../actions/github-actions')
 const {InvalidationStatus} = require('../../constants')
@@ -23,20 +24,21 @@ class Github extends Component {
     }
 
     getFetching() {
-        const styles = this.getStyles()
+        const {sheet: {classes}} = this.props
         return (
-            <div style={styles.content}>
+            <div>
                 Fetching github data
             </div>
         )
     }
 
     getNotActive() {
-        const styles = this.getStyles()
+        const {sheet: {classes}} = this.props
+
         return (
-            <Flexbox name="github-not-active" style={styles.notActive}>
+            <Flexbox name="github-not-active">
                 <span>You are not integrated with github yet, </span>
-                <a href="/api/github/integrate" style={styles.link}>
+                <a href="/api/github/integrate">
                     integrate with github now
                 </a>
                 .
@@ -45,20 +47,18 @@ class Github extends Component {
     }
 
     getActive() {
-        const {repositories, clientId} = this.props
+        const {repositories, clientId, sheet: {classes}} = this.props
         const rows = repositories.map(repository => <Repository key={repository.fullName} repository={repository} />)
 
-        const styles = this.getStyles()
-
         return (
-            <Flexbox name="github-content" grow={1} container="column" style={styles.content}>
-                <Flexbox name="github-header" style={styles.content.header}>
+            <Flexbox name="github-content" grow={1} container="column">
+                <Flexbox name="github-header" className={classes.contentHeader}>
                     <Flexbox>
                         Pick the repositories you would like to get notifications for.
                     </Flexbox>
-                    <Flexbox style={styles.explanation}>
+                    <Flexbox className={classes.explanation}>
                         <span>If you don't find the repository, make sure you grant access to Freection at </span>
-                        <a href={`https://github.com/settings/connections/applications/${clientId}`} target="_blank" style={styles.explanation}>
+                        <a href={`https://github.com/settings/connections/applications/${clientId}`} target="_blank" className={classes.explanation}>
                             Github settings
                         </a>
                         .
@@ -73,51 +73,45 @@ class Github extends Component {
         )
     }
 
-    getStyles() {
-        return {
-            container: {
-                color: 'black',
-                fontSize: '1.2em'
-            },
-            title: {
-                fontSize: '1.3em',
-                marginBottom: '20px',
-                icon: {
-                    marginRight: '10px'
-                }
-            },
-            content: {
-                header: {
-                    marginBottom: '20px'
-                }
-            },
-            explanation: {
-                marginTop: '8px',
-                color: styleVars.watermarkColor,
-                fontSize: '0.9em'
-            }
-        }
-    }
-
     render() {
-        const {fetched, active} = this.props
+        const {fetched, active, sheet: {classes}} = this.props
 
         const content =
             !fetched ? this.getFetching() :
             !active ? this.getNotActive() :
             this.getActive()
 
-        const styles = this.getStyles()
-
         return (
-            <Flexbox name="github-container" grow={1} container="column" style={styles.container}>
-                <Flexbox style={styles.title}>
-                    <Icon name="github" style={styles.title.icon} />
+            <Flexbox name="github-container" grow={1} container="column" className={classes.container}>
+                <Flexbox className={classes.title}>
+                    <Icon name="github" className={classes.icon} />
                     Github Integration
                 </Flexbox>
                 {content}
             </Flexbox>
         )
+    }
+}
+
+const style = {
+    container: {
+        color: 'black',
+        fontSize: '1.2em'
+    },
+    title: {
+        fontSize: '1.3em',
+        marginBottom: 20
+    },
+    icon: {
+        marginRight: 10
+    },
+    contentHeader: {
+        marginBottom: 20
+    },
+    explanation: {
+        marginTop: 8,
+        color: styleVars.watermarkColor,
+        fontSize: '0.9em'
     }
 }
 
@@ -137,4 +131,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(Github)
+module.exports = useSheet(connect(mapStateToProps)(Github), style)

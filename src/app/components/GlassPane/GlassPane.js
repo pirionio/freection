@@ -1,8 +1,9 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
-const radium = require('radium')
 const classAutobind = require('class-autobind').default
+const useSheet = require('react-jss').default
+const classNames = require('classnames')
 
 const GlassPaneActions = require('../../actions/glass-pane-actions')
 
@@ -24,26 +25,28 @@ class GlassPane extends Component {
     }
 
     render() {
-        const styles = {
-            glassPane: {
-                position: 'absolute',
-                top: '0',
-                bottom: '0',
-                height: '100%',
-                width: '100%',
-                opacity: '0.2',
-                backgroundColor: 'grey',
-                zIndex: styleVars.backZIndex,
-                display: 'block'
-            },
-            hide: {
-                display: 'none'
-            }
-        }
-        
+        const {show, sheet: {classes}} = this.props
+        const glassPaneClass = classNames(classes.glassPane, !show && classes.hide)
         return (
-            <div style={[styles.glassPane, !this.props.show && styles.hide]} onClick={this.close}></div>
+            <div className={glassPaneClass} onClick={this.close}></div>
         )
+    }
+}
+
+const style = {
+    glassPane: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        height: '100%',
+        width: '100%',
+        opacity: 0.2,
+        backgroundColor: 'grey',
+        zIndex: styleVars.backZIndex,
+        display: 'block'
+    },
+    hide: {
+        display: 'none'
     }
 }
 
@@ -59,4 +62,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(radium(GlassPane))
+module.exports = useSheet(connect(mapStateToProps)(GlassPane), style)

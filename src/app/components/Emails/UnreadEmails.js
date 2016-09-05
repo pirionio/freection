@@ -2,6 +2,8 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const classAutobind = require('class-autobind').default
+const useSheet = require('react-jss').default
+const classNames = require('classnames')
 
 const {chain} = require('lodash/core')
 const groupBy = require('lodash/groupBy')
@@ -63,16 +65,17 @@ class UnreadEmails extends Component {
     }
 
     groupEmailsByDate(aggregatedEmails) {
-        const styles = this.getStyles()
+        const {sheet: {classes}} = this.props
 
         const groupedEmails = PreviewHelper.groupByDate(aggregatedEmails, this.buildPreviewItem)
 
         const emailsToShow = chain(toPairs(groupedEmails))
             .filter(([groupTitle, emails]) => !isEmpty(emails))
             .map(([groupTitle, emails], index) => {
+                const titleClass = classNames(classes.header, index === 0 && classes.first)
                 return (
                     <Flexbox name={`container-${groupTitle}`} key={`container-${groupTitle}`}>
-                        <Flexbox name="group-title" container="row" alignItems="center" style={[styles.header, index === 0 && styles.header.first]}>
+                        <Flexbox name="group-title" container="row" alignItems="center" className={titleClass}>
                             {groupTitle}
                         </Flexbox>
                         {emails}
@@ -103,21 +106,6 @@ class UnreadEmails extends Component {
         }
     }
 
-    getStyles() {
-        return {
-            header: {
-                color: '#515151',
-                textTransform: 'uppercase',
-                marginTop: '26px',
-                marginBottom: '13px',
-                marginLeft: '1px',
-                first: {
-                    marginTop: 0
-                }
-            }
-        }
-    }
-
     render() {
         const {invalidationStatus} = this.props
 
@@ -131,6 +119,19 @@ class UnreadEmails extends Component {
                 </PreviewsContainer>
             </Page>
         )
+    }
+}
+
+const style = {
+    header: {
+        color: '#515151',
+        textTransform: 'uppercase',
+        marginTop: 26,
+        marginBottom: 13,
+        marginLeft: 1
+    },
+    first: {
+        marginTop: 0
     }
 }
 
@@ -148,4 +149,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(UnreadEmails)
+module.exports = useSheet(connect(mapStateToProps)(UnreadEmails), style)

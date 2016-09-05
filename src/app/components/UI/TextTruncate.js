@@ -1,25 +1,31 @@
 const React = require('react')
 const {PropTypes, Component} = React
-const radium = require('radium')
+const useSheet = require('react-jss').default
+const classNames = require('classnames')
 
 class TextTruncate extends Component {
     render() {
-        const {style, children} = this.props
+        const {children, className, sheet: {classes}} = this.props
 
-        const textTruncateStyle = {
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis'
-        }
+        const textTruncateClass = classNames(classes.base, className)
 
         return (
-            <div name="text-truncate" style={[textTruncateStyle, style]}>
+            <div name="text-truncate" className={textTruncateClass}>
                 {children}
             </div>)
     }
 }
-TextTruncate.propTypes = {
-    style: PropTypes.object
+
+const style = {
+    base: {
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
+    }
 }
 
-module.exports = radium(TextTruncate)
+TextTruncate.propTypes = {
+    className: PropTypes.string
+}
+
+module.exports = useSheet(TextTruncate, style)

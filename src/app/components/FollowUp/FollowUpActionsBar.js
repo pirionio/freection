@@ -8,7 +8,7 @@ import ThingStatus from '../../../common/enums/thing-status'
 
 class FollowUpActionsBar extends Component {
     render() {
-        const {thing, currentUser, isRollover, preDoFunc} = this.props
+        const {thing, currentUser, preDoFunc} = this.props
 
         const closeAction = CloseAction(thing, currentUser)
         closeAction.show = currentUser && currentUser.id === thing.creator.id &&
@@ -22,7 +22,7 @@ class FollowUpActionsBar extends Component {
 
         return (
             <div>
-                <ActionsBar actions={actions} isRollover={isRollover} />
+                <ActionsBar actions={actions} />
             </div>
         )
     }
@@ -31,12 +31,7 @@ class FollowUpActionsBar extends Component {
 FollowUpActionsBar.propTypes = {
     thing: PropTypes.object.isRequired,
     currentUser: PropTypes.object.isRequired,
-    isRollover: PropTypes.bool,
     preDoFunc: PropTypes.func
-}
-
-FollowUpActionsBar.defaultProps = {
-    isRollover: false
 }
 
 function mapStateToProps(state) {

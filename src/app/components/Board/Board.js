@@ -1,12 +1,12 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
-const radium = require('radium')
 const classAutobind = require('class-autobind').default
 const DocumentTitle = require('react-document-title')
 const clickOutside = require('react-click-outside')
 const Icon = require('react-fontawesome')
 const {goBack} = require('react-router-redux')
+const useSheet = require('react-jss').default
 
 const isEmpty = require('lodash/isEmpty')
 const reject = require('lodash/reject')
@@ -71,73 +71,6 @@ class Board extends Component {
         return board.events ? ThingHelper.getUnreadMessages(board) : []
     }
 
-    getStyles() {
-        return {
-            page: {
-                height: '100%'
-            },
-            item: {
-                marginBottom: '30px',
-                padding: '0 39px',
-                backgroundColor: styleVars.secondaryBackgroundColor
-            },
-            navigation: {
-                height: '80px',
-                option: {
-                    fontSize: '0.7em',
-                    fontWeight: 'bold',
-                    color: 'black',
-                    cursor: 'pointer',
-                    textTransform: 'uppercase'
-                },
-                prev: {
-                    borderRight: '1px solid black',
-                    paddingRight: '25px',
-                    arrow: {
-                        marginRight: '25px'
-                    }
-                },
-                next: {
-                    marginLeft: '25px',
-                    arrow: {
-                        marginLeft: '25px'
-                    }
-                }
-            },
-            header: {
-                height: '75px'
-            },
-            subject: {
-                fontSize: '1.5em',
-                fontWeight: 'bold',
-                textTransform: 'uppercase',
-                color: styleVars.basePurpleColor,
-                minWidth: 0
-            },
-            content: {
-                height: '100%',
-                overflowY: 'hidden',
-                marginTop: '10px',
-                position: 'relative'
-            },
-            close: {
-                position: 'absolute',
-                top: '25px',
-                left: '-31px',
-                fontSize: '2em',
-                cursor: 'pointer'
-            },
-            recipients: {
-                height: '25px',
-                color: 'black'
-            },
-            activity: {
-                position: 'absolute',
-                bottom: '145'
-            }
-        }
-    }
-
     getToList() {
         const {board} = this.props
 
@@ -154,31 +87,30 @@ class Board extends Component {
     }
 
     render() {
-        const {board} = this.props
+        const {board, sheet: {classes}} = this.props
 
-        const styles = this.getStyles()
         const toList = this.getToList()
 
         return (
             <DocumentTitle title={this.getDocumentTitle()}>
-                <Flexbox name="full-item-page" container="column" style={styles.page}>
-                    <Flexbox name="full-item-content" grow={1} container="column" style={styles.item}>
-                        <Flexbox name="full-item-header" container="row" alignItems="center" style={styles.header}>
+                <Flexbox name="full-item-page" container="column" className={classes.page}>
+                    <Flexbox name="full-item-content" grow={1} container="column" className={classes.item}>
+                        <Flexbox name="full-item-header" container="row" alignItems="center" className={classes.header}>
                             <Flexbox name="full-item-circle" width='19px' shrink={0} container='column' justifyContent="center">
-                                <Ellipse width="8xp" height="8px" color={styleVars.baseBlueColor} />
+                                <Ellipse className={classes.statusCircle} color={styleVars.baseBlueColor} />
                             </Flexbox>
-                            <Flexbox name="full-item-subject" grow={1} style={styles.subject}>
+                            <Flexbox name="full-item-subject" grow={1} className={classes.subject}>
                                 <TextTruncate>
                                     <span>{board.subject}</span>
                                 </TextTruncate>
                             </Flexbox>
                         </Flexbox>
-                        <Flexbox name="recipients" container="row" alignItems="center" justifyContent="flex-start" style={styles.recipients}>
+                        <Flexbox name="recipients" container="row" alignItems="center" justifyContent="flex-start" className={classes.recipients}>
                             {toList}
                         </Flexbox>
-                        <Flexbox name="full-item-body-container" grow={1} container="column" style={styles.content}>
+                        <Flexbox name="full-item-body-container" grow={1} container="column" className={classes.content}>
                             <CommentList comments={this.getAllComments()} />
-                            <Flexbox name="activity" container="row" style={styles.activity}>
+                            <Flexbox name="activity" container="row" className={classes.activity}>
                                 <span style={{color: styleVars.basePurpleColor, marginRight: '3px'}}>Elon </span>
                                 <span> created a new thing for </span>
                                 <span style={{color: styleVars.basePurpleColor, marginLeft: '3px'}}> Max</span>
@@ -190,12 +122,58 @@ class Board extends Component {
                         </Flexbox>
                     </Flexbox>
                     <MessagePanel />
-                    <Flexbox name="close" style={styles.close}>
+                    <Flexbox name="close" className={close.close}>
                         <Icon name="times-circle" onClick={this.close} />
                     </Flexbox>
                 </Flexbox>
             </DocumentTitle>
         )
+    }
+}
+
+const style = {
+    page: {
+        height: '100%'
+    },
+    item: {
+        marginBottom: 30,
+        padding: [0, 39],
+        backgroundColor: styleVars.secondaryBackgroundColor
+    },
+    header: {
+        height: 75
+    },
+    subject: {
+        fontSize: '1.5em',
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
+        color: styleVars.basePurpleColor,
+        minWidth: 0
+    },
+    content: {
+        height: '100%',
+        overflowY: 'hidden',
+        marginTop: 10,
+        position: 'relative'
+    },
+    close: {
+        position: 'absolute',
+        top: 25,
+        left: -31,
+        fontSize: '2em',
+        cursor: 'pointer'
+    },
+    recipients: {
+        height: 25,
+        color: 'black'
+    },
+    activity: {
+        position: 'absolute',
+        bottom: 135
+    },
+    statusCircle: {
+        height: 8,
+        width: 8
     }
 }
 
@@ -316,4 +294,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(clickOutside(radium(Board)))
+module.exports = useSheet(connect(mapStateToProps)(clickOutside(Board)), style)

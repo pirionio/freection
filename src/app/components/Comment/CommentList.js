@@ -1,6 +1,9 @@
 const React = require('react')
 const {Component, PropTypes} = React
-const {chain, sortBy} = require('lodash/core')
+const classAutobind = require('class-autobind').default
+const useSheet = require('react-jss').default
+
+const {chain} = require('lodash/core')
 
 const Comment = require('./Comment')
 const Scrollable = require('../Scrollable/Scrollable')
@@ -8,6 +11,11 @@ const Flexbox = require('../UI/Flexbox')
 const styleVars = require('../style-vars')
 
 class CommentList extends Component {
+    constructor(props) {
+        super(props)
+        classAutobind(this, CommentList.prototype)
+    }
+
     componentDidMount() {
         const {comments} = this.props
 
@@ -17,7 +25,7 @@ class CommentList extends Component {
             .head()
             .value()
 
-        if (firstUnreadMessage) {
+        if (firstUnreadMessage && this._scrollable) {
             this._scrollable.scrollTo(firstUnreadMessage.id)
         } else {
             this._scrollable.scrollToBottom()
@@ -25,14 +33,7 @@ class CommentList extends Component {
     }
 
     render() {
-        const {comments} = this.props
-
-        const styles = {
-            unreadTitle: {
-                height: '25px',
-                color: styleVars.highlightColor
-            }
-        }
+        const {comments, sheet: {classes}} = this.props
 
         const readComments = chain(comments)
             .sortBy('createdAt')
@@ -57,7 +58,7 @@ class CommentList extends Component {
         return (
             <Scrollable stickToBottom={true} ref={scrollable => this._scrollable = scrollable}>
                 {readComments}
-                <Flexbox container="row" justifyContent="center" alignItems="center" style={styles.unreadTitle}>
+                <Flexbox container="row" justifyContent="center" alignItems="center" className={classes.title}>
                     Unread Messages
                 </Flexbox>
                 {unreadComments}
@@ -66,8 +67,15 @@ class CommentList extends Component {
     }
 }
 
+const style = {
+    title: {
+        height: 25,
+        color: styleVars.highlightColor
+    }
+}
+
 CommentList.propTypes = {
     comments: PropTypes.array.isRequired
 }
 
-module.exports = CommentList
+module.exports = useSheet(CommentList, style)

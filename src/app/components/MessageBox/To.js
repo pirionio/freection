@@ -2,8 +2,9 @@ const React = require('react')
 const {PropTypes, Component} = React
 const {connect} = require('react-redux')
 const {actions} = require('react-redux-form')
-const radium = require('radium')
 const Autosuggest = require('react-autosuggest')
+const useSheet = require('react-jss').default
+
 const merge = require('lodash/merge')
 const omit = require('lodash/omit')
 const some = require('lodash/some')
@@ -70,54 +71,25 @@ class To extends Component {
     }
 
     render() {
-        const { value, containerStyle, inputStyle, tabIndex , onFocus, inputRef} = this.props
-
-        /*<input type="text" style={inputStyle} tabIndex={tabIndex} placeholder="To"
-         ref={ref => this.input = ref}
-         onFocus={onFocus} />*/
+        const {value, containerClassName, inputClassName, tabIndex , onFocus, inputRef, sheet: {classes}} = this.props
 
         const suggestions = this.getSuggestions(value)
 
-        const theme = {
-            container: {position: 'relative'},
-            suggestionsContainer: {
-                position: 'absolute',
-                bottom: '25px',
-                left: 0,
-                border: '1px solid',
-                backgroundColor: 'white'
-            },
-            suggestionsList: {
-                listStyleType: 'none',
-                padding: 0,
-            },
-            suggestion: {
-                cursor: 'default',
-                paddingRight: '20px',
-                paddingLeft: '20px',
-                paddingTop: '10px',
-                paddingBottom: '10px'
-            },
-            suggestionFocused: {
-                backgroundColor: 'lightgray'
-            }
-        }
-
         return (
-            <div name="message-to" style={containerStyle}>
+            <div name="message-to" className={containerClassName}>
                 <Autosuggest suggestions={suggestions}
                              getSuggestionValue={this.getSuggestionValue}
                              renderSuggestion={this.renderSuggestion}
                              renderSuggestionsContainer={this.renderSuggestionContainer}
                              focusFirstSuggestion={true}
-                             theme={theme}
+                             theme={classes}
                              ref={ref => {
                                  if(ref)
                                      inputRef(ref.input)
                              }}
                              inputProps={{
                                  type: 'text',
-                                 style: inputStyle,
+                                 className: inputClassName,
                                  tabIndex: tabIndex,
                                  placeholder: 'To',
                                  value:  value,
@@ -129,16 +101,40 @@ class To extends Component {
     }
 }
 
+const style = {
+    container: {
+        position: 'relative'
+    },
+    suggestionsContainer: {
+        position: 'absolute',
+        bottom: 25,
+        left: 0,
+        border: '1px solid',
+        backgroundColor: 'white'
+    },
+    suggestionsList: {
+        listStyleType: 'none',
+        padding: 0
+    },
+    suggestion: {
+        cursor: 'default',
+        padding: [10, 20]
+    },
+    suggestionFocused: {
+        backgroundColor: 'lightgray'
+    }
+}
+
 To.propTypes = {
     contacts: PropTypes.array.isRequired,
     currentUser: PropTypes.object.isRequired,
     value: PropTypes.string,
     model: PropTypes.string.isRequired,
-    containerStyle: PropTypes.object,
-    inputStyle: PropTypes.object,
+    containerClassName: PropTypes.string,
+    inputClassName: PropTypes.string,
     tabIndex: PropTypes.number,
     onFocus: PropTypes.func,
-    inputRef: PropTypes.func,
+    inputRef: PropTypes.func
 }
 
 To.defaultProps = {
@@ -153,4 +149,4 @@ function mapStateToProps(state, {model}) {
     }
 }
 
-module.exports = connect(mapStateToProps)(radium(To))
+module.exports = useSheet(connect(mapStateToProps)(To), style)
