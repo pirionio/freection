@@ -40,14 +40,19 @@ class PreviewItemText extends Component {
     }
 
     render() {
+        const {children} = this.props
+
+        if (!children)
+            return null
+
         const styles = this.getStyles()
 
         if (!this.fade)
-            return React.Children.only(this.props.children)
+            return React.Children.only(children)
 
         return (
             <div name="text-preview" style={styles.text}>
-                {this.props.children}
+                {children}
                 <div name="text-fade" style={styles.fade}></div>
             </div>
         )
