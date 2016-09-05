@@ -1,6 +1,7 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const DocumentTitle = require('react-document-title')
+const radium = require('radium')
 
 const Flexbox = require('./Flexbox')
 
@@ -26,6 +27,6 @@ Page.defaultProps = {
     title: ''
 }
 
-module.exports = Page
+module.exports = radium(Page)
 
 

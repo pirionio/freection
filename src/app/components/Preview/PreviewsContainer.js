@@ -1,6 +1,7 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const Delay = require('react-delay')
+const radium = require('radium')
 
 const isEmpty = require('lodash/isEmpty')
 const isArray = require('lodash/isArray')
@@ -137,4 +138,4 @@ PreviewsContainer.propTypes = {
     invalidationStatus: PropTypes.string.isRequired
 }
 
-module.exports = PreviewsContainer
+module.exports = radium(PreviewsContainer)

@@ -2,6 +2,7 @@ const React = require('react')
 const {PropTypes, Component} = React
 const {connect} = require('react-redux')
 const {actions} = require('react-redux-form')
+const radium = require('radium')
 const Autosuggest = require('react-autosuggest')
 const merge = require('lodash/merge')
 const omit = require('lodash/omit')
@@ -152,4 +153,4 @@ function mapStateToProps(state, {model}) {
     }
 }
 
-module.exports = connect(mapStateToProps)(To)
+module.exports = connect(mapStateToProps)(radium(To))

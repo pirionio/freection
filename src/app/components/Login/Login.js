@@ -1,5 +1,6 @@
 const React = require('react')
 const {Component} = React
+const radium = require('radium')
 var Icon = require('react-fontawesome');
 
 const Flexbox = require('../UI/Flexbox')
@@ -47,4 +48,4 @@ class Login extends Component {
     }
 }
 
-module.exports = Login
+module.exports = radium(Login)

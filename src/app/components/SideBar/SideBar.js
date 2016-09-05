@@ -2,7 +2,6 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const classAutobind = require('class-autobind').default
-const useSheet = require('react-jss').default
 
 const Flexbox = require('../UI/Flexbox')
 const styleVars = require('../style-vars')
@@ -19,42 +18,42 @@ class SideBar extends Component {
         classAutobind(this, SideBar.prototype)
     }
 
+    getStyles() {
+        return {
+            sideBar: {
+                width: '222px',
+                height: '100%',
+                backgroundColor: styleVars.primaryColor
+            },
+            logo: {
+                container: {
+                    width: '185px',
+                    height: '75px',
+                    borderBottom: '1px solid #232e34',
+                    margin: '0 19px'
+                },
+                image: {
+                    width: '45px',
+                    height: '15px'
+                }
+            }
+        }
+    }
+
     render() {
         const {config} = this.props
-        const {classes} = this.props.sheet
+        const styles = this.getStyles()
 
         return (
-            <Flexbox name="side-bar" shrink={0} container="column" className={classes.sideBar}>
-                <Flexbox name="logo-container" container="row" justifyContent="center" alignItems="center" className={classes.logoContainer}>
-                    <img src={logo} className={classes.logoImage} />
+            <Flexbox name="side-bar" shrink={0} container="column" style={styles.sideBar}>
+                <Flexbox name="logo-container" container="row" justifyContent="center" alignItems="center" style={styles.logo.container}>
+                    <img src={logo} style={styles.logo.image} />
                 </Flexbox>
                 <NavigationMenu />
                 {config.isDemo ? <BoardList /> : null}
                 <UserSettings />
             </Flexbox>
         )
-    }
-}
-
-const styles = {
-    sideBar: {
-        width: 222,
-        height: '100%',
-        backgroundColor: styleVars.primaryColor
-    },
-    logoContainer: {
-        width: 185,
-        height: 75,
-        borderBottom: {
-            width: 1,
-            style: 'solid',
-            color: '#232e34'
-        },
-        margin: [0, 19]
-    },
-    logoImage: {
-        width: 45,
-        height: 15
     }
 }
 
@@ -68,4 +67,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = useSheet(connect(mapStateToProps)(SideBar), styles)
+module.exports = connect(mapStateToProps)(SideBar)

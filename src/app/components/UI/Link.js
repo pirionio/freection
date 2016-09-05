@@ -1,6 +1,6 @@
 const React = require('react')
 const {Component, PropTypes} = React
-const classNames = require('classnames')
+const radium = require('radium')
 
 class Link extends Component {
     constructor(props, context) {
@@ -20,29 +20,24 @@ class Link extends Component {
     }
 
     render() {
-        const {children, to, className, activeClassName} = this.props
+        const {children, to, style, activeStyle} = this.props
         const {router} = this.context
 
         const href = router.createHref(to)
         const isActive = router.isActive(to, false)
 
-        const classes = classNames(className, {
-            activeClassName: isActive
-        })
-
-        return (<a href={href} onClick={this.onClick} className={classes}>{children}</a>)
+        return (<a href={href} onClick={this.onClick} style={[style, isActive && activeStyle]}>{children}</a>)
     }
 }
 
 Link.propTypes = {
     to: PropTypes.string,
-    className: PropTypes.string,
-    activeClassName: PropTypes.string,
+    style: PropTypes.object,
+    activeStyle: PropTypes.object,
     onClick: PropTypes.func
 }
-
 Link.contextTypes = {
     router: PropTypes.object
 }
 
-module.exports = Link
+module.exports = radium(Link)

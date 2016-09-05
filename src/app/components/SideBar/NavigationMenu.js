@@ -1,8 +1,8 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
+const radium = require('radium')
 const classAutobind = require('class-autobind').default
-const useSheet = require('react-jss').default
 
 const keys = require('lodash/keys')
 const groupBy = require('lodash/groupBy')
@@ -19,19 +19,19 @@ class NavigationMenu extends Component {
     }
 
     getLink({pathname, title, count}) {
-        const {classes} = this.props.sheet
+        const styles = this.getStyles()
 
         const countCircle = count.count ?
-            <Ellipse color={count.color} text={count.count} oval={true} className={classes.circle} /> :
+            <Ellipse width="30px" height="22px" color={count.color} text={count.count} style={styles.circle} /> :
             null
 
-        const arrow = window.location.pathname.startsWith(pathname) && <span className={classes.arrow}></span>
+        const arrow = window.location.pathname.startsWith(pathname) && <span style={styles.arrow}></span>
 
         return (
             <div name="link-container" key={pathname}>
-                <Flexbox name="link-row" container="row" alignItems="center" className={classes.linkRow}>
+                <Flexbox name="link-row" container="row" alignItems="center" style={styles.linkRow}>
                     <Flexbox grow={1} style={{display: 'inline-block'}}>
-                        <Link to={pathname} className={classes.link} activeClassName={classes.linkActive}>{title}</Link>
+                        <Link to={pathname} style={styles.link} activeStyle={styles.link.active}>{title}</Link>
                     </Flexbox>
                     {countCircle}
                     {arrow}
@@ -64,8 +64,57 @@ class NavigationMenu extends Component {
         }
     }
 
+    getStyles() {
+        return {
+            menu: {
+                paddingTop: 34,
+                paddingLeft: 27
+            },
+            linkRow: {
+                height: '25px',
+                marginBottom: '40px',
+                position: 'relative'
+            },
+            link: {
+                fontFamily: 'Roboto Mono, monospace',
+                fontSize: '0.857em',
+                fontWeight: 500,
+                color: styleVars.menuTextColor,
+                textTransform: 'uppercase',
+                textDecoration: 'none',
+                letterSpacing: '0.05em',
+                ':hover': {
+                    color: styleVars.highlightColor
+                },
+                active: {
+                    color: 'white'
+                }
+            },
+            circle: {
+                marginRight: '26px',
+                paddingTop: '3px',
+                textAlign: 'center',
+                borderBottomLeftRadius: '100%30px',
+                borderBottomRightRadius: '100%30px',
+                borderTopLeftRadius: '100%30px',
+                borderTopRightRadius: '100%30px'
+            },
+            arrow: {
+                position: 'absolute',
+                right: 0,
+                top: 8,
+                width: 0,
+                height: 0,
+                borderTop: '5px solid transparent',
+                borderBottom: '5px solid transparent',
+                borderRight: `6px solid ${styleVars.backgroundColor}`
+            }
+        }
+    }
+
     render() {
-        const {config, sheet: {classes}} = this.props
+        const {config} = this.props
+        const styles = this.getStyles()
 
         const links = [
             {
@@ -97,54 +146,10 @@ class NavigationMenu extends Component {
         }
 
         return (
-            <Flexbox name="navigation-menu-container" grow={config.isDemo ? 0 : 1} className={classes.menu}>
+            <Flexbox name="navigation-menu-container" grow={config.isDemo ? 0 : 1} style={styles.menu}>
                 {links}
             </Flexbox>
         )
-    }
-}
-
-const style = {
-    menu: {
-        paddingTop: 34,
-        paddingLeft: 27
-    },
-    linkRow: {
-        height: 25,
-        marginBottom: 40,
-        position: 'relative'
-    },
-    link: {
-        fontFamily: 'Roboto Mono, monospace',
-        fontSize: 0.857,
-        fontWeight: 500,
-        color: styleVars.menuTextColor,
-        textTransform: 'uppercase',
-        textDecoration: 'none',
-        letterSpacing: '0.05em',
-        '&:hover': {
-            color: styleVars.highlightColor
-        }
-    },
-    linkActive: {
-        color: 'white'
-    },
-    circle: {
-        width: 30,
-        height: 22,
-        marginRight: 26,
-        paddingTop: 3,
-        textAlign: 'center'
-    },
-    arrow: {
-        position: 'absolute',
-        right: 0,
-        top: 8,
-        width: 0,
-        height: 0,
-        borderTop: '5px solid transparent',
-        borderBottom: '5px solid transparent',
-        borderRight: `6px solid ${styleVars.backgroundColor}`
     }
 }
 
@@ -168,4 +173,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = useSheet(connect(mapStateToProps)(NavigationMenu), style)
+module.exports = connect(mapStateToProps)(radium(NavigationMenu))

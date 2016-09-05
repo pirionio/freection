@@ -2,6 +2,7 @@ const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const classAutobind = require('class-autobind').default
+const radium = require('radium')
 
 const {chain} = require('lodash/core')
 const keys = require('lodash/keys')
@@ -146,4 +147,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(TopBar)
+module.exports = connect(mapStateToProps)(radium(TopBar))
