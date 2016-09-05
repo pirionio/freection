@@ -1,7 +1,6 @@
 const React = require('react')
 const {Component, PropTypes} = React
 const {connect} = require('react-redux')
-const DocumentTitle = require('react-document-title')
 const classAutobind = require('class-autobind').default
 
 const {chain} = require('lodash/core')
@@ -17,6 +16,7 @@ const toPairs = require('lodash/toPairs')
 const PreviewHelper = require('../../helpers/preview-helper')
 const EmailActions = require('../../actions/email-actions')
 
+const Page = require('../UI/Page')
 const Flexbox = require('../UI/Flexbox')
 const PreviewsContainer = require('../Preview/PreviewsContainer')
 const EmailPreviewItem = require('./EmailPreviewItem')
@@ -55,6 +55,9 @@ class UnreadEmails extends Component {
                 }
             }))
         })
+
+        if (!aggregatedEmails|| !aggregatedEmails.length)
+            return []
 
         return this.groupEmailsByDate(aggregatedEmails)
     }
@@ -119,14 +122,14 @@ class UnreadEmails extends Component {
         const {invalidationStatus} = this.props
 
         return (
-            <DocumentTitle title={this.getTitle()}>
+            <Page title={this.getTitle()}>
                 <PreviewsContainer previewItems={this.getEmailRows()}
                                    fetchPreviews={this.fetchUnreadEmails}
                                    noPreviews={this.getNoPreviews()}
                                    invalidationStatus={invalidationStatus}>
                     {this.props.children}
                 </PreviewsContainer>
-            </DocumentTitle>
+            </Page>
         )
     }
 }
