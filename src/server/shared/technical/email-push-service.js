@@ -3,7 +3,7 @@ import {User, MailNotification} from '../models'
 import logger from '../utils/logger'
 
 function onMail(userId, email) {
-    logger.info(`new emails for user ${email}`)
+    logger.info(`mail-push - new emails for user ${email}`)
 
     MailNotification.save({
         id: userId,
@@ -18,7 +18,7 @@ function onUpdate(userId, email) {
     // it is so poorly implemented that it will cause a refresh after every time we click discard
     // we might want to batch those calls for each user, to avoid to many refreshes
 
-    logger.info(`email updated for user ${email}`)
+    logger.info(`mail-push - email updated for user ${email}`)
 
     MailNotification.save({
         id: userId,
@@ -37,7 +37,7 @@ export function hello(user) {
     return User.get(user.id).run()
         .then(fullUser => connectionCache.createConnection(fullUser))
         .then(connection => {
-            logger.info(`created push imap connection for ${user.email}`)
+            logger.info(`mail-push - hello - created IMAP connection for ${user.email}`)
 
             connection.onMail(() => onMail(user.id, user.email))
             connection.onUpdate((seq, info) => onUpdate(user.id, user.email, info))

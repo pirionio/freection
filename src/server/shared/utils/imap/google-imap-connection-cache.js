@@ -11,7 +11,7 @@ const connectionCache = new NodeCache({ stdTTL: 30 * 60, useClones: false})
 connectionCache.on('del', onDeleted)
 
 function onDeleted(email, connection) {
-    logger.info(`closing connection for ${email}`)
+    logger.info(`connection cache - closing connection for ${email}`)
     connection.close()
 }
 
