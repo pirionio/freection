@@ -1,14 +1,16 @@
+import querystring from 'querystring'
+
+import {Router} from 'express'
+import passport from 'passport'
+import {Strategy as GoogleStrategy} from 'passport-google-oauth20'
+
 import {User} from '../shared/models'
 import config from '../shared/config/google-oauth'
 import * as EmailParsingUtility from '../shared/utils/email-parsing-utility'
-
-const router = require('express').Router()
-const passport = require('passport')
-const GoogleStrategy = require('passport-google-oauth20').Strategy
-const querystring = require('querystring')
-
 import token from '../shared/utils/token-strategy'
 import logger from '../shared/utils/logger'
+
+const router = Router()
 
 function saveNewUser(userData) {
     const {email} = userData
@@ -132,4 +134,4 @@ router.get('/google/callback',
         }
     })
 
-module.exports = router
+export default router

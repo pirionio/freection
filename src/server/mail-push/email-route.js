@@ -1,8 +1,9 @@
+import {Router} from 'express'
+
 import * as  EmailPushService from '../shared/technical/email-push-service'
-
-const router = require('express').Router()
-
 import logger from '../shared/utils/logger'
+
+const router = Router()
 
 router.post('/hello', (request, response) => {
     EmailPushService.hello(request.user)
@@ -28,4 +29,4 @@ router.post('/keepalive', (request, response) => {
     }
 })
 
-module.exports = router
+export default router

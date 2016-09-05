@@ -1,5 +1,6 @@
 import winston from 'winston'
 import {Papertrail} from 'winston-papertrail'
+
 import papertrailConfig from '../config/papertrail'
 
 const transports = [

@@ -1,5 +1,5 @@
-const github = require('./github')
+import github from './github'
 
-module.exports = app => {
+export function configure(app) {
     app.use('/webhook/github', github)
 }

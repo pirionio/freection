@@ -1,9 +1,11 @@
-const router = require('express').Router()
-const AddressParser = require('email-addresses')
+import {Router} from 'express'
+import AddressParser from 'email-addresses'
 
 import * as EndpointUtil from '../../shared/utils/endpoint-util'
 import * as ThingService from '../../shared/application/thing-service'
 import * as EmailService from '../../shared/application/email-service'
+
+const router = Router()
 
 router.post('/thing', (request, response) => {
     if (!isValid(request, response)) {
@@ -58,4 +60,4 @@ function validateEmailAddress(email) {
     return !!emailAddress
 }
 
-module.exports = router
+export default router

@@ -1,5 +1,5 @@
-const api = require('./routes')
+import api from './routes'
 
-module.exports = app => {
+export function configure(app) {
     app.use('/api', api)
 }

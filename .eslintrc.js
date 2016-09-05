@@ -45,6 +45,12 @@ module.exports = {
         "react/prop-types":["error", {
             ignore: ["dispatch", "children"]
         }],
-        //"import/no-commonjs": ["warn"] // enable when we want to left require for good
+        "import/no-commonjs": ["error"],
+        "import/imports-first": ["error"],
+        "import/newline-after-import": ["error"],
+        "import/order": ["error", {
+            "groups": ["builtin", "external", ["internal", "parent", "sibling", "index"]],
+            "newlines-between": "always"
+        }]
     }
 };

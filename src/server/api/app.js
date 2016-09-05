@@ -1,5 +1,6 @@
 import app from '../shared'
+import {configure} from './index'
 
-require('./index')(app)
+configure(app)
 
 app.start()

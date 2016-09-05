@@ -1,12 +1,13 @@
+import {Router} from 'express'
+import {toString} from 'lodash'
+
 import {User, Thing} from './../shared/models'
 import * as GithubThingService from '../shared/application/github-thing-service'
-
-const router = require('express').Router()
-const {toString} = require('lodash')
-
-const ThingStatus = require('../../common/enums/thing-status')
+import ThingStatus from '../../common/enums/thing-status'
 import logger from '../shared/utils/logger'
 import UserTypes from '../../common/enums/user-types'
+
+const router = Router()
 
 router.post('/', (request, response) => {
     const eventType = request.get('X-GitHub-Event')
@@ -118,5 +119,5 @@ function isNewThing(user, things) {
         throw 'ThingAlreadyExist'
 }
 
-module.exports = router
+export default router
 
