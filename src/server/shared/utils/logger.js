@@ -4,6 +4,7 @@ import papertrailConfig from '../config/papertrail'
 
 const transports = [
     new winston.transports.Console({
+        timestamp: true,
         handleExceptions: true,
         humanReadableUnhandledException: true
     })]
