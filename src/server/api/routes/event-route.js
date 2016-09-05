@@ -1,4 +1,5 @@
 import {Router} from 'express'
+
 import * as EventService from '../../shared/application/event-service'
 import * as EndpointUtil from '../../shared/utils/endpoint-util'
 

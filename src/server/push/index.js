@@ -1,9 +1,10 @@
-import tokenConfig from '../shared/config/token'
-import {Event, MailNotification} from '../shared/models'
-import logger from '../shared/utils/logger'
 import SocketIO from 'socket.io'
 import socketioJwt from 'socketio-jwt'
 import {union, difference} from'lodash'
+
+import tokenConfig from '../shared/config/token'
+import {Event, MailNotification} from '../shared/models'
+import logger from '../shared/utils/logger'
 import {eventToDto} from '../shared/application/transformers'
 import SharedConstants from '../../common/shared-constants'
 

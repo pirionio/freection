@@ -1,11 +1,10 @@
-import config from '../../config/google-oauth'
-import {User} from '../../models'
-
 import OAuth2 from 'google-auth-library/lib/auth/oauth2client'
 import {Pool} from 'generic-pool'
 import autobind from 'class-autobind'
 import {forOwn} from 'lodash'
 
+import config from '../../config/google-oauth'
+import {User} from '../../models'
 import promisify from '../promisify'
 import logger from '../logger'
 

@@ -1,6 +1,8 @@
-import express from 'express'
 import path from 'path'
+
+import express from 'express'
 import jwt from 'jsonwebtoken'
+
 import {isDemo} from '../shared/config/demo'
 import tokenConfig from '../shared/config/token'
 import logger from '../shared/utils/logger'
@@ -35,6 +37,7 @@ export function configure(app) {
         const webpackDevMiddleware = require('webpack-dev-middleware')
         const webpackHotMiddleware = require('webpack-hot-middleware')
         const webpackConfig = require('../../../config/webpack.dev.config')
+
         const compiler = webpack(webpackConfig)
         app.use(webpackDevMiddleware(compiler, {noInfo: true, publicPath: webpackConfig.output.publicPath}))
         app.use(webpackHotMiddleware(compiler))

@@ -1,7 +1,9 @@
-import {Router} from 'express'
 import querystring from 'querystring'
+
+import {Router} from 'express'
 import fetch from 'node-fetch'
 import {toString} from 'lodash'
+
 import { User } from '../../shared/models'
 import config from '../../shared/config/github'
 import logger from '../../shared/utils/logger'

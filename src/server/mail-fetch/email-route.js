@@ -1,4 +1,5 @@
 import {Router} from 'express'
+
 import * as EndpointUtil from '../shared/utils/endpoint-util'
 import * as EmailService from '../shared/application/email-service'
 

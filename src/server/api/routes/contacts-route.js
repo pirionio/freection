@@ -1,4 +1,5 @@
 import {Router} from 'express'
+
 import * as EndpointUtil from '../../shared/utils/endpoint-util'
 import * as ContactService from '../../shared/application/contact-service'
 

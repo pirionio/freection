@@ -1,5 +1,6 @@
-import * as  EmailPushService from '../shared/technical/email-push-service'
 import {Router} from 'express'
+
+import * as  EmailPushService from '../shared/technical/email-push-service'
 import logger from '../shared/utils/logger'
 
 const router = Router()

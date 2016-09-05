@@ -1,11 +1,11 @@
 import {Router} from 'express'
+
+import token from '../../shared/utils/token-strategy'
 import NewRoute from './new-route'
 import ThingRoute from './thing-route'
 import EventRoute from './event-route'
 import GithubRoute from './github-route'
 import ContactsRoute from './contacts-route'
-
-import token from '../../shared/utils/token-strategy'
 
 const router = Router()
 

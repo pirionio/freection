@@ -1,4 +1,5 @@
 import {reject} from 'lodash'
+
 import {User} from '../models'
 import {userToAddress} from './address-creator'
 

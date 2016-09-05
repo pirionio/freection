@@ -1,5 +1,4 @@
 import thinky from './thinky'
-
 import Thing from './Thing'
 import User from './User'
 import Event from './Event'

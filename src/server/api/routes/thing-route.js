@@ -1,4 +1,5 @@
 import {Router} from 'express'
+
 import * as ThingService from '../../shared/application/thing-service'
 import * as GithubThingService from '../../shared/application/github-thing-service'
 import * as EndpointUtil from '../../shared/utils/endpoint-util'

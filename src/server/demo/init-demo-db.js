@@ -2,7 +2,6 @@ import * as ThingService from '../shared/application/thing-service'
 import * as EventService from '../shared/application/event-service'
 import * as EmailService from '../shared/application/email-service'
 import {User, Thing, Event} from '../shared/models'
-
 import EventTypes from '../../common/enums/event-types'
 import SharedConstants from '../../common/shared-constants'
 

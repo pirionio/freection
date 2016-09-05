@@ -1,5 +1,6 @@
 import {Router} from 'express'
 import AddressParser from 'email-addresses'
+
 import * as EndpointUtil from '../../shared/utils/endpoint-util'
 import * as ThingService from '../../shared/application/thing-service'
 import * as EmailService from '../../shared/application/email-service'

@@ -1,5 +1,6 @@
 import dateFns from 'date-fns'
 import {last} from 'lodash'
+
 import * as EmailService from '../shared/application/email-service'
 import * as ThingService from '../shared/application/thing-service'
 import {MailNotification, User} from '../shared/models'

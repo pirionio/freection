@@ -1,7 +1,8 @@
 import {Router} from 'express'
+import {toString} from 'lodash'
+
 import {User, Thing} from './../shared/models'
 import * as GithubThingService from '../shared/application/github-thing-service'
-import {toString} from 'lodash'
 import ThingStatus from '../../common/enums/thing-status'
 import logger from '../shared/utils/logger'
 import UserTypes from '../../common/enums/user-types'
