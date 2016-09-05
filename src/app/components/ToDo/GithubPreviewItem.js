@@ -1,7 +1,7 @@
 const React = require('react')
 const {PropTypes, Component} = React
 
-const {PreviewItem, PreviewItemTitle, PreviewItemStatus, PreviewItemDate, PreviewItemText, PreviewItemActions} =
+const {PreviewItem, PreviewItemUser, PreviewItemText, PreviewItemActions} =
     require('../Preview/PreviewItem')
 const GithubActionsBar = require('./GithubActionsBar')
 const TextTruncate = require('../UI/TextTruncate')
@@ -47,9 +47,9 @@ class GithubTodoPreviewItem extends Component {
                          title={thing.subject}
                          date={thing.createdAt}
                          onClick={() => window.open(thing.payload.url, '_blank')}>
-                <PreviewItemStatus>
+                <PreviewItemUser>
                     <strong>{thing.creator.displayName}</strong>
-                </PreviewItemStatus>
+                </PreviewItemUser>
                 <PreviewItemText>
                     {this.getTextElement()}
                 </PreviewItemText>
