@@ -65,7 +65,7 @@ class NavigationMenu extends Component {
     }
 
     render() {
-        const {config, sheet: {classes}} = this.props
+        const {sheet: {classes}} = this.props
 
         const links = [
             {
@@ -85,19 +85,8 @@ class NavigationMenu extends Component {
             }
         ].map(this.getLink)
 
-        if (config.isDemo) {
-            links.push(this.getLink({
-                pathname: '/mentions',
-                title: 'Mentions',
-                count: {
-                    count: 3,
-                    color: styleVars.baseGreenColor
-                }
-            }))
-        }
-
         return (
-            <Flexbox name="navigation-menu-container" grow={config.isDemo ? 0 : 1} className={classes.menu}>
+            <Flexbox name="navigation-menu-container" grow={1} className={classes.menu}>
                 {links}
             </Flexbox>
         )
@@ -152,7 +141,6 @@ const style = {
 }
 
 NavigationMenu.propTypes = {
-    config: PropTypes.object.isRequired,
     routing: PropTypes.object.isRequired,
     newNotifications: PropTypes.array.isRequired,
     todoThings: PropTypes.array.isRequired,
@@ -162,7 +150,6 @@ NavigationMenu.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        config: state.config,
         routing: state.routing,
         newNotifications: state.whatsNew.notifications,
         todoThings: state.toDo.things,

@@ -1,7 +1,5 @@
 const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const classAutobind = require('class-autobind').default
+const {Component} = React
 const useSheet = require('react-jss').default
 
 const Flexbox = require('../UI/Flexbox')
@@ -14,13 +12,7 @@ const BoardList = require('./BoardList')
 const logo = require('../../static/logo-white.png')
 
 class SideBar extends Component {
-    constructor(props) {
-        super(props)
-        classAutobind(this, SideBar.prototype)
-    }
-
     render() {
-        const {config} = this.props
         const {classes} = this.props.sheet
 
         return (
@@ -29,7 +21,6 @@ class SideBar extends Component {
                     <img src={logo} className={classes.logoImage} />
                 </Flexbox>
                 <NavigationMenu />
-                {config.isDemo ? <BoardList /> : null}
                 <UserSettings />
             </Flexbox>
         )
@@ -58,14 +49,4 @@ const styles = {
     }
 }
 
-SideBar.propTypes = {
-    config: PropTypes.object.isRequired
-}
-
-function mapStateToProps(state) {
-    return {
-        config: state.config
-    }
-}
-
-module.exports = useSheet(connect(mapStateToProps)(SideBar), styles)
+module.exports = useSheet(SideBar, styles)
