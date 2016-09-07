@@ -1,4 +1,4 @@
-const GlassPaneActionTypes = require('../actions/types/glass-pane-action-types')
+import GlassPaneActionTypes from '../actions/types/glass-pane-action-types'
 
 const initialState = {
     show: false,

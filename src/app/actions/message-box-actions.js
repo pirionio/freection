@@ -6,18 +6,13 @@ const isNil = require('lodash/isNil')
 const findIndex = require('lodash/findIndex')
 const nth = require('lodash/nth')
 
-const MessageBoxActionsTypes = require('./types/message-box-action-types')
-const MessageBoxActions = require('./generated/message-box-actions')
+import MessageBoxActionsTypes from'./types/message-box-action-types'
+import {_newMessageBox, _selectMessageBox, _closeMessageBox, _setFocus } from './generated/message-box-actions'
 const {GeneralConstants, ActionStatus} = require('../constants')
 
-const newMessageBoxAction = MessageBoxActions.newMessageBox
-const selectMessageBoxAction = MessageBoxActions.selectMessageBox
-const closeMessageBoxAction = MessageBoxActions.closeMessageBox
-const setFocusAction = MessageBoxActions.setFocus
-
-function newMessageBox(messageType, context) {
+export function newMessageBox(messageType, context) {
     return (dispatch, getState) => {
-        dispatch(newMessageBoxAction(messageType, context))
+        dispatch(_newMessageBox(messageType, context))
         const {messagePanel} = getState()
         const previousMessageBox = getActiveMessageBox(messagePanel)
         const newMessageBox = last(messagePanel.messageBoxes)
@@ -26,15 +21,15 @@ function newMessageBox(messageType, context) {
     }
 }
 
-function selectMessageBox(currentMessageBox, selectedMessageBox) {
+export function selectMessageBox(currentMessageBox, selectedMessageBox) {
     return (dispatch, getState) => {
         const {messageBox} = getState()
-        dispatch(selectMessageBoxAction(currentMessageBox.id, selectedMessageBox.id, messageBox.message))
+        dispatch(_selectMessageBox(currentMessageBox.id, selectedMessageBox.id, messageBox.message))
         dispatch(actions.change('messageBox', selectedMessageBox))
     }
 }
 
-function closeMessageBox(messageBoxId) {
+export function closeMessageBox(messageBoxId) {
     return (dispatch, getState) => {
         const {messagePanel} = getState()
 
@@ -49,11 +44,11 @@ function closeMessageBox(messageBoxId) {
             dispatch(selectMessageBox(messageBoxId, newActiveMessageBox))
         }
 
-        dispatch(closeMessageBoxAction(messageBoxId))
+        dispatch(_closeMessageBox(messageBoxId))
     }
 }
 
-function messageSent(messageBoxId, shouldCloseMessageBox, messagePromise) {
+export function messageSent(messageBoxId, shouldCloseMessageBox, messagePromise) {
     return (dispatch, getState) => {
         // Use a timeout to create a delay in the consequences of the message send action.
         // We don't want to anything to happen if the result of the message returns very quickly (resulting in a COMPLETE event).
@@ -91,9 +86,9 @@ function messageSentComplete(messageBoxId, shouldCloseMessageBox) {
     }
 }
 
-function setFocus(messageBoxId, focusOn) {
+export function setFocus(messageBoxId, focusOn) {
     return dispatch => {
-        dispatch(setFocusAction(messageBoxId, focusOn))
+        dispatch(_setFocus(messageBoxId, focusOn))
         dispatch(actions.change('messageBox.focusOn', focusOn))
     }
 }
@@ -102,9 +97,4 @@ function getActiveMessageBox(messagePanel) {
     return find(messagePanel.messageBoxes, {id: messagePanel.activeMessageBoxId}) || {}
 }
 
-module.exports = MessageBoxActions
-module.exports.newMessageBox = newMessageBox
-module.exports.selectMessageBox = selectMessageBox
-module.exports.messageSent = messageSent
-module.exports.closeMessageBox = closeMessageBox
-module.exports.setFocus = setFocus
+export * from './generated/message-box-actions'

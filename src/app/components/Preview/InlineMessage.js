@@ -9,7 +9,7 @@ const classNames = require('classnames')
 const Flexbox = require('../UI/Flexbox')
 const componentStyles = require('../component-styles')
 
-const InlineMessageActions = require('../../actions/inline-message-actions')
+import * as InlineMessageActions from '../../actions/inline-message-actions'
 
 class InlineMessage extends Component {
     constructor(props) {

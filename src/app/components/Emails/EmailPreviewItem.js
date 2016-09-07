@@ -5,7 +5,7 @@ const useSheet = require('react-jss').default
 
 const TextTruncate = require('../UI/TextTruncate')
 const EmailPreviewActionBar = require('./EmailPreviewActionsBar')
-const EmailPageActions = require('../../actions/email-page-actions')
+import * as EmailPageActions from '../../actions/email-page-actions'
 const {PreviewItem, PreviewItemUser, PreviewItemText, PreviewItemActions} = require('../Preview/PreviewItem')
 const TextSeparator = require('../UI/TextSeparator')
 const Flexbox = require('../UI/Flexbox')

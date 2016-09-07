@@ -1,10 +1,10 @@
 const isUndefined = require('lodash/isUndefined')
 const head = require('lodash/head')
 
-const EventActionTypes = require('../actions/types/event-action-types')
-const ThingPageActionTypes = require('../actions/types/thing-page-action-types')
+import EventActionTypes from '../actions/types/event-action-types'
+import ThingPageActionTypes from '../actions/types/thing-page-action-types'
 import ThingStatus from '../../common/enums/thing-status.js'
-const ThingCommandActionTypes = require('../actions/types/thing-command-action-types')
+import  ThingCommandActionTypes from '../actions/types/thing-command-action-types'
 import SharedConstants from '../../common/shared-constants'
 const {ActionStatus, InvalidationStatus} = require('../constants')
 const thingReducer = require('./thing-reducer')

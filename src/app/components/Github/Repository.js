@@ -4,7 +4,7 @@ const {connect} = require('react-redux')
 const classAutobind = require('class-autobind').default
 const useSheet = require('react-jss').default
 
-const GithubActions = require('../../actions/github-actions')
+import * as GithubActions from '../../actions/github-actions'
 
 const Flexbox = require('../UI/Flexbox')
 const Icon = require('react-fontawesome')

@@ -1,8 +1,8 @@
-const EmailActionsTypes = require('../types/email-action-types')
-const {ActionStatus} = require('../../constants')
-const ResourceUtil = require('../../util/resource-util')
+import EmailActionsTypes from '../types/email-action-types'
+import {ActionStatus} from '../../constants'
+import ResourceUtil from '../../util/resource-util'
 
-function fetchUnread() {
+export function _fetchUnread() {
     return dispatch => {
         dispatch({
             type: EmailActionsTypes.FETCH_UNREAD, 
@@ -21,7 +21,7 @@ function fetchUnread() {
     }
 }
 
-function updateUnread() {
+export function updateUnread() {
     return dispatch => {
         dispatch({
             type: EmailActionsTypes.UPDATE_UNREAD, 
@@ -40,7 +40,7 @@ function updateUnread() {
     }
 }
 
-function hello() {
+export function hello() {
     return dispatch => {
         dispatch({
             type: EmailActionsTypes.HELLO, 
@@ -58,15 +58,8 @@ function hello() {
     }
 }
 
-function invalidate() {
+export function invalidate() {
     return {
         type: EmailActionsTypes.INVALIDATE        
     }
-}
-
-module.exports = {
-    fetchUnread,
-    updateUnread,
-    hello,
-    invalidate
 }

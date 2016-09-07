@@ -3,16 +3,19 @@ module.exports = {
     actions: [
         {
             name: 'show email page',
+            private: true,
             params: ['emailThread']
         },
         {
-            name: 'hide email page'
+            name: 'hide email page',
+            private: true,
         },
         {
             name: 'require update'
         },
         {
             name: 'get email',
+            private: true,
             type: 'get',
             path: '/emails/api/${emailThreadId}',
             params: ['emailThreadId'],

@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     NEW_EMAIL: 'EMAIL_COMMAND_NEW_EMAIL',
     DO_EMAIL: 'EMAIL_COMMAND_DO_EMAIL',
     REPLY_TO_ALL: 'EMAIL_COMMAND_REPLY_TO_ALL',

@@ -3,7 +3,7 @@ const {PropTypes, Component} = React
 const {connect} = require('react-redux')
 
 import ThingStatus from '../../../common/enums/thing-status'
-const ThingPageActions = require('../../actions/thing-page-actions')
+import * as ThingPageActions from '../../actions/thing-page-actions'
 const ThingHelper = require('../../helpers/thing-helper')
 
 const {PreviewItem, PreviewItemUser, PreviewItemText, PreviewItemActions} = require('../Preview/PreviewItem')

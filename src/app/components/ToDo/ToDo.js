@@ -10,7 +10,7 @@ const isEmpty = require('lodash/isEmpty')
 const Page = require('../UI/Page')
 const styleVars = require('../style-vars')
 const PreviewsContainer = require('../Preview/PreviewsContainer')
-const ToDoActions = require('../../actions/to-do-actions')
+import * as ToDoActions from '../../actions/to-do-actions'
 const ToDoPreviewItem = require('./ToDoPreviewItem')
 const GithubPreviewItem = require('./GithubPreviewItem')
 

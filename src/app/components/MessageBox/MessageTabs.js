@@ -9,7 +9,7 @@ const classNames = require('classnames')
 const find = require('lodash/find')
 const isEmpty = require('lodash/isEmpty')
 
-const MessageBoxActions = require('../../actions/message-box-actions')
+import * as MessageBoxActions from '../../actions/message-box-actions'
 import MessageTypes from '../../../common/enums/message-types'
 
 const Flexbox = require('../UI/Flexbox')

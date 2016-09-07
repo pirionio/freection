@@ -1,3 +1,1 @@
-const GithubActions = require('./generated/github-actions')
-
-module.exports = GithubActions
+export * from './generated/github-actions'

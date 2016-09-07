@@ -5,7 +5,7 @@ const useSheet = require('react-jss').default
 
 import SharedConstants from '../../../common/shared-constants'
 import EventTypes from '../../../common/enums/event-types'
-const ThingPageActions = require('../../actions/thing-page-actions')
+import * as ThingPageActions from '../../actions/thing-page-actions'
 
 const {PreviewItem, PreviewItemText, PreviewItemStatus, PreviewItemActions} = require('../Preview/PreviewItem')
 const {CommentPreviewText, PingPreviewText} = require('../Preview/Thing')

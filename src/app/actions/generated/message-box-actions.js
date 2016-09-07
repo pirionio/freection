@@ -1,8 +1,8 @@
-const MessageBoxActionsTypes = require('../types/message-box-action-types')
-const {ActionStatus} = require('../../constants')
-const ResourceUtil = require('../../util/resource-util')
+import MessageBoxActionsTypes from '../types/message-box-action-types'
+import {ActionStatus} from '../../constants'
+import ResourceUtil from '../../util/resource-util'
 
-function newMessageBox(messageType,context) {
+export function _newMessageBox(messageType,context) {
     return {
         type: MessageBoxActionsTypes.NEW_MESSAGE_BOX,
         messageType,
@@ -10,7 +10,7 @@ function newMessageBox(messageType,context) {
     }
 }
 
-function selectMessageBox(currentMessageBoxId,selectedMessageBoxId,currentMessage) {
+export function _selectMessageBox(currentMessageBoxId,selectedMessageBoxId,currentMessage) {
     return {
         type: MessageBoxActionsTypes.SELECT_MESSAGE_BOX,
         currentMessageBoxId,
@@ -19,25 +19,25 @@ function selectMessageBox(currentMessageBoxId,selectedMessageBoxId,currentMessag
     }
 }
 
+export function _messageSent(messageBoxId,shouldCloseMessageBox) {
+    return {
+        type: MessageBoxActionsTypes.MESSAGE_SENT,
+        messageBoxId,
+        shouldCloseMessageBox
+    }
+}
 
-function closeMessageBox(messageBoxId) {
+export function _closeMessageBox(messageBoxId) {
     return {
         type: MessageBoxActionsTypes.CLOSE_MESSAGE_BOX,
         messageBoxId
     }
 }
 
-function setFocus(messageBoxId,focusOn) {
+export function _setFocus(messageBoxId,focusOn) {
     return {
         type: MessageBoxActionsTypes.SET_FOCUS,
         messageBoxId,
         focusOn
     }
-}
-
-module.exports = {
-    newMessageBox,
-    selectMessageBox,
-    closeMessageBox,
-    setFocus
 }

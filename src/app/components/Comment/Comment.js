@@ -9,7 +9,7 @@ const useSheet = require('react-jss').default
 
 const HtmlUtil = require('../../util/html-util')
 import EventTypes from '../../../common/enums/event-types'
-const ThingCommandActions = require('../../actions/thing-command-actions')
+import * as ThingCommandActions from '../../actions/thing-command-actions'
 
 const Flexbox = require('../UI/Flexbox')
 const Color = require('color')

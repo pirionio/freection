@@ -1,9 +1,9 @@
 const isUndefined = require('lodash/isUndefined')
 const head = require('lodash/head')
 
-const EventActionTypes = require('../actions/types/event-action-types')
-const EmailPageActionTypes = require('../actions/types/email-page-action-types')
-const EmailCommandActionTypes = require('../actions/types/email-command-action-types')
+import EventActionTypes from '../actions/types/event-action-types'
+import EmailPageActionTypes from '../actions/types/email-page-action-types'
+import EmailCommandActionTypes from '../actions/types/email-command-action-types'
 const {ActionStatus, InvalidationStatus} = require('../constants')
 
 const immutable = require('../util/immutable')

@@ -1,4 +1,4 @@
-const AuthActionsTypes = require('../actions/types/auth-action-types')
+import AuthActionsTypes from '../actions/types/auth-action-types'
 
 function auth(state = {}, action){
     if (action.type === AuthActionsTypes.SET_STATE)

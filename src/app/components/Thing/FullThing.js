@@ -14,7 +14,7 @@ const {FullItem, FullItemSubject, FullItemStatus, FullItemActions, FullItemBox} 
 const Flexbox = require('../UI/Flexbox')
 const styleVars = require('../style-vars')
 
-const ThingPageActions = require('../../actions/thing-page-actions')
+import * as ThingPageActions from '../../actions/thing-page-actions'
 const ThingHelper = require('../../helpers/thing-helper')
 
 import EventTypes from '../../../common/enums/event-types'

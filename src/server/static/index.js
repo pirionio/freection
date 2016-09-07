@@ -14,11 +14,11 @@ import * as ContactService from '../shared/application/contact-service'
 
 // TODO: change to import one when changing app to import as well
 const reducer = require('../../app/reducers')
-const WhatsNewActions = require('../../app/actions/whats-new-actions')
-const ToDoActions = require('../../app/actions/to-do-actions')
-const FollowUpActions = require('../../app/actions/follow-up-actions')
-const AuthActions = require('../../app/actions/auth-actions')
-const ContactsActions = require('../../app/actions/contacts-actions')
+import * as WhatsNewActions from '../../app/actions/whats-new-actions'
+import * as ToDoActions from '../../app/actions/to-do-actions'
+import * as FollowUpActions from '../../app/actions/follow-up-actions'
+import * as AuthActions from '../../app/actions/auth-actions'
+import * as ContactsActions from '../../app/actions/contacts-actions'
 
 /* eslint-enable import/no-commonjs */
 

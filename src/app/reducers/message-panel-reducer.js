@@ -2,9 +2,9 @@ const uniqueId = require('lodash/uniqueId')
 const find = require('lodash/find')
 const head = require('lodash/head')
 
-const MessageBoxActionTypes = require('../actions/types/message-box-action-types')
-const ThingPageActionTypes = require('../actions/types/thing-page-action-types')
-const EmailPageActionTypes = require('../actions/types/email-page-action-types')
+import MessageBoxActionTypes from '../actions/types/message-box-action-types'
+import ThingPageActionTypes from '../actions/types/thing-page-action-types'
+import EmailPageActionTypes from '../actions/types/email-page-action-types'
 const immutable = require('../util/immutable')
 const {ActionStatus} = require('../constants')
 import MessageTypes from '../../common/enums/message-types'

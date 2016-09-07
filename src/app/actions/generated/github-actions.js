@@ -1,8 +1,8 @@
-const GithubActionsTypes = require('../types/github-action-types')
-const {ActionStatus} = require('../../constants')
-const ResourceUtil = require('../../util/resource-util')
+import GithubActionsTypes from '../types/github-action-types'
+import {ActionStatus} from '../../constants'
+import ResourceUtil from '../../util/resource-util'
 
-function fetchGithub() {
+export function fetchGithub() {
     return dispatch => {
         dispatch({
             type: GithubActionsTypes.FETCH_GITHUB, 
@@ -21,7 +21,7 @@ function fetchGithub() {
     }
 }
 
-function enableRepository(fullName) {
+export function enableRepository(fullName) {
     return dispatch => {
         dispatch({
             type: GithubActionsTypes.ENABLE_REPOSITORY, 
@@ -42,7 +42,7 @@ function enableRepository(fullName) {
     }
 }
 
-function disableRepository(fullName) {
+export function disableRepository(fullName) {
     return dispatch => {
         dispatch({
             type: GithubActionsTypes.DISABLE_REPOSITORY, 
@@ -61,10 +61,4 @@ function disableRepository(fullName) {
                 fullName
             }))
     }
-}
-
-module.exports = {
-    fetchGithub,
-    enableRepository,
-    disableRepository
 }

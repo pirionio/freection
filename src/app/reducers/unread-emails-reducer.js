@@ -1,5 +1,5 @@
-const EmailActionTypes = require('../actions/types/email-action-types')
-const EmailCommandActionTypes = require('../actions/types/email-command-action-types')
+import EmailActionTypes from '../actions/types/email-action-types'
+import EmailCommandActionTypes from '../actions/types/email-command-action-types'
 const {ActionStatus} = require('../constants')
 const {InvalidationStatus} = require('../constants')
 const immutable = require('../util/immutable')

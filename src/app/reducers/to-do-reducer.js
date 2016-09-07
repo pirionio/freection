@@ -1,9 +1,9 @@
 const some = require('lodash/some')
 const merge = require('lodash/merge')
 
-const ToDoActionTypes = require('../actions/types/to-do-action-types')
-const ThingCommandActionTypes = require('../actions/types/thing-command-action-types')
-const EventActionTypes = require('../actions/types/event-action-types')
+import ToDoActionTypes from '../actions/types/to-do-action-types'
+import ThingCommandActionTypes from '../actions/types/thing-command-action-types'
+import EventActionTypes from '../actions/types/event-action-types'
 const {ActionStatus, InvalidationStatus} = require('../constants')
 import EventTypes from '../../common/enums/event-types'
 const thingReducer = require('./thing-reducer')

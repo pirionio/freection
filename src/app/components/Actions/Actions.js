@@ -1,7 +1,7 @@
 const React = require('react')
 
-const ThingCommandActions = require('../../actions/thing-command-actions')
-const EmailCommandActions = require('../../actions/email-command-actions')
+import * as ThingCommandActions from '../../actions/thing-command-actions'
+import * as EmailCommandActions from '../../actions/email-command-actions'
 const Action = require('./Action')
 import ThingStatus from '../../../common/enums/thing-status'
 import EventTypes from '../../../common/enums/event-types'

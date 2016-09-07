@@ -1,15 +1,15 @@
-const FollowUpActionsTypes = require('../types/follow-up-action-types')
-const {ActionStatus} = require('../../constants')
-const ResourceUtil = require('../../util/resource-util')
+import FollowUpActionsTypes from '../types/follow-up-action-types'
+import {ActionStatus} from '../../constants'
+import ResourceUtil from '../../util/resource-util'
 
-function setState(followUps) {
+export function setState(followUps) {
     return {
         type: FollowUpActionsTypes.SET_STATE,
         followUps
     }
 }
 
-function fetchFollowUps() {
+export function _fetchFollowUps() {
     return dispatch => {
         dispatch({
             type: FollowUpActionsTypes.FETCH_FOLLOW_UPS, 
@@ -26,9 +26,4 @@ function fetchFollowUps() {
                 status: ActionStatus.ERROR                
             }))
     }
-}
-
-module.exports = {
-    setState,
-    fetchFollowUps
 }

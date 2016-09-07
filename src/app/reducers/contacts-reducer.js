@@ -1,4 +1,4 @@
-const ContactsActionTypes = require('../actions/types/contacts-action-types')
+import ContactsActionTypes from '../actions/types/contacts-action-types'
 
 module.exports = function(state = [], action) {
     if (action.type === ContactsActionTypes.SET_STATE) {

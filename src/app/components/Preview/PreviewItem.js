@@ -6,7 +6,7 @@ const classAutobind = require('class-autobind').default
 const useSheet = require('react-jss').default
 const classNames = require('classnames')
 
-const InlineMessageActions = require('../../actions/inline-message-actions')
+import * as InlineMessageActions from '../../actions/inline-message-actions'
 
 const InlineMessage = require('./InlineMessage')
 const Flexbox = require('../UI/Flexbox')

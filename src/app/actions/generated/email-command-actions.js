@@ -1,8 +1,8 @@
-const EmailCommandActionsTypes = require('../types/email-command-action-types')
-const {ActionStatus} = require('../../constants')
-const ResourceUtil = require('../../util/resource-util')
+import EmailCommandActionsTypes from '../types/email-command-action-types'
+import {ActionStatus} from '../../constants'
+import ResourceUtil from '../../util/resource-util'
 
-function newEmail(email) {
+export function newEmail(email) {
     return dispatch => {
         dispatch({
             type: EmailCommandActionsTypes.NEW_EMAIL, 
@@ -27,7 +27,7 @@ function newEmail(email) {
     }
 }
 
-function doEmail(threadId) {
+export function doEmail(threadId) {
     return dispatch => {
         dispatch({
             type: EmailCommandActionsTypes.DO_EMAIL, 
@@ -48,7 +48,7 @@ function doEmail(threadId) {
     }
 }
 
-function replyToAll(threadId, messageText, subject, to, inReplyTo, references) {
+export function replyToAll(threadId, messageText, subject, to, inReplyTo, references) {
     return dispatch => {
         dispatch({
             type: EmailCommandActionsTypes.REPLY_TO_ALL, 
@@ -86,7 +86,7 @@ function replyToAll(threadId, messageText, subject, to, inReplyTo, references) {
     }
 }
 
-function markAsRead(emailUids) {
+export function markAsRead(emailUids) {
     return dispatch => {
         dispatch({
             type: EmailCommandActionsTypes.MARK_AS_READ, 
@@ -107,11 +107,4 @@ function markAsRead(emailUids) {
                 emailUids
             }))
     }
-}
-
-module.exports = {
-    newEmail,
-    doEmail,
-    replyToAll,
-    markAsRead
 }

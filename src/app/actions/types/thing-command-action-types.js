@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     COMMENT: 'THING_COMMAND_COMMENT',
     NEW_THING: 'THING_COMMAND_NEW_THING',
     PING: 'THING_COMMAND_PING',

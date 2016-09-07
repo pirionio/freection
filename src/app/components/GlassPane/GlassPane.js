@@ -5,7 +5,7 @@ const classAutobind = require('class-autobind').default
 const useSheet = require('react-jss').default
 const classNames = require('classnames')
 
-const GlassPaneActions = require('../../actions/glass-pane-actions')
+import * as GlassPaneActions from '../../actions/glass-pane-actions'
 
 const styleVars = require('../style-vars')
 

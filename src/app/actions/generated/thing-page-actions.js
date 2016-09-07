@@ -1,21 +1,21 @@
-const ThingPageActionsTypes = require('../types/thing-page-action-types')
-const {ActionStatus} = require('../../constants')
-const ResourceUtil = require('../../util/resource-util')
+import ThingPageActionsTypes from '../types/thing-page-action-types'
+import {ActionStatus} from '../../constants'
+import ResourceUtil from '../../util/resource-util'
 
-function showThingPage(thing) {
+export function _showThingPage(thing) {
     return {
         type: ThingPageActionsTypes.SHOW_THING_PAGE,
         thing
     }
 }
 
-function hideThingPage() {
+export function _hideThingPage() {
     return {
         type: ThingPageActionsTypes.HIDE_THING_PAGE        
     }
 }
 
-function getThing(thingId) {
+export function _getThing(thingId) {
     return dispatch => {
         dispatch({
             type: ThingPageActionsTypes.GET_THING, 
@@ -34,10 +34,4 @@ function getThing(thingId) {
                 thingId
             }))
     }
-}
-
-module.exports = {
-    showThingPage,
-    hideThingPage,
-    getThing
 }

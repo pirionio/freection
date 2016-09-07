@@ -1,101 +1,86 @@
-const EventActionsTypes = require('../types/event-action-types')
-const {ActionStatus} = require('../../constants')
-const ResourceUtil = require('../../util/resource-util')
+import EventActionsTypes from '../types/event-action-types'
+import {ActionStatus} from '../../constants'
+import ResourceUtil from '../../util/resource-util'
 
-function created(event) {
+export function created(event) {
     return {
         type: EventActionsTypes.CREATED,
         event
     }
 }
 
-function accepted(event) {
+export function accepted(event) {
     return {
         type: EventActionsTypes.ACCEPTED,
         event
     }
 }
 
-function markedAsDone(event) {
+export function markedAsDone(event) {
     return {
         type: EventActionsTypes.MARKED_AS_DONE,
         event
     }
 }
 
-function closed(event) {
+export function closed(event) {
     return {
         type: EventActionsTypes.CLOSED,
         event
     }
 }
 
-function closeAcked(event) {
+export function closeAcked(event) {
     return {
         type: EventActionsTypes.CLOSE_ACKED,
         event
     }
 }
 
-function dismissed(event) {
+export function dismissed(event) {
     return {
         type: EventActionsTypes.DISMISSED,
         event
     }
 }
 
-function sentBack(event) {
+export function sentBack(event) {
     return {
         type: EventActionsTypes.SENT_BACK,
         event
     }
 }
 
-function pinged(event) {
+export function pinged(event) {
     return {
         type: EventActionsTypes.PINGED,
         event
     }
 }
 
-function ponged(event) {
+export function ponged(event) {
     return {
         type: EventActionsTypes.PONGED,
         event
     }
 }
 
-function commentCreated(event) {
+export function commentCreated(event) {
     return {
         type: EventActionsTypes.COMMENT_CREATED,
         event
     }
 }
 
-function commentReadBy(event) {
+export function commentReadBy(event) {
     return {
         type: EventActionsTypes.COMMENT_READ_BY,
         event
     }
 }
 
-function reconnected() {
+export function reconnected() {
     return {
         type: EventActionsTypes.RECONNECTED        
     }
-}
-
-module.exports = {
-    created,
-    accepted,
-    markedAsDone,
-    closed,
-    closeAcked,
-    dismissed,
-    sentBack,
-    pinged,
-    ponged,
-    commentCreated,
-    commentReadBy,
-    reconnected
 }

@@ -21,7 +21,7 @@ const Flexbox = require('../UI/Flexbox')
 const styleVars = require('../style-vars')
 
 const ThingHelper = require('../../helpers/thing-helper')
-const MessageBoxActions = require('../../actions/message-box-actions')
+import * as MessageBoxActions from '../../actions/message-box-actions'
 import ThingStatus from '../../../common/enums/thing-status'
 import MessageTypes from '../../../common/enums/message-types'
 

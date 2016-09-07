@@ -12,7 +12,7 @@ const Flexbox = require('../UI/Flexbox')
 const To = require('./To')
 const styleVars = require('../style-vars')
 
-const MessageBoxActions = require('../../actions/message-box-actions')
+import * as MessageBoxActions from '../../actions/message-box-actions'
 
 class MessageBox extends Component {
     constructor(props) {

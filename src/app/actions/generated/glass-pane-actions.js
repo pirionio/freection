@@ -1,21 +1,16 @@
-const GlassPaneActionsTypes = require('../types/glass-pane-action-types')
-const {ActionStatus} = require('../../constants')
-const ResourceUtil = require('../../util/resource-util')
+import GlassPaneActionsTypes from '../types/glass-pane-action-types'
+import {ActionStatus} from '../../constants'
+import ResourceUtil from '../../util/resource-util'
 
-function show(backdropCallback) {
+export function show(backdropCallback) {
     return {
         type: GlassPaneActionsTypes.SHOW,
         backdropCallback
     }
 }
 
-function hide() {
+export function hide() {
     return {
         type: GlassPaneActionsTypes.HIDE        
     }
-}
-
-module.exports = {
-    show,
-    hide
 }

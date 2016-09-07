@@ -16,7 +16,7 @@ const isEmpty = require('lodash/isEmpty')
 const toPairs = require('lodash/toPairs')
 
 const PreviewHelper = require('../../helpers/preview-helper')
-const EmailActions = require('../../actions/email-actions')
+import * as EmailActions from '../../actions/email-actions'
 
 const Page = require('../UI/Page')
 const Flexbox = require('../UI/Flexbox')

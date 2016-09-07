@@ -10,7 +10,7 @@ const isEmpty = require('lodash/isEmpty')
 const Page = require('../UI/Page')
 const PreviewsContainer = require('../Preview/PreviewsContainer')
 const styleVars = require('../style-vars')
-const FollowUpsActions = require('../../actions/follow-up-actions')
+import * as  FollowUpsActions from '../../actions/follow-up-actions'
 const FollowUpPreviewItem = require('./FollowUpPreviewItem')
 
 class FollowUp extends Component {

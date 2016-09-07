@@ -3,6 +3,7 @@ module.exports = {
     actions: [
         {
             name: 'fetchUnread',
+            private: true,
             type: 'get',
             path: '/emails/api/unread',
             completeParams: {

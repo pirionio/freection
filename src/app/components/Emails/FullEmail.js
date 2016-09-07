@@ -12,7 +12,7 @@ const MessagePanel = require('../MessageBox/MessagePanel')
 const {FullItem, FullItemSubject, FullItemBox} = require('../Full/FullItem')
 const TextTruncate = require('../UI/TextTruncate')
 
-const EmailPageActions = require('../../actions/email-page-actions')
+import * as EmailPageActions from '../../actions/email-page-actions'
 const {InvalidationStatus} = require('../../constants')
 
 class FullEmail extends Component {

@@ -4,7 +4,7 @@ const classAutobind = require('class-autobind').default
 const {connect} = require('react-redux')
 const useSheet = require('react-jss').default
 
-const MessageBoxActions = require('../../actions/message-box-actions')
+import * as MessageBoxActions from '../../actions/message-box-actions'
 import MessageTypes from '../../../common/enums/message-types'
 
 const Flexbox = require('../UI/Flexbox')

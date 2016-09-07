@@ -1,4 +1,4 @@
-const EmailActions = require('../actions/email-actions')
+import * as EmailActions from '../actions/email-actions'
 const ResourceUtil = require('../util/resource-util')
 
 class EmailLifecycleService {

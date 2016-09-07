@@ -14,14 +14,14 @@ const map = require('lodash/map')
 const some = require('lodash/some')
 const {chain} = require('lodash/core')
 
-const MessageBoxActions = require('../../actions/message-box-actions')
+import * as MessageBoxActions from '../../actions/message-box-actions'
 
 const Flexbox = require('../UI/Flexbox')
 const MessageBox = require('./MessageBox')
 const CollapsedMessageBox = require('./CollapsedMessageBox')
 const MessageTabs = require('./MessageTabs')
-const ThingCommandActions = require('../../actions/thing-command-actions')
-const EmailCommandActions = require('../../actions/email-command-actions')
+import * as ThingCommandActions from '../../actions/thing-command-actions'
+import * as EmailCommandActions from '../../actions/email-command-actions'
 import MessageTypes from '../../../common/enums/message-types'
 
 const componentStyles = require('../component-styles')

@@ -26,7 +26,7 @@ const NotificationPreviewItem = require('./NotificationPreviewItem')
 const GithubPreviewItem = require('./GithubPreviewItem')
 
 const PreviewHelper = require('../../helpers/preview-helper')
-const WhatsNewActions = require('../../actions/whats-new-actions')
+import * as WhatsNewActions from '../../actions/whats-new-actions'
 import EventTypes from '../../../common/enums/event-types'
 import EntityTypes from '../../../common/enums/entity-types'
 

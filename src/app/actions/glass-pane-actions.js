@@ -1,3 +1,1 @@
-const GlassPaneActions = require('./generated/glass-pane-actions')
-
-module.exports = GlassPaneActions
+export * from './generated/glass-pane-actions'

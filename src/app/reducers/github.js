@@ -1,4 +1,4 @@
-const GithubActionTypes = require('../actions/types/github-action-types')
+import GithubActionTypes from '../actions/types/github-action-types'
 const {ActionStatus, InvalidationStatus} = require('../constants')
 const immutable = require('../util/immutable')
 

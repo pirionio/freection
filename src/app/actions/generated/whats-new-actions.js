@@ -1,15 +1,15 @@
-const WhatsNewActionsTypes = require('../types/whats-new-action-types')
-const {ActionStatus} = require('../../constants')
-const ResourceUtil = require('../../util/resource-util')
+import WhatsNewActionsTypes from '../types/whats-new-action-types'
+import {ActionStatus} from '../../constants'
+import ResourceUtil from '../../util/resource-util'
 
-function setState(notifications) {
+export function setState(notifications) {
     return {
         type: WhatsNewActionsTypes.SET_STATE,
         notifications
     }
 }
 
-function fetchWhatsNew() {
+export function _fetchWhatsNew() {
     return dispatch => {
         dispatch({
             type: WhatsNewActionsTypes.FETCH_WHATS_NEW, 
@@ -28,23 +28,16 @@ function fetchWhatsNew() {
     }
 }
 
-function notificationReceived(notification) {
+export function notificationReceived(notification) {
     return {
         type: WhatsNewActionsTypes.NOTIFICATION_RECEIVED,
         notification
     }
 }
 
-function notificationDeleted(notification) {
+export function notificationDeleted(notification) {
     return {
         type: WhatsNewActionsTypes.NOTIFICATION_DELETED,
         notification
     }
-}
-
-module.exports = {
-    setState,
-    fetchWhatsNew,
-    notificationReceived,
-    notificationDeleted
 }

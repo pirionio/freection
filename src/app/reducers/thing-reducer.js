@@ -1,5 +1,5 @@
-const EventActionTypes = require('../actions/types/event-action-types')
-const ThingCommandActionTypes = require('../actions/types/thing-command-action-types')
+import EventActionTypes from '../actions/types/event-action-types'
+import ThingCommandActionTypes from '../actions/types/thing-command-action-types'
 const immutable = require('../util/immutable')
 
 function newCommentReceived(state, action) {
