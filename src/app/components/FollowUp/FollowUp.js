@@ -3,6 +3,8 @@ const {Component, PropTypes} = React
 const {connect} = require('react-redux')
 const orderBy = require('lodash/orderBy')
 const classAutobind = require('class-autobind').default
+const useSheet = require('react-jss').default
+
 const isEmpty = require('lodash/isEmpty')
 
 const Page = require('../UI/Page')
@@ -45,10 +47,10 @@ class FollowUp extends Component {
     }
 
     render() {
-        const {invalidationStatus} = this.props
+        const {invalidationStatus, sheet: {classes}} = this.props
 
         return (
-            <Page title={this.getTitle()} style={{position: 'relative'}}>
+            <Page title={this.getTitle()} className={classes.page}>
                 <PreviewsContainer previewItems={this.getThingsToFollowUp()}
                                    fetchPreviews={this.fetchFollowUps}
                                    noPreviews={this.getNoPreviews()}
@@ -61,16 +63,22 @@ class FollowUp extends Component {
     }
 }
 
+const style = {
+    page: {
+        position: 'relative'
+    }
+}
+
 FollowUp.propTypes = {
     things: PropTypes.array.isRequired,
     invalidationStatus: PropTypes.string.isRequired
 }
 
-const mapStateToProps = (state) => {
+function mapStateToProps (state) {
     return {
         things: state.followUps.followUps,
         invalidationStatus: state.followUps.invalidationStatus
     }
 }
 
-module.exports = connect(mapStateToProps)(FollowUp)
+module.exports = useSheet(connect(mapStateToProps)(FollowUp), style)
