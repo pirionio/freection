@@ -157,27 +157,15 @@ function markCommentAsRead(state, action) {
     }
 }
 
-function commentChangedOrAdded(state, action) {
-    return messageReceived(state, action, 'comment')
-}
-
-function pingReceived(state, action) {
-    return messageReceived(state, action, 'pingEvent')
-}
-
-function pongReceived(state, action) {
-    return messageReceived(state, action, 'pongEvent')
-}
-
-function messageReceived(state, action, messageField) {
+function messageReceived(state, action) {
     // If no thing is shown right now, or if the action does not carry an event at all, or if the event does not belong to the shown thing...
-    if (!state.thing || !action[messageField] || !action[messageField].thing || state.thing.id !== action[messageField].thing.id)
+    if (!state.thing || !action.event || !action.event.thing || state.thing.id !== action.event.thing.id)
         return state
 
     return immutable(state)
         .set('thing', thingReducer(state.thing, action))
         .touch('thing')
-        .arrayMergeItem('thing.events', {id: action[messageField].id}, getInitialReadBy)
+        .arrayMergeItem('thing.events', {id: action.event.id}, getInitialReadBy)
         .value()
 }
 
@@ -244,11 +232,9 @@ module.exports = (state = initialState, action) => {
             return markCommentAsRead(state, action)
         case EventActionTypes.COMMENT_CREATED:
         case EventActionTypes.COMMENT_READ_BY:
-            return commentChangedOrAdded(state, action)
         case EventActionTypes.PINGED:
-            return pingReceived(state, action)
         case EventActionTypes.PONGED:
-            return pongReceived(state, action)
+            return messageReceived(state, action)
         case EventActionTypes.ACCEPTED:
         case EventActionTypes.MARKED_AS_DONE:
         case EventActionTypes.CLOSED:

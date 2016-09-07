@@ -25,7 +25,7 @@ function setState(state, action) {
         .value()
 }
 
-function reconnected(state, action) {
+function reconnected(state) {
     if (state.invalidationStatus === InvalidationStatus.FETCHED) {
         return immutable(state)
             .set('invalidationStatus', InvalidationStatus.REQUIRE_UPDATE)
@@ -72,25 +72,13 @@ function actionDoneOnThing(state, action) {
     }
 }
 
-function commentChangedOrAdded(state, action) {
-    return messageReceived(state, action, 'comment')
-}
-
-function pingReceived(state, action) {
-    return messageReceived(state, action, 'pingEvent')
-}
-
-function pongReceived(state, action) {
-    return messageReceived(state, action, 'pongEvent')
-}
-
-function messageReceived(state, action, messageField) {
+function messageReceived(state, action) {
     // TODO Handle FETCHING state by queuing incoming events
     if (state.invalidationStatus !== InvalidationStatus.FETCHED)
         return state
 
     return immutable(state)
-        .arraySetItem('things', {id: action[messageField].thing.id}, item => thingReducer(item, action))
+        .arraySetItem('things', {id: action.event.thing.id}, item => thingReducer(item, action))
         .value()
 }
 
@@ -100,7 +88,7 @@ function created(state, action) {
         .set('events', [action.event])
         .value()
 
-    return statusChangedReceived(state, Object.assign({}, action, {thing}))
+    return statusChangedReceived(state, merge({}, action, {event: {thing}}))
 }
 
 function statusChangedReceived(state, action) {
@@ -108,13 +96,13 @@ function statusChangedReceived(state, action) {
         return state
 
     // If doer and not exist, lets add it
-    if (action.thing.isDoer && !some(state.things, {id: action.thing.id})) {
+    if (action.event.thing.isDoer && !some(state.things, {id: action.event.thing.id})) {
         return immutable(state)
-            .arrayPushItem('things', action.thing)
+            .arrayPushItem('things', action.event.thing)
             .value()
     } else {
         return immutable(state)
-            .arraySetItem('things', {id: action.thing.id}, item => thingReducer(item, action))
+            .arraySetItem('things', {id: action.event.thing.id}, item => thingReducer(item, action))
             .arrayReject('things', {isDoer: false})
             .value()
     }
@@ -125,7 +113,7 @@ module.exports = (state = initialState, action) => {
         case ToDoActionTypes.SET_STATE:
             return setState(state, action)
         case EventActionTypes.RECONNECTED:
-            return reconnected(state, action)
+            return reconnected(state)
         case ToDoActionTypes.FETCH_TO_DO:
             return toDo(state, action)
         case ThingCommandActionTypes.MARK_AS_DONE:
@@ -134,11 +122,9 @@ module.exports = (state = initialState, action) => {
             return actionDoneOnThing(state, action)
         case EventActionTypes.COMMENT_CREATED:
         case EventActionTypes.COMMENT_READ_BY:
-            return commentChangedOrAdded(state, action)
         case EventActionTypes.PINGED:
-            return pingReceived(state, action)
         case EventActionTypes.PONGED:
-            return pongReceived(state, action)
+            return messageReceived(state, action)
         case EventActionTypes.CREATED:
             return created(state, action)
         case EventActionTypes.ACCEPTED:

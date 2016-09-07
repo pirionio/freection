@@ -23,22 +23,22 @@ function listenToUpdates(pushToken, dispatch) {
             dispatch(EventActions.created(event))
 
         if (event.eventType.key === EventTypes.ACCEPTED.key)
-            dispatch(EventActions.accepted(event.thing))
+            dispatch(EventActions.accepted(event))
 
         if (event.eventType.key === EventTypes.DONE.key)
-            dispatch(EventActions.markedAsDone(event.thing))
+            dispatch(EventActions.markedAsDone(event))
 
         if (event.eventType.key === EventTypes.CLOSED.key)
-            dispatch(EventActions.closed(event.thing))
+            dispatch(EventActions.closed(event))
 
         if (event.eventType.key === EventTypes.DISMISSED.key)
-            dispatch(EventActions.dismissed(event.thing))
+            dispatch(EventActions.dismissed(event))
 
         if (event.eventType.key === EventTypes.SENT_BACK.key)
-            dispatch(EventActions.sentBack(event.thing))
+            dispatch(EventActions.sentBack(event))
 
         if (event.eventType.key === EventTypes.CLOSE_ACKED.key)
-            dispatch(EventActions.closeAcked(event.thing))
+            dispatch(EventActions.closeAcked(event))
 
         if (event.eventType.key === EventTypes.PING.key)
             dispatch(EventActions.pinged(event))

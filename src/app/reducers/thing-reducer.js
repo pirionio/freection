@@ -4,14 +4,14 @@ const immutable = require('../util/immutable')
 
 function newCommentReceived(state, action) {
     return immutable(state)
-        .arraySetOrPushItem('events', {id: action.comment.id}, action.comment)
+        .arraySetOrPushItem('events', {id: action.event.id}, action.event)
         .value()
 }
 
 function pingReceived(state, action) {
     return immutable(state)
-        .arraySetOrPushItem('events', {id: action.pingEvent.id}, action.pingEvent)
-        .arrayMergeItem('events', {id: action.pingEvent.id}, {
+        .arraySetOrPushItem('events', {id: action.event.id}, action.event)
+        .arrayMergeItem('events', {id: action.event.id}, {
             payload: {
                 text: 'Ping!'
             }
@@ -21,13 +21,13 @@ function pingReceived(state, action) {
 
 function pongReceived(state, action) {
     return immutable(state)
-        .arraySetOrPushItem('events', {id: action.pongEvent.id}, action.pongEvent)
+        .arraySetOrPushItem('events', {id: action.event.id}, action.event)
         .value()
 }
 
 function commentReadyByReceived(state, action) {
     return immutable(state)
-        .arrayMergeItem('events', event => event.id === action.comment.id, {
+        .arrayMergeItem('events', event => event.id === action.event.id, {
             payload: {
                 isRead: true
             }
@@ -38,9 +38,10 @@ function commentReadyByReceived(state, action) {
 function statusChanged(state, action) {
     return immutable(state)
         .touch('payload')
-        .set('payload.status', action.thing.payload.status)
-        .set('isDoer', action.thing.isDoer)
-        .set('isFollowUper', action.thing.isFollowUper)
+        .set('payload.status', action.event.thing.payload.status)
+        .set('isDoer', action.event.thing.isDoer)
+        .set('isFollowUper', action.event.thing.isFollowUper)
+        .arraySetOrPushItem('events', {id: action.event.id}, action.event)
         .value()
 }
 

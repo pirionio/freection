@@ -9,73 +9,73 @@ function created(event) {
     }
 }
 
-function accepted(thing) {
+function accepted(event) {
     return {
         type: EventActionsTypes.ACCEPTED,
-        thing
+        event
     }
 }
 
-function markedAsDone(thing) {
+function markedAsDone(event) {
     return {
         type: EventActionsTypes.MARKED_AS_DONE,
-        thing
+        event
     }
 }
 
-function closed(thing) {
+function closed(event) {
     return {
         type: EventActionsTypes.CLOSED,
-        thing
+        event
     }
 }
 
-function closeAcked(thing) {
+function closeAcked(event) {
     return {
         type: EventActionsTypes.CLOSE_ACKED,
-        thing
+        event
     }
 }
 
-function dismissed(thing) {
+function dismissed(event) {
     return {
         type: EventActionsTypes.DISMISSED,
-        thing
+        event
     }
 }
 
-function sentBack(thing) {
+function sentBack(event) {
     return {
         type: EventActionsTypes.SENT_BACK,
-        thing
+        event
     }
 }
 
-function pinged(pingEvent) {
+function pinged(event) {
     return {
         type: EventActionsTypes.PINGED,
-        pingEvent
+        event
     }
 }
 
-function ponged(pongEvent) {
+function ponged(event) {
     return {
         type: EventActionsTypes.PONGED,
-        pongEvent
+        event
     }
 }
 
-function commentCreated(comment) {
+function commentCreated(event) {
     return {
         type: EventActionsTypes.COMMENT_CREATED,
-        comment
+        event
     }
 }
 
-function commentReadBy(comment) {
+function commentReadBy(event) {
     return {
         type: EventActionsTypes.COMMENT_READ_BY,
-        comment
+        event
     }
 }
 

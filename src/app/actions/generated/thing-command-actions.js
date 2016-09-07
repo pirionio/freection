@@ -1,7 +1,7 @@
 const ThingCommandActionsTypes = require('../types/thing-command-action-types')
 const {ActionStatus} = require('../../constants')
 const ResourceUtil = require('../../util/resource-util')
-import EventTypes from '../../../common/enums/event-types'
+const EventTypes = require('../../../common/enums/event-types')
 
 function comment(thingId, commentText) {
     return dispatch => {

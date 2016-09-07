@@ -7,43 +7,43 @@ module.exports = {
         },
         {
             name: 'accepted',
-            params: ['thing']
+            params: ['event']
         },
         {
             name: 'marked as done',
-            params: ['thing']
+            params: ['event']
         },
         {
             name: 'closed',
-            params: ['thing']
+            params: ['event']
         },
         {
             name: 'close acked',
-            params: ['thing']
+            params: ['event']
         },
         {
             name: 'dismissed',
-            params: ['thing']
+            params: ['event']
         },
         {
             name: 'sent back',
-            params: ['thing']
+            params: ['event']
         },
         {
             name: 'pinged',
-            params: ['pingEvent']
+            params: ['event']
         },
         {
             name: 'ponged',
-            params: ['pongEvent']
+            params: ['event']
         },
         {
             name: 'comment created',
-            params: ['comment']
+            params: ['event']
         },
         {
             name: 'comment read by',
-            params: ['comment']
+            params: ['event']
         },
         {
             name: 'reconnected'
