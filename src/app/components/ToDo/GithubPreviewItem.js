@@ -7,6 +7,8 @@ const GithubActionsBar = require('./GithubActionsBar')
 const TextTruncate = require('../UI/TextTruncate')
 import ThingStatus from '../../../common/enums/thing-status'
 const styleVars = require('../style-vars')
+const Flexbox = require('../UI/Flexbox')
+const TextSeparator = require('../UI/TextSeparator')
 
 class GithubTodoPreviewItem extends Component {
     getTextElement() {

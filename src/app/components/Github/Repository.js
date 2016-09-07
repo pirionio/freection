@@ -17,7 +17,7 @@ class Repository extends Component {
     }
 
     toggleRepository(fullName, checked) {
-        if (checked != this.props.repository.enabled) {
+        if (checked !== this.props.repository.enabled) {
             if (checked)
                 this.props.dispatch(GithubActions.enableRepository(fullName))
             else

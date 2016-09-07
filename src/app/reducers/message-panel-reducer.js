@@ -1,6 +1,5 @@
 const uniqueId = require('lodash/uniqueId')
 const find = require('lodash/find')
-const head = require('lodash/head')
 
 import MessageBoxActionTypes from '../actions/types/message-box-action-types'
 import ThingPageActionTypes from '../actions/types/thing-page-action-types'

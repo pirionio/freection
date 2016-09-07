@@ -18,7 +18,7 @@ function setState(state, action) {
     }
 }
 
-function reconnected(state, action) {
+function reconnected(state) {
     if (state.invalidationStatus === InvalidationStatus.FETCHED) {
         return immutable(state)
             .set('invalidationStatus', InvalidationStatus.REQUIRE_UPDATE)

@@ -7,11 +7,11 @@ function getChildOfType(children, type) {
 }
 
 function createSlots(...names) {
-    var slots = {}
+    const slots = {}
 
     names.forEach(name => {
         const tempFunc = new Function('action',
-            'return function ' + name + '(props) {' +
+            `return function ${name} (props) {` +
                 'return action(props);' +
             '};')
 

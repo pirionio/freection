@@ -10,7 +10,6 @@ const isEmpty = require('lodash/isEmpty')
 const MessagePanel = require('../MessageBox/MessagePanel')
 
 const {FullItem, FullItemSubject, FullItemBox} = require('../Full/FullItem')
-const TextTruncate = require('../UI/TextTruncate')
 
 import * as EmailPageActions from '../../actions/email-page-actions'
 const {InvalidationStatus} = require('../../constants')
@@ -48,8 +47,8 @@ class FullEmail extends Component {
 
         if (unreadComments.length > 0)
             return `Freection (${unreadComments.length}) - ${thread.subject}`
-        else
-            return `Freection - ${thread.subject}`
+
+        return `Freection - ${thread.subject}`
     }
 
     getAllMessages() {

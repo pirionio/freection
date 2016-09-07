@@ -8,11 +8,9 @@ const Icon = require('react-fontawesome')
 const {goBack} = require('react-router-redux')
 const useSheet = require('react-jss').default
 
-const isEmpty = require('lodash/isEmpty')
 const reject = require('lodash/reject')
 const map = require('lodash/map')
 
-const Button = require('../UI/Button')
 const CommentList = require('../Comment/CommentList')
 const Ellipse = require('../UI/Ellipse')
 const TextTruncate = require('../UI/TextTruncate')
@@ -53,8 +51,8 @@ class Board extends Component {
 
         if (unreadComments.length > 0)
             return `Freection (${unreadComments.length}) - ${board.subject}`
-        else
-            return `Freection - ${board.subject}`
+
+        return `Freection - ${board.subject}`
     }
 
     getAllComments() {

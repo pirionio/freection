@@ -102,9 +102,9 @@ function arraySetOrMergeItem(array, predicate, updater, isMerge) {
         if (matchItem(item, predicate)) {
             const value = getItemValue(item, updater)
             return isMerge ? merge({}, item, value) : value
-        } else {
-            return item
         }
+
+        return item
     })
 }
 

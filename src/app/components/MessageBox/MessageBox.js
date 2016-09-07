@@ -6,7 +6,6 @@ const classAutobind = require('class-autobind').default
 const useSheet = require('react-jss').default
 
 const isNil = require('lodash/isNil')
-const find = require('lodash/find')
 
 const Flexbox = require('../UI/Flexbox')
 const To = require('./To')
@@ -86,7 +85,7 @@ class MessageBox extends Component {
                    containerClassName={classes.messageTo}
                    inputClassName={classes.textField}
                    tabIndex={3}
-                   inputRef={ref =>this.messageTo = ref}
+                   inputRef={ref => this.messageTo = ref}
                    onFocus={this.focusOnTo} />
     }
 

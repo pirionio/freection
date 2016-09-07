@@ -100,12 +100,12 @@ function statusChangedReceived(state, action) {
         return immutable(state)
             .arrayPushItem('things', action.event.thing)
             .value()
-    } else {
-        return immutable(state)
-            .arraySetItem('things', {id: action.event.thing.id}, item => thingReducer(item, action))
-            .arrayReject('things', {isDoer: false})
-            .value()
     }
+
+    return immutable(state)
+        .arraySetItem('things', {id: action.event.thing.id}, item => thingReducer(item, action))
+        .arrayReject('things', {isDoer: false})
+        .value()
 }
 
 module.exports = (state = initialState, action) => {

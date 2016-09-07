@@ -7,10 +7,8 @@ const classNames = require('classnames')
 
 const {chain} = require('lodash/core')
 const groupBy = require('lodash/groupBy')
-const orderBy = require('lodash/orderBy')
 const forOwn = require('lodash/forOwn')
 const merge = require('lodash/merge')
-const clone = require('lodash/clone')
 const map = require('lodash/map')
 const isEmpty = require('lodash/isEmpty')
 const toPairs = require('lodash/toPairs')
@@ -23,7 +21,6 @@ const Flexbox = require('../UI/Flexbox')
 const PreviewsContainer = require('../Preview/PreviewsContainer')
 const EmailPreviewItem = require('./EmailPreviewItem')
 const styleVars = require('../style-vars')
-const FullEmail = require('../Emails/FullEmail')
 
 class UnreadEmails extends Component {
     constructor(props) {
@@ -35,8 +32,8 @@ class UnreadEmails extends Component {
         // TODO: should we return the aggregated number instead?
         if (this.props.emails.length > 0)
             return `Freection (${this.props.emails.length}) - Unread Emails`
-        else
-            return 'Freection - Unread Emails'
+
+        return 'Freection - Unread Emails'
     }
 
     fetchUnreadEmails() {
@@ -45,10 +42,10 @@ class UnreadEmails extends Component {
     }
 
     getEmailRows() {
-        let aggregatedEmails = []
+        const aggregatedEmails = []
 
         const emailsByThreadId = groupBy(this.props.emails, 'payload.threadId')
-        forOwn(emailsByThreadId, (threadEmails) => {
+        forOwn(emailsByThreadId, threadEmails => {
             const lastEmail = chain(threadEmails).sortBy('createdAt').head().clone().value()
             aggregatedEmails.push(merge(lastEmail, {
                 entityId: lastEmail.payload.threadId,
@@ -70,7 +67,7 @@ class UnreadEmails extends Component {
         const groupedEmails = PreviewHelper.groupByDate(aggregatedEmails, this.buildPreviewItem)
 
         const emailsToShow = chain(toPairs(groupedEmails))
-            .filter(([groupTitle, emails]) => !isEmpty(emails))
+            .filter(([, emails]) => !isEmpty(emails))
             .map(([groupTitle, emails], index) => {
                 const titleClass = classNames(classes.header, index === 0 && classes.first)
                 return (
@@ -135,7 +132,7 @@ const style = {
     }
 }
 
-UnreadEmails.propsTypes = {
+UnreadEmails.propTypes = {
     emails: PropTypes.array.isRequired,
     currentUser: PropTypes.object.isRequired,
     invalidationStatus: PropTypes.string.isRequired

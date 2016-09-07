@@ -5,8 +5,6 @@ const orderBy = require('lodash/orderBy')
 const classAutobind = require('class-autobind').default
 const useSheet = require('react-jss').default
 
-const isEmpty = require('lodash/isEmpty')
-
 const Page = require('../UI/Page')
 const styleVars = require('../style-vars')
 const PreviewsContainer = require('../Preview/PreviewsContainer')
@@ -31,15 +29,17 @@ class ToDo extends Component {
         return orderBy(this.props.things, 'createdAt', 'desc').map(thing => {
             if (thing.type.key === EntityTypes.GITHUB.key) {
                 return <GithubPreviewItem thing={thing} key={thing.id} />
-            } else
-                return <ToDoPreviewItem thing={thing} key={thing.id} />})
+            }
+
+            return <ToDoPreviewItem thing={thing} key={thing.id} />
+        })
     }
 
     getTitle() {
         if (this.props.things.length > 0)
             return `Freection (${this.props.things.length}) - To Do`
-        else
-            return 'Freection - To Do'
+
+        return 'Freection - To Do'
     }
 
     getNoPreviews() {

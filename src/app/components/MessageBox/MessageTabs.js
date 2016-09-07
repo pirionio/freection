@@ -81,7 +81,7 @@ class MessageTabs extends Component {
     }
 
     render () {
-        const {activeMessageBox, sheet: {classes}} = this.props
+        const {sheet: {classes}} = this.props
 
         const messageTabs = this.getMessageTabs()
         const newMenu = this.getNewMenu()

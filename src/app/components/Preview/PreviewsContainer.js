@@ -3,7 +3,6 @@ const {Component, PropTypes} = React
 const Delay = require('react-delay')
 const useSheet = require('react-jss').default
 
-const isEmpty = require('lodash/isEmpty')
 const isArray = require('lodash/isArray')
 
 const {GeneralConstants, InvalidationStatus} = require('../../constants')

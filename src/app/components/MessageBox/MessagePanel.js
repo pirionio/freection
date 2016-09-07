@@ -9,7 +9,6 @@ const classNames = require('classnames')
 
 const find = require('lodash/find')
 const isNil = require('lodash/isNil')
-const isEmpty = require('lodash/isEmpty')
 const map = require('lodash/map')
 const some = require('lodash/some')
 const {chain} = require('lodash/core')
@@ -83,7 +82,7 @@ class MessagePanel extends Component {
         const {activeMessageBox} = this.props
         return isNil(activeMessageBox) ?
             <CollapsedMessageBox /> :
-            <MessageBox to={activeMessageBox.context ? null : ""} subject={activeMessageBox.context ? null : ""} />
+            <MessageBox to={activeMessageBox.context ? null : ''} subject={activeMessageBox.context ? null : ''} />
     }
 
     getSendButton() {

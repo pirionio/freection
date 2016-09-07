@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+
 const {expect} = require('chai')
 
 const immutable = require('./immutable')
@@ -185,7 +187,7 @@ describe('Immutable', () => {
         it('sets new items to all of the array', () => {
             const result = theImmutable.arraySetAll('someArray', {someNewKey: 'newValue'}).value()
             expect(result.someArray.length).to.equal(3)
-            result.someArray.forEach((item) => {
+            result.someArray.forEach(item => {
                 expect(item.someNewKey).to.equal('newValue')
                 expect(item.someItemKey).to.equal(undefined)
             })

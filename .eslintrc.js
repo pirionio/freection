@@ -31,6 +31,7 @@ module.exports = {
             "error",
             "never"
         ],
+        "no-case-declarations": [0],
         "no-var": ["error"],
         "arrow-parens": ["error", "as-needed"],
         "arrow-spacing": ["error"],
@@ -43,14 +44,16 @@ module.exports = {
         "no-else-return": ["error"],
         "no-confusing-arrow": ["error"],
         "react/prop-types":["error", {
-            ignore: ["dispatch", "children"]
+            ignore: ["dispatch", "children", "sheet", "params"]
         }],
-        "import/no-commonjs": ["error"],
-        "import/imports-first": ["error"],
-        "import/newline-after-import": ["error"],
-        "import/order": ["error", {
-            "groups": ["builtin", "external", ["internal", "parent", "sibling", "index"]],
-            "newlines-between": "always"
-        }]
+        "react/no-find-dom-node": ["warn"],
+        "react/no-danger": ["warn"],
+        //"import/no-commonjs": ["error"],
+        //"import/imports-first": ["error"],
+        //"import/newline-after-import": ["error"],
+        //"import/order": ["error", {
+        //    "groups": ["builtin", "external", ["internal", "parent", "sibling", "index"]],
+        //    "newlines-between": "always"
+        //}]
     }
 };

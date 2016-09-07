@@ -9,7 +9,6 @@ const useSheet = require('react-jss').default
 const classNames = require('classnames')
 
 const Flexbox = require('../UI/Flexbox')
-const Button = require('../UI/Button')
 const CommentList = require('../Comment/CommentList')
 const Ellipse = require('../UI/Ellipse')
 const TextTruncate = require('../UI/TextTruncate')
@@ -33,7 +32,7 @@ class FullItem extends  Component {
         this.initialPath = window.location.pathname
     }
 
-    handleClickOutside(event) {
+    handleClickOutside() {
         // This has to happen in a timeout, since we want to perform the check only after a potential state change,
         // which will happen in the next event-loop tick.
         setTimeout(() => {

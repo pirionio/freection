@@ -30,9 +30,9 @@ function getInitialReadBy(event) {
                 initialIsRead: event.payload.isRead
             }
         }
-    } else {
-        return {}
     }
+
+    return {}
 }
 
 function getUpdatedReadBy(event, thing) {
@@ -42,12 +42,12 @@ function getUpdatedReadBy(event, thing) {
         return {payload: {
             initialIsRead: existingThing.payload.initialIsRead
         }}
-    } else {
-        return getInitialReadBy(event)
     }
+
+    return getInitialReadBy(event)
 }
 
-function reconnected(state, action) {
+function reconnected(state) {
     if (state.invalidationStatus === InvalidationStatus.FETCHED) {
         return immutable(state)
             .set('invalidationStatus', InvalidationStatus.REQUIRE_UPDATE)
@@ -76,8 +76,8 @@ function get(state, action) {
                 .arrayMergeItem('thing.events', event => SharedConstants.MESSAGE_TYPED_EVENTS.includes(event.eventType.key), event => {
                     if (state.invalidationStatus === InvalidationStatus.UPDATING)
                         return getUpdatedReadBy(event, thing)
-                    else
-                        return getInitialReadBy(event)
+
+                    return getInitialReadBy(event)
                 })
                 .set('invalidationStatus', InvalidationStatus.FETCHED)
                 .value()

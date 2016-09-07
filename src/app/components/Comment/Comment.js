@@ -3,7 +3,6 @@ const {Component, PropTypes} = React
 const dateFns = require('date-fns')
 const VisibilitySensor = require('react-visibility-sensor')
 const {connect} = require('react-redux')
-const classnames = require('classnames')
 const classAutobind = require('class-autobind').default
 const useSheet = require('react-jss').default
 
@@ -12,7 +11,6 @@ import EventTypes from '../../../common/enums/event-types'
 import * as ThingCommandActions from '../../actions/thing-command-actions'
 
 const Flexbox = require('../UI/Flexbox')
-const Color = require('color')
 const TextTruncate = require('../UI/TextTruncate')
 const styleVars = require('../style-vars')
 
@@ -123,7 +121,7 @@ Comment.propTypes = {
     currentUser: PropTypes.object.isRequired
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         currentUser: state.auth
     }

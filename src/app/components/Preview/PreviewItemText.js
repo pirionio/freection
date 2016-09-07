@@ -1,5 +1,5 @@
 const React = require('react')
-const {Component} = React
+const {Component, PropTypes} = React
 const classAutobind = require('class-autobind').default
 const SizeMe = require('react-sizeme').default
 const useSheet = require('react-jss').default
@@ -7,6 +7,10 @@ const useSheet = require('react-jss').default
 const styleVars = require('../style-vars')
 
 class PreviewItemText extends Component {
+    static propTypes = {
+        size: PropTypes.object.isRequired
+    }
+
     constructor(props) {
         super(props)
         this.fade = false

@@ -9,6 +9,6 @@ const style = {
     separator: {
         width: 13,
         textAlign: 'center'
-}}
+    }}
 
 module.exports = useSheet(TextSeparator, style)

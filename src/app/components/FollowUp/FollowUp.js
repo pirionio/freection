@@ -5,8 +5,6 @@ const orderBy = require('lodash/orderBy')
 const classAutobind = require('class-autobind').default
 const useSheet = require('react-jss').default
 
-const isEmpty = require('lodash/isEmpty')
-
 const Page = require('../UI/Page')
 const PreviewsContainer = require('../Preview/PreviewsContainer')
 const styleVars = require('../style-vars')
@@ -32,8 +30,8 @@ class FollowUp extends Component {
     getTitle() {
         if (this.props.things.length > 0)
             return `Freection (${this.props.things.length}) - Follow Up`
-        else
-            return 'Freection - Follow Up'
+
+        return 'Freection - Follow Up'
     }
 
     getNoPreviews() {
@@ -73,6 +71,7 @@ FollowUp.propTypes = {
     things: PropTypes.array.isRequired,
     invalidationStatus: PropTypes.string.isRequired
 }
+
 
 function mapStateToProps (state) {
     return {

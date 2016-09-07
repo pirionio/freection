@@ -34,14 +34,14 @@ class App extends Component {
                     <GlassPane />
                 </Flexbox>
             )
-        } else {
-            return (
-                <Flexbox name="root" container="column" className={classes.container}>
-                    <LoginTopBar />
-                    <Login />
-                </Flexbox>
-            )
         }
+
+        return (
+            <Flexbox name="root" container="column" className={classes.container}>
+                <LoginTopBar />
+                <Login />
+            </Flexbox>
+        )
     }
 }
 
@@ -55,7 +55,7 @@ App.propTypes = {
     currentUser: PropTypes.object.isRequired
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         currentUser: state.auth
     }

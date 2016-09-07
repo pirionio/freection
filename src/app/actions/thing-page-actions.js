@@ -1,7 +1,7 @@
 const {push} = require('react-router-redux')
 const find = require('lodash/find')
 
-import {_getThing, _showThingPage, _hideAction} from'./generated/thing-page-actions'
+import {_getThing, _showThingPage, _hideThingPage} from'./generated/thing-page-actions'
 import * as MessageBoxActions from './message-box-actions'
 const {InvalidationStatus} = require('../constants')
 import MessageTypes from '../../common/enums/message-types'
@@ -29,7 +29,7 @@ export function hideThingPage() {
         const {thingPage, messagePanel} = getState()
         const thingId = thingPage.thing.id
 
-        dispatch(_hideAction())
+        dispatch(_hideThingPage())
 
         const thingMessageBox = find(messagePanel.messageBoxes, {context: {id: thingId}})
         thingMessageBox && dispatch(MessageBoxActions.closeMessageBox(thingMessageBox.id))

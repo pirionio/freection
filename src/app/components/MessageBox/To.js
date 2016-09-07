@@ -5,7 +5,6 @@ const {actions} = require('react-redux-form')
 const Autosuggest = require('react-autosuggest')
 const useSheet = require('react-jss').default
 
-const merge = require('lodash/merge')
 const omit = require('lodash/omit')
 const some = require('lodash/some')
 const takeRight = require('lodash/takeRight')

@@ -11,7 +11,6 @@ const reject = require('lodash/reject')
 const ThingPageActionsBar = require('./ThingPageActionsBar')
 const MessagePanel = require('../MessageBox/MessagePanel')
 const {FullItem, FullItemSubject, FullItemStatus, FullItemActions, FullItemBox} = require('../Full/FullItem')
-const Flexbox = require('../UI/Flexbox')
 const styleVars = require('../style-vars')
 
 import * as ThingPageActions from '../../actions/thing-page-actions'
@@ -55,8 +54,8 @@ class FullThing extends Component {
 
         if (unreadComments.length > 0)
             return `Freection (${unreadComments.length}) - ${thing.subject}`
-        else
-            return `Freection - ${thing.subject}`
+
+        return `Freection - ${thing.subject}`
     }
 
     getAllComments() {

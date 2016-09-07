@@ -9,13 +9,14 @@ const initialState = {
     invalidationStatus: InvalidationStatus.INVALIDATED
 }
 
-function invalidate(state, action) {
+function invalidate(state) {
     if (state.invalidationStatus === InvalidationStatus.FETCHED) {
         return immutable(state)
             .set('invalidationStatus', InvalidationStatus.INVALIDATED)
             .value()
-    } else
-        return state
+    }
+
+    return state
 }
 
 function fetchUnread(state, action) {

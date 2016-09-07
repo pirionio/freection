@@ -1,6 +1,6 @@
 const React = require('react')
 const {Component} = React
-var Icon = require('react-fontawesome');
+const Icon = require('react-fontawesome')
 const useSheet = require('react-jss').default
 
 const Flexbox = require('../UI/Flexbox')

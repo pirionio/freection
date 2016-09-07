@@ -1,10 +1,7 @@
 const {actions} = require('react-redux-form')
 const find = require('lodash/find')
 const last = require('lodash/last')
-const isEmpty = require('lodash/isEmpty')
-const isNil = require('lodash/isNil')
 const findIndex = require('lodash/findIndex')
-const nth = require('lodash/nth')
 
 import MessageBoxActionsTypes from'./types/message-box-action-types'
 import {_newMessageBox, _selectMessageBox, _closeMessageBox, _setFocus } from './generated/message-box-actions'

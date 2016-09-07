@@ -26,7 +26,7 @@ class Scrollable extends Component {
             const node = ReactDOM.findDOMNode(element)
             const container = ReactDOM.findDOMNode(this)
 
-            if (container != node.offsetParent) {
+            if (container !== node.offsetParent) {
                 container.scrollTop = node.offsetTop - container.offsetTop
             } else {
                 container.scrollTop = node.offsetTop

@@ -1,4 +1,4 @@
-const React = require ('react')
+const React = require('react')
 const ReactDOM  = require('react-dom')
 const { createStore, applyMiddleware } = require('redux')
 const reducers = require('./reducers')
@@ -30,7 +30,7 @@ const AppRouter = require('./routes')
 
 const middleware = routerMiddleware(browserHistory)
 
-let store = createStore(reducers,
+const store = createStore(reducers,
     window.__STATE__, applyMiddleware(thunk, middleware))
 
 // Create an enhanced history that syncs navigation events with the store

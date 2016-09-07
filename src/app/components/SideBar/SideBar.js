@@ -7,7 +7,6 @@ const styleVars = require('../style-vars')
 
 const NavigationMenu = require('./NavigationMenu')
 const UserSettings = require('./UserSettings')
-const BoardList = require('./BoardList')
 
 const logo = require('../../static/logo-white.png')
 

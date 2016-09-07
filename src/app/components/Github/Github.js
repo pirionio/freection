@@ -24,7 +24,6 @@ class Github extends Component {
     }
 
     getFetching() {
-        const {sheet: {classes}} = this.props
         return (
             <div>
                 Fetching github data
@@ -33,8 +32,6 @@ class Github extends Component {
     }
 
     getNotActive() {
-        const {sheet: {classes}} = this.props
-
         return (
             <Flexbox name="github-not-active">
                 <span>You are not integrated with github yet, </span>

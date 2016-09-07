@@ -6,12 +6,10 @@ const useSheet = require('react-jss').default
 const classNames = require('classnames')
 
 const groupBy = require('lodash/groupBy')
-const find = require('lodash/find')
 const first = require('lodash/first')
 const last = require('lodash/last')
 const merge = require('lodash/merge')
 const reject = require('lodash/reject')
-const orderBy = require('lodash/orderBy')
 const forOwn = require('lodash/forOwn')
 const clone = require('lodash/clone')
 const isEmpty = require('lodash/isEmpty')
@@ -45,10 +43,10 @@ class WhatsNew extends Component {
         const {notifications} = this.props
         const notificationsByThing = groupBy(notifications, notification => notification.thing.id)
 
-        let aggregatedNotifications = []
+        const aggregatedNotifications = []
 
         // We want to aggregate notifications that belong to the very same thing. That's why we grouped them according to Thing.
-        forOwn(notificationsByThing, (thingNotifications) => {
+        forOwn(notificationsByThing, thingNotifications => {
             const commentNotifications = chain(thingNotifications)
                 .filter(notification => [EventTypes.CREATED.key, EventTypes.COMMENT.key].includes(notification.eventType.key))
                 .sortBy('createdAt')
@@ -86,7 +84,7 @@ class WhatsNew extends Component {
         const groupedNotifications = PreviewHelper.groupByDate(aggregatedNotifications, this.buildPreviewItem)
 
         const notificationsToShow = chain(toPairs(groupedNotifications))
-            .filter(([groupTitle, notifications]) => !isEmpty(notifications))
+            .filter(([, notifications]) => !isEmpty(notifications))
             .map(([groupTitle, notifications], index) => {
                 const titleClass = classNames(classes.header, index === 0 && classes.first)
                 return (
@@ -118,8 +116,8 @@ class WhatsNew extends Component {
         // TODO: should we return the aggregated number instead?
         if (this.props.notifications.length > 0)
             return `Freection (${this.props.notifications.length}) - What's New?`
-        else
-            return 'Freection - What\'s New?'
+
+        return 'Freection - What\'s New?'
     }
 
     getNoPreviews() {

@@ -13,7 +13,7 @@ const initialState = {
     invalidationStatus: InvalidationStatus.INVALIDATED
 }
 
-function requireUpdate(state, action) {
+function requireUpdate(state) {
     
     if (state.invalidationStatus === InvalidationStatus.FETCHED) {
         return immutable(state)
@@ -40,11 +40,11 @@ function get(state, action) {
             return immutable(state)
                 .set('thread', action.thread)
                 .touch('thread')
-                .arrayMergeItem('thread.messages', message => true, event => {
+                .arrayMergeItem('thread.messages', () => true, event => {
                     if (state.invalidationStatus === InvalidationStatus.UPDATING)
                         return getUpdatedReadBy(event, thread)
-                    else
-                        return getInitialReadBy(event)
+
+                    return getInitialReadBy(event)
                 })
                 .set('invalidationStatus', InvalidationStatus.FETCHED)
                 .value()
@@ -92,9 +92,9 @@ function getInitialReadBy(event) {
                 initialIsRead: event.payload.isRead
             }
         }
-    } else {
-        return {}
     }
+
+    return {}
 }
 
 function getUpdatedReadBy(event, thread) {
@@ -104,9 +104,9 @@ function getUpdatedReadBy(event, thread) {
         return {payload: {
             initialIsRead: existingMessage.payload.initialIsRead
         }}
-    } else {
-        return getInitialReadBy(event)
     }
+
+    return getInitialReadBy(event)
 }
 
 module.exports = (state = initialState, action) => {
