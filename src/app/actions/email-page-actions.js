@@ -1,9 +1,9 @@
-const {push} = require('react-router-redux')
-const find = require('lodash/find')
+import {push} from 'react-router-redux'
+import find from 'lodash/find'
 
 import {_getEmail, _showEmailPage, _hideEmailPage} from './generated/email-page-actions'
 import * as MessageBoxActions from './message-box-actions'
-const {InvalidationStatus} = require('../constants')
+import {InvalidationStatus} from '../constants'
 import MessageTypes from '../../common/enums/message-types'
 
 export function getEmail(threadId) {

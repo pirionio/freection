@@ -1,4 +1,4 @@
-const {actions} = require('react-redux-form')
+import {actions} from 'react-redux-form'
 
 import * as GlassPaneActions from '../actions/glass-pane-actions'
 

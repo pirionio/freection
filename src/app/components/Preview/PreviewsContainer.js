@@ -1,16 +1,13 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const Delay = require('react-delay')
-const useSheet = require('react-jss').default
+import React, {Component, PropTypes} from 'react'
+import Delay from 'react-delay'
+import useSheet from 'react-jss'
+import isArray from 'lodash/isArray'
 
-const isArray = require('lodash/isArray')
-
-const {GeneralConstants, InvalidationStatus} = require('../../constants')
-
-const Flexbox = require('../UI/Flexbox')
-const MessagePanel = require('../MessageBox/MessagePanel')
-const Scrollable = require('../Scrollable/Scrollable')
-const styleVars = require('../style-vars')
+import {GeneralConstants, InvalidationStatus} from '../../constants'
+import Flexbox from '../UI/Flexbox'
+import MessagePanel from '../MessageBox/MessagePanel'
+import Scrollable from '../Scrollable/Scrollable'
+import styleVars from '../style-vars'
 
 class PreviewsContainer extends Component {
     componentDidMount () {
@@ -130,4 +127,4 @@ PreviewsContainer.propTypes = {
     invalidationStatus: PropTypes.string.isRequired
 }
 
-module.exports = useSheet(PreviewsContainer, style)
+export default useSheet(PreviewsContainer, style)

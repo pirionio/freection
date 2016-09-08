@@ -27,7 +27,7 @@ function generateRequireCode(model) {
 
     return `import ${getTypesVariable(model.name)} from '../types/${getTypesFilename(model.name)}'\r\n` +
             `import {ActionStatus} from '../../constants'\r\n` +
-            `import ResourceUtil from '../../util/resource-util'\r\n` +
+            `import * as ResourceUtil from '../../util/resource-util'\r\n` +
             toPairs(requires).map(_require => `import ${_require[0]} from '${_require[1]}'\r\n`).join('')
 }
 

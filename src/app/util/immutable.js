@@ -1,11 +1,11 @@
-const clone = require('lodash/clone')
-const set = require('lodash/set')
-const get = require('lodash/get')
-const reject = require('lodash/reject')
-const some = require('lodash/some')
-const merge = require('lodash/merge')
-const isFunction = require('lodash/isFunction')
-const isMatch = require('lodash/isMatch')
+import clone from 'lodash/clone'
+import set from 'lodash/set'
+import get from 'lodash/get'
+import reject from 'lodash/reject'
+import some from 'lodash/some'
+import merge from 'lodash/merge'
+import isFunction from 'lodash/isFunction'
+import isMatch from 'lodash/isMatch'
 
 class Immutable {
     constructor(source) {
@@ -120,8 +120,6 @@ function matchItem(item, predicate) {
     return isMatch(item, predicate)
 }
 
-function immutable(source) {
+export default function immutable(source) {
     return new Immutable(source)
 }
-
-module.exports = immutable

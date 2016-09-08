@@ -1,20 +1,19 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const classAutobind = require('class-autobind').default
-const Icon = require('react-fontawesome')
-const useSheet = require('react-jss').default
-const classNames = require('classnames')
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import classAutobind from 'class-autobind'
+import Icon from 'react-fontawesome'
+import useSheet from 'react-jss'
+import classNames from 'classnames'
 
-const find = require('lodash/find')
-const isEmpty = require('lodash/isEmpty')
+import find from 'lodash/find'
+import isEmpty from 'lodash/isEmpty'
 
 import * as MessageBoxActions from '../../actions/message-box-actions'
 import MessageTypes from '../../../common/enums/message-types'
 
-const Flexbox = require('../UI/Flexbox')
-const TextTruncate = require('../UI/TextTruncate')
-const styleVars = require('../style-vars')
+import Flexbox from '../UI/Flexbox'
+import TextTruncate from '../UI/TextTruncate'
+import styleVars from '../style-vars'
 
 class MessageTabs extends Component {
     constructor(props) {
@@ -197,4 +196,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = useSheet(connect(mapStateToProps)(MessageTabs), style)
+export default useSheet(connect(mapStateToProps)(MessageTabs), style)

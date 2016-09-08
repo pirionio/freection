@@ -17,6 +17,9 @@ module.exports = {
         "react",
         "import"
     ],
+    "settings": {
+        "import/ignore": [/\.(png)$/, 'node_modules']
+    },
     "rules": {
         "strict": 0,
         "indent": [
@@ -48,7 +51,7 @@ module.exports = {
         }],
         "react/no-find-dom-node": ["warn"],
         "react/no-danger": ["warn"],
-        //"import/no-commonjs": ["error"],
+        "import/no-commonjs": ["error"],
         //"import/imports-first": ["error"],
         //"import/newline-after-import": ["error"],
         //"import/order": ["error", {

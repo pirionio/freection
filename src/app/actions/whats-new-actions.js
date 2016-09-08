@@ -1,5 +1,5 @@
 import {_fetchWhatsNew} from './generated/whats-new-actions'
-const {InvalidationStatus} = require('../constants')
+import {InvalidationStatus} from '../constants'
 
 export const fetchWhatsNew = () => {
     return (dispatch, getState) => {

@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     primaryColor: '#1e272c',
     secondaryColor: '#36474f',
     highlightColor: '#f6ab27',

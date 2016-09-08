@@ -1,13 +1,13 @@
-const some = require('lodash/some')
-const merge = require('lodash/merge')
+import some from 'lodash/some'
+import merge from 'lodash/merge'
 
 import ToDoActionTypes from '../actions/types/to-do-action-types'
 import ThingCommandActionTypes from '../actions/types/thing-command-action-types'
 import EventActionTypes from '../actions/types/event-action-types'
-const {ActionStatus, InvalidationStatus} = require('../constants')
+import {ActionStatus, InvalidationStatus} from '../constants'
 import EventTypes from '../../common/enums/event-types'
-const thingReducer = require('./thing-reducer')
-const immutable = require('../util/immutable')
+import thingReducer from './thing-reducer'
+import immutable from '../util/immutable'
 
 const initialState = {
     things: [],
@@ -108,7 +108,7 @@ function statusChangedReceived(state, action) {
         .value()
 }
 
-module.exports = (state = initialState, action) => {
+export default (state = initialState, action) => {
     switch (action.type) {
         case ToDoActionTypes.SET_STATE:
             return setState(state, action)

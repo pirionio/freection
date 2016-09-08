@@ -1,10 +1,9 @@
 import WhatsNewActionTypes from '../actions/types/whats-new-action-types'
 import ThingCommandActionTypes from '../actions/types/thing-command-action-types'
 import EventActionTypes from '../actions/types/event-action-types'
-const {ActionStatus} = require('../constants')
+import {ActionStatus, InvalidationStatus} from '../constants'
 import EventTypes from '../../common/enums/event-types'
-const {InvalidationStatus} = require('../constants')
-const immutable = require('../util/immutable')
+import immutable from '../util/immutable'
 
 const initialState = {
     notifications: [],
@@ -135,7 +134,7 @@ function notificationDeleted(state, action) {
         .value()
 }
 
-module.exports = (state = initialState, action) => {
+export default (state = initialState, action) => {
     switch (action.type) {
         case WhatsNewActionTypes.SET_STATE:
             return setState(state, action)

@@ -1,9 +1,8 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const classAutobind = require('class-autobind').default
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import classAutobind from 'class-autobind'
 
-const Button = require('../UI/Button')
+import Button from '../UI/Button'
 
 class Action extends Component {
     constructor(props) {
@@ -44,4 +43,4 @@ Action.defaultProps = {
     disabled: false
 }
 
-module.exports = connect()(Action)
+export default connect()(Action)

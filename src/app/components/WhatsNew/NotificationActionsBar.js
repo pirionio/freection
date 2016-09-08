@@ -1,12 +1,11 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
 
 import EventTypes from '../../../common/enums/event-types'
-const ActionsBar = require('../Actions/ActionsBar')
-const {DoAction, DoneAction, DismissAction, CloseAction, SendBackAction, DiscardCommentsAction, DiscardPingAction,
+import ActionsBar from '../Actions/ActionsBar'
+import {DoAction, DoneAction, DismissAction, CloseAction, SendBackAction, DiscardCommentsAction, DiscardPingAction,
     DiscardPongAction, CloseAckAction,
-    PongAction} = require('../Actions/Actions')
+    PongAction} from '../Actions/Actions'
 
 class NotificationActionsBar extends Component {
     showDo() {
@@ -85,4 +84,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(NotificationActionsBar)
+export default connect(mapStateToProps)(NotificationActionsBar)

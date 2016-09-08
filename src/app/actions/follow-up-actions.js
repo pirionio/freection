@@ -1,5 +1,5 @@
 import {_fetchFollowUps} from './generated/follow-up-actions'
-const {InvalidationStatus} = require('../constants')
+import {InvalidationStatus} from '../constants'
 
 export const fetchFollowUps = () => {
     return (dispatch, getState) => {

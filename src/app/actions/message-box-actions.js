@@ -1,11 +1,11 @@
-const {actions} = require('react-redux-form')
-const find = require('lodash/find')
-const last = require('lodash/last')
-const findIndex = require('lodash/findIndex')
+import {actions} from 'react-redux-form'
+import find from 'lodash/find'
+import last from 'lodash/last'
+import findIndex from 'lodash/findIndex'
 
 import MessageBoxActionsTypes from'./types/message-box-action-types'
 import {_newMessageBox, _selectMessageBox, _closeMessageBox, _setFocus } from './generated/message-box-actions'
-const {GeneralConstants, ActionStatus} = require('../constants')
+import {GeneralConstants, ActionStatus} from'../constants'
 
 export function newMessageBox(messageType, context) {
     return (dispatch, getState) => {

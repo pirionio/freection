@@ -1,6 +1,6 @@
 import WhatsNewActionsTypes from '../types/whats-new-action-types'
 import {ActionStatus} from '../../constants'
-import ResourceUtil from '../../util/resource-util'
+import * as ResourceUtil from '../../util/resource-util'
 
 export function setState(notifications) {
     return {

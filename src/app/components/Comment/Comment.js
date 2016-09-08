@@ -1,18 +1,17 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const dateFns = require('date-fns')
-const VisibilitySensor = require('react-visibility-sensor')
-const {connect} = require('react-redux')
-const classAutobind = require('class-autobind').default
-const useSheet = require('react-jss').default
+import React, {Component, PropTypes} from 'react'
+import dateFns from 'date-fns'
+import VisibilitySensor from 'react-visibility-sensor'
+import {connect} from 'react-redux'
+import classAutobind from 'class-autobind'
+import useSheet from 'react-jss'
 
-const HtmlUtil = require('../../util/html-util')
+import * as HtmlUtil from '../../util/html-util'
 import EventTypes from '../../../common/enums/event-types'
 import * as ThingCommandActions from '../../actions/thing-command-actions'
 
-const Flexbox = require('../UI/Flexbox')
-const TextTruncate = require('../UI/TextTruncate')
-const styleVars = require('../style-vars')
+import Flexbox from '../UI/Flexbox'
+import TextTruncate from '../UI/TextTruncate'
+import styleVars from '../style-vars'
 
 class Comment extends Component {
     constructor(props) {
@@ -127,4 +126,4 @@ const mapStateToProps = state => {
     }
 }
 
-module.exports = useSheet(connect(mapStateToProps)(Comment), style)
+export default useSheet(connect(mapStateToProps)(Comment), style)

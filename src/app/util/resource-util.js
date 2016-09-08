@@ -1,5 +1,7 @@
-require('es6-promise').polyfill()
-require('isomorphic-fetch')
+import 'isomorphic-fetch'
+import {polyfill} from 'es6-promise'
+
+polyfill()
 
 function checkStatus(response) {
     if (response.status >= 200 && response.status < 400) {
@@ -15,13 +17,13 @@ function parseJSON(response) {
     return response.json()
 }
 
-function get(endpoint) {
+export function get(endpoint) {
     return fetch(endpoint, {
         credentials: 'include'
     }).then(checkStatus).then(parseJSON)
 }
 
-function post(endpoint, body) {
+export function post(endpoint, body) {
     return fetch(endpoint, {
         method: 'POST',
         headers: {
@@ -32,5 +34,3 @@ function post(endpoint, body) {
         body: JSON.stringify(body)
     }).then(checkStatus).then(parseJSON)
 }
-
-module.exports = {get, post}

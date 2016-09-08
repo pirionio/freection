@@ -1,29 +1,28 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const classAutobind = require('class-autobind').default
-const useSheet = require('react-jss').default
-const classNames = require('classnames')
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import classAutobind from 'class-autobind'
+import useSheet from 'react-jss'
+import classNames from 'classnames'
 
-const groupBy = require('lodash/groupBy')
-const first = require('lodash/first')
-const last = require('lodash/last')
-const merge = require('lodash/merge')
-const reject = require('lodash/reject')
-const forOwn = require('lodash/forOwn')
-const clone = require('lodash/clone')
-const isEmpty = require('lodash/isEmpty')
-const toPairs = require('lodash/toPairs')
-const {chain} = require('lodash/core')
+import groupBy from 'lodash/groupBy'
+import first from 'lodash/first'
+import last from 'lodash/last'
+import merge from 'lodash/merge'
+import reject from 'lodash/reject'
+import forOwn from 'lodash/forOwn'
+import clone from 'lodash/clone'
+import isEmpty from 'lodash/isEmpty'
+import toPairs from 'lodash/toPairs'
+import {chain} from 'lodash/core'
 
-const Flexbox = require('../UI/Flexbox')
-const Page = require('../UI/Page')
-const styleVars = require('../style-vars')
-const PreviewsContainer = require('../Preview/PreviewsContainer')
-const NotificationPreviewItem = require('./NotificationPreviewItem')
-const GithubPreviewItem = require('./GithubPreviewItem')
+import Flexbox from '../UI/Flexbox'
+import Page from '../UI/Page'
+import styleVars from '../style-vars'
+import PreviewsContainer from '../Preview/PreviewsContainer'
+import NotificationPreviewItem from './NotificationPreviewItem'
+import GithubPreviewItem from './GithubPreviewItem'
 
-const PreviewHelper = require('../../helpers/preview-helper')
+import * as PreviewHelper from '../../helpers/preview-helper'
 import * as WhatsNewActions from '../../actions/whats-new-actions'
 import EventTypes from '../../../common/enums/event-types'
 import EntityTypes from '../../../common/enums/entity-types'
@@ -171,4 +170,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = useSheet(connect(mapStateToProps)(WhatsNew), style)
+export default useSheet(connect(mapStateToProps)(WhatsNew), style)

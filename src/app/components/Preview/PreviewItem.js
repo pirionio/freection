@@ -1,21 +1,20 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const {getChildOfType, createSlots} = require('../../util/component-util')
-const classAutobind = require('class-autobind').default
-const useSheet = require('react-jss').default
-const classNames = require('classnames')
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import {getChildOfType, createSlots} from '../../util/component-util'
+import classAutobind from 'class-autobind'
+import useSheet from 'react-jss'
+import classNames from 'classnames'
 
 import * as InlineMessageActions from '../../actions/inline-message-actions'
 
-const InlineMessage = require('./InlineMessage')
-const Flexbox = require('../UI/Flexbox')
-const Ellipse = require('../UI/Ellipse')
-const TextTruncate = require('../UI/TextTruncate')
-const styleVars = require('../style-vars')
+import InlineMessage from './InlineMessage'
+import Flexbox from '../UI/Flexbox'
+import Ellipse from '../UI/Ellipse'
+import TextTruncate from '../UI/TextTruncate'
+import styleVars from '../style-vars'
+import PreviewItemText from './PreviewItemText'
 
-const PreviewItemText = require('./PreviewItemText')
-const slots = createSlots('PreviewItemActions', 'PreviewItemUser')
+const {PreviewItemActions, PreviewItemUser} = createSlots('PreviewItemActions', 'PreviewItemUser')
 
 const PreviewItemStatus = ({status, children}) => {
     if (status)
@@ -45,7 +44,7 @@ class PreviewItem extends Component {
     }
 
     getActions() {
-        const original = getChildOfType(this.props.children, slots.PreviewItemActions)
+        const original = getChildOfType(this.props.children, PreviewItemActions)
         return React.cloneElement(original, {preDoFunc: this.openInlineMessage})
     }
 
@@ -66,7 +65,7 @@ class PreviewItem extends Component {
     }
 
     getUser() {
-        return getChildOfType(this.props.children, slots.PreviewItemUser)
+        return getChildOfType(this.props.children, PreviewItemUser)
     }
 
     render() {
@@ -201,8 +200,10 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = Object.assign({
-    PreviewItem: useSheet(connect(mapStateToProps)(PreviewItem), style),
+export default useSheet(connect(mapStateToProps)(PreviewItem), style)
+export {
+    PreviewItemUser,
+    PreviewItemActions,
     PreviewItemText,
     PreviewItemStatus
-}, slots)
+}

@@ -1,29 +1,28 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const {Form} = require('react-redux-form')
-const classAutobind = require('class-autobind').default
-const AddressParser = require('email-addresses')
-const useSheet = require('react-jss').default
-const classNames = require('classnames')
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import {Form} from 'react-redux-form'
+import classAutobind from 'class-autobind'
+import AddressParser from 'email-addresses'
+import useSheet from 'react-jss'
+import classNames from 'classnames'
 
-const find = require('lodash/find')
-const isNil = require('lodash/isNil')
-const map = require('lodash/map')
-const some = require('lodash/some')
-const {chain} = require('lodash/core')
+import find from 'lodash/find'
+import isNil from 'lodash/isNil'
+import map from 'lodash/map'
+import some from 'lodash/some'
+import {chain} from 'lodash/core'
 
 import * as MessageBoxActions from '../../actions/message-box-actions'
 
-const Flexbox = require('../UI/Flexbox')
-const MessageBox = require('./MessageBox')
-const CollapsedMessageBox = require('./CollapsedMessageBox')
-const MessageTabs = require('./MessageTabs')
+import Flexbox from '../UI/Flexbox'
+import MessageBox from './MessageBox'
+import CollapsedMessageBox from './CollapsedMessageBox'
+import MessageTabs from './MessageTabs'
 import * as ThingCommandActions from '../../actions/thing-command-actions'
 import * as EmailCommandActions from '../../actions/email-command-actions'
 import MessageTypes from '../../../common/enums/message-types'
 
-const componentStyles = require('../component-styles')
+import componentStyles from '../component-styles'
 
 class MessagePanel extends Component {
     constructor(props) {
@@ -166,4 +165,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = useSheet(connect(mapStateToProps)(MessagePanel), style)
+export default useSheet(connect(mapStateToProps)(MessagePanel), style)

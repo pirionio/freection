@@ -1,4 +1,4 @@
-const {modelReducer, formReducer} = require('react-redux-form')
+import {modelReducer, formReducer} from 'react-redux-form'
 
 const initialState = {
     show: false,
@@ -7,7 +7,6 @@ const initialState = {
     ongoingAction: null
 }
 
-module.exports = {
-    inlineMessage: modelReducer('inlineMessage', initialState),
-    inlineMessageForm: formReducer('inlineMessage', initialState)
-}
+
+export const inlineMessage = modelReducer('inlineMessage', initialState)
+export const inlineMessageForm = formReducer('inlineMessage', initialState)

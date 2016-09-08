@@ -1,14 +1,12 @@
-const React = require('react')
-const {Component} = React
-const useSheet = require('react-jss').default
+import React, {Component} from 'react'
+import useSheet from 'react-jss'
 
-const Flexbox = require('../UI/Flexbox')
-const styleVars = require('../style-vars')
+import Flexbox from '../UI/Flexbox'
+import styleVars from '../style-vars'
 
-const NavigationMenu = require('./NavigationMenu')
-const UserSettings = require('./UserSettings')
-
-const logo = require('../../static/logo-white.png')
+import NavigationMenu from './NavigationMenu'
+import UserSettings from './UserSettings'
+import logo from '../../static/logo-white.png'
 
 class SideBar extends Component {
     render() {
@@ -48,4 +46,4 @@ const styles = {
     }
 }
 
-module.exports = useSheet(SideBar, styles)
+export default useSheet(SideBar, styles)

@@ -1,10 +1,9 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const DocumentTitle = require('react-document-title')
-const useSheet = require('react-jss').default
-const classNames = require('classnames')
+import React, {Component, PropTypes} from 'react'
+import DocumentTitle from 'react-document-title'
+import useSheet from 'react-jss'
+import classNames from 'classnames'
 
-const Flexbox = require('./Flexbox')
+import Flexbox from './Flexbox'
 
 class Page extends Component {
     render() {
@@ -36,6 +35,6 @@ Page.defaultProps = {
     title: ''
 }
 
-module.exports = useSheet(Page, style)
+export default useSheet(Page, style)
 
 

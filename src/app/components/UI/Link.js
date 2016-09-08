@@ -1,7 +1,6 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const classAutobind = require('class-autobind').default
-const classNames = require('classnames')
+import React, {Component, PropTypes} from 'react'
+import classAutobind from 'class-autobind'
+import classNames from 'classnames'
 
 class Link extends Component {
     constructor(props, context) {
@@ -43,4 +42,4 @@ Link.contextTypes = {
     router: PropTypes.object
 }
 
-module.exports = Link
+export default Link

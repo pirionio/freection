@@ -1,8 +1,7 @@
 import EmailActionTypes from '../actions/types/email-action-types'
 import EmailCommandActionTypes from '../actions/types/email-command-action-types'
-const {ActionStatus} = require('../constants')
-const {InvalidationStatus} = require('../constants')
-const immutable = require('../util/immutable')
+import {ActionStatus, InvalidationStatus} from '../constants'
+import immutable from '../util/immutable'
 
 const initialState = {
     emails: [],
@@ -70,7 +69,7 @@ function markAsRead(state, action) {
     }
 }
 
-module.exports = (state = initialState, action) => {
+export default (state = initialState, action) => {
     switch (action.type) {
         case EmailActionTypes.FETCH_UNREAD:
             return fetchUnread(state, action)

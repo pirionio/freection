@@ -1,6 +1,6 @@
-const  io = require('socket.io-client')
+import io from 'socket.io-client'
 
-function createSocket(pushToken) {
+export function createSocket(pushToken) {
     const socket = io('', {path: '/push'})
     socket
         .on('connect', () => {
@@ -13,5 +13,3 @@ function createSocket(pushToken) {
 
     return socket
 }
-
-module.exports = {createSocket}

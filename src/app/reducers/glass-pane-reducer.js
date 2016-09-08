@@ -5,7 +5,7 @@ const initialState = {
     backdropCallback: null
 }
 
-module.exports = (state = initialState, action) => {
+export default (state = initialState, action) => {
     switch (action.type) {
         case GlassPaneActionTypes.SHOW:
             return {

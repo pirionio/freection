@@ -1,8 +1,8 @@
 /* eslint-env mocha */
 
-const {expect} = require('chai')
+import {expect} from 'chai'
 
-const immutable = require('./immutable')
+import immutable from './immutable'
 
 describe('Immutable', () => {
     let original, theImmutable

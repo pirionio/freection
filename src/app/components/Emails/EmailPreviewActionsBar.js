@@ -1,9 +1,8 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
 
-const ActionsBar = require('../Actions/ActionsBar')
-const {DiscardEmails, DoEmail} = require('../Actions/Actions')
+import ActionsBar from '../Actions/ActionsBar'
+import {DiscardEmails, DoEmail} from '../Actions/Actions'
 
 class EmailPreviewActionsBar extends Component {
     render() {
@@ -38,4 +37,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(EmailPreviewActionsBar)
+export default connect(mapStateToProps)(EmailPreviewActionsBar)

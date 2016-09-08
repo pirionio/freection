@@ -1,9 +1,8 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
 
-const ActionsBar = require('../Actions/ActionsBar')
-const {DoAction, DoneAction, DismissAction} = require('../Actions/Actions')
+import ActionsBar from '../Actions/ActionsBar'
+import {DoAction, DoneAction, DismissAction} from '../Actions/Actions'
 
 class ToDoActionsBar extends Component {
     render() {
@@ -31,4 +30,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(ToDoActionsBar)
+export default connect(mapStateToProps)(ToDoActionsBar)

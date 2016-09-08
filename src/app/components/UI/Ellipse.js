@@ -1,7 +1,6 @@
-const React = require('react')
-const {PropTypes} = React
-const useSheet = require('react-jss').default
-const classNames = require('classnames')
+import React, {PropTypes} from 'react'
+import useSheet from 'react-jss'
+import classNames from 'classnames'
 
 const Ellipse = ({color, text, className, oval, sheet: {classes}}) => {
     const ellipseClass = classNames(className ? className : classes.base, oval ? classes.oval : classes.circle)
@@ -35,4 +34,4 @@ const style = {
     }
 }
 
-module.exports = useSheet(Ellipse, style)
+export default useSheet(Ellipse, style)

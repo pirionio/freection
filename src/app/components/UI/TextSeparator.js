@@ -1,5 +1,5 @@
-const React = require('react')
-const useSheet = require('react-jss').default
+import React from 'react'
+import useSheet from 'react-jss'
 
 const TextSeparator = ({sheet: {classes}}) => {
     return <div className={classes.separator}>•</div>
@@ -11,4 +11,4 @@ const style = {
         textAlign: 'center'
     }}
 
-module.exports = useSheet(TextSeparator, style)
+export default useSheet(TextSeparator, style)

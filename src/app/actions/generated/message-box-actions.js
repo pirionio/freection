@@ -1,6 +1,6 @@
 import MessageBoxActionsTypes from '../types/message-box-action-types'
 import {ActionStatus} from '../../constants'
-import ResourceUtil from '../../util/resource-util'
+import * as ResourceUtil from '../../util/resource-util'
 
 export function _newMessageBox(messageType,context) {
     return {

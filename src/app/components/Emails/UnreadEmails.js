@@ -1,26 +1,25 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const classAutobind = require('class-autobind').default
-const useSheet = require('react-jss').default
-const classNames = require('classnames')
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import classAutobind from 'class-autobind'
+import useSheet from 'react-jss'
+import classNames from 'classnames'
 
-const {chain} = require('lodash/core')
-const groupBy = require('lodash/groupBy')
-const forOwn = require('lodash/forOwn')
-const merge = require('lodash/merge')
-const map = require('lodash/map')
-const isEmpty = require('lodash/isEmpty')
-const toPairs = require('lodash/toPairs')
+import {chain} from 'lodash/core'
+import groupBy from 'lodash/groupBy'
+import forOwn from 'lodash/forOwn'
+import merge from 'lodash/merge'
+import map from 'lodash/map'
+import isEmpty from 'lodash/isEmpty'
+import toPairs from 'lodash/toPairs'
 
-const PreviewHelper = require('../../helpers/preview-helper')
+import * as PreviewHelper from '../../helpers/preview-helper'
 import * as EmailActions from '../../actions/email-actions'
 
-const Page = require('../UI/Page')
-const Flexbox = require('../UI/Flexbox')
-const PreviewsContainer = require('../Preview/PreviewsContainer')
-const EmailPreviewItem = require('./EmailPreviewItem')
-const styleVars = require('../style-vars')
+import Page from '../UI/Page'
+import Flexbox from '../UI/Flexbox'
+import PreviewsContainer from '../Preview/PreviewsContainer'
+import EmailPreviewItem from './EmailPreviewItem'
+import styleVars from '../style-vars'
 
 class UnreadEmails extends Component {
     constructor(props) {
@@ -146,4 +145,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = useSheet(connect(mapStateToProps)(UnreadEmails), style)
+export default useSheet(connect(mapStateToProps)(UnreadEmails), style)

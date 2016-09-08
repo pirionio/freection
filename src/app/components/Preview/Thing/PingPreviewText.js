@@ -1,9 +1,8 @@
-const React = require('react')
-const {PropTypes} = React
-const useSheet = require('react-jss').default
+import React, {PropTypes} from 'react'
+import useSheet from 'react-jss'
 
-const Flexbox = require('../../UI/Flexbox')
-const styleVars = require('../../style-vars')
+import Flexbox from '../../UI/Flexbox'
+import styleVars from '../../style-vars'
 
 const PingPreviewText = ({newNotifications, sheet: {classes}}) => {
     const unreadCount = newNotifications.length > 1 ?
@@ -39,4 +38,4 @@ PingPreviewText.defaultProps = {
     newNotifications: []
 }
 
-module.exports = useSheet(PingPreviewText, style)
+export default useSheet(PingPreviewText, style)

@@ -1,19 +1,18 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {Router, Route, IndexRoute, IndexRedirect} = require('react-router')
+import React, {Component, PropTypes} from 'react'
+import {Router, Route, IndexRoute, IndexRedirect} from 'react-router'
 
-const App = require('./components/App/App')
-const MainApp = require('./components/MainApp/MainApp')
-const WhatsNew = require('./components/WhatsNew/WhatsNew')
-const UnreadNotifications = require('./components/WhatsNew/UnreadNotifications')
-const UnreadEmails = require('./components/Emails/UnreadEmails')
-const ToDo = require('./components/ToDo/ToDo')
-const FollowUp = require('./components/FollowUp/FollowUp')
-const Integrations = require('./components/Integrations/Integrations')
-const Github = require('./components/Github/Github')
-const FullThing = require('./components/Thing/FullThing')
-const FullEmail = require('./components/Emails/FullEmail')
-const Board = require('./components/Board/Board')
+import App from './components/App/App'
+import MainApp from './components/MainApp/MainApp'
+import WhatsNew from './components/WhatsNew/WhatsNew'
+import UnreadNotifications from './components/WhatsNew/UnreadNotifications'
+import UnreadEmails from './components/Emails/UnreadEmails'
+import ToDo from './components/ToDo/ToDo'
+import FollowUp from './components/FollowUp/FollowUp'
+import Integrations from './components/Integrations/Integrations'
+import Github from './components/Github/Github'
+import FullThing from './components/Thing/FullThing'
+import FullEmail from './components/Emails/FullEmail'
+import Board from './components/Board/Board'
 
 const routes = (
     <Route path="/" component={App}>
@@ -58,4 +57,4 @@ AppRouter.propTypes = {
     history: PropTypes.any.isRequired
 }
 
-module.exports = AppRouter
+export default AppRouter

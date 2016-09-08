@@ -1,14 +1,13 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const useSheet = require('react-jss').default
+import React, {Component, PropTypes} from 'react'
+import useSheet from 'react-jss'
 
 import EventTypes from '../../../common/enums/event-types'
-const {PreviewItem, PreviewItemStatus, PreviewItemText, PreviewItemActions} = require('../Preview/PreviewItem')
-const GithubActionsBar = require('./GithubActionsBar')
-const TextTruncate = require('../UI/TextTruncate')
-const TextSeparator = require('../UI/TextSeparator')
-const Flexbox = require('../UI/Flexbox')
-const styleVars = require('../style-vars')
+import PreviewItem, { PreviewItemStatus, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
+import GithubActionsBar from './GithubActionsBar'
+import TextTruncate from '../UI/TextTruncate'
+import TextSeparator from '../UI/TextSeparator'
+import Flexbox from '../UI/Flexbox'
+import styleVars from '../style-vars'
 
 class GithubPreviewItem extends Component {
     getTextElement() {
@@ -70,4 +69,4 @@ GithubPreviewItem.propTypes = {
     notification: PropTypes.object.isRequired
 }
 
-module.exports = useSheet(GithubPreviewItem, style)
+export default useSheet(GithubPreviewItem, style)

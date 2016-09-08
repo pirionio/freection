@@ -1,14 +1,13 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const classAutobind = require('class-autobind').default
-const useSheet = require('react-jss').default
+import React, {Component, PropTypes} from 'react'
+import classAutobind from 'class-autobind'
+import useSheet from 'react-jss'
 
-const {chain} = require('lodash/core')
+import {chain} from 'lodash/core'
 
-const Comment = require('./Comment')
-const Scrollable = require('../Scrollable/Scrollable')
-const Flexbox = require('../UI/Flexbox')
-const styleVars = require('../style-vars')
+import Comment from './Comment'
+import Scrollable from '../Scrollable/Scrollable'
+import Flexbox from '../UI/Flexbox'
+import styleVars from '../style-vars'
 
 class CommentList extends Component {
     constructor(props) {
@@ -78,4 +77,4 @@ CommentList.propTypes = {
     comments: PropTypes.array.isRequired
 }
 
-module.exports = useSheet(CommentList, style)
+export default useSheet(CommentList, style)

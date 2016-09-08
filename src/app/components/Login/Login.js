@@ -1,10 +1,9 @@
-const React = require('react')
-const {Component} = React
-const Icon = require('react-fontawesome')
-const useSheet = require('react-jss').default
+import React, {Component} from 'react'
+import Icon from 'react-fontawesome'
+import useSheet from 'react-jss'
 
-const Flexbox = require('../UI/Flexbox')
-const styleVars = require('../style-vars')
+import Flexbox from '../UI/Flexbox'
+import styleVars from '../style-vars'
 
 class Login extends Component {
     render() {
@@ -48,4 +47,4 @@ const style = {
     }
 }
 
-module.exports = useSheet(Login, style)
+export default useSheet(Login, style)

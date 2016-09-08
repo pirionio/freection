@@ -1,13 +1,12 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const classAutobind = require('class-autobind').default
-const useSheet = require('react-jss').default
-const classNames = require('classnames')
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import classAutobind from 'class-autobind'
+import useSheet from 'react-jss'
+import classNames from 'classnames'
 
 import * as GlassPaneActions from '../../actions/glass-pane-actions'
 
-const styleVars = require('../style-vars')
+import styleVars from '../style-vars'
 
 class GlassPane extends Component {
     constructor(props) {
@@ -62,4 +61,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = useSheet(connect(mapStateToProps)(GlassPane), style)
+export default useSheet(connect(mapStateToProps)(GlassPane), style)

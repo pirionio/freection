@@ -1,15 +1,15 @@
-const isUndefined = require('lodash/isUndefined')
-const head = require('lodash/head')
+import isUndefined from 'lodash/isUndefined'
+import head from 'lodash/head'
 
 import EventActionTypes from '../actions/types/event-action-types'
 import ThingPageActionTypes from '../actions/types/thing-page-action-types'
 import ThingStatus from '../../common/enums/thing-status.js'
 import  ThingCommandActionTypes from '../actions/types/thing-command-action-types'
 import SharedConstants from '../../common/shared-constants'
-const {ActionStatus, InvalidationStatus} = require('../constants')
-const thingReducer = require('./thing-reducer')
+import {ActionStatus, InvalidationStatus} from '../constants'
+import thingReducer from './thing-reducer'
 
-const immutable = require('../util/immutable')
+import immutable from '../util/immutable'
 
 // TODO Problems with the ongoingAction mechanism:
 // 1) If navigating out of this state, the ongoingAction status is gone.
@@ -216,7 +216,7 @@ function asyncStatusOperation(state, action, status) {
     }
 }
 
-module.exports = (state = initialState, action) => {
+export default (state = initialState, action) => {
     switch (action.type) {
         case EventActionTypes.RECONNECTED:
             return reconnected(state, action)

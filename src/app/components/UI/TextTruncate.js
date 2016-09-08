@@ -1,7 +1,7 @@
-const React = require('react')
+import React from 'react'
 const {PropTypes, Component} = React
-const useSheet = require('react-jss').default
-const classNames = require('classnames')
+import useSheet from 'react-jss'
+import classNames from 'classnames'
 
 class TextTruncate extends Component {
     render() {
@@ -28,4 +28,4 @@ TextTruncate.propTypes = {
     className: PropTypes.string
 }
 
-module.exports = useSheet(TextTruncate, style)
+export default useSheet(TextTruncate, style)

@@ -1,13 +1,12 @@
-const React = require('react')
-const {Component} = React
-const classAutobind = require('class-autobind').default
-const useSheet = require('react-jss').default
+import React, {Component} from 'react'
+import classAutobind from 'class-autobind'
+import useSheet from 'react-jss'
 
-const Link = require('../UI/Link')
-const Flexbox = require('../UI/Flexbox')
-const Ellipse = require('../UI/Ellipse')
-const TextTruncate = require('../UI/TextTruncate')
-const styleVars = require('../style-vars')
+import Link from '../UI/Link'
+import Flexbox from '../UI/Flexbox'
+import Ellipse from '../UI/Ellipse'
+import TextTruncate from '../UI/TextTruncate'
+import styleVars from '../style-vars'
 
 class BoardList extends  Component {
     constructor(props) {
@@ -129,4 +128,4 @@ const style = {
     }
 }
 
-module.exports = useSheet(BoardList, style)
+export default useSheet(BoardList, style)

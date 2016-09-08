@@ -1,11 +1,11 @@
-const uniqueId = require('lodash/uniqueId')
-const find = require('lodash/find')
+import uniqueId from 'lodash/uniqueId'
+import find from 'lodash/find'
 
 import MessageBoxActionTypes from '../actions/types/message-box-action-types'
 import ThingPageActionTypes from '../actions/types/thing-page-action-types'
 import EmailPageActionTypes from '../actions/types/email-page-action-types'
-const immutable = require('../util/immutable')
-const {ActionStatus} = require('../constants')
+import immutable from '../util/immutable'
+import {ActionStatus} from '../constants'
 import MessageTypes from '../../common/enums/message-types'
 
 const initialState = {
@@ -106,7 +106,7 @@ function setFocus(state, action) {
         .value()
 }
 
-module.exports = (state = initialState, action) => {
+export default (state = initialState, action) => {
     switch (action.type) {
         case MessageBoxActionTypes.NEW_MESSAGE_BOX:
             return newMessageBox(state, action)

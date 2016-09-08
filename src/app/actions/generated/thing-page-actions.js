@@ -1,6 +1,6 @@
 import ThingPageActionsTypes from '../types/thing-page-action-types'
 import {ActionStatus} from '../../constants'
-import ResourceUtil from '../../util/resource-util'
+import * as ResourceUtil from '../../util/resource-util'
 
 export function _showThingPage(thing) {
     return {

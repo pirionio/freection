@@ -1,8 +1,7 @@
-const React = require('react')
-const {PropTypes} = React
+import React, {PropTypes} from 'react'
 
-const ActionsBar = require('../Actions/ActionsBar')
-const {DoAction, DismissAction, CloseAction} = require('../Actions/Actions')
+import ActionsBar from '../Actions/ActionsBar'
+import {DoAction, DismissAction, CloseAction} from '../Actions/Actions'
 import ThingStatus from '../../../common/enums/thing-status'
 
 const GithubActionsBar = ({notification, isRollover}) => {
@@ -23,4 +22,4 @@ GithubActionsBar.propTypes = {
     isRollover: PropTypes.bool
 }
 
-module.exports = GithubActionsBar
+export default GithubActionsBar

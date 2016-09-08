@@ -1,5 +1,5 @@
 import {_fetchToDo} from './generated/to-do-actions'
-const {InvalidationStatus} = require('../constants')
+import {InvalidationStatus} from '../constants'
 
 export const fetchToDo = () => {
     return (dispatch, getState) => {

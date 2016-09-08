@@ -1,6 +1,6 @@
 import EmailPageActionsTypes from '../types/email-page-action-types'
 import {ActionStatus} from '../../constants'
-import ResourceUtil from '../../util/resource-util'
+import * as ResourceUtil from '../../util/resource-util'
 
 export function _showEmailPage(emailThread) {
     return {

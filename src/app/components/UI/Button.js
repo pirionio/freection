@@ -1,8 +1,7 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const useSheet = require('react-jss').default
+import React, {Component, PropTypes} from 'react'
+import useSheet from 'react-jss'
 
-const styleVars = require('../style-vars')
+import styleVars from '../style-vars'
 
 class Button extends Component {
     render() {
@@ -48,4 +47,4 @@ Button.defaultProps = {
     type: 'text'
 }
 
-module.exports = useSheet(Button, style)
+export default useSheet(Button, style)

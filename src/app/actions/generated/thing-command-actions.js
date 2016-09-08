@@ -1,6 +1,6 @@
 import ThingCommandActionsTypes from '../types/thing-command-action-types'
 import {ActionStatus} from '../../constants'
-import ResourceUtil from '../../util/resource-util'
+import * as ResourceUtil from '../../util/resource-util'
 import EventTypes from '../../../common/enums/event-types'
 
 export function comment(thingId, commentText) {

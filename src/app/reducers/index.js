@@ -1,20 +1,21 @@
-const {combineReducers} = require('redux')
-const whatsNew = require('./whats-new-reducer')
-const unreadEmails = require('./unread-emails-reducer')
-const toDo = require('./to-do-reducer')
-const followUps = require('./follow-ups-reducer')
-const messagePanel = require('./message-panel-reducer')
-const {messageBox, messageBoxForm} = require('./message-box-reducer')
-const {inlineMessage, inlineMessageForm} = require('./inline-message-reducer')
-const thingPage = require('./thing-page-reducer')
-const emailPage = require('./email-page-reducer')
-const github = require('./github')
-const auth = require('./auth')
-const contacts = require('./contacts-reducer')
-const glassPane = require('./glass-pane-reducer')
-const { routerReducer } = require('react-router-redux')
+import {combineReducers} from 'redux'
+import { routerReducer } from 'react-router-redux'
 
-module.exports = combineReducers({
+import whatsNew from './whats-new-reducer'
+import unreadEmails from './unread-emails-reducer'
+import toDo from './to-do-reducer'
+import followUps from './follow-ups-reducer'
+import messagePanel from './message-panel-reducer'
+import {messageBox, messageBoxForm} from './message-box-reducer'
+import {inlineMessage, inlineMessageForm} from './inline-message-reducer'
+import thingPage from './thing-page-reducer'
+import emailPage from './email-page-reducer'
+import github from './github'
+import auth from './auth'
+import contacts from './contacts-reducer'
+import glassPane from './glass-pane-reducer'
+
+export default combineReducers({
     whatsNew,
     toDo,
     followUps,

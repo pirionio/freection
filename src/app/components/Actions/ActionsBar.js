@@ -1,12 +1,11 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {chain} = require('lodash/core')
-const head = require('lodash/head')
-const Flexbox = require('../UI/Flexbox')
-const classAutobind = require('class-autobind').default
-const Transition = require('react-motion-ui-pack')
-const useSheet = require('react-jss').default
-const classNames = require('classnames')
+import React, {Component, PropTypes} from 'react'
+import {chain} from 'lodash/core'
+import head from 'lodash/head'
+import Flexbox from '../UI/Flexbox'
+import classAutobind from 'class-autobind'
+import Transition from 'react-motion-ui-pack'
+import useSheet from 'react-jss'
+import classNames from 'classnames'
 
 class ActionsBar extends Component {
     constructor(props) {
@@ -78,4 +77,4 @@ ActionsBar.defaultProps = {
     supportRollover: true
 }
 
-module.exports = useSheet(ActionsBar, style)
+export default useSheet(ActionsBar, style)

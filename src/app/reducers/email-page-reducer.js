@@ -1,12 +1,12 @@
-const isUndefined = require('lodash/isUndefined')
-const head = require('lodash/head')
+import isUndefined from 'lodash/isUndefined'
+import head from 'lodash/head'
 
 import EventActionTypes from '../actions/types/event-action-types'
 import EmailPageActionTypes from '../actions/types/email-page-action-types'
 import EmailCommandActionTypes from '../actions/types/email-command-action-types'
-const {ActionStatus, InvalidationStatus} = require('../constants')
+import {ActionStatus, InvalidationStatus} from '../constants'
 
-const immutable = require('../util/immutable')
+import immutable from '../util/immutable'
 
 const initialState = {
     thread: {},
@@ -109,7 +109,7 @@ function getUpdatedReadBy(event, thread) {
     return getInitialReadBy(event)
 }
 
-module.exports = (state = initialState, action) => {
+export default (state = initialState, action) => {
     switch (action.type) {
         case EmailPageActionTypes.REQUIRE_UPDATE:
         case EventActionTypes.RECONNECTED:

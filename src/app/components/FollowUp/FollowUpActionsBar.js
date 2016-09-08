@@ -1,9 +1,8 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
 
-const ActionsBar = require('../Actions/ActionsBar')
-const {CloseAction, SendBackAction, PingAction} = require('../Actions/Actions')
+import ActionsBar from '../Actions/ActionsBar'
+import {CloseAction, SendBackAction, PingAction} from '../Actions/Actions'
 import ThingStatus from '../../../common/enums/thing-status'
 
 class FollowUpActionsBar extends Component {
@@ -40,4 +39,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(FollowUpActionsBar)
+export default connect(mapStateToProps)(FollowUpActionsBar)

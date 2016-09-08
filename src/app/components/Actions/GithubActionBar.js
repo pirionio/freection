@@ -1,5 +1,5 @@
-// const React = require('react')
-// const {Component, PropTypes} = React
+// import React from 'react'
+// import {Component, PropTypes} from 'react'
 //
 // const EventTypes = require('../../../common/enums/event-types')
 // const ThingStatus = require('../../../common/enums/thing-status')

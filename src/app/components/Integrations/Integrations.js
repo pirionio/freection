@@ -1,10 +1,9 @@
-const React = require('react')
-const {Component} = React
-const useSheet = require('react-jss').default
+import React, {Component} from 'react'
+import useSheet from 'react-jss'
 
-const Flexbox = require('../UI/Flexbox')
-const Icon = require('react-fontawesome')
-const Link = require('../UI/Link')
+import Flexbox from '../UI/Flexbox'
+import Icon from 'react-fontawesome'
+import Link from '../UI/Link'
 
 class Integrations extends Component {
     render() {
@@ -37,4 +36,4 @@ const style = {
     }
 }
 
-module.exports = useSheet(Integrations, style)
+export default useSheet(Integrations, style)

@@ -1,17 +1,15 @@
-const React = require('react')
-const {PropTypes} = React
-const useSheet = require('react-jss').default
-
-const first = require('lodash/first')
-const last = require('lodash/last')
+import React, {PropTypes} from 'react'
+import useSheet from 'react-jss'
+import first from 'lodash/first'
+import last from 'lodash/last'
 
 import EventTypes from '../../../../common/enums/event-types'
-const ThingHelper = require('../../../helpers/thing-helper')
+import * as ThingHelper from '../../../helpers/thing-helper'
 
-const CommentPreviewText = require('./CommentPreviewText')
-const PingPreviewText = require('./PingPreviewText')
-const TextSeparator = require('../../UI/TextSeparator')
-const Flexbox = require('../../UI/Flexbox')
+import CommentPreviewText from './CommentPreviewText'
+import PingPreviewText from './PingPreviewText'
+import TextSeparator from '../../UI/TextSeparator'
+import Flexbox from '../../UI/Flexbox'
 
 const ThingPreviewText = ({thing, sheet: {classes}}) =>  {
     const unreadEvents = ThingHelper.getUnreadMessages(thing)
@@ -61,4 +59,4 @@ ThingPreviewText.propTypes = {
     thing: PropTypes.object.isRequired
 }
 
-module.exports = useSheet(ThingPreviewText, style)
+export default useSheet(ThingPreviewText, style)

@@ -15,7 +15,7 @@ config.module.loaders = [
     {
         test: /\.jsx?$/,
         exclude: /(node_modules)/,
-        loader:'babel?presets[]=react&presets[]=es2015'
+        loader:'babel?presets[]=react&presets[]=es2015&presets[]=babel-async-preset'
     },
     {
         test: /\.(scss|css)$/,

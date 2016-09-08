@@ -1,10 +1,9 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const classAutobind = require('class-autobind').default
-const SizeMe = require('react-sizeme').default
-const useSheet = require('react-jss').default
+import React, {Component, PropTypes} from 'react'
+import classAutobind from 'class-autobind'
+import SizeMe from 'react-sizeme'
+import useSheet from 'react-jss'
 
-const styleVars = require('../style-vars')
+import styleVars from '../style-vars'
 
 class PreviewItemText extends Component {
     static propTypes = {
@@ -58,4 +57,4 @@ const style = {
     }
 }
 
-module.exports = useSheet(SizeMe()(PreviewItemText), style)
+export default useSheet(SizeMe()(PreviewItemText), style)

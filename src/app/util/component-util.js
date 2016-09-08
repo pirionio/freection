@@ -1,12 +1,12 @@
-const React = require('react')
-const find = require('lodash/find')
-const omit = require('lodash/omit')
+import React from 'react'
+import find from 'lodash/find'
+import omit from 'lodash/omit'
 
-function getChildOfType(children, type) {
+export function getChildOfType(children, type) {
     return find(children, child => child.type.name === type.name)
 }
 
-function createSlots(...names) {
+export function createSlots(...names) {
     const slots = {}
 
     names.forEach(name => {
@@ -27,5 +27,3 @@ function OneChildComponent(props) {
         omit(props, 'children')
     )
 }
-
-module.exports = {getChildOfType, createSlots}

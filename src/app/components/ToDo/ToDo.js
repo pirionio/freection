@@ -1,16 +1,15 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const orderBy = require('lodash/orderBy')
-const classAutobind = require('class-autobind').default
-const useSheet = require('react-jss').default
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import orderBy from 'lodash/orderBy'
+import classAutobind from 'class-autobind'
+import useSheet from 'react-jss'
 
-const Page = require('../UI/Page')
-const styleVars = require('../style-vars')
-const PreviewsContainer = require('../Preview/PreviewsContainer')
+import Page from '../UI/Page'
+import styleVars from '../style-vars'
+import PreviewsContainer from '../Preview/PreviewsContainer'
 import * as ToDoActions from '../../actions/to-do-actions'
-const ToDoPreviewItem = require('./ToDoPreviewItem')
-const GithubPreviewItem = require('./GithubPreviewItem')
+import ToDoPreviewItem from './ToDoPreviewItem'
+import GithubPreviewItem from './GithubPreviewItem'
 
 import EntityTypes from '../../../common/enums/entity-types'
 
@@ -86,4 +85,4 @@ function mapStateToProps (state) {
     }
 }
 
-module.exports = useSheet(connect(mapStateToProps)(ToDo), style)
+export default useSheet(connect(mapStateToProps)(ToDo), style)

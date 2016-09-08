@@ -1,6 +1,6 @@
 import EmailCommandActionsTypes from '../types/email-command-action-types'
 import {ActionStatus} from '../../constants'
-import ResourceUtil from '../../util/resource-util'
+import * as ResourceUtil from '../../util/resource-util'
 
 export function newEmail(email) {
     return dispatch => {

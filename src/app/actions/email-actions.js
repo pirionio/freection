@@ -1,6 +1,6 @@
 import {_fetchUnread} from './generated/email-actions'
 
-const {InvalidationStatus} = require('../constants')
+import {InvalidationStatus} from '../constants'
 
 export function fetchUnread() {
     return (dispatch, getState) => {

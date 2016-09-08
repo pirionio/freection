@@ -1,13 +1,12 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const {Form, Field} = require('react-redux-form')
-const classAutobind = require('class-autobind').default
-const useSheet = require('react-jss').default
-const classNames = require('classnames')
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import {Form, Field} from 'react-redux-form'
+import classAutobind from 'class-autobind'
+import useSheet from 'react-jss'
+import classNames from 'classnames'
 
-const Flexbox = require('../UI/Flexbox')
-const componentStyles = require('../component-styles')
+import Flexbox from '../UI/Flexbox'
+import componentStyles from '../component-styles'
 
 import * as InlineMessageActions from '../../actions/inline-message-actions'
 
@@ -114,4 +113,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = useSheet(connect(mapStateToProps)(InlineMessage), style)
+export default useSheet(connect(mapStateToProps)(InlineMessage), style)
