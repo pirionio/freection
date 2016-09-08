@@ -6,7 +6,6 @@ import clickOutside from 'react-click-outside'
 import Icon from 'react-fontawesome'
 import {goBack} from 'react-router-redux'
 import useSheet from 'react-jss'
-
 import reject from 'lodash/reject'
 import map from 'lodash/map'
 
@@ -16,7 +15,6 @@ import TextTruncate from '../UI/TextTruncate'
 import MessagePanel from '../MessageBox/MessagePanel'
 import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
-
 import * as ThingHelper from '../../helpers/thing-helper'
 import * as MessageBoxActions from '../../actions/message-box-actions'
 import ThingStatus from '../../../common/enums/thing-status'

@@ -10,7 +10,6 @@ import PreviewsContainer from '../Preview/PreviewsContainer'
 import * as ToDoActions from '../../actions/to-do-actions'
 import ToDoPreviewItem from './ToDoPreviewItem'
 import GithubPreviewItem from './GithubPreviewItem'
-
 import EntityTypes from '../../../common/enums/entity-types'
 
 class ToDo extends Component {

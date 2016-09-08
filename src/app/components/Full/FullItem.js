@@ -1,5 +1,4 @@
 import React, {Component, PropTypes} from 'react'
-import {getChildOfType, createSlots} from '../../util/component-util'
 import classAutobind from 'class-autobind'
 import clickOutside from 'react-click-outside'
 import Delay from 'react-delay'
@@ -7,15 +6,16 @@ import Icon from 'react-fontawesome'
 import useSheet from 'react-jss'
 import classNames from 'classnames'
 
+import {getChildOfType, createSlots} from '../../util/component-util'
 import Flexbox from '../UI/Flexbox'
 import CommentList from '../Comment/CommentList'
 import Ellipse from '../UI/Ellipse'
 import TextTruncate from '../UI/TextTruncate'
 import styleVars from '../style-vars'
-
 import {GeneralConstants} from '../../constants'
 
-const {FullItemSubject, FullItemStatus, FullItemActions, FullItemBox} = createSlots('FullItemSubject', 'FullItemStatus', 'FullItemActions', 'FullItemBox')
+const {FullItemSubject, FullItemStatus, FullItemActions, FullItemBox} =
+    createSlots('FullItemSubject', 'FullItemStatus', 'FullItemActions', 'FullItemBox')
 
 class FullItem extends  Component {
     constructor(props) {

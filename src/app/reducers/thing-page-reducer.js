@@ -8,7 +8,6 @@ import  ThingCommandActionTypes from '../actions/types/thing-command-action-type
 import SharedConstants from '../../common/shared-constants'
 import {ActionStatus, InvalidationStatus} from '../constants'
 import thingReducer from './thing-reducer'
-
 import immutable from '../util/immutable'
 
 // TODO Problems with the ongoingAction mechanism:

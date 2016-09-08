@@ -4,13 +4,11 @@ import classAutobind from 'class-autobind'
 import Icon from 'react-fontawesome'
 import useSheet from 'react-jss'
 import classNames from 'classnames'
-
 import find from 'lodash/find'
 import isEmpty from 'lodash/isEmpty'
 
 import * as MessageBoxActions from '../../actions/message-box-actions'
 import MessageTypes from '../../../common/enums/message-types'
-
 import Flexbox from '../UI/Flexbox'
 import TextTruncate from '../UI/TextTruncate'
 import styleVars from '../style-vars'

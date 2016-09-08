@@ -7,7 +7,6 @@ import classNames from 'classnames'
 
 import Flexbox from '../UI/Flexbox'
 import componentStyles from '../component-styles'
-
 import * as InlineMessageActions from '../../actions/inline-message-actions'
 
 class InlineMessage extends Component {

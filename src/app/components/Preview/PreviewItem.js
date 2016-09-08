@@ -1,12 +1,11 @@
 import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
-import {getChildOfType, createSlots} from '../../util/component-util'
 import classAutobind from 'class-autobind'
 import useSheet from 'react-jss'
 import classNames from 'classnames'
 
+import {getChildOfType, createSlots} from '../../util/component-util'
 import * as InlineMessageActions from '../../actions/inline-message-actions'
-
 import InlineMessage from './InlineMessage'
 import Flexbox from '../UI/Flexbox'
 import Ellipse from '../UI/Ellipse'

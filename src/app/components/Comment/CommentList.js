@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import classAutobind from 'class-autobind'
 import useSheet from 'react-jss'
-
 import {chain} from 'lodash/core'
 
 import Comment from './Comment'

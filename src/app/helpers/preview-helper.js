@@ -1,6 +1,5 @@
 import {chain} from 'lodash/core'
 import orderBy from 'lodash/orderBy'
-
 import isAfter from 'date-fns/is_after'
 import isBefore from 'date-fns/is_before'
 import addWeeks from 'date-fns/add_weeks'

@@ -3,13 +3,10 @@ import {connect} from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import classAutobind from 'class-autobind'
 import {goBack} from 'react-router-redux'
-
 import isEmpty from 'lodash/isEmpty'
 
 import MessagePanel from '../MessageBox/MessagePanel'
-
 import FullItem, {FullItemSubject, FullItemBox} from '../Full/FullItem'
-
 import * as EmailPageActions from '../../actions/email-page-actions'
 import {InvalidationStatus} from '../../constants'
 

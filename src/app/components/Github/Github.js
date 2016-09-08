@@ -2,14 +2,13 @@ import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
 import useSheet from 'react-jss'
+import Icon from 'react-fontawesome'
 
 import * as GithubActions from '../../actions/github-actions'
 import {InvalidationStatus} from '../../constants'
 import Repository from './Repository'
-
 import Flexbox from '../UI/Flexbox'
 import Scrollable from '../Scrollable/Scrollable'
-import Icon from 'react-fontawesome'
 import styleVars from '../style-vars'
 
 class Github extends Component {

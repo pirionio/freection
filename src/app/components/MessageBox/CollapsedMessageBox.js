@@ -5,7 +5,6 @@ import useSheet from 'react-jss'
 
 import * as MessageBoxActions from '../../actions/message-box-actions'
 import MessageTypes from '../../../common/enums/message-types'
-
 import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
 

@@ -1,11 +1,12 @@
 import React, {Component, PropTypes} from 'react'
 import {chain} from 'lodash/core'
 import head from 'lodash/head'
-import Flexbox from '../UI/Flexbox'
 import classAutobind from 'class-autobind'
 import Transition from 'react-motion-ui-pack'
 import useSheet from 'react-jss'
 import classNames from 'classnames'
+
+import Flexbox from '../UI/Flexbox'
 
 class ActionsBar extends Component {
     constructor(props) {

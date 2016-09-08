@@ -1,5 +1,4 @@
-import React from 'react'
-const {PropTypes, Component} = React
+import React, {PropTypes, Component} from 'react'
 import useSheet from 'react-jss'
 
 import PreviewItem, { PreviewItemUser, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'

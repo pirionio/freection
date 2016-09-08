@@ -3,7 +3,6 @@ import useSheet from 'react-jss'
 
 import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
-
 import NavigationMenu from './NavigationMenu'
 import UserSettings from './UserSettings'
 import logo from '../../static/logo-white.png'

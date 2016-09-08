@@ -5,7 +5,6 @@ import useSheet from 'react-jss'
 import SharedConstants from '../../../common/shared-constants'
 import EventTypes from '../../../common/enums/event-types'
 import * as ThingPageActions from '../../actions/thing-page-actions'
-
 import PreviewItem, { PreviewItemStatus, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
 import {CommentPreviewText, PingPreviewText} from '../Preview/Thing'
 import NotificationActionsBar from './NotificationActionsBar'

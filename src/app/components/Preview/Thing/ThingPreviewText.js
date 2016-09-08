@@ -5,7 +5,6 @@ import last from 'lodash/last'
 
 import EventTypes from '../../../../common/enums/event-types'
 import * as ThingHelper from '../../../helpers/thing-helper'
-
 import CommentPreviewText from './CommentPreviewText'
 import PingPreviewText from './PingPreviewText'
 import TextSeparator from '../../UI/TextSeparator'

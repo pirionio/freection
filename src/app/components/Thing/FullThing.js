@@ -3,7 +3,6 @@ import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
 import DocumentTitle from 'react-document-title'
 import {goBack} from 'react-router-redux'
-
 import isEmpty from 'lodash/isEmpty'
 import reject from 'lodash/reject'
 
@@ -11,10 +10,8 @@ import ThingPageActionsBar from './ThingPageActionsBar'
 import MessagePanel from '../MessageBox/MessagePanel'
 import FullItem, {FullItemSubject, FullItemStatus, FullItemActions, FullItemBox} from '../Full/FullItem'
 import styleVars from '../style-vars'
-
 import * as ThingPageActions from '../../actions/thing-page-actions'
 import * as ThingHelper from '../../helpers/thing-helper'
-
 import EventTypes from '../../../common/enums/event-types'
 import ThingStatus from '../../../common/enums/thing-status'
 import {InvalidationStatus} from '../../constants'

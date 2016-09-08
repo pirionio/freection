@@ -5,7 +5,6 @@ import {Provider} from 'react-redux'
 import { browserHistory } from 'react-router'
 import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
 import thunk from 'redux-thunk'
-
 import jss from 'jss'
 import jssExtend from 'jss-extend'
 import jssNested from 'jss-nested'

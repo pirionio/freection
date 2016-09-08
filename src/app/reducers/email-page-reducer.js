@@ -5,7 +5,6 @@ import EventActionTypes from '../actions/types/event-action-types'
 import EmailPageActionTypes from '../actions/types/email-page-action-types'
 import EmailCommandActionTypes from '../actions/types/email-command-action-types'
 import {ActionStatus, InvalidationStatus} from '../constants'
-
 import immutable from '../util/immutable'
 
 const initialState = {

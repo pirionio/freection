@@ -2,9 +2,9 @@ import React, {Component} from 'react'
 import classAutobind from 'class-autobind'
 import clickOutside from 'react-click-outside'
 import useSheet from 'react-jss'
+import Icon from 'react-fontawesome'
 
 import Flexbox from '../UI/Flexbox'
-import Icon from 'react-fontawesome'
 import Link from '../UI/Link'
 import styleVars from '../style-vars'
 

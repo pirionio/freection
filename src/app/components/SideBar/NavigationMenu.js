@@ -2,7 +2,6 @@ import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
 import useSheet from 'react-jss'
-
 import keys from 'lodash/keys'
 import groupBy from 'lodash/groupBy'
 

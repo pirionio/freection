@@ -5,7 +5,6 @@ import useSheet from 'react-jss'
 import classNames from 'classnames'
 
 import * as GlassPaneActions from '../../actions/glass-pane-actions'
-
 import styleVars from '../style-vars'
 
 class GlassPane extends Component {

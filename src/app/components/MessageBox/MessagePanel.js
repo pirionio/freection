@@ -5,7 +5,6 @@ import classAutobind from 'class-autobind'
 import AddressParser from 'email-addresses'
 import useSheet from 'react-jss'
 import classNames from 'classnames'
-
 import find from 'lodash/find'
 import isNil from 'lodash/isNil'
 import map from 'lodash/map'
@@ -13,7 +12,6 @@ import some from 'lodash/some'
 import {chain} from 'lodash/core'
 
 import * as MessageBoxActions from '../../actions/message-box-actions'
-
 import Flexbox from '../UI/Flexbox'
 import MessageBox from './MessageBox'
 import CollapsedMessageBox from './CollapsedMessageBox'
@@ -21,7 +19,6 @@ import MessageTabs from './MessageTabs'
 import * as ThingCommandActions from '../../actions/thing-command-actions'
 import * as EmailCommandActions from '../../actions/email-command-actions'
 import MessageTypes from '../../../common/enums/message-types'
-
 import componentStyles from '../component-styles'
 
 class MessagePanel extends Component {

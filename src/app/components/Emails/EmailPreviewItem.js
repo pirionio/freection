@@ -1,5 +1,4 @@
-import React from 'react'
-const {PropTypes, Component} = React
+import React, {PropTypes, Component} from 'react'
 import {connect} from 'react-redux'
 import useSheet from 'react-jss'
 

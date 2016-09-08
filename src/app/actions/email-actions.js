@@ -1,5 +1,4 @@
 import {_fetchUnread} from './generated/email-actions'
-
 import {InvalidationStatus} from '../constants'
 
 export function fetchUnread() {

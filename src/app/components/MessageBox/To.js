@@ -1,10 +1,8 @@
-import React from 'react'
-const {PropTypes, Component} = React
+import React, {PropTypes, Component}  from 'react'
 import {connect} from 'react-redux'
 import {actions} from 'react-redux-form'
 import Autosuggest from 'react-autosuggest'
 import useSheet from 'react-jss'
-
 import omit from 'lodash/omit'
 import some from 'lodash/some'
 import takeRight from 'lodash/takeRight'

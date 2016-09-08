@@ -2,12 +2,11 @@ import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
 import useSheet from 'react-jss'
-
-import * as GithubActions from '../../actions/github-actions'
-
-import Flexbox from '../UI/Flexbox'
 import Icon from 'react-fontawesome'
 import Delay from 'react-delay'
+
+import * as GithubActions from '../../actions/github-actions'
+import Flexbox from '../UI/Flexbox'
 
 class Repository extends Component {
     constructor(props) {

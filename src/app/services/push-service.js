@@ -1,5 +1,4 @@
 import {createSocket} from '../util/socket-util'
-
 import * as WhatsNewActions from '../actions/whats-new-actions'
 import * as ToDoActions from '../actions/to-do-actions'
 import * as  FollowUpActions from '../actions/follow-up-actions'

@@ -8,7 +8,6 @@ import useSheet from 'react-jss'
 import * as HtmlUtil from '../../util/html-util'
 import EventTypes from '../../../common/enums/event-types'
 import * as ThingCommandActions from '../../actions/thing-command-actions'
-
 import Flexbox from '../UI/Flexbox'
 import TextTruncate from '../UI/TextTruncate'
 import styleVars from '../style-vars'

@@ -3,7 +3,6 @@ import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
 import useSheet from 'react-jss'
 import classNames from 'classnames'
-
 import {chain} from 'lodash/core'
 import groupBy from 'lodash/groupBy'
 import forOwn from 'lodash/forOwn'
@@ -14,7 +13,6 @@ import toPairs from 'lodash/toPairs'
 
 import * as PreviewHelper from '../../helpers/preview-helper'
 import * as EmailActions from '../../actions/email-actions'
-
 import Page from '../UI/Page'
 import Flexbox from '../UI/Flexbox'
 import PreviewsContainer from '../Preview/PreviewsContainer'

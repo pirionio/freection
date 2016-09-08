@@ -52,11 +52,11 @@ module.exports = {
         "react/no-find-dom-node": ["warn"],
         "react/no-danger": ["warn"],
         "import/no-commonjs": ["error"],
-        //"import/imports-first": ["error"],
-        //"import/newline-after-import": ["error"],
-        //"import/order": ["error", {
-        //    "groups": ["builtin", "external", ["internal", "parent", "sibling", "index"]],
-        //    "newlines-between": "always"
-        //}]
+        "import/imports-first": ["error"],
+        "import/newline-after-import": ["error"],
+        "import/order": ["error", {
+            "groups": ["builtin", "external", ["internal", "parent", "sibling", "index"]],
+            "newlines-between": "always"
+        }]
     }
 };

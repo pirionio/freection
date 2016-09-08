@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import useSheet from 'react-jss'
+import Icon from 'react-fontawesome'
 
 import Flexbox from '../UI/Flexbox'
-import Icon from 'react-fontawesome'
 import Link from '../UI/Link'
 
 class Integrations extends Component {
