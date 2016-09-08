@@ -43,11 +43,13 @@ class UnreadEmails extends Component {
 
         const emailsByThreadId = groupBy(this.props.emails, 'payload.threadId')
         forOwn(emailsByThreadId, threadEmails => {
-            const lastEmail = chain(threadEmails).sortBy('createdAt').head().clone().value()
-            aggregatedEmails.push(merge(lastEmail, {
+            const oldestEmail = chain(threadEmails).sortBy('createdAt').first().clone().value()
+            const newestEmail = chain(threadEmails).sortBy('createdAt').last().clone().value()
+            aggregatedEmails.push(merge(oldestEmail, {
                 payload: {
                     emailUids: map(threadEmails, 'payload.uid')
-                }
+                },
+                createdAt: newestEmail ? newestEmail.createdAt : oldestEmail.createdAt
             }))
         })
 
