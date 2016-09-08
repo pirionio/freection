@@ -45,7 +45,6 @@ class UnreadEmails extends Component {
         forOwn(emailsByThreadId, threadEmails => {
             const lastEmail = chain(threadEmails).sortBy('createdAt').head().clone().value()
             aggregatedEmails.push(merge(lastEmail, {
-                entityId: lastEmail.payload.threadId,
                 payload: {
                     emailUids: map(threadEmails, 'payload.uid')
                 }

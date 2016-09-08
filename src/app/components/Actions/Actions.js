@@ -107,7 +107,7 @@ export function DiscardEmails(emailUids) {
 
 export function DoEmail(email, currentUser) {
     return {
-        component: <Action label="Do" item={email.entityId} doFunc={EmailCommandActions.doEmail} key="action-do-email" />,
+        component: <Action label="Do" item={email.payload.threadId} doFunc={EmailCommandActions.doEmail} key="action-do-email" />,
         show: email.creator.id !== currentUser.email
     }
 }
