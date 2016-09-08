@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import useSheet from 'react-jss'
+import Favicon from 'react-favicon'
 
 import Flexbox from '../UI/Flexbox'
 import LoginTopBar from '../TopBar/LoginTopBar'
@@ -9,6 +10,7 @@ import Login from '../Login/Login'
 import GlassPane from '../GlassPane/GlassPane'
 import * as PushService from '../../services/push-service'
 import EmailLifecycleService from '../../services/email-lifecycle-service'
+import FaviconLogo from '../../static/freection-favicon.png'
 
 class App extends Component {
     componentDidMount() {
@@ -26,6 +28,7 @@ class App extends Component {
         if (currentUser.isAuthenticated) {
             return (
                 <Flexbox name="root" container="row" className={classes.container}>
+                    <Favicon url={FaviconLogo} />
                     <SideBar currentUser={currentUser} />
                     <Flexbox name="app-section" grow={1} container="column">
                         {this.props.children}
@@ -37,6 +40,7 @@ class App extends Component {
 
         return (
             <Flexbox name="root" container="column" className={classes.container}>
+                <Favicon url={FaviconLogo} />
                 <LoginTopBar />
                 <Login />
             </Flexbox>
