@@ -93,7 +93,7 @@ class Token {
         return (req, res, next) => {
             const secret = this._options.secret
 
-            const user = req.user
+            const user = options.user || req.user
             if (!user)
                 throw new Error('No user is set')
 

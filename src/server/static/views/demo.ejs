@@ -11,18 +11,14 @@
             font-size: 0.875em;
         }
 
-        form {
-            display: inline-block;
-        }
-
         input {
-            width: 80px;
+            width: 200px;
             height: 30px;
             background-color: #1e272c;
             color: white;
             border: none;
             outline: none;
-            margin-right: 15px;
+            margin-bottom: 15px;
             cursor: pointer;
         }
 
@@ -35,11 +31,19 @@
     <h1>Freection Demo</h1>
 
     <form method="post" action="/demo/init">
-        <input type="submit" value="INIT">
+        <input type="submit" value="1. Initialize Demo Environment">
+    </form>
+
+    <form method="post" action="/demo/login" target="_blank">
+        <input type="submit" value="2. Login to Demo" />
+    </form>
+
+    <form method="post" action="/demo/ping">
+        <input type="submit" value="3. Ping from User">
     </form>
 
     <form method="post" action="/demo/done">
-        <input type="submit" value="DONE">
+        <input type="submit" value="4. Mark Thing as Done">
     </form>
 </body>
 </html>
