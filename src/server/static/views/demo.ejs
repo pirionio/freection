@@ -5,21 +5,84 @@
     <title>Freection Demo</title>
     <style>
         body {
-            padding-left: 15px;
-
             font-family: Roboto, Arial;
             font-size: 0.875em;
+            margin: 0;
+        }
+
+        .root {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-bar {
+            display: flex;
+            flex-direction:  row;
+            flex-grow: 0;
+            justify-content: center;
+            align-items: center;
+            height: 75px;
+            padding: 0 47px 0 55px;
+            background-color: #36474f;
+            color: white;
+            font-size: 1.4em;
+            letter-spacing: 0.1em;
+        }
+
+        .top-bar img {
+            width: 412px;
+            height: 30px;
+        }
+
+        .content {
+            flex-grow: 1;
+            align-self: center;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .intro {
+            text-align: center;
+            font-size: 1.4em;
+            margin-bottom: 50px;
+            color: darkgrey;
+        }
+
+        .title {
+            font-size: 1.6em;
+            margin-bottom: 10px;
+            color: black;
+        }
+
+        .button-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            height: 60px;
+            margin-top: 15px;
+        }
+
+        .explanation {
+            flex-grow: 1;
+            margin-left: 15px;
+            font-size: 1.2em;
+        }
+
+        form {
+            flex-grow: 0;
+            width: 200px;
         }
 
         input {
             width: 200px;
-            height: 30px;
-            background-color: #1e272c;
-            color: white;
-            border: none;
+            height: 40px;
+            border: 1px solid #1e272c;
+            color: #1e272c;
+            background-color: transparent;
             outline: none;
-            margin-bottom: 15px;
             cursor: pointer;
+            font-size: 1.2em;
         }
 
         input:hover {
@@ -28,22 +91,57 @@
     </style>
 </head>
 <body>
-    <h1>Freection Demo</h1>
+    <div class="root">
+        <div class="top-bar">
+            <h1>Freection</h1>
+        </div>
 
-    <form method="post" action="/demo/init">
-        <input type="submit" value="1. Initialize Demo Environment">
-    </form>
+        <div class="content">
+            <div class="intro">
+                <div class="title">
+                    Welcome to the Freection demo!
+                </div>
+                This demo helps you create an environment that will demonstrate the capabilities of Freection.
+                <br>
+                Follow the steps below to give it a try.
+            </div>
 
-    <form method="post" action="/demo/login" target="_blank">
-        <input type="submit" value="2. Login to Demo" />
-    </form>
+            <div class="button-row">
+                <form method="post" action="/demo/init">
+                    <input type="submit" value="1. Initialize">
+                </form>
+                <div class="explanation">
+                    Start here. This will initialize the demo environment so you can start it from scratch whenever you want.
+                </div>
+            </div>
 
-    <form method="post" action="/demo/ping">
-        <input type="submit" value="3. Ping from User">
-    </form>
+            <div class="button-row">
+                <form method="post" action="/demo/login" target="_blank">
+                    <input type="submit" value="2. Login" />
+                </form>
+                <div class="explanation">
+                    Login to the Freection application from here.
+                </div>
+            </div>
 
-    <form method="post" action="/demo/done">
-        <input type="submit" value="4. Mark Thing as Done">
-    </form>
+            <div class="button-row">
+                <form method="post" action="/demo/ping">
+                    <input type="submit" value="3. Ping">
+                </form>
+                <div class="explanation">
+                    Test the flow of Freection! See what happens when someone else pings you.
+                </div>
+            </div>
+
+            <div class="button-row">
+                <form method="post" action="/demo/done">
+                    <input type="submit" value="4. Mark as Done">
+                </form>
+                <div class="explanation">
+                    You can also see what happens when someone else completes a Thing you sent.
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
