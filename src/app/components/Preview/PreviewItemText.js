@@ -6,10 +6,6 @@ import useSheet from 'react-jss'
 import styleVars from '../style-vars'
 
 class PreviewItemText extends Component {
-    static propTypes = {
-        size: PropTypes.object.isRequired
-    }
-
     constructor(props) {
         super(props)
         this.fade = false
@@ -40,6 +36,9 @@ class PreviewItemText extends Component {
             </div>
         )
     }
+}
+PreviewItemText.propTypes = {
+    size: PropTypes.object.isRequired
 }
 
 const style = {
