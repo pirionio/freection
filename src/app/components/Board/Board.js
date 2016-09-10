@@ -1,27 +1,22 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const classAutobind = require('class-autobind').default
-const DocumentTitle = require('react-document-title')
-const clickOutside = require('react-click-outside')
-const Icon = require('react-fontawesome')
-const {goBack} = require('react-router-redux')
-const useSheet = require('react-jss').default
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import classAutobind from 'class-autobind'
+import DocumentTitle from 'react-document-title'
+import clickOutside from 'react-click-outside'
+import Icon from 'react-fontawesome'
+import {goBack} from 'react-router-redux'
+import useSheet from 'react-jss'
+import reject from 'lodash/reject'
+import map from 'lodash/map'
 
-const isEmpty = require('lodash/isEmpty')
-const reject = require('lodash/reject')
-const map = require('lodash/map')
-
-const Button = require('../UI/Button')
-const CommentList = require('../Comment/CommentList')
-const Ellipse = require('../UI/Ellipse')
-const TextTruncate = require('../UI/TextTruncate')
-const MessagePanel = require('../MessageBox/MessagePanel')
-const Flexbox = require('../UI/Flexbox')
-const styleVars = require('../style-vars')
-
-const ThingHelper = require('../../helpers/thing-helper')
-const MessageBoxActions = require('../../actions/message-box-actions')
+import CommentList from '../Comment/CommentList'
+import Ellipse from '../UI/Ellipse'
+import TextTruncate from '../UI/TextTruncate'
+import MessagePanel from '../MessageBox/MessagePanel'
+import Flexbox from '../UI/Flexbox'
+import styleVars from '../style-vars'
+import * as ThingHelper from '../../helpers/thing-helper'
+import * as MessageBoxActions from '../../actions/message-box-actions'
 import ThingStatus from '../../../common/enums/thing-status'
 import MessageTypes from '../../../common/enums/message-types'
 
@@ -53,8 +48,8 @@ class Board extends Component {
 
         if (unreadComments.length > 0)
             return `Freection (${unreadComments.length}) - ${board.subject}`
-        else
-            return `Freection - ${board.subject}`
+
+        return `Freection - ${board.subject}`
     }
 
     getAllComments() {
@@ -294,4 +289,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = useSheet(connect(mapStateToProps)(clickOutside(Board)), style)
+export default useSheet(connect(mapStateToProps)(clickOutside(Board)), style)

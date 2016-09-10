@@ -1,8 +1,8 @@
-const sanitizeHtml = require('sanitize-html')
-const cheerio = require('cheerio')
-const juice = require('juice/client')
+import sanitizeHtml from 'sanitize-html'
+import cheerio from 'cheerio'
+import juice from 'juice/client'
 
-function parse(html) {
+export function parse(html) {
     let parsedHtml = style(html)
     parsedHtml = restructure(parsedHtml)
     parsedHtml = sanitize(parsedHtml)
@@ -30,8 +30,4 @@ function sanitize(html) {
             table: ['border', 'cellpadding', 'cellspacing', 'bgcolor']
         }
     })
-}
-
-module.exports = {
-    parse
 }

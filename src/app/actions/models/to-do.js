@@ -7,6 +7,7 @@ module.exports = {
         },
         {
             name: 'fetchToDo',
+            private: true,
             type: 'get',
             path: '/api/things/do',
             completeParams: {

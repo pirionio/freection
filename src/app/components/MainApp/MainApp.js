@@ -1,9 +1,8 @@
-const React = require('react')
-const {Component} = React
-const useSheet = require('react-jss').default
+import React, {Component} from 'react'
+import useSheet from 'react-jss'
 
-const Flexbox = require('../UI/Flexbox')
-const styleVars = require('../style-vars')
+import Flexbox from '../UI/Flexbox'
+import styleVars from '../style-vars'
 
 class MainApp extends Component {
     render () {
@@ -38,4 +37,4 @@ const style = {
 MainApp.propTypes = {
 }
 
-module.exports = useSheet(MainApp, style)
+export default useSheet(MainApp, style)

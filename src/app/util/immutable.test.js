@@ -1,6 +1,8 @@
-const {expect} = require('chai')
+/* eslint-env mocha */
 
-const immutable = require('./immutable')
+import {expect} from 'chai'
+
+import immutable from './immutable'
 
 describe('Immutable', () => {
     let original, theImmutable
@@ -185,7 +187,7 @@ describe('Immutable', () => {
         it('sets new items to all of the array', () => {
             const result = theImmutable.arraySetAll('someArray', {someNewKey: 'newValue'}).value()
             expect(result.someArray.length).to.equal(3)
-            result.someArray.forEach((item) => {
+            result.someArray.forEach(item => {
                 expect(item.someNewKey).to.equal('newValue')
                 expect(item.someItemKey).to.equal(undefined)
             })

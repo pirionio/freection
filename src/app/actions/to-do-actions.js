@@ -1,17 +1,14 @@
-const ToDoActions = require('./generated/to-do-actions')
-const {InvalidationStatus} = require('../constants')
+import {_fetchToDo} from './generated/to-do-actions'
+import {InvalidationStatus} from '../constants'
 
-const fetchToDoActions = ToDoActions.fetchToDo
-
-const fetchToDo = () => {
+export const fetchToDo = () => {
     return (dispatch, getState) => {
         const {toDo} = getState()
         if (toDo.invalidationStatus === InvalidationStatus.INVALIDATED ||
             toDo.invalidationStatus === InvalidationStatus.REQUIRE_UPDATE) {
-            dispatch(fetchToDoActions())
+            dispatch(_fetchToDo())
         }
     }
 }
 
-module.exports = ToDoActions
-module.exports.fetchToDo = fetchToDo
+export * from './generated/to-do-actions'

@@ -1,15 +1,14 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const useSheet = require('react-jss').default
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import useSheet from 'react-jss'
 
-const Flexbox = require('../UI/Flexbox')
-const LoginTopBar = require('../TopBar/LoginTopBar')
-const SideBar = require('../SideBar/SideBar')
-const Login = require('../Login/Login')
-const GlassPane = require('../GlassPane/GlassPane')
-const PushService = require('../../services/push-service')
-const EmailLifecycleService = require('../../services/email-lifecycle-service')
+import Flexbox from '../UI/Flexbox'
+import LoginTopBar from '../TopBar/LoginTopBar'
+import SideBar from '../SideBar/SideBar'
+import Login from '../Login/Login'
+import GlassPane from '../GlassPane/GlassPane'
+import * as PushService from '../../services/push-service'
+import EmailLifecycleService from '../../services/email-lifecycle-service'
 
 class App extends Component {
     componentDidMount() {
@@ -34,14 +33,14 @@ class App extends Component {
                     <GlassPane />
                 </Flexbox>
             )
-        } else {
-            return (
-                <Flexbox name="root" container="column" className={classes.container}>
-                    <LoginTopBar />
-                    <Login />
-                </Flexbox>
-            )
         }
+
+        return (
+            <Flexbox name="root" container="column" className={classes.container}>
+                <LoginTopBar />
+                <Login />
+            </Flexbox>
+        )
     }
 }
 
@@ -55,10 +54,10 @@ App.propTypes = {
     currentUser: PropTypes.object.isRequired
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         currentUser: state.auth
     }
 }
 
-module.exports = useSheet(connect(mapStateToProps)(App), style)
+export default useSheet(connect(mapStateToProps)(App), style)

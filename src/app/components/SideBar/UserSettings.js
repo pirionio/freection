@@ -1,11 +1,10 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const classAutobind = require('class-autobind').default
-const useSheet = require('react-jss').default
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import classAutobind from 'class-autobind'
+import useSheet from 'react-jss'
 
-const Flexbox = require('../UI/Flexbox')
-const SettingsMenu = require('./SettingsMenu')
+import Flexbox from '../UI/Flexbox'
+import SettingsMenu from './SettingsMenu'
 
 class UserSettings extends Component {
     constructor(props) {
@@ -47,4 +46,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = useSheet(connect(mapStateToProps)(UserSettings), style)
+export default useSheet(connect(mapStateToProps)(UserSettings), style)

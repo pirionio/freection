@@ -1,17 +1,14 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const orderBy = require('lodash/orderBy')
-const classAutobind = require('class-autobind').default
-const useSheet = require('react-jss').default
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import orderBy from 'lodash/orderBy'
+import classAutobind from 'class-autobind'
+import useSheet from 'react-jss'
 
-const isEmpty = require('lodash/isEmpty')
-
-const Page = require('../UI/Page')
-const PreviewsContainer = require('../Preview/PreviewsContainer')
-const styleVars = require('../style-vars')
-const FollowUpsActions = require('../../actions/follow-up-actions')
-const FollowUpPreviewItem = require('./FollowUpPreviewItem')
+import Page from '../UI/Page'
+import PreviewsContainer from '../Preview/PreviewsContainer'
+import styleVars from '../style-vars'
+import * as  FollowUpsActions from '../../actions/follow-up-actions'
+import FollowUpPreviewItem from './FollowUpPreviewItem'
 
 class FollowUp extends Component {
     constructor(props) {
@@ -32,8 +29,8 @@ class FollowUp extends Component {
     getTitle() {
         if (this.props.things.length > 0)
             return `Freection (${this.props.things.length}) - Follow Up`
-        else
-            return 'Freection - Follow Up'
+
+        return 'Freection - Follow Up'
     }
 
     getNoPreviews() {
@@ -74,6 +71,7 @@ FollowUp.propTypes = {
     invalidationStatus: PropTypes.string.isRequired
 }
 
+
 function mapStateToProps (state) {
     return {
         things: state.followUps.followUps,
@@ -81,4 +79,5 @@ function mapStateToProps (state) {
     }
 }
 
-module.exports = useSheet(connect(mapStateToProps)(FollowUp), style)
+export default useSheet(connect(mapStateToProps)(FollowUp), style)
+

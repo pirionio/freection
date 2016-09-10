@@ -1,3 +1,1 @@
-const EmailCommandActions = require('./generated/email-command-actions')
-
-module.exports = EmailCommandActions
+export * from './generated/email-command-actions'

@@ -1,46 +1,39 @@
-const {push} = require('react-router-redux')
-const find = require('lodash/find')
+import {push} from 'react-router-redux'
+import find from 'lodash/find'
 
-const EmailPageActions = require('./generated/email-page-actions')
-const MessageBoxActions = require('./message-box-actions')
-const {InvalidationStatus} = require('../constants')
+import {_getEmail, _showEmailPage, _hideEmailPage} from './generated/email-page-actions'
+import * as MessageBoxActions from './message-box-actions'
+import {InvalidationStatus} from '../constants'
 import MessageTypes from '../../common/enums/message-types'
 
-const getAction = EmailPageActions.getEmail
-const showAction = EmailPageActions.showEmailPage
-const hideAction = EmailPageActions.hideEmailPage
-
-function getEmail(threadId) {
+export function getEmail(threadId) {
     return (dispatch, getState) => {
         const {emailPage} = getState()
         if (emailPage.invalidationStatus === InvalidationStatus.INVALIDATED ||
             emailPage.invalidationStatus === InvalidationStatus.REQUIRE_UPDATE) {
-            return dispatch(getAction(threadId))
+            return dispatch(_getEmail(threadId))
         }
     }
 }
 
-function showEmailPage(email) {
+export function showEmailPage(email) {
     return dispatch => {
         dispatch(push(`${window.location.pathname}/${email.payload.threadId}`))
-        dispatch(showAction(email))
+        dispatch(_showEmailPage(email))
         dispatch(MessageBoxActions.newMessageBox(MessageTypes.REPLY_EMAIL, email))
     }
 }
 
-function hideEmailPage() {
+export function hideEmailPage() {
     return (dispatch, getState) => {
         const {emailPage, messagePanel} = getState()
         const threadId = emailPage.thread.id
 
-        dispatch(hideAction())
+        dispatch(_hideEmailPage())
 
         const messageBox = find(messagePanel.messageBoxes, {context: {id: threadId}})
         messageBox && dispatch(MessageBoxActions.closeMessageBox(messageBox.id))
     }
 }
 
-module.exports = EmailPageActions
-EmailPageActions.getEmail = getEmail
-EmailPageActions.showEmailPage = showEmailPage
-EmailPageActions.hideEmailPage = hideEmailPage
+export * from './generated/email-page-actions'

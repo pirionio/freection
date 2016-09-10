@@ -1,32 +1,27 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const classAutobind = require('class-autobind').default
-const useSheet = require('react-jss').default
-const classNames = require('classnames')
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import classAutobind from 'class-autobind'
+import useSheet from 'react-jss'
+import classNames from 'classnames'
+import groupBy from 'lodash/groupBy'
+import first from 'lodash/first'
+import last from 'lodash/last'
+import merge from 'lodash/merge'
+import reject from 'lodash/reject'
+import forOwn from 'lodash/forOwn'
+import clone from 'lodash/clone'
+import isEmpty from 'lodash/isEmpty'
+import toPairs from 'lodash/toPairs'
+import {chain} from 'lodash/core'
 
-const groupBy = require('lodash/groupBy')
-const find = require('lodash/find')
-const first = require('lodash/first')
-const last = require('lodash/last')
-const merge = require('lodash/merge')
-const reject = require('lodash/reject')
-const orderBy = require('lodash/orderBy')
-const forOwn = require('lodash/forOwn')
-const clone = require('lodash/clone')
-const isEmpty = require('lodash/isEmpty')
-const toPairs = require('lodash/toPairs')
-const {chain} = require('lodash/core')
-
-const Flexbox = require('../UI/Flexbox')
-const Page = require('../UI/Page')
-const styleVars = require('../style-vars')
-const PreviewsContainer = require('../Preview/PreviewsContainer')
-const NotificationPreviewItem = require('./NotificationPreviewItem')
-const GithubPreviewItem = require('./GithubPreviewItem')
-
-const PreviewHelper = require('../../helpers/preview-helper')
-const WhatsNewActions = require('../../actions/whats-new-actions')
+import Flexbox from '../UI/Flexbox'
+import Page from '../UI/Page'
+import styleVars from '../style-vars'
+import PreviewsContainer from '../Preview/PreviewsContainer'
+import NotificationPreviewItem from './NotificationPreviewItem'
+import GithubPreviewItem from './GithubPreviewItem'
+import * as PreviewHelper from '../../helpers/preview-helper'
+import * as WhatsNewActions from '../../actions/whats-new-actions'
 import EventTypes from '../../../common/enums/event-types'
 import EntityTypes from '../../../common/enums/entity-types'
 
@@ -45,10 +40,10 @@ class WhatsNew extends Component {
         const {notifications} = this.props
         const notificationsByThing = groupBy(notifications, notification => notification.thing.id)
 
-        let aggregatedNotifications = []
+        const aggregatedNotifications = []
 
         // We want to aggregate notifications that belong to the very same thing. That's why we grouped them according to Thing.
-        forOwn(notificationsByThing, (thingNotifications) => {
+        forOwn(notificationsByThing, thingNotifications => {
             const commentNotifications = chain(thingNotifications)
                 .filter(notification => [EventTypes.CREATED.key, EventTypes.COMMENT.key].includes(notification.eventType.key))
                 .sortBy('createdAt')
@@ -86,7 +81,7 @@ class WhatsNew extends Component {
         const groupedNotifications = PreviewHelper.groupByDate(aggregatedNotifications, this.buildPreviewItem)
 
         const notificationsToShow = chain(toPairs(groupedNotifications))
-            .filter(([groupTitle, notifications]) => !isEmpty(notifications))
+            .filter(([, notifications]) => !isEmpty(notifications))
             .map(([groupTitle, notifications], index) => {
                 const titleClass = classNames(classes.header, index === 0 && classes.first)
                 return (
@@ -118,8 +113,8 @@ class WhatsNew extends Component {
         // TODO: should we return the aggregated number instead?
         if (this.props.notifications.length > 0)
             return `Freection (${this.props.notifications.length}) - What's New?`
-        else
-            return 'Freection - What\'s New?'
+
+        return 'Freection - What\'s New?'
     }
 
     getNoPreviews() {
@@ -173,4 +168,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = useSheet(connect(mapStateToProps)(WhatsNew), style)
+export default useSheet(connect(mapStateToProps)(WhatsNew), style)

@@ -1,29 +1,23 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const classAutobind = require('class-autobind').default
-const useSheet = require('react-jss').default
-const classNames = require('classnames')
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import classAutobind from 'class-autobind'
+import useSheet from 'react-jss'
+import classNames from 'classnames'
+import {chain} from 'lodash/core'
+import groupBy from 'lodash/groupBy'
+import forOwn from 'lodash/forOwn'
+import merge from 'lodash/merge'
+import map from 'lodash/map'
+import isEmpty from 'lodash/isEmpty'
+import toPairs from 'lodash/toPairs'
 
-const {chain} = require('lodash/core')
-const groupBy = require('lodash/groupBy')
-const orderBy = require('lodash/orderBy')
-const forOwn = require('lodash/forOwn')
-const merge = require('lodash/merge')
-const clone = require('lodash/clone')
-const map = require('lodash/map')
-const isEmpty = require('lodash/isEmpty')
-const toPairs = require('lodash/toPairs')
-
-const PreviewHelper = require('../../helpers/preview-helper')
-const EmailActions = require('../../actions/email-actions')
-
-const Page = require('../UI/Page')
-const Flexbox = require('../UI/Flexbox')
-const PreviewsContainer = require('../Preview/PreviewsContainer')
-const EmailPreviewItem = require('./EmailPreviewItem')
-const styleVars = require('../style-vars')
-const FullEmail = require('../Emails/FullEmail')
+import * as PreviewHelper from '../../helpers/preview-helper'
+import * as EmailActions from '../../actions/email-actions'
+import Page from '../UI/Page'
+import Flexbox from '../UI/Flexbox'
+import PreviewsContainer from '../Preview/PreviewsContainer'
+import EmailPreviewItem from './EmailPreviewItem'
+import styleVars from '../style-vars'
 
 class UnreadEmails extends Component {
     constructor(props) {
@@ -35,8 +29,8 @@ class UnreadEmails extends Component {
         // TODO: should we return the aggregated number instead?
         if (this.props.emails.length > 0)
             return `Freection (${this.props.emails.length}) - Unread Emails`
-        else
-            return 'Freection - Unread Emails'
+
+        return 'Freection - Unread Emails'
     }
 
     fetchUnreadEmails() {
@@ -45,10 +39,10 @@ class UnreadEmails extends Component {
     }
 
     getEmailRows() {
-        let aggregatedEmails = []
+        const aggregatedEmails = []
 
         const emailsByThreadId = groupBy(this.props.emails, 'payload.threadId')
-        forOwn(emailsByThreadId, (threadEmails) => {
+        forOwn(emailsByThreadId, threadEmails => {
             const lastEmail = chain(threadEmails).sortBy('createdAt').head().clone().value()
             aggregatedEmails.push(merge(lastEmail, {
                 entityId: lastEmail.payload.threadId,
@@ -70,7 +64,7 @@ class UnreadEmails extends Component {
         const groupedEmails = PreviewHelper.groupByDate(aggregatedEmails, this.buildPreviewItem)
 
         const emailsToShow = chain(toPairs(groupedEmails))
-            .filter(([groupTitle, emails]) => !isEmpty(emails))
+            .filter(([, emails]) => !isEmpty(emails))
             .map(([groupTitle, emails], index) => {
                 const titleClass = classNames(classes.header, index === 0 && classes.first)
                 return (
@@ -135,7 +129,7 @@ const style = {
     }
 }
 
-UnreadEmails.propsTypes = {
+UnreadEmails.propTypes = {
     emails: PropTypes.array.isRequired,
     currentUser: PropTypes.object.isRequired,
     invalidationStatus: PropTypes.string.isRequired
@@ -149,4 +143,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = useSheet(connect(mapStateToProps)(UnreadEmails), style)
+export default useSheet(connect(mapStateToProps)(UnreadEmails), style)

@@ -1,16 +1,14 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const classAutobind = require('class-autobind').default
-const useSheet = require('react-jss').default
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import classAutobind from 'class-autobind'
+import useSheet from 'react-jss'
+import keys from 'lodash/keys'
+import groupBy from 'lodash/groupBy'
 
-const keys = require('lodash/keys')
-const groupBy = require('lodash/groupBy')
-
-const Link = require('../UI/Link')
-const Flexbox = require('../UI/Flexbox')
-const Ellipse = require('../UI/Ellipse')
-const styleVars = require('../style-vars')
+import Link from '../UI/Link'
+import Flexbox from '../UI/Flexbox'
+import Ellipse from '../UI/Ellipse'
+import styleVars from '../style-vars'
 
 class NavigationMenu extends Component {
     constructor(props) {
@@ -158,4 +156,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = useSheet(connect(mapStateToProps)(NavigationMenu), style)
+export default useSheet(connect(mapStateToProps)(NavigationMenu), style)

@@ -1,16 +1,13 @@
-const React = require('react')
-const {PropTypes, Component} = React
-const {connect} = require('react-redux')
-const {actions} = require('react-redux-form')
-const Autosuggest = require('react-autosuggest')
-const useSheet = require('react-jss').default
-
-const merge = require('lodash/merge')
-const omit = require('lodash/omit')
-const some = require('lodash/some')
-const takeRight = require('lodash/takeRight')
-const orderBy = require('lodash/orderBy')
-const get = require('lodash/get')
+import React, {PropTypes, Component}  from 'react'
+import {connect} from 'react-redux'
+import {actions} from 'react-redux-form'
+import Autosuggest from 'react-autosuggest'
+import useSheet from 'react-jss'
+import omit from 'lodash/omit'
+import some from 'lodash/some'
+import takeRight from 'lodash/takeRight'
+import orderBy from 'lodash/orderBy'
+import get from 'lodash/get'
 
 class To extends Component {
 
@@ -149,4 +146,4 @@ function mapStateToProps(state, {model}) {
     }
 }
 
-module.exports = useSheet(connect(mapStateToProps)(To), style)
+export default useSheet(connect(mapStateToProps)(To), style)

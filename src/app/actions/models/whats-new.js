@@ -7,6 +7,7 @@ module.exports = {
         },
         {
             name: 'fetchWhatsNew',
+            private: true,
             type: 'get',
             path: '/api/things/whatsnew',
             completeParams: {

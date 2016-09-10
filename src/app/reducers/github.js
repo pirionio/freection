@@ -1,6 +1,6 @@
-const GithubActionTypes = require('../actions/types/github-action-types')
-const {ActionStatus, InvalidationStatus} = require('../constants')
-const immutable = require('../util/immutable')
+import GithubActionTypes from '../actions/types/github-action-types'
+import {ActionStatus, InvalidationStatus} from '../constants'
+import immutable from '../util/immutable'
 
 const initialState = {
     active: false,
@@ -60,7 +60,7 @@ function disableRepository(state, action) {
     }
 }
 
-module.exports = function(state = initialState, action) {
+export default function(state = initialState, action) {
     switch (action.type){
         case GithubActionTypes.FETCH_GITHUB:
             return fetchGithub(state, action)

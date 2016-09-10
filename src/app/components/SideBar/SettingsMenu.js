@@ -1,13 +1,12 @@
-const React = require('react')
-const {Component} = React
-const classAutobind = require('class-autobind').default
-const clickOutside = require('react-click-outside')
-const useSheet = require('react-jss').default
+import React, {Component} from 'react'
+import classAutobind from 'class-autobind'
+import clickOutside from 'react-click-outside'
+import useSheet from 'react-jss'
+import Icon from 'react-fontawesome'
 
-const Flexbox = require('../UI/Flexbox')
-const Icon = require('react-fontawesome')
-const Link = require('../UI/Link')
-const styleVars = require('../style-vars')
+import Flexbox from '../UI/Flexbox'
+import Link from '../UI/Link'
+import styleVars from '../style-vars'
 
 class SettingsMenu extends Component {
     constructor(props) {
@@ -96,4 +95,4 @@ const style = {
     }
 }
 
-module.exports = useSheet(clickOutside(SettingsMenu), style)
+export default useSheet(clickOutside(SettingsMenu), style)

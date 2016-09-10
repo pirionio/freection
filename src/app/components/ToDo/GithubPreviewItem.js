@@ -1,12 +1,13 @@
-const React = require('react')
-const {PropTypes, Component} = React
-const useSheet = require('react-jss').default
+import React, {PropTypes, Component} from 'react'
+import useSheet from 'react-jss'
 
-const {PreviewItem, PreviewItemUser, PreviewItemText, PreviewItemActions} = require('../Preview/PreviewItem')
-const GithubActionsBar = require('./GithubActionsBar')
-const TextTruncate = require('../UI/TextTruncate')
+import PreviewItem, { PreviewItemUser, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
+import GithubActionsBar from './GithubActionsBar'
+import TextTruncate from '../UI/TextTruncate'
 import ThingStatus from '../../../common/enums/thing-status'
-const styleVars = require('../style-vars')
+import styleVars from '../style-vars'
+import Flexbox from '../UI/Flexbox'
+import TextSeparator from '../UI/TextSeparator'
 
 class GithubTodoPreviewItem extends Component {
     getTextElement() {
@@ -75,4 +76,4 @@ GithubTodoPreviewItem.propTypes = {
     thing: PropTypes.object.isRequired
 }
 
-module.exports = useSheet(GithubTodoPreviewItem, style)
+export default useSheet(GithubTodoPreviewItem, style)

@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     SET_STATE: 'FOLLOW_UP_SET_STATE',
     FETCH_FOLLOW_UPS: 'FOLLOW_UP_FETCH_FOLLOW_UPS'
 }

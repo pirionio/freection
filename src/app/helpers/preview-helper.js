@@ -1,15 +1,14 @@
-const {chain} = require('lodash/core')
-const orderBy = require('lodash/orderBy')
+import {chain} from 'lodash/core'
+import orderBy from 'lodash/orderBy'
+import isAfter from 'date-fns/is_after'
+import isBefore from 'date-fns/is_before'
+import addWeeks from 'date-fns/add_weeks'
+import isToday from 'date-fns/is_today'
+import isYesterday from 'date-fns/is_yesterday'
 
-const isAfter = require('date-fns/is_after')
-const isBefore = require('date-fns/is_before')
-const addWeeks = require('date-fns/add_weeks')
-const isToday = require('date-fns/is_today')
-const isYesterday = require('date-fns/is_yesterday')
+import {PreviewDateGroups} from '../constants'
 
-const {PreviewDateGroups} = require('../constants')
-
-function groupByDate(aggregatedPreviews, buildNotificationFund) {
+export function groupByDate(aggregatedPreviews, buildNotificationFund) {
     const sortedPreviews = orderBy(aggregatedPreviews, 'createdAt', 'desc')
 
     return {
@@ -47,8 +46,4 @@ function getRestOfItems(previews, buildPreviewItemFunc) {
         .filter(preview => isBefore(preview.createdAt, addWeeks(new Date(), -1)))
         .map(buildPreviewItemFunc)
         .value()
-}
-
-module.exports = {
-    groupByDate
 }

@@ -1,19 +1,18 @@
-const isUndefined = require('lodash/isUndefined')
-const head = require('lodash/head')
+import isUndefined from 'lodash/isUndefined'
+import head from 'lodash/head'
 
-const EventActionTypes = require('../actions/types/event-action-types')
-const EmailPageActionTypes = require('../actions/types/email-page-action-types')
-const EmailCommandActionTypes = require('../actions/types/email-command-action-types')
-const {ActionStatus, InvalidationStatus} = require('../constants')
-
-const immutable = require('../util/immutable')
+import EventActionTypes from '../actions/types/event-action-types'
+import EmailPageActionTypes from '../actions/types/email-page-action-types'
+import EmailCommandActionTypes from '../actions/types/email-command-action-types'
+import {ActionStatus, InvalidationStatus} from '../constants'
+import immutable from '../util/immutable'
 
 const initialState = {
     thread: {},
     invalidationStatus: InvalidationStatus.INVALIDATED
 }
 
-function requireUpdate(state, action) {
+function requireUpdate(state) {
     
     if (state.invalidationStatus === InvalidationStatus.FETCHED) {
         return immutable(state)
@@ -40,11 +39,11 @@ function get(state, action) {
             return immutable(state)
                 .set('thread', action.thread)
                 .touch('thread')
-                .arrayMergeItem('thread.messages', message => true, event => {
+                .arrayMergeItem('thread.messages', () => true, event => {
                     if (state.invalidationStatus === InvalidationStatus.UPDATING)
                         return getUpdatedReadBy(event, thread)
-                    else
-                        return getInitialReadBy(event)
+
+                    return getInitialReadBy(event)
                 })
                 .set('invalidationStatus', InvalidationStatus.FETCHED)
                 .value()
@@ -92,9 +91,9 @@ function getInitialReadBy(event) {
                 initialIsRead: event.payload.isRead
             }
         }
-    } else {
-        return {}
     }
+
+    return {}
 }
 
 function getUpdatedReadBy(event, thread) {
@@ -104,12 +103,12 @@ function getUpdatedReadBy(event, thread) {
         return {payload: {
             initialIsRead: existingMessage.payload.initialIsRead
         }}
-    } else {
-        return getInitialReadBy(event)
     }
+
+    return getInitialReadBy(event)
 }
 
-module.exports = (state = initialState, action) => {
+export default (state = initialState, action) => {
     switch (action.type) {
         case EmailPageActionTypes.REQUIRE_UPDATE:
         case EventActionTypes.RECONNECTED:

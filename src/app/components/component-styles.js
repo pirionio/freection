@@ -1,6 +1,6 @@
-const styleVars = require('./style-vars')
+import styleVars from './style-vars'
 
-module.exports = {
+export default {
     sendButtonContainer: {
         width: 88
     },

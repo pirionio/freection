@@ -1,6 +1,5 @@
-const React = require('react')
-const {PropTypes, Component} = React
-const merge = require('lodash/merge')
+import React, {PropTypes, Component} from 'react'
+import merge from 'lodash/merge'
 
 class Flexbox extends Component {
     render() {
@@ -46,4 +45,4 @@ Flexbox.defaultProps = {
     basis: 'auto'
 }
 
-module.exports = Flexbox
+export default Flexbox

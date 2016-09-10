@@ -1,18 +1,14 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const {Field} = require('react-redux-form')
-const classAutobind = require('class-autobind').default
-const useSheet = require('react-jss').default
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import {Field} from 'react-redux-form'
+import classAutobind from 'class-autobind'
+import useSheet from 'react-jss'
+import isNil from 'lodash/isNil'
 
-const isNil = require('lodash/isNil')
-const find = require('lodash/find')
-
-const Flexbox = require('../UI/Flexbox')
-const To = require('./To')
-const styleVars = require('../style-vars')
-
-const MessageBoxActions = require('../../actions/message-box-actions')
+import Flexbox from '../UI/Flexbox'
+import To from './To'
+import styleVars from '../style-vars'
+import * as MessageBoxActions from '../../actions/message-box-actions'
 
 class MessageBox extends Component {
     constructor(props) {
@@ -86,7 +82,7 @@ class MessageBox extends Component {
                    containerClassName={classes.messageTo}
                    inputClassName={classes.textField}
                    tabIndex={3}
-                   inputRef={ref =>this.messageTo = ref}
+                   inputRef={ref => this.messageTo = ref}
                    onFocus={this.focusOnTo} />
     }
 
@@ -172,4 +168,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = useSheet(connect(mapStateToProps)(MessageBox), style)
+export default useSheet(connect(mapStateToProps)(MessageBox), style)

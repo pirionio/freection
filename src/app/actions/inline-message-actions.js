@@ -1,8 +1,8 @@
-const {actions} = require('react-redux-form')
+import {actions} from 'react-redux-form'
 
-const GlassPaneActions = require('../actions/glass-pane-actions')
+import * as GlassPaneActions from '../actions/glass-pane-actions'
 
-function show(action) {
+export function show(action) {
     return dispatch => {
         dispatch(actions.change('inlineMessage', {show: true, action}))
         dispatch(GlassPaneActions.show(() => {
@@ -11,21 +11,17 @@ function show(action) {
     }
 }
 
-function close() {
+export function close() {
     return dispatch => {
         dispatch(actions.reset('inlineMessage'))
         dispatch(GlassPaneActions.hide())
     }
 }
 
-function messageSent(inlineMessage) {
+export function messageSent(inlineMessage) {
     return dispatch => {
         inlineMessage.action(inlineMessage.text)
         dispatch(actions.reset('inlineMessage'))
         dispatch(GlassPaneActions.hide())
     }
 }
-
-module.exports.show = show
-module.exports.close = close
-module.exports.messageSent = messageSent

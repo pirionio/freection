@@ -1,6 +1,6 @@
-const EventActionTypes = require('../actions/types/event-action-types')
-const ThingCommandActionTypes = require('../actions/types/thing-command-action-types')
-const immutable = require('../util/immutable')
+import EventActionTypes from '../actions/types/event-action-types'
+import ThingCommandActionTypes from '../actions/types/thing-command-action-types'
+import immutable from '../util/immutable'
 
 function newCommentReceived(state, action) {
     return immutable(state)
@@ -45,7 +45,7 @@ function statusChanged(state, action) {
         .value()
 }
 
-module.exports = (state, action) => {
+export default (state, action) => {
     switch (action.type) {
         case EventActionTypes.COMMENT_CREATED:
             return newCommentReceived(state, action)

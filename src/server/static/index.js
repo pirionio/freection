@@ -9,18 +9,12 @@ import logger from '../shared/utils/logger'
 import login from './login'
 import * as ThingService from '../shared/application/thing-service'
 import * as ContactService from '../shared/application/contact-service'
-
-/* eslint-disable import/no-commonjs */
-
-// TODO: change to import one when changing app to import as well
-const reducer = require('../../app/reducers')
-const WhatsNewActions = require('../../app/actions/whats-new-actions')
-const ToDoActions = require('../../app/actions/to-do-actions')
-const FollowUpActions = require('../../app/actions/follow-up-actions')
-const AuthActions = require('../../app/actions/auth-actions')
-const ContactsActions = require('../../app/actions/contacts-actions')
-
-/* eslint-enable import/no-commonjs */
+import reducer from '../../app/reducers'
+import * as WhatsNewActions from '../../app/actions/whats-new-actions'
+import * as ToDoActions from '../../app/actions/to-do-actions'
+import * as FollowUpActions from '../../app/actions/follow-up-actions'
+import * as AuthActions from '../../app/actions/auth-actions'
+import * as ContactsActions from '../../app/actions/contacts-actions'
 
 export function configure(app) {
     app.set('views', path.join(__dirname, 'views'))

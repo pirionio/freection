@@ -1,18 +1,16 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const useSheet = require('react-jss').default
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import useSheet from 'react-jss'
 
 import SharedConstants from '../../../common/shared-constants'
 import EventTypes from '../../../common/enums/event-types'
-const ThingPageActions = require('../../actions/thing-page-actions')
-
-const {PreviewItem, PreviewItemText, PreviewItemStatus, PreviewItemActions} = require('../Preview/PreviewItem')
-const {CommentPreviewText, PingPreviewText} = require('../Preview/Thing')
-const NotificationActionsBar = require('./NotificationActionsBar')
-const TextSeparator = require('../UI/TextSeparator')
-const Flexbox = require('../UI/Flexbox')
-const styleVars = require('../style-vars')
+import * as ThingPageActions from '../../actions/thing-page-actions'
+import PreviewItem, { PreviewItemStatus, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
+import {CommentPreviewText, PingPreviewText} from '../Preview/Thing'
+import NotificationActionsBar from './NotificationActionsBar'
+import TextSeparator from '../UI/TextSeparator'
+import Flexbox from '../UI/Flexbox'
+import styleVars from '../style-vars'
 
 class NotificationPreviewItem extends Component {
 
@@ -120,4 +118,4 @@ NotificationPreviewItem.propTypes = {
     notification: PropTypes.object.isRequired
 }
 
-module.exports = useSheet(connect()(NotificationPreviewItem), style)
+export default useSheet(connect()(NotificationPreviewItem), style)

@@ -1,3 +1,1 @@
-const EventActions = require('./generated/event-actions')
-
-module.exports = EventActions
+export * from './generated/event-actions'

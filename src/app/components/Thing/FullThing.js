@@ -1,25 +1,20 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const classAutobind = require('class-autobind').default
-const DocumentTitle = require('react-document-title')
-const {goBack} = require('react-router-redux')
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import classAutobind from 'class-autobind'
+import DocumentTitle from 'react-document-title'
+import {goBack} from 'react-router-redux'
+import isEmpty from 'lodash/isEmpty'
+import reject from 'lodash/reject'
 
-const isEmpty = require('lodash/isEmpty')
-const reject = require('lodash/reject')
-
-const ThingPageActionsBar = require('./ThingPageActionsBar')
-const MessagePanel = require('../MessageBox/MessagePanel')
-const {FullItem, FullItemSubject, FullItemStatus, FullItemActions, FullItemBox} = require('../Full/FullItem')
-const Flexbox = require('../UI/Flexbox')
-const styleVars = require('../style-vars')
-
-const ThingPageActions = require('../../actions/thing-page-actions')
-const ThingHelper = require('../../helpers/thing-helper')
-
+import ThingPageActionsBar from './ThingPageActionsBar'
+import MessagePanel from '../MessageBox/MessagePanel'
+import FullItem, {FullItemSubject, FullItemStatus, FullItemActions, FullItemBox} from '../Full/FullItem'
+import styleVars from '../style-vars'
+import * as ThingPageActions from '../../actions/thing-page-actions'
+import * as ThingHelper from '../../helpers/thing-helper'
 import EventTypes from '../../../common/enums/event-types'
 import ThingStatus from '../../../common/enums/thing-status'
-const {InvalidationStatus} = require('../../constants')
+import {InvalidationStatus} from '../../constants'
 
 class FullThing extends Component {
     constructor(props) {
@@ -55,8 +50,8 @@ class FullThing extends Component {
 
         if (unreadComments.length > 0)
             return `Freection (${unreadComments.length}) - ${thing.subject}`
-        else
-            return `Freection - ${thing.subject}`
+
+        return `Freection - ${thing.subject}`
     }
 
     getAllComments() {
@@ -144,4 +139,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(FullThing)
+export default connect(mapStateToProps)(FullThing)

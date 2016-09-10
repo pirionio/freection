@@ -1,14 +1,12 @@
-const React = require('react')
-const {Component} = React
-const classAutobind = require('class-autobind').default
-const {connect} = require('react-redux')
-const useSheet = require('react-jss').default
+import React, {Component} from 'react'
+import classAutobind from 'class-autobind'
+import {connect} from 'react-redux'
+import useSheet from 'react-jss'
 
-const MessageBoxActions = require('../../actions/message-box-actions')
+import * as MessageBoxActions from '../../actions/message-box-actions'
 import MessageTypes from '../../../common/enums/message-types'
-
-const Flexbox = require('../UI/Flexbox')
-const styleVars = require('../style-vars')
+import Flexbox from '../UI/Flexbox'
+import styleVars from '../style-vars'
 
 class CollapsedMessageBox extends Component {
     constructor(props) {
@@ -50,4 +48,4 @@ const style = {
     }
 }
 
-module.exports = useSheet(connect()(CollapsedMessageBox), style)
+export default useSheet(connect()(CollapsedMessageBox), style)

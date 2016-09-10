@@ -7,6 +7,7 @@ module.exports = {
         },
         {
             name: 'fetchFollowUps',
+            private: true,
             type: 'get',
             path: '/api/things/followups',
             completeParams: {

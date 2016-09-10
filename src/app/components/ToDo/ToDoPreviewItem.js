@@ -1,15 +1,13 @@
-const React = require('react')
-const {PropTypes, Component} = React
-const {connect} = require('react-redux')
+import React,{PropTypes, Component} from 'react'
+import {connect} from 'react-redux'
 
 import ThingStatus from '../../../common/enums/thing-status'
-const ThingPageActions = require('../../actions/thing-page-actions')
-const ThingHelper = require('../../helpers/thing-helper')
-
-const {PreviewItem, PreviewItemUser, PreviewItemText, PreviewItemActions} = require('../Preview/PreviewItem')
-const {ThingPreviewText}= require('../Preview/Thing')
-const ToDoActionsBar = require('./ToDoActionsBar')
-const styleVars = require('../style-vars')
+import * as ThingPageActions from '../../actions/thing-page-actions'
+import * as ThingHelper from '../../helpers/thing-helper'
+import PreviewItem, { PreviewItemUser, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
+import {ThingPreviewText} from '../Preview/Thing'
+import ToDoActionsBar from './ToDoActionsBar'
+import styleVars from '../style-vars'
 
 class TodoPreviewItem extends Component {
     getCircleColor() {
@@ -61,4 +59,4 @@ TodoPreviewItem.propTypes = {
     thing: PropTypes.object.isRequired
 }
 
-module.exports = connect()(TodoPreviewItem)
+export default connect()(TodoPreviewItem)

@@ -1,11 +1,11 @@
-const GlassPaneActionTypes = require('../actions/types/glass-pane-action-types')
+import GlassPaneActionTypes from '../actions/types/glass-pane-action-types'
 
 const initialState = {
     show: false,
     backdropCallback: null
 }
 
-module.exports = (state = initialState, action) => {
+export default (state = initialState, action) => {
     switch (action.type) {
         case GlassPaneActionTypes.SHOW:
             return {

@@ -1,12 +1,12 @@
-const React = require('react')
+import React from 'react'
 
-const ThingCommandActions = require('../../actions/thing-command-actions')
-const EmailCommandActions = require('../../actions/email-command-actions')
-const Action = require('./Action')
+import * as ThingCommandActions from '../../actions/thing-command-actions'
+import * as EmailCommandActions from '../../actions/email-command-actions'
+import Action from './Action'
 import ThingStatus from '../../../common/enums/thing-status'
 import EventTypes from '../../../common/enums/event-types'
 
-function DoAction(thing, currentUser, disabled) {
+export function DoAction(thing, currentUser, disabled) {
     return {
         component: <Action label="Do" doFunc={ThingCommandActions.doThing} item={thing} disabled={disabled} key="action-Do" />,
         show: currentUser && currentUser.id === thing.to.id &&
@@ -14,7 +14,7 @@ function DoAction(thing, currentUser, disabled) {
     }
 }
 
-function DoneAction(thing, currentUser, options={}) {
+export function DoneAction(thing, currentUser, options={}) {
     return {
         component: <Action label="Done" doFunc={ThingCommandActions.markAsDone} preDoFunc={options.preDoFunc}
                            item={thing} disabled={options.disabled} key="action-Done" />,
@@ -23,7 +23,7 @@ function DoneAction(thing, currentUser, options={}) {
     }
 }
 
-function DismissAction(thing, currentUser, options={}) {
+export function DismissAction(thing, currentUser, options={}) {
     return {
         component: <Action label="Dismiss" doFunc={ThingCommandActions.dismiss} preDoFunc={options.preDoFunc}
                            item={thing} disabled={options.disabled} key="action-Dismiss" />,
@@ -33,7 +33,7 @@ function DismissAction(thing, currentUser, options={}) {
     }
 }
 
-function CloseAction(thing, currentUser, options={}) {
+export function CloseAction(thing, currentUser, options={}) {
     return {
         component: <Action label="Close" doFunc={ThingCommandActions.close} preDoFunc={options.preDoFunc}
                            item={thing} disabled={options.disabled} key="action-Close" />,
@@ -42,7 +42,7 @@ function CloseAction(thing, currentUser, options={}) {
     }
 }
 
-function SendBackAction(thing, currentUser, options={}) {
+export function SendBackAction(thing, currentUser, options={}) {
     return {
         component: <Action label="SendBack" doFunc={ThingCommandActions.sendBack} preDoFunc={options.preDoFunc}
                            item={thing} disabled={options.disabled} key="action-SendBack" />,
@@ -51,7 +51,7 @@ function SendBackAction(thing, currentUser, options={}) {
     }
 }
 
-function PingAction(thing, currentUser, disabled) {
+export function PingAction(thing, currentUser, disabled) {
     return {
         component: <Action label="Ping" doFunc={ThingCommandActions.ping} item={thing} disabled={disabled} key="action-Ping" />,
         show: currentUser.id === thing.creator.id &&
@@ -60,7 +60,7 @@ function PingAction(thing, currentUser, disabled) {
     }
 }
 
-function PongAction(thing, currentUser, options={}) {
+export function PongAction(thing, currentUser, options={}) {
     return {
         component: <Action label="Pong" doFunc={ThingCommandActions.pong} item={thing} preDoFunc={options.preDoFunc}
                            disabled={options.disabled} key="action-Pong" />,
@@ -70,60 +70,44 @@ function PongAction(thing, currentUser, options={}) {
     }
 }
 
-function DiscardCommentsAction(notification) {
+export function DiscardCommentsAction(notification) {
     return {
         component: <Action label="Discard" doFunc={ThingCommandActions.discardComments} item={notification} key="action-Discard" />,
         show: notification.eventType.key === EventTypes.COMMENT.key
     }
 }
 
-function DiscardPingAction(notification) {
+export function DiscardPingAction(notification) {
     return {
         component: <Action label="Discard" doFunc={ThingCommandActions.discardPing} item={notification} key="action-Discard" />,
         show: notification.eventType.key === EventTypes.PING.key
     }
 }
 
-function DiscardPongAction(notification) {
+export function DiscardPongAction(notification) {
     return {
         component: <Action label="Discard" doFunc={ThingCommandActions.discardPong} item={notification} key="action-Discard" />,
         show: notification.eventType.key === EventTypes.PONG.key
     }
 }
 
-function CloseAckAction(notification) {
+export function CloseAckAction(notification) {
     return {
         component: <Action label="Stop doing" doFunc={ThingCommandActions.closeAck} item={notification.thing} key="action-StopDoing" />,
         show: notification.eventType.key === EventTypes.CLOSED.key
     }
 }
 
-function DiscardEmails(emailUids) {
+export function DiscardEmails(emailUids) {
     return {
         component: <Action label="Discard" doFunc={EmailCommandActions.markAsRead} item={emailUids} key="action-Discard" />,
         show: true
     }
 }
 
-function DoEmail(email, currentUser) {
+export function DoEmail(email, currentUser) {
     return {
         component: <Action label="Do" item={email.entityId} doFunc={EmailCommandActions.doEmail} key="action-do-email" />,
         show: email.creator.id !== currentUser.email
     }
-}
-
-module.exports = {
-    DoAction,
-    DoneAction,
-    DismissAction,
-    CloseAction,
-    PingAction,
-    PongAction,
-    SendBackAction,
-    DiscardCommentsAction,
-    DiscardPingAction,
-    DiscardPongAction,
-    CloseAckAction,
-    DiscardEmails,
-    DoEmail
 }

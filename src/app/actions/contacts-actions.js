@@ -1,3 +1,1 @@
-const ContactsActions = require('./generated/contacts-actions')
-
-module.exports = ContactsActions
+export * from './generated/contacts-actions'

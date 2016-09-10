@@ -1,14 +1,10 @@
-const ContactsActionsTypes = require('../types/contacts-action-types')
-const {ActionStatus} = require('../../constants')
-const ResourceUtil = require('../../util/resource-util')
+import ContactsActionsTypes from '../types/contacts-action-types'
+import {ActionStatus} from '../../constants'
+import * as ResourceUtil from '../../util/resource-util'
 
-function setState(contacts) {
+export function setState(contacts) {
     return {
         type: ContactsActionsTypes.SET_STATE,
         contacts
     }
-}
-
-module.exports = {
-    setState
 }

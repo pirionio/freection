@@ -1,5 +1,5 @@
 src/app/actions/generated/*.js
+src/app/actions/models/*.js
 scripts/*.js
 config/*.js
-src/app/**
 dist/

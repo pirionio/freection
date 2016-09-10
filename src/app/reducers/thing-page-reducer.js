@@ -1,15 +1,14 @@
-const isUndefined = require('lodash/isUndefined')
-const head = require('lodash/head')
+import isUndefined from 'lodash/isUndefined'
+import head from 'lodash/head'
 
-const EventActionTypes = require('../actions/types/event-action-types')
-const ThingPageActionTypes = require('../actions/types/thing-page-action-types')
+import EventActionTypes from '../actions/types/event-action-types'
+import ThingPageActionTypes from '../actions/types/thing-page-action-types'
 import ThingStatus from '../../common/enums/thing-status.js'
-const ThingCommandActionTypes = require('../actions/types/thing-command-action-types')
+import  ThingCommandActionTypes from '../actions/types/thing-command-action-types'
 import SharedConstants from '../../common/shared-constants'
-const {ActionStatus, InvalidationStatus} = require('../constants')
-const thingReducer = require('./thing-reducer')
-
-const immutable = require('../util/immutable')
+import {ActionStatus, InvalidationStatus} from '../constants'
+import thingReducer from './thing-reducer'
+import immutable from '../util/immutable'
 
 // TODO Problems with the ongoingAction mechanism:
 // 1) If navigating out of this state, the ongoingAction status is gone.
@@ -30,9 +29,9 @@ function getInitialReadBy(event) {
                 initialIsRead: event.payload.isRead
             }
         }
-    } else {
-        return {}
     }
+
+    return {}
 }
 
 function getUpdatedReadBy(event, thing) {
@@ -42,12 +41,12 @@ function getUpdatedReadBy(event, thing) {
         return {payload: {
             initialIsRead: existingThing.payload.initialIsRead
         }}
-    } else {
-        return getInitialReadBy(event)
     }
+
+    return getInitialReadBy(event)
 }
 
-function reconnected(state, action) {
+function reconnected(state) {
     if (state.invalidationStatus === InvalidationStatus.FETCHED) {
         return immutable(state)
             .set('invalidationStatus', InvalidationStatus.REQUIRE_UPDATE)
@@ -76,8 +75,8 @@ function get(state, action) {
                 .arrayMergeItem('thing.events', event => SharedConstants.MESSAGE_TYPED_EVENTS.includes(event.eventType.key), event => {
                     if (state.invalidationStatus === InvalidationStatus.UPDATING)
                         return getUpdatedReadBy(event, thing)
-                    else
-                        return getInitialReadBy(event)
+
+                    return getInitialReadBy(event)
                 })
                 .set('invalidationStatus', InvalidationStatus.FETCHED)
                 .value()
@@ -216,7 +215,7 @@ function asyncStatusOperation(state, action, status) {
     }
 }
 
-module.exports = (state = initialState, action) => {
+export default (state = initialState, action) => {
     switch (action.type) {
         case EventActionTypes.RECONNECTED:
             return reconnected(state, action)

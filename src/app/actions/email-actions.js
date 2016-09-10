@@ -1,16 +1,14 @@
-const EmailActions = require('./generated/email-actions')
-const {InvalidationStatus} = require('../constants')
+import {_fetchUnread} from './generated/email-actions'
+import {InvalidationStatus} from '../constants'
 
-const fetchUnreadActions = EmailActions.fetchUnread
-
-function fetchUnread() {
+export function fetchUnread() {
     return (dispatch, getState) => {
         const {unreadEmails} = getState()
         if (unreadEmails.invalidationStatus === InvalidationStatus.INVALIDATED) {
-            dispatch(fetchUnreadActions())
+            dispatch(_fetchUnread())
         }
     }
 }
 
-module.exports = EmailActions
-module.exports.fetchUnread = fetchUnread
+
+export * from './generated/email-actions'

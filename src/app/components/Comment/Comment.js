@@ -1,20 +1,16 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const dateFns = require('date-fns')
-const VisibilitySensor = require('react-visibility-sensor')
-const {connect} = require('react-redux')
-const classnames = require('classnames')
-const classAutobind = require('class-autobind').default
-const useSheet = require('react-jss').default
+import React, {Component, PropTypes} from 'react'
+import dateFns from 'date-fns'
+import VisibilitySensor from 'react-visibility-sensor'
+import {connect} from 'react-redux'
+import classAutobind from 'class-autobind'
+import useSheet from 'react-jss'
 
-const HtmlUtil = require('../../util/html-util')
+import * as HtmlUtil from '../../util/html-util'
 import EventTypes from '../../../common/enums/event-types'
-const ThingCommandActions = require('../../actions/thing-command-actions')
-
-const Flexbox = require('../UI/Flexbox')
-const Color = require('color')
-const TextTruncate = require('../UI/TextTruncate')
-const styleVars = require('../style-vars')
+import * as ThingCommandActions from '../../actions/thing-command-actions'
+import Flexbox from '../UI/Flexbox'
+import TextTruncate from '../UI/TextTruncate'
+import styleVars from '../style-vars'
 
 class Comment extends Component {
     constructor(props) {
@@ -123,10 +119,10 @@ Comment.propTypes = {
     currentUser: PropTypes.object.isRequired
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         currentUser: state.auth
     }
 }
 
-module.exports = useSheet(connect(mapStateToProps)(Comment), style)
+export default useSheet(connect(mapStateToProps)(Comment), style)

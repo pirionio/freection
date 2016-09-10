@@ -1,9 +1,8 @@
-const React = require('react')
-const {Component} = React
-const useSheet = require('react-jss').default
+import React, {Component} from 'react'
+import useSheet from 'react-jss'
 
-const Link = require('../UI/Link')
-const Flexbox = require('../UI/Flexbox')
+import Link from '../UI/Link'
+import Flexbox from '../UI/Flexbox'
 
 class WhatsNew extends Component {
     render() {
@@ -49,4 +48,4 @@ const style = {
     }
 }
 
-module.exports = useSheet(WhatsNew, style)
+export default useSheet(WhatsNew, style)

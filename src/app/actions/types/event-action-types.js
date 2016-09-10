@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     CREATED: 'EVENT_CREATED',
     ACCEPTED: 'EVENT_ACCEPTED',
     MARKED_AS_DONE: 'EVENT_MARKED_AS_DONE',

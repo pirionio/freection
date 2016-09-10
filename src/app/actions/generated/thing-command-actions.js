@@ -1,9 +1,9 @@
-const ThingCommandActionsTypes = require('../types/thing-command-action-types')
-const {ActionStatus} = require('../../constants')
-const ResourceUtil = require('../../util/resource-util')
-const EventTypes = require('../../../common/enums/event-types')
+import ThingCommandActionsTypes from '../types/thing-command-action-types'
+import {ActionStatus} from '../../constants'
+import * as ResourceUtil from '../../util/resource-util'
+import EventTypes from '../../../common/enums/event-types'
 
-function comment(thingId, commentText) {
+export function comment(thingId, commentText) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.COMMENT, 
@@ -29,7 +29,7 @@ function comment(thingId, commentText) {
     }
 }
 
-function newThing(thing) {
+export function newThing(thing) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.NEW_THING, 
@@ -54,7 +54,7 @@ function newThing(thing) {
     }
 }
 
-function ping(thing) {
+export function ping(thing) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.PING, 
@@ -76,7 +76,7 @@ function ping(thing) {
     }
 }
 
-function pong(thing, messageText) {
+export function pong(thing, messageText) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.PONG, 
@@ -101,7 +101,7 @@ function pong(thing, messageText) {
     }
 }
 
-function markCommentAsRead(comment) {
+export function markCommentAsRead(comment) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.MARK_COMMENT_AS_READ, 
@@ -122,7 +122,7 @@ function markCommentAsRead(comment) {
     }
 }
 
-function doThing(thing) {
+export function doThing(thing) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.DO_THING, 
@@ -143,7 +143,7 @@ function doThing(thing) {
     }
 }
 
-function closeAck(thing) {
+export function closeAck(thing) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.CLOSE_ACK, 
@@ -164,7 +164,7 @@ function closeAck(thing) {
     }
 }
 
-function close(thing, messageText) {
+export function close(thing, messageText) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.CLOSE, 
@@ -190,7 +190,7 @@ function close(thing, messageText) {
     }
 }
 
-function dismiss(thing, messageText) {
+export function dismiss(thing, messageText) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.DISMISS, 
@@ -216,7 +216,7 @@ function dismiss(thing, messageText) {
     }
 }
 
-function markAsDone(thing, messageText) {
+export function markAsDone(thing, messageText) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.MARK_AS_DONE, 
@@ -242,7 +242,7 @@ function markAsDone(thing, messageText) {
     }
 }
 
-function discardComments(notification) {
+export function discardComments(notification) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.DISCARD_COMMENTS, 
@@ -263,7 +263,7 @@ function discardComments(notification) {
     }
 }
 
-function discardPing(notification) {
+export function discardPing(notification) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.DISCARD_PING, 
@@ -284,7 +284,7 @@ function discardPing(notification) {
     }
 }
 
-function discardPong(notification) {
+export function discardPong(notification) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.DISCARD_PONG, 
@@ -305,7 +305,7 @@ function discardPong(notification) {
     }
 }
 
-function sendBack(thing, messageText) {
+export function sendBack(thing, messageText) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.SEND_BACK, 
@@ -329,21 +329,4 @@ function sendBack(thing, messageText) {
                 messageText
             }))
     }
-}
-
-module.exports = {
-    comment,
-    newThing,
-    ping,
-    pong,
-    markCommentAsRead,
-    doThing,
-    closeAck,
-    close,
-    dismiss,
-    markAsDone,
-    discardComments,
-    discardPing,
-    discardPong,
-    sendBack
 }

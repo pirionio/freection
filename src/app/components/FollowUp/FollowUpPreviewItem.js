@@ -1,15 +1,13 @@
-const React = require('react')
-const {PropTypes, Component} = React
-const {connect} = require('react-redux')
+import React, {PropTypes, Component} from 'react'
+import {connect} from 'react-redux'
 
-const ThingPageActions = require('../../actions/thing-page-actions')
+import * as ThingPageActions from '../../actions/thing-page-actions'
 import ThingStatus from '../../../common/enums/thing-status'
-const ThingHelper = require('../../helpers/thing-helper')
-
-const {PreviewItem, PreviewItemStatus, PreviewItemText, PreviewItemActions} = require('../Preview/PreviewItem')
-const {ThingPreviewText}= require('../Preview/Thing')
-const FollowUpActionsBar = require('./FollowUpActionsBar')
-const styleVars = require('../style-vars')
+import * as ThingHelper from '../../helpers/thing-helper'
+import PreviewItem, { PreviewItemStatus, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
+import {ThingPreviewText} from '../Preview/Thing'
+import FollowUpActionsBar from './FollowUpActionsBar'
+import styleVars from '../style-vars'
 
 class FollowUpPreviewItem extends Component {
     getCircleColor() {
@@ -80,4 +78,4 @@ FollowUpPreviewItem.propTypes = {
     thing: PropTypes.object.isRequired
 }
 
-module.exports = connect()(FollowUpPreviewItem)
+export default connect()(FollowUpPreviewItem)

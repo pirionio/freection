@@ -1,15 +1,15 @@
-const ActionStatus = {
+export const ActionStatus = {
     START: 'START',
     COMPLETE: 'COMPLETE',
     ERROR: 'ERROR'
 }
 
-const GeneralConstants = {
+export const GeneralConstants = {
     FETCHING_DELAY_MILLIS: 1000,
     ONGOING_ACTION_DELAY_MILLIS: 500
 }
 
-const InvalidationStatus = {
+export const InvalidationStatus = {
     INVALIDATED: 'INVALIDATED',
     FETCHING: 'FETCHING',
     FETCHED: 'FETCHED',
@@ -17,16 +17,9 @@ const InvalidationStatus = {
     UPDATING: 'UPDATING'
 }
 
-const PreviewDateGroups = {
+export const PreviewDateGroups = {
     TODAY: 'TODAY',
     YESTERDAY: 'YESTERDAY',
     LAST_WEEK: 'LAST WEEK',
     OLDER: 'OLDER'
-}
-
-module.exports = {
-    ActionStatus,
-    GeneralConstants,
-    InvalidationStatus,
-    PreviewDateGroups
 }

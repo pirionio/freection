@@ -1,11 +1,9 @@
-const React = require('react')
-const {Component} = React
-const useSheet = require('react-jss').default
+import React, {Component} from 'react'
+import useSheet from 'react-jss'
 
-const Flexbox = require('../UI/Flexbox')
-const styleVars = require('../style-vars')
-
-const Logo = require('../../static/logo-text-white.png')
+import Flexbox from '../UI/Flexbox'
+import styleVars from '../style-vars'
+import Logo from '../../static/logo-text-white.png'
 
 class LoginTopBar extends Component {
     constructor(props) {
@@ -35,4 +33,4 @@ const style = {
     }
 }
 
-module.exports = useSheet(LoginTopBar, style)
+export default useSheet(LoginTopBar, style)

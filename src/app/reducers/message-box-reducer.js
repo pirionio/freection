@@ -1,4 +1,4 @@
-const {modelReducer, formReducer} = require('react-redux-form')
+import {modelReducer, formReducer} from 'react-redux-form'
 
 const initialState = {
     id: null,
@@ -14,7 +14,5 @@ const initialState = {
     }
 }
 
-module.exports = {
-    messageBox: modelReducer('messageBox', initialState),
-    messageBoxForm: formReducer('messageBox', initialState)
-}
+export const messageBox = modelReducer('messageBox', initialState)
+export const messageBoxForm = formReducer('messageBox', initialState)

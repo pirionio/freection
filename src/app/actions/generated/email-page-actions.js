@@ -1,27 +1,27 @@
-const EmailPageActionsTypes = require('../types/email-page-action-types')
-const {ActionStatus} = require('../../constants')
-const ResourceUtil = require('../../util/resource-util')
+import EmailPageActionsTypes from '../types/email-page-action-types'
+import {ActionStatus} from '../../constants'
+import * as ResourceUtil from '../../util/resource-util'
 
-function showEmailPage(emailThread) {
+export function _showEmailPage(emailThread) {
     return {
         type: EmailPageActionsTypes.SHOW_EMAIL_PAGE,
         emailThread
     }
 }
 
-function hideEmailPage() {
+export function _hideEmailPage() {
     return {
         type: EmailPageActionsTypes.HIDE_EMAIL_PAGE        
     }
 }
 
-function requireUpdate() {
+export function requireUpdate() {
     return {
         type: EmailPageActionsTypes.REQUIRE_UPDATE        
     }
 }
 
-function getEmail(emailThreadId) {
+export function _getEmail(emailThreadId) {
     return dispatch => {
         dispatch({
             type: EmailPageActionsTypes.GET_EMAIL, 
@@ -40,11 +40,4 @@ function getEmail(emailThreadId) {
                 emailThreadId
             }))
     }
-}
-
-module.exports = {
-    showEmailPage,
-    hideEmailPage,
-    requireUpdate,
-    getEmail
 }

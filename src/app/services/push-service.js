@@ -1,16 +1,14 @@
-const SocketUtil = require('../util/socket-util')
-
-const WhatsNewActions = require('../actions/whats-new-actions')
-const ToDoActions = require('../actions/to-do-actions')
-const FollowUpActions = require('../actions/follow-up-actions')
-const EventActions = require('../actions/event-actions')
-const EmailPageActions = require('../actions/email-page-actions')
+import {createSocket} from '../util/socket-util'
+import * as WhatsNewActions from '../actions/whats-new-actions'
+import * as ToDoActions from '../actions/to-do-actions'
+import * as  FollowUpActions from '../actions/follow-up-actions'
+import * as EventActions from '../actions/event-actions'
+import * as EmailPageActions from '../actions/email-page-actions'
 import EventTypes from '../../common/enums/event-types'
+import EmailLifecycleService from './email-lifecycle-service'
 
-const EmailLifecycleService = require('./email-lifecycle-service')
-
-function listenToUpdates(pushToken, dispatch) {
-    const socket = SocketUtil.createSocket(pushToken)
+export function listenToUpdates(pushToken, dispatch) {
+    const socket = createSocket(pushToken)
     
     socket.on('new-event', event => {
         if (event.showNew)
@@ -72,5 +70,3 @@ function listenToUpdates(pushToken, dispatch) {
         dispatch(FollowUpActions.fetchFollowUps())
     })
 }
-
-module.exports = {listenToUpdates}

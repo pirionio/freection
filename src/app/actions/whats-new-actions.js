@@ -1,17 +1,14 @@
-const WhatsNewActions = require('./generated/whats-new-actions')
-const {InvalidationStatus} = require('../constants')
+import {_fetchWhatsNew} from './generated/whats-new-actions'
+import {InvalidationStatus} from '../constants'
 
-const fetchWhatsNewActions = WhatsNewActions.fetchWhatsNew
-
-const fetchWhatsNew = () => {
+export const fetchWhatsNew = () => {
     return (dispatch, getState) => {
         const {whatsNew} = getState()
         if (whatsNew.invalidationStatus === InvalidationStatus.INVALIDATED ||
             whatsNew.invalidationStatus === InvalidationStatus.REQUIRE_UPDATE) {
-            dispatch(fetchWhatsNewActions())
+            dispatch(_fetchWhatsNew())
         }
     }
 }
 
-module.exports = WhatsNewActions
-module.exports.fetchWhatsNew = fetchWhatsNew
+export * from './generated/whats-new-actions'

@@ -1,5 +1,5 @@
-const EmailActions = require('../actions/email-actions')
-const ResourceUtil = require('../util/resource-util')
+import * as EmailActions from '../actions/email-actions'
+import * as ResourceUtil from '../util/resource-util'
 
 class EmailLifecycleService {
     constructor() {
@@ -41,4 +41,4 @@ class EmailLifecycleService {
     }
 }
 
-module.exports = new EmailLifecycleService()
+export default new EmailLifecycleService()

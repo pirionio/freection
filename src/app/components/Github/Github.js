@@ -1,17 +1,15 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const classAutobind = require('class-autobind').default
-const useSheet = require('react-jss').default
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import classAutobind from 'class-autobind'
+import useSheet from 'react-jss'
+import Icon from 'react-fontawesome'
 
-const GithubActions = require('../../actions/github-actions')
-const {InvalidationStatus} = require('../../constants')
-const Repository = require('./Repository')
-
-const Flexbox = require('../UI/Flexbox')
-const Scrollable = require('../Scrollable/Scrollable')
-const Icon = require('react-fontawesome')
-const styleVars = require('../style-vars')
+import * as GithubActions from '../../actions/github-actions'
+import {InvalidationStatus} from '../../constants'
+import Repository from './Repository'
+import Flexbox from '../UI/Flexbox'
+import Scrollable from '../Scrollable/Scrollable'
+import styleVars from '../style-vars'
 
 class Github extends Component {
     constructor(props) {
@@ -24,7 +22,6 @@ class Github extends Component {
     }
 
     getFetching() {
-        const {sheet: {classes}} = this.props
         return (
             <div>
                 Fetching github data
@@ -33,8 +30,6 @@ class Github extends Component {
     }
 
     getNotActive() {
-        const {sheet: {classes}} = this.props
-
         return (
             <Flexbox name="github-not-active">
                 <span>You are not integrated with github yet, </span>
@@ -131,4 +126,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = useSheet(connect(mapStateToProps)(Github), style)
+export default useSheet(connect(mapStateToProps)(Github), style)

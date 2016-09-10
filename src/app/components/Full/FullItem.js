@@ -1,23 +1,21 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {getChildOfType, createSlots} = require('../../util/component-util')
-const classAutobind = require('class-autobind').default
-const clickOutside = require('react-click-outside')
-const Delay = require('react-delay')
-const Icon = require('react-fontawesome')
-const useSheet = require('react-jss').default
-const classNames = require('classnames')
+import React, {Component, PropTypes} from 'react'
+import classAutobind from 'class-autobind'
+import clickOutside from 'react-click-outside'
+import Delay from 'react-delay'
+import Icon from 'react-fontawesome'
+import useSheet from 'react-jss'
+import classNames from 'classnames'
 
-const Flexbox = require('../UI/Flexbox')
-const Button = require('../UI/Button')
-const CommentList = require('../Comment/CommentList')
-const Ellipse = require('../UI/Ellipse')
-const TextTruncate = require('../UI/TextTruncate')
-const styleVars = require('../style-vars')
+import {getChildOfType, createSlots} from '../../util/component-util'
+import Flexbox from '../UI/Flexbox'
+import CommentList from '../Comment/CommentList'
+import Ellipse from '../UI/Ellipse'
+import TextTruncate from '../UI/TextTruncate'
+import styleVars from '../style-vars'
+import {GeneralConstants} from '../../constants'
 
-const {GeneralConstants} = require('../../constants')
-
-const slots = createSlots('FullItemSubject', 'FullItemStatus', 'FullItemActions', 'FullItemBox')
+const {FullItemSubject, FullItemStatus, FullItemActions, FullItemBox} =
+    createSlots('FullItemSubject', 'FullItemStatus', 'FullItemActions', 'FullItemBox')
 
 class FullItem extends  Component {
     constructor(props) {
@@ -33,7 +31,7 @@ class FullItem extends  Component {
         this.initialPath = window.location.pathname
     }
 
-    handleClickOutside(event) {
+    handleClickOutside() {
         // This has to happen in a timeout, since we want to perform the check only after a potential state change,
         // which will happen in the next event-loop tick.
         setTimeout(() => {
@@ -43,13 +41,13 @@ class FullItem extends  Component {
     }
 
     getSubject() {
-        return getChildOfType(this.props.children, slots.FullItemSubject)
+        return getChildOfType(this.props.children, FullItemSubject)
     }
 
     getStatus() {
         const {circleColor, sheet: {classes}} = this.props
 
-        const status = getChildOfType(this.props.children, slots.FullItemStatus)
+        const status = getChildOfType(this.props.children, FullItemStatus)
         return status ?
             <Flexbox name="full-item-circle" width='19px' shrink={0} container='column' justifyContent="center">
                 <Ellipse className={classes.statusCircle} color={circleColor} />
@@ -58,7 +56,7 @@ class FullItem extends  Component {
     }
 
     getActions() {
-        const actions = getChildOfType(this.props.children, slots.FullItemActions)
+        const actions = getChildOfType(this.props.children, FullItemActions)
         return actions ?
             <Flexbox name="full-item-actions">
                 {actions}
@@ -67,7 +65,7 @@ class FullItem extends  Component {
     }
 
     getBox() {
-        return getChildOfType(this.props.children, slots.FullItemBox)
+        return getChildOfType(this.props.children, FullItemBox)
     }
 
     renderFetching() {
@@ -235,6 +233,11 @@ FullItem.propTypes = {
     circleColor: PropTypes.string
 }
 
-module.exports = Object.assign({
-    FullItem: useSheet(clickOutside(FullItem), style)
-}, slots)
+export default useSheet(clickOutside(FullItem), style)
+
+export {
+    FullItemSubject,
+    FullItemStatus,
+    FullItemActions,
+    FullItemBox
+}

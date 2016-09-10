@@ -1,19 +1,20 @@
-const React = require ('react')
-const ReactDOM  = require('react-dom')
-const { createStore, applyMiddleware } = require('redux')
-const reducers = require('./reducers')
-const {Provider} = require('react-redux')
-const { browserHistory } = require('react-router')
-const { syncHistoryWithStore, routerMiddleware } = require('react-router-redux')
-const thunk = require('redux-thunk').default
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { createStore, applyMiddleware } from 'redux'
+import {Provider} from 'react-redux'
+import { browserHistory } from 'react-router'
+import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
+import thunk from 'redux-thunk'
+import jss from 'jss'
+import jssExtend from 'jss-extend'
+import jssNested from 'jss-nested'
+import jssCamelCase from 'jss-camel-case'
+import jssDefaultUnit from 'jss-default-unit'
+import jssVendorPrefixer from 'jss-vendor-prefixer'
+import jssExpand from 'jss-expand'
 
-const jss = require('jss').default
-const jssExtend = require('jss-extend').default
-const jssNested = require('jss-nested').default
-const jssCamelCase = require('jss-camel-case').default
-const jssDefaultUnit = require('jss-default-unit').default
-const jssVendorPrefixer = require('jss-vendor-prefixer').default
-const jssExpand = require('jss-expand').default
+import reducers from './reducers'
+import AppRouter from './routes'
 
 jss.use(
     jssExtend(),
@@ -26,11 +27,9 @@ jss.use(
     jssExpand()
 )
 
-const AppRouter = require('./routes')
-
 const middleware = routerMiddleware(browserHistory)
 
-let store = createStore(reducers,
+const store = createStore(reducers,
     window.__STATE__, applyMiddleware(thunk, middleware))
 
 // Create an enhanced history that syncs navigation events with the store

@@ -1,11 +1,9 @@
-const ReactDOM = require('react-dom')
-const React = require('react')
-const {Component, PropTypes} = React
+import ReactDOM from 'react-dom'
+import React, {Component, PropTypes} from 'react'
+import keys from 'lodash/keys'
+import last from 'lodash/last'
 
-const keys = require('lodash/keys')
-const last = require('lodash/last')
-
-const Flexbox = require('../UI/Flexbox')
+import Flexbox from '../UI/Flexbox'
 
 class Scrollable extends Component {
     componentWillUpdate () {
@@ -26,7 +24,7 @@ class Scrollable extends Component {
             const node = ReactDOM.findDOMNode(element)
             const container = ReactDOM.findDOMNode(this)
 
-            if (container != node.offsetParent) {
+            if (container !== node.offsetParent) {
                 container.scrollTop = node.offsetTop - container.offsetTop
             } else {
                 container.scrollTop = node.offsetTop
@@ -79,4 +77,4 @@ Scrollable.defaultProps = {
     stickToBottom: false
 }
 
-module.exports = Scrollable
+export default Scrollable

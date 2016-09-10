@@ -1,19 +1,14 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const DocumentTitle = require('react-document-title')
-const classAutobind = require('class-autobind').default
-const {goBack} = require('react-router-redux')
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import DocumentTitle from 'react-document-title'
+import classAutobind from 'class-autobind'
+import {goBack} from 'react-router-redux'
+import isEmpty from 'lodash/isEmpty'
 
-const isEmpty = require('lodash/isEmpty')
-
-const MessagePanel = require('../MessageBox/MessagePanel')
-
-const {FullItem, FullItemSubject, FullItemBox} = require('../Full/FullItem')
-const TextTruncate = require('../UI/TextTruncate')
-
-const EmailPageActions = require('../../actions/email-page-actions')
-const {InvalidationStatus} = require('../../constants')
+import MessagePanel from '../MessageBox/MessagePanel'
+import FullItem, {FullItemSubject, FullItemBox} from '../Full/FullItem'
+import * as EmailPageActions from '../../actions/email-page-actions'
+import {InvalidationStatus} from '../../constants'
 
 class FullEmail extends Component {
     constructor(props) {
@@ -48,8 +43,8 @@ class FullEmail extends Component {
 
         if (unreadComments.length > 0)
             return `Freection (${unreadComments.length}) - ${thread.subject}`
-        else
-            return `Freection - ${thread.subject}`
+
+        return `Freection - ${thread.subject}`
     }
 
     getAllMessages() {
@@ -104,4 +99,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(FullEmail)
+export default connect(mapStateToProps)(FullEmail)

@@ -1,13 +1,13 @@
-const some = require('lodash/some')
-const merge = require('lodash/merge')
+import some from 'lodash/some'
+import merge from 'lodash/merge'
 
-const FollowUpsActionTypes = require('../actions/types/follow-up-action-types')
-const EventActionTypes = require('../actions/types/event-action-types')
-const ThingCommandActionTypes = require('../actions/types/thing-command-action-types')
-const {ActionStatus, InvalidationStatus} = require('../constants')
-const thingReducer = require('./thing-reducer')
+import FollowUpsActionTypes from '../actions/types/follow-up-action-types'
+import EventActionTypes from '../actions/types/event-action-types'
+import ThingCommandActionTypes from '../actions/types/thing-command-action-types'
+import {ActionStatus, InvalidationStatus} from '../constants'
+import thingReducer from './thing-reducer'
 import EventTypes from '../../common/enums/event-types'
-const immutable = require('../util/immutable')
+import immutable from '../util/immutable'
 
 const initialState = {
     followUps: [],
@@ -104,15 +104,15 @@ function statusChangedReceived(state, action) {
         return immutable(state)
             .arrayPushItem('followUps', action.event.thing)
             .value()
-    } else {
-        return immutable(state)
-            .arraySetItem('followUps', {id: action.event.thing.id}, item => thingReducer(item, action))
-            .arrayReject('followUps', {isFollowUper: false})
-            .value()
     }
+
+    return immutable(state)
+        .arraySetItem('followUps', {id: action.event.thing.id}, item => thingReducer(item, action))
+        .arrayReject('followUps', {isFollowUper: false})
+        .value()
 }
 
-module.exports = (state = initialState, action) => {
+export default (state = initialState, action) => {
     switch (action.type) {
         case FollowUpsActionTypes.SET_STATE:
             return setState(state, action)

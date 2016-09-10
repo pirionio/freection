@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     FETCH_UNREAD: 'EMAIL_FETCH_UNREAD',
     UPDATE_UNREAD: 'EMAIL_UPDATE_UNREAD',
     HELLO: 'EMAIL_HELLO',

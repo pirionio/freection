@@ -1,17 +1,14 @@
-const FollowUpActions = require('./generated/follow-up-actions')
-const {InvalidationStatus} = require('../constants')
+import {_fetchFollowUps} from './generated/follow-up-actions'
+import {InvalidationStatus} from '../constants'
 
-const fetchFollowUpsActions = FollowUpActions.fetchFollowUps
-
-const fetchFollowUps = () => {
+export const fetchFollowUps = () => {
     return (dispatch, getState) => {
         const {followUps} = getState()
         if (followUps.invalidationStatus === InvalidationStatus.INVALIDATED ||
             followUps.invalidationStatus === InvalidationStatus.REQUIRE_UPDATE) {
-            dispatch(fetchFollowUpsActions())
+            dispatch(_fetchFollowUps())
         }
     }
 }
 
-module.exports = FollowUpActions
-FollowUpActions.fetchFollowUps = fetchFollowUps
+export * from './generated/follow-up-actions'

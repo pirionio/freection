@@ -1,14 +1,12 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
-const classAutobind = require('class-autobind').default
-const useSheet = require('react-jss').default
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import classAutobind from 'class-autobind'
+import useSheet from 'react-jss'
+import Icon from 'react-fontawesome'
+import Delay from 'react-delay'
 
-const GithubActions = require('../../actions/github-actions')
-
-const Flexbox = require('../UI/Flexbox')
-const Icon = require('react-fontawesome')
-const Delay = require('react-delay')
+import * as GithubActions from '../../actions/github-actions'
+import Flexbox from '../UI/Flexbox'
 
 class Repository extends Component {
     constructor(props) {
@@ -17,7 +15,7 @@ class Repository extends Component {
     }
 
     toggleRepository(fullName, checked) {
-        if (checked != this.props.repository.enabled) {
+        if (checked !== this.props.repository.enabled) {
             if (checked)
                 this.props.dispatch(GithubActions.enableRepository(fullName))
             else
@@ -66,4 +64,4 @@ Repository.propTypes = {
     repository: PropTypes.object
 }
 
-module.exports = useSheet(connect()(Repository), style)
+export default useSheet(connect()(Repository), style)

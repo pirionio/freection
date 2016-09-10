@@ -1,12 +1,15 @@
-const React = require('react')
-const {Component} = React
-const classAutobind = require('class-autobind').default
-const SizeMe = require('react-sizeme').default
-const useSheet = require('react-jss').default
+import React, {Component, PropTypes} from 'react'
+import classAutobind from 'class-autobind'
+import SizeMe from 'react-sizeme'
+import useSheet from 'react-jss'
 
-const styleVars = require('../style-vars')
+import styleVars from '../style-vars'
 
 class PreviewItemText extends Component {
+    static propTypes = {
+        size: PropTypes.object.isRequired
+    }
+
     constructor(props) {
         super(props)
         this.fade = false
@@ -54,4 +57,4 @@ const style = {
     }
 }
 
-module.exports = useSheet(SizeMe()(PreviewItemText), style)
+export default useSheet(SizeMe()(PreviewItemText), style)

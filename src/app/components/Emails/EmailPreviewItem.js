@@ -1,14 +1,13 @@
-const React = require('react')
-const {PropTypes, Component} = React
-const {connect} = require('react-redux')
-const useSheet = require('react-jss').default
+import React, {PropTypes, Component} from 'react'
+import {connect} from 'react-redux'
+import useSheet from 'react-jss'
 
-const TextTruncate = require('../UI/TextTruncate')
-const EmailPreviewActionBar = require('./EmailPreviewActionsBar')
-const EmailPageActions = require('../../actions/email-page-actions')
-const {PreviewItem, PreviewItemUser, PreviewItemText, PreviewItemActions} = require('../Preview/PreviewItem')
-const TextSeparator = require('../UI/TextSeparator')
-const Flexbox = require('../UI/Flexbox')
+import TextTruncate from '../UI/TextTruncate'
+import EmailPreviewActionBar from './EmailPreviewActionsBar'
+import * as EmailPageActions from '../../actions/email-page-actions'
+import PreviewItem, { PreviewItemUser, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
+import TextSeparator from '../UI/TextSeparator'
+import Flexbox from '../UI/Flexbox'
 
 class EmailPreviewItem extends Component {
     getTextElement() {
@@ -58,4 +57,4 @@ EmailPreviewItem.propTypes = {
     email: PropTypes.object.isRequired
 }
 
-module.exports = useSheet(connect()(EmailPreviewItem), style)
+export default useSheet(connect()(EmailPreviewItem), style)

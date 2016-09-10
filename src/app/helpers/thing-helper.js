@@ -1,24 +1,24 @@
-const chain = require('lodash/core')
-const last = require('lodash/last')
+import {chain} from 'lodash/core'
+import last from 'lodash/last'
 
 import SharedConstants from '../../common/shared-constants'
 
-function getAllMessages(thing) {
+export function getAllMessages(thing) {
     return chain(thing.events)
         .filter(event => SharedConstants.MESSAGE_TYPED_EVENTS.includes(event.eventType.key))
         .sortBy('createdAt')
         .value()
 }
 
-function getUnreadMessages(thing) {
+export function getUnreadMessages(thing) {
     return filterEventsByRead(thing, false)
 }
 
-function getReadMessages(thing) {
+export function getReadMessages(thing) {
     return filterEventsByRead(thing, true)
 }
 
-function getLastMessage(thing) {
+export function getLastMessage(thing) {
     return last(getAllMessages(thing))
 }
 
@@ -28,11 +28,4 @@ function filterEventsByRead(thing, isRead) {
                 (event.payload.text || event.payload.html) && event.payload.isRead === isRead)
         .sortBy('createdAt')
         .value()
-}
-
-module.exports = {
-    getAllMessages,
-    getUnreadMessages,
-    getReadMessages,
-    getLastMessage
 }

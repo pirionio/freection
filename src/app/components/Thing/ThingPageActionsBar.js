@@ -1,9 +1,8 @@
-const React = require('react')
-const {Component, PropTypes} = React
-const {connect} = require('react-redux')
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
 
-const ActionsBar = require('../Actions/ActionsBar')
-const {DoAction, DoneAction, DismissAction, CloseAction, SendBackAction} = require('../Actions/Actions')
+import ActionsBar from '../Actions/ActionsBar'
+import {DoAction, DoneAction, DismissAction, CloseAction, SendBackAction} from '../Actions/Actions'
 
 class ThingPageActionsBar extends Component {
     isDisabled() {
@@ -42,4 +41,4 @@ function mapStateToProps(state) {
     }
 }
 
-module.exports = connect(mapStateToProps)(ThingPageActionsBar)
+export default connect(mapStateToProps)(ThingPageActionsBar)
