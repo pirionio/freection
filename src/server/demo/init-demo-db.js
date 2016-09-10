@@ -5,7 +5,7 @@ import {User, Thing, Event} from '../shared/models'
 import EventTypes from '../../common/enums/event-types'
 import SharedConstants from '../../common/shared-constants'
 
-const userId = '2cf26b7e-e3a7-41d9-b476-5ad25f59bde1'
+export const userId = '2cf26b7e-e3a7-41d9-b476-5ad25f59bde1'
 const davidUserId = 'e4cc822f-bc8b-4839-8237-c25f10a1db29'
 
 async function sendThing(from, to, subject, body) {

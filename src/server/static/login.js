@@ -9,6 +9,7 @@ import config from '../shared/config/google-oauth'
 import * as EmailParsingUtility from '../shared/utils/email-parsing-utility'
 import token from '../shared/utils/token-strategy'
 import logger from '../shared/utils/logger'
+import {createUserToken} from '../shared/utils/token-creator'
 
 const router = Router()
 
@@ -28,17 +29,6 @@ function saveNewUser(userData) {
         accessToken: userData.accessToken,
         refreshToken: userData.refreshToken
     })
-}
-
-function createUserToken(user) {
-    return {
-        id: user.id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        organization: user.organization,
-        username: user.username
-    }
 }
 
 function generateOAuth2Url(prompt, loginHint) {
