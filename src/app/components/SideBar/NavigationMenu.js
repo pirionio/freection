@@ -39,13 +39,15 @@ class NavigationMenu extends Component {
     }
 
     getWhatsNewCount() {
+        const {config} = this.props
+        
         const unreadThingsCount = keys(groupBy(this.props.newNotifications, 'thing.id')).length
         const unreadEmailsCount = keys(groupBy(this.props.newEmails, 'payload.threadId')).length
 
         return {
             color: styleVars.highlightColor,
-            count: unreadThingsCount + unreadEmailsCount
-        }
+            count: config.isDemo ? unreadThingsCount : unreadThingsCount + unreadEmailsCount
+    }
     }
 
     getToDoCount() {
@@ -143,7 +145,8 @@ NavigationMenu.propTypes = {
     newNotifications: PropTypes.array.isRequired,
     todoThings: PropTypes.array.isRequired,
     followUpThings: PropTypes.array.isRequired,
-    newEmails: PropTypes.array.isRequired
+    newEmails: PropTypes.array.isRequired,
+    config: PropTypes.object.isRequired
 }
 
 function mapStateToProps(state) {
@@ -152,7 +155,8 @@ function mapStateToProps(state) {
         newNotifications: state.whatsNew.notifications,
         todoThings: state.toDo.things,
         followUpThings: state.followUps.followUps,
-        newEmails: state.unreadEmails.emails
+        newEmails: state.unreadEmails.emails,
+        config: state.config
     }
 }
 
