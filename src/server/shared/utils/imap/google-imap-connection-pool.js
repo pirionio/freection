@@ -1,6 +1,7 @@
 import ConnectionPool from '../connection-pool/connection-pool'
 import GoogleImapConnection from './google-imap-connection'
 import {IMAP} from '../../constants'
+import logger from '../logger'
 
 class GoogleImapConnectionPool extends ConnectionPool {
     constructor() {
@@ -18,7 +19,11 @@ function createConnection(user, accessToken) {
 }
 
 export function getConnection(user) {
-    return pool.getConnection(user)
+    logger.info(`${user.email} request connection`)
+    return pool.getConnection(user).then(connection => {
+        logger.info(`${user.email} acquired connection`)
+        return connection
+    })
 }
 
 export function closeConnection(user) {
@@ -26,5 +31,6 @@ export function closeConnection(user) {
 }
 
 export function releaseConnection(user, connection) {
+    logger.info(`${user.email} release connection`)
     return pool.releaseConnection(user, connection)
 }
