@@ -18,10 +18,13 @@ function createConnection(user, accessToken) {
     return new GoogleImapConnection(user, accessToken)
 }
 
-export function getConnection(user) {
-    logger.info(`${user.email} request connection`)
+let lastAction = ''
+
+export function getConnection(user, action ='') {
+    logger.info(`imap-pool ${user.email} request connection for ${action}`)
     return pool.getConnection(user).then(connection => {
-        logger.info(`${user.email} acquired connection`)
+        logger.info(`imap-pool ${user.email} acquired connection for ${action}`)
+        lastAction = action
         return connection
     })
 }
@@ -31,6 +34,6 @@ export function closeConnection(user) {
 }
 
 export function releaseConnection(user, connection) {
-    logger.info(`${user.email} release connection`)
+    logger.info(`imap-pool ${user.email} release connection ${lastAction}`)
     return pool.releaseConnection(user, connection)
 }

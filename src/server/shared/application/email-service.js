@@ -35,7 +35,7 @@ export async function fetchUnreadMessages(user) {
         await fullUser.save()
     }
 
-    const connection = await getImapConnection(user)
+    const connection = await getImapConnection(user, 'fetchUnreadMessages')
     try {
         const emails = await connection.getUnseenMessages(fullUser.imapJoinDate)
 
@@ -47,7 +47,7 @@ export async function fetchUnreadMessages(user) {
 }
 
 export async function getEmailsSince(user, internalDate) {
-    const connection = await getImapConnection(user)
+    const connection = await getImapConnection(user, 'getEmailsSince')
     try {
         const emails = await connection.getEmailsSince(internalDate)
 
@@ -58,7 +58,7 @@ export async function getEmailsSince(user, internalDate) {
 }
 
 export async function fetchFullThread(user, emailThreadId) {
-    const connection = await getImapConnection(user)
+    const connection = await getImapConnection(user, 'fetchFullThread')
     try {
         const emails = await connection.getThreadMessages(emailThreadId)
 
@@ -69,7 +69,7 @@ export async function fetchFullThread(user, emailThreadId) {
 }
 
 export async function getLastInternalDate(user) {
-    const connection = await getImapConnection(user)
+    const connection = await getImapConnection(user, 'getLastInternalDate')
     try {
         const email = await connection.getLastEmail()
         return email.header.internalDate
@@ -79,7 +79,7 @@ export async function getLastInternalDate(user) {
 }
 
 export async function markAsRead(user, emailUids) {
-    const connection = await getImapConnection(user)
+    const connection = await getImapConnection(user, 'markAsRead')
     try {
         await connection.markAsRead(emailUids)
     } finally {
@@ -88,7 +88,7 @@ export async function markAsRead(user, emailUids) {
 }
 
 export async function markAsReadByMessageId(user, messageId) {
-    const connection = await getImapConnection(user)
+    const connection = await getImapConnection(user, 'markAsReadByMessageId')
     try {
         await connection.markAsReadByMessageId(messageId)
     } finally {
@@ -107,7 +107,7 @@ export async function sendEmail(user, to, subject, text, html, messageId) {
 }
 
 export async function deleteAllEmails(user) {
-    const connection = await getImapConnection(user)
+    const connection = await getImapConnection(user, 'deleteAllEmails')
     try {
         await connection.deleteAllEmails()
     } finally {
@@ -121,7 +121,7 @@ export function sendEmailForThing(user, to, subject, body, messageId) {
 }
 
 export async function doEmail(user, emailThreadId) {
-    const connection = await getImapConnection(user)
+    const connection = await getImapConnection(user, 'doEmail')
     try {
         const thread = await fetchFullThread(user, emailThreadId)
 
@@ -216,8 +216,8 @@ function getEmailForThingHtml(user, body) {
             </div>`
 }
 
-function getImapConnection(user) {
-    return GoogleImapConnectionPool.getConnection(user)
+function getImapConnection(user, action) {
+    return GoogleImapConnectionPool.getConnection(user, action)
 }
 
 function getSmtpConnection(user) {
