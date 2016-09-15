@@ -28,6 +28,7 @@
   "permissions": [
     "https://mail.google.com/",
     "https://inbox.google.com/",
+    "http://freection.com/",
     "http://localhost/"
   ],
   "web_accessible_resources": [

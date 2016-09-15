@@ -11,7 +11,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
         // Notice that the threadId here is in hex.
         // The API of Freection needs to be notified about it, because it essentially works with IMAP which expects decimal values.
         jQuery.post({
-            url: 'http://localhost:3000/emails/api/' + message.threadId + '/do',
+            url: 'http://freection.com/emails/api/' + message.threadId + '/do',
             data: {
                 isHex: true
             },
