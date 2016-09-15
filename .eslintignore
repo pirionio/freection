@@ -1,5 +1,6 @@
 src/app/actions/generated/*.js
 src/app/actions/models/*.js
+src/extension
 scripts/*.js
 config/*.js
 dist/

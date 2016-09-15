@@ -1,4 +1,5 @@
 import {chain, some, isUndefined} from 'lodash/core'
+import converter from 'hex2dec'
 
 import * as GoogleImapConnectionPool from '../utils/imap/google-imap-connection-pool'
 import * as GoogleSmtpConnectionPool from '../utils/smtp/google-smtp-connection-pool'
@@ -120,30 +121,26 @@ export function sendEmailForThing(user, to, subject, body, messageId) {
     return sendEmail(user, to, subject, undefined, emailForThingHtml, messageId)
 }
 
-export async function doEmail(user, emailThreadId) {
-    const connection = await getImapConnection(user, 'doEmail')
-    try {
-        const thread = await fetchFullThread(user, emailThreadId)
+export async function doEmail(user, emailThreadId, isHex) {
+    // Thread ID in Gmail is hex (in the Gmail API or in the website)m but dec in the IMAP API.
+    // Since we're gonna work with IMAP here, we convert the ID to dec, and we should therefore know if it's received as hex or dec here.
+    const emailThreadIdDec = isHex ? converter.hexToDec(emailThreadId) : emailThreadId
+    const thread = await fetchFullThread(user, emailThreadIdDec)
+    const creator = thread.creator
+    const comments = thread.messages.map(message => {
+        return {
+            createdAt: message.createdAt,
+            html: message.payload.html,
+            text: message.payload.text,
+            id: message.id
+        }
+    })
 
-        const creator = thread.creator
-
-        const comments = thread.messages.map(message => {
-            return {
-                createdAt: message.createdAt,
-                html: message.payload.html,
-                text: message.payload.text,
-                id: message.id
-            }
-        })
-
-        const thing = await saveNewThing(thread.subject, creator, userToAddress(user), thread.id, thread.payload.threadId)
-        await EventsCreator.createCreated(creator, thing, getShowNewList)
-        await EventsCreator.createAccepted(userToAddress(user), thing, getShowNewList)
-        await comments.map(comment => EventsCreator.createComment(creator, comment.createdAt, thing, getShowNewList, comment.text,
-                        comment.html, comment.id)).then(all => Promise.all(all))
-    } finally {
-        GoogleImapConnectionPool.releaseConnection(user, connection)
-    }
+    const thing = await saveNewThing(thread.subject, creator, userToAddress(user), thread.id, thread.payload.threadId)
+    await EventsCreator.createCreated(creator, thing, getShowNewList)
+    await EventsCreator.createAccepted(userToAddress(user), thing, getShowNewList)
+    return await Promise.all(comments.map(comment => EventsCreator.createComment(creator, comment.createdAt, thing, getShowNewList, comment.text,
+                    comment.html, comment.id)))
 }
 
 export async function replyToAll(user, to, inReplyTo, references, subject, messageText, messageHtml) {

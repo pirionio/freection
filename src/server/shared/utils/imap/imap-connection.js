@@ -2,6 +2,7 @@ import imap from 'imap'
 import {MailParser} from 'mailparser'
 import {chain} from 'lodash'
 import autobind from 'class-autobind'
+import converter from 'hex2dec'
 
 import logger from '../logger'
 import promisify from '../promisify'
@@ -93,7 +94,8 @@ export default class ImapConnection {
                     to: envelope.to ? envelope.to.map(to => this.convertEnvelopeUser(to)) : [],
                     messageId: envelope.messageId,
                     gmailId: attributes['x-gm-msgid'],
-                    gmailThreadId: attributes['x-gm-thrid']
+                    gmailThreadId: attributes['x-gm-thrid'],
+                    gmailThreadIdHex: converter.decToHex(attributes['x-gm-thrid'])
                 }
             })
 
@@ -158,8 +160,10 @@ export default class ImapConnection {
     
     getThreadMessages(threadId) {
         const criteria = ['ALL', [IMAP[this._type].THREAD_FIELD, threadId]]
+        logger.info('imap getting thread, criteria:', criteria)
         return this._connection.searchAsync(criteria)
             .then(results => {
+                logger.info('imap results:', results)
                 return this.fetchByUids(results, {includeBodies: true})
             })
             .catch(error => {

@@ -24,7 +24,8 @@ router.get('/:emailThreadId', (request, response) => {
 router.post('/:emailThreadId/do', (request, response) => {
     EndpointUtil.handlePost(request, response, EmailService.doEmail, {
         params: ['emailThreadId'],
-        result: false,
+        body: ['isHex'],
+        result: true,
         errorTemplates: {
             general: 'Error while doing thread ${emailThreadId}'
         }
