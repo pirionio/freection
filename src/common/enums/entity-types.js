@@ -15,4 +15,8 @@ export default {
         key: 'EMAIL_THING',
         label: 'Email thing'
     },
+    SLACK: {
+        key:'SLACK',
+        label:'SLACK'
+    }
 }

@@ -10,6 +10,10 @@ export default {
     EMAIL: {
         key: 'EMAIL',
         label: 'Email'
+    },
+    SLACK: {
+        key: 'SLACK',
+        label: 'Slack'
     }
 }
 
