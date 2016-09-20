@@ -2,9 +2,9 @@ const webpack = require('webpack')
 const config = require('./webpack.config')
 
 config.devtool = 'eval-source-map'
-config.entry = [
-    'webpack-hot-middleware/client',
-    ...config.entry]
+config.entry = Object.assign(config.entry, {
+    'bundle': ['webpack-hot-middleware/client?reload=true', './app/index.js']
+})
 config.plugins = [
     ...config.plugins,
     new webpack.HotModuleReplacementPlugin()]

@@ -1,13 +1,14 @@
 const path = require('path')
 
 module.exports = {
-    context: path.join(__dirname, '../src/app'),
-    entry: [
-        './index.js'
-    ],
+    context: path.join(__dirname, '../src'),
+    entry: {
+        'bundle': './app/index.js',
+        'chrome': './extension/src/content.js'
+    },
     output: {
         path: path.join(__dirname, '../dist/public'),
-        filename: 'bundle.js',
+        filename: '[name].js',
         publicPath: '/'
     },
     plugins: [],

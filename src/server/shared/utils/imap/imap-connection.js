@@ -160,10 +160,8 @@ export default class ImapConnection {
     
     getThreadMessages(threadId) {
         const criteria = ['ALL', [IMAP[this._type].THREAD_FIELD, threadId]]
-        logger.info('imap getting thread, criteria:', criteria)
         return this._connection.searchAsync(criteria)
             .then(results => {
-                logger.info('imap results:', results)
                 return this.fetchByUids(results, {includeBodies: true})
             })
             .catch(error => {
