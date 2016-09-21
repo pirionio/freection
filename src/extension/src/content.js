@@ -1,16 +1,31 @@
-// TODO Load the extension files from our server:
-// The ID of the extension is currently hard-coded.
-// The recommendation of InboxSDK is to load the files of the extension from our server.
-// In order to do that, we need to bundle the files of the extension and serve them.
-// This could be done later.
 InboxSDK.load('1', 'sdk_Freection_cc8823491c').then(function(sdk) {
 	sdk.Lists.registerThreadRowViewHandler(function(threadRowView) {
 		threadRowView.addButton({
 			iconUrl: chrome.runtime.getURL('images/do.png'),
 			onClick: function() {
 				var threadId = threadRowView.getThreadID()
-				chrome.runtime.sendMessage({type: 'DO_EMAIL', threadId: threadId})
+				createThing(threadId)
 			}
 		});
 	});
 });
+
+function createThing(threadId) {
+	chrome.storage.sync.get({
+		baseUrl: 'https://freection.com'
+	}, function(options) {
+		// Notice that the threadId here is in hex.
+		// The API of Freection needs to be notified about it, because it essentially works with IMAP which expects decimal values.
+		var url = options.baseUrl + '/emails/api/' + threadId + '/do';
+		fetch(url, {
+			method: 'POST',
+			body: JSON.stringify({
+				isHex: true
+			}),
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			credentials: 'include'
+		})
+	});
+}

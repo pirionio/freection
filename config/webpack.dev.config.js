@@ -3,7 +3,8 @@ const config = require('./webpack.config')
 
 config.devtool = 'eval-source-map'
 config.entry = Object.assign(config.entry, {
-    'bundle': ['webpack-hot-middleware/client?reload=true', './app/index.js']
+    'bundle': ['webpack-hot-middleware/client?reload=true', './app/index.js'],
+    'chrome': ['webpack-hot-middleware/client?reload=true', './extension/src/content.js']
 })
 config.plugins = [
     ...config.plugins,

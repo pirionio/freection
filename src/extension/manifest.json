@@ -2,11 +2,10 @@
   "name": "Freection",
   "description": "Freection Chrome Extension",
   "version": "0.1",
-  "page_action": {
-    "default_icon": "images/extension-icon-19.png"
-  },
-  "background": {
-    "page": "background.html"
+  "browser_action": {
+    "default_icon": "images/extension-icon-19.png",
+    "default_popup": "popup.html",
+    "default_title": "Freection"
   },
   "content_scripts": [
     {
@@ -16,7 +15,6 @@
       ],
       "js": [
         "lib/inboxsdk.js",
-        "lib/jquery-3.1.0.min.js",
         "src/loader.js"
       ],
       "run_at": "document_end"
@@ -32,7 +30,8 @@
     "https://demo.freection.com/",
     "https://ycdemo.freection.com/",
     "https://freection1.ngrok.io/",
-    "https://freection2.ngrok.io/"
+    "https://freection2.ngrok.io/",
+    "storage"
   ],
   "web_accessible_resources": [
     "images/do.png"
