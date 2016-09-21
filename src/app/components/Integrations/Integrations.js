@@ -16,6 +16,10 @@ class Integrations extends Component {
                     <Icon name="github" className={classes.icon} />
                     Github
                 </Link>
+                <Link to="/integrations/slack" className={classes.link}>
+                    <Icon name="slack" className={classes.icon} />
+                    Slack
+                </Link>
             </Flexbox>
         )
     }

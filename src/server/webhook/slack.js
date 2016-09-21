@@ -11,6 +11,15 @@ import {post} from '../../app/util/resource-util'
 
 const router = Router()
 
+router.get('/thing', (request, response) => {
+    const {body} = request
+
+    if (body.ssl_check)
+        response.sendStatus(200)
+    else
+        response.sendStatus(400)
+})
+
 router.post('/thing', async function(request, response) {
     const {body} = request
 
