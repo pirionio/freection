@@ -9,6 +9,7 @@ import styleVars from '../style-vars'
 import PreviewsContainer from '../Preview/PreviewsContainer'
 import * as ToDoActions from '../../actions/to-do-actions'
 import ToDoPreviewItem from './ToDoPreviewItem'
+import EmailThingPreviewItem from './EmailThingPreviewItem'
 import GithubPreviewItem from './GithubPreviewItem'
 import EntityTypes from '../../../common/enums/entity-types'
 
@@ -27,6 +28,8 @@ class ToDo extends Component {
         return orderBy(this.props.things, 'createdAt', 'desc').map(thing => {
             if (thing.type.key === EntityTypes.GITHUB.key) {
                 return <GithubPreviewItem thing={thing} key={thing.id} />
+            } else if (thing.type.key === EntityTypes.EMAIL_THING.key) {
+                return <EmailThingPreviewItem thing={thing} key={thing.id} />
             }
 
             return <ToDoPreviewItem thing={thing} key={thing.id} />

@@ -75,6 +75,7 @@ export function imapEmailToDto(email, user) {
             text: parseReply(email.body),
             html: email.html,
             threadId: email.header.gmailThreadId,
+            threadIdHex: email.header.gmailThreadIdHex,
             gmailId: email.header.gmailId,
             uid: email.header.uid,
             isRead: true

@@ -91,7 +91,7 @@ export async function dismiss(user, thingId, messageText) {
     try {
         const thing = await Thing.get(thingId).run()
 
-        if (thing.type !== EntityTypes.THING.key)
+        if (![EntityTypes.THING.key, EntityTypes.EMAIL_THING.key].includes(thing.type))
             throw 'InvalidEntityType'
 
         // Validate that the status of the thing matched the action

@@ -127,20 +127,10 @@ export async function doEmail(user, emailThreadId, isHex) {
     const emailThreadIdDec = isHex ? converter.hexToDec(emailThreadId) : emailThreadId
     const thread = await fetchFullThread(user, emailThreadIdDec)
     const creator = thread.creator
-    const comments = thread.messages.map(message => {
-        return {
-            createdAt: message.createdAt,
-            html: message.payload.html,
-            text: message.payload.text,
-            id: message.id
-        }
-    })
 
-    const thing = await saveNewThing(thread.subject, creator, userToAddress(user), thread.id, thread.payload.threadId)
+    const thing = await saveNewThing(thread, creator, userToAddress(user))
     await EventsCreator.createCreated(creator, thing, getShowNewList)
     await EventsCreator.createAccepted(userToAddress(user), thing, getShowNewList)
-    return await Promise.all(comments.map(comment => EventsCreator.createComment(creator, comment.createdAt, thing, getShowNewList, comment.text,
-                    comment.html, comment.id)))
 }
 
 export async function replyToAll(user, to, inReplyTo, references, subject, messageText, messageHtml) {
@@ -164,19 +154,20 @@ function prepareThread(emails, user) {
     return threadDto
 }
 
-function saveNewThing(subject, creator, to, emailId, threadId) {
+function saveNewThing(thread, creator, to) {
     return Thing.save({
         createdAt: new Date(),
         creator,
         to,
         body: null,
-        subject,
+        subject: thread.subject,
         followUpers: [],
         doers: [to.id],
         type: EntityTypes.EMAIL_THING.key,
         payload: {
-            emailId,
-            threadId,
+            emailId: thread.id,
+            threadId: thread.payload.threadId,
+            threadIdHex: thread.payload.threadIdHex,
             status: ThingStatus.INPROGRESS.key
         }
     })
