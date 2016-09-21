@@ -85,6 +85,10 @@ export default class ImapConnection {
             rawMessage.once('attributes', attributes => {
                 const {envelope} = attributes
 
+                // When interacting with Gmail, we might need the Hex representation of the Thread ID.
+                // Notice we'd get rid of that '0x' at the beginning.
+                const threadIdHex = converter.decToHex(attributes['x-gm-thrid'])
+
                 message.header = {
                     uid: attributes.uid,
                     subject: envelope.subject,
@@ -95,7 +99,7 @@ export default class ImapConnection {
                     messageId: envelope.messageId,
                     gmailId: attributes['x-gm-msgid'],
                     gmailThreadId: attributes['x-gm-thrid'],
-                    gmailThreadIdHex: converter.decToHex(attributes['x-gm-thrid'])
+                    gmailThreadIdHex: threadIdHex && threadIdHex.replace(/^0x/, '')
                 }
             })
 
