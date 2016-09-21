@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/freection/freection#readme",
   "dependencies": {
-    "@slack/client": "^3.6.0",
+    "@slack/client": "3.6.0",
     "babel-async-preset": "https://github.com/freection/babel-async-preset.git",
     "babel-cli": "6.14.0",
     "babel-core": "6.14.0",
