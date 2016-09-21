@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === 'production') {
 } else {
     clientID = '593494787516-jsgh4pc441pcnf63rikc1gqltbbo6l5q.apps.googleusercontent.com'
     clientSecret = 'PoIM9wEtX66QZzJ_SgJ-qjtl'
-    callbackURL = 'https://freection2.ngrok.io/login/google/callback'
+    callbackURL = `${process.env.FREECTION_HOST}/login/google/callback`
 }
 
 export default {clientID, clientSecret, callbackURL}

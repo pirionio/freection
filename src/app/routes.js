@@ -10,6 +10,7 @@ import ToDo from './components/ToDo/ToDo'
 import FollowUp from './components/FollowUp/FollowUp'
 import Integrations from './components/Integrations/Integrations'
 import Github from './components/Github/Github'
+import Slack from './components/Slack/Slack'
 import FullThing from './components/Thing/FullThing'
 import FullEmail from './components/Emails/FullEmail'
 import Board from './components/Board/Board'
@@ -36,6 +37,7 @@ const routes = (
             <Route path="integrations">
                 <IndexRoute component={Integrations} />
                 <Route path="github" component={Github} />
+                <Route path="slack" component={Slack} />
             </Route>
             <Route path="boards/demo-board1" component={Board} />
             <Route path="boards/demo-board2" component={Board} />

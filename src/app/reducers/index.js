@@ -11,6 +11,7 @@ import {inlineMessage, inlineMessageForm} from './inline-message-reducer'
 import thingPage from './thing-page-reducer'
 import emailPage from './email-page-reducer'
 import github from './github'
+import slack from './slack'
 import auth from './auth'
 import contacts from './contacts-reducer'
 import glassPane from './glass-pane-reducer'
@@ -28,6 +29,7 @@ export default combineReducers({
     unreadEmails,
     emailPage,
     github,
+    slack,
     auth,
     contacts,
     glassPane,

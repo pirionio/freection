@@ -1,1 +1,1 @@
-InboxSDK.loadScript('https://freection.com/chrome.js')
+InboxSDK.loadScript('https://freection1.ngrok.io/chrome.js')

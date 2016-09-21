@@ -117,6 +117,9 @@ export async function close(user, thingId, messageText) {
     try {
         const thing = await Thing.get(thingId).run()
 
+        if (thing.type !== EntityTypes.THING.key)
+            throw 'InvalidEntityType'
+
         // Validate that the status of the thing matched the action
         validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key,
             ThingStatus.INPROGRESS.key, ThingStatus.DONE.key, ThingStatus.DISMISS.key])

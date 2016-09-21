@@ -23,6 +23,13 @@ const User = thinky.createModel('User', {
             repositories: [{
                 fullName: type.string()
             }]
+        },
+        slack: {
+            active: type.boolean(),
+            accessToken: type.string(),
+            teamId: type.string(),
+            userId: type.string(),
+            username: type.string()
         }
     }
 })
@@ -31,6 +38,9 @@ User.ensureIndex('googleId')
 User.ensureIndex('email')
 User.ensureIndex('githubUserId', doc => {
     return doc('integrations')('github')('userId')
+})
+User.ensureIndex('slackUserId', doc => {
+    return doc('integrations')('slack')('userId')
 })
 User.ensureIndex('organization')
 
@@ -82,6 +92,15 @@ User.defineStatic('removeGithubRepository', function(userId, fullName) {
 
 User.defineStatic('getUserByGithubId', function(githubId) {
     return this.getAll(githubId, {index:'githubUserId'}).run().then(users => {
+        if (users.length === 0)
+            throw 'NotFound'
+
+        return users[0]
+    })
+})
+
+User.defineStatic('getUserBySlackId', function(slackId) {
+    return this.getAll(slackId, {index:'slackUserId'}).run().then(users => {
         if (users.length === 0)
             throw 'NotFound'
 

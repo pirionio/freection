@@ -13,5 +13,6 @@ module.exports = [
     require('./auth'),
     require('./contacts'),
     require('./glass-pane'),
-    require('./inline-message')
+    require('./inline-message'),
+    require('./slack')
 ]
