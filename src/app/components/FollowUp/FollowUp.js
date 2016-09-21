@@ -9,6 +9,8 @@ import PreviewsContainer from '../Preview/PreviewsContainer'
 import styleVars from '../style-vars'
 import * as  FollowUpsActions from '../../actions/follow-up-actions'
 import FollowUpPreviewItem from './FollowUpPreviewItem'
+import SlackPreviewItem from './SlackPreviewItem'
+import EntityTypes from '../../../common/enums/entity-types'
 
 class FollowUp extends Component {
     constructor(props) {
@@ -22,8 +24,13 @@ class FollowUp extends Component {
     }
 
     getThingsToFollowUp() {
-        return orderBy(this.props.things, 'createdAt', 'desc').map(thing =>
-            <FollowUpPreviewItem thing={thing} key={thing.id} />)
+        return orderBy(this.props.things, 'createdAt', 'desc').map(thing => {
+
+            if (thing.type.key === EntityTypes.SLACK.key)
+                return (<SlackPreviewItem thing={thing} key={thing.id} />)
+
+            return (<FollowUpPreviewItem thing={thing} key={thing.id} />)
+        })
     }
 
     getTitle() {
