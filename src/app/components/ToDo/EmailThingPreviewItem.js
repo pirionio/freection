@@ -34,7 +34,7 @@ class EmailThingPreviewItem extends Component {
 
     getEmailUrl() {
         const {thing} = this.props
-        return `https://mail.google.com/#inbox/${thing.payload.threadIdHex}`
+        return `https://mail.google.com/mail/u/0/#inbox/${thing.payload.threadIdHex}`
     }
 
     render() {
