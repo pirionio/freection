@@ -100,6 +100,7 @@ router.post('/thing', async function(request, response) {
         }
     } catch(error) {
         logger.error('Slack - error while handling webhook from slack', error)
+        response.sendStatus(500)
     }
 })
 
