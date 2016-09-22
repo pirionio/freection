@@ -3,7 +3,9 @@ import {connect} from 'react-redux'
 import useSheet from 'react-jss'
 import classAutobind from 'class-autobind'
 
-import PreviewItem, { PreviewItemUser, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
+import trimEnd from 'lodash/trimEnd'
+
+import PreviewItem, {PreviewItemStatus, PreviewItemActions} from '../Preview/PreviewItem'
 import GithubActionsBar from './GithubActionsBar'
 import ThingStatus from '../../../common/enums/thing-status'
 import styleVars from '../style-vars'
@@ -35,6 +37,15 @@ class EmailThingPreviewItem extends Component {
         return `https://mail.google.com/mail/u/${currentUser.email}/#inbox/${thing.payload.threadIdHex}`
     }
 
+    getRecipients() {
+        const {thing, currentUser} = this.props
+        const recipientNames = thing.payload.recipients
+            .filter(recipient => recipient.emailAddress !== currentUser.email)
+            .map(recipient => recipient.name)
+            .join(', ')
+        return trimEnd(recipientNames, ', ')
+    }
+
     render() {
         const {thing} = this.props
 
@@ -43,9 +54,9 @@ class EmailThingPreviewItem extends Component {
                          title={thing.subject}
                          date={thing.createdAt}
                          onClick={() => window.open(this.getEmailUrl(), '_blank')}>
-                <PreviewItemUser>
-                    <strong>{thing.creator.displayName}</strong>
-                </PreviewItemUser>
+                <PreviewItemStatus>
+                    <span>Email from <strong>{this.getRecipients()}</strong></span>
+                </PreviewItemStatus>
                 <PreviewItemActions>
                     <GithubActionsBar thing={thing}/>
                 </PreviewItemActions>

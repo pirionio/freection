@@ -22,12 +22,22 @@ router.get('/:emailThreadId', (request, response) => {
 })
 
 router.post('/:emailThreadId/do', (request, response) => {
-    EndpointUtil.handlePost(request, response, EmailService.doEmail, {
+    EndpointUtil.handlePost(request, response, EmailService.doEmailByThreadId, {
         params: ['emailThreadId'],
         body: ['isHex'],
         result: true,
         errorTemplates: {
             general: 'Error while doing thread ${emailThreadId}'
+        }
+    })
+})
+
+router.post('/do', (request, response) => {
+    EndpointUtil.handlePost(request, response, EmailService.doEmail, {
+        body: ['emailData', 'isHex'],
+        result: true,
+        errorTemplates: {
+            general: 'Error while creating a thing from email'
         }
     })
 })
