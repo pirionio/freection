@@ -9,12 +9,12 @@
   "scripts": {
     "test": "mocha \"src/**/*.test.js\" --compilers js:babel-register",
     "start": "babel-node src/server/index.js --presets babel-async-preset",
-    "preprod": "babel src/server -d dist/server --presets babel-async-preset --copy-files && babel src/common -d dist/common --presets babel-async-preset --copy-files && babel src/app -d dist/app --presets react,babel-async-preset --copy-files",
     "prod": "node dist/server/index.js",
     "init-demo": "babel-node scripts/init-demo-db.js --presets babel-async-preset",
     "dev": "nodemon --watch src/server src/server/index.js --exec babel-node --presets babel-async-preset",
     "generate": "node scripts/generate-actions.js",
-    "postinstall": "node scripts/webpack",
+    "build": "cd scripts && build",
+    "postinstall": "cd scripts && postinstall",
     "lint": "./node_modules/.bin/eslint ."
   },
   "repository": {
@@ -29,6 +29,7 @@
   "homepage": "https://github.com/freection/freection#readme",
   "dependencies": {
     "@slack/client": "3.6.0",
+    "assets-webpack-plugin": "3.4.0",
     "babel-async-preset": "https://github.com/freection/babel-async-preset.git",
     "babel-cli": "6.14.0",
     "babel-core": "6.14.0",

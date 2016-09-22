@@ -20,10 +20,16 @@ export function configure(app) {
     app.set('views', path.join(__dirname, 'views'))
     app.set('view engine', 'ejs')
 
-    // Serve static
-    app.use(express.static(path.join(__dirname, '../../public')))
-
     app.use('/login', login)
+
+    const assets = require('./webpack-assets.json')
+
+    // For the chrome extension we want to make sure we serve the file even if hashes is used
+    if (assets.chrome.js !== 'chrome.js') {
+        app.get('/chrome.js', (request, response) => {
+            response.redirect(302, `/${assets.chrome.js}`)
+        })
+    }
 
     // Dev only
     if (app.get('env') === 'development') {
@@ -37,6 +43,9 @@ export function configure(app) {
         app.use(webpackHotMiddleware(compiler))
     }
 
+    // Serve static
+    app.use(express.static(path.join(__dirname, '../../public')))
+
     app.get('/demo', (request, response) => {
         if (isDemo)
             response.render('demo')
@@ -46,7 +55,7 @@ export function configure(app) {
     // to support URL navigation without hash tags.
     app.get('*', (request, response) => {
         getInitialState(request)
-            .then(state => response.render('index', { state }))
+            .then(state => response.render('index', { state, assets }))
             .catch(error => {
                 logger.error('error while trying to serve index', error)
                 response.status(500).send('Error while trying to get the file')
