@@ -8,6 +8,7 @@ import UserTypes from '../../common/enums/user-types'
 import * as SlackThingService from '../shared/application/slack-thing-service'
 import * as ThingService from '../shared/application/thing-service'
 import {post} from '../../app/util/resource-util'
+import logger from '../shared/utils/logger'
 
 const router = Router()
 
@@ -21,89 +22,98 @@ router.get('/thing', (request, response) => {
 })
 
 router.post('/thing', async function(request, response) {
-    const {body} = request
+    try {
+        const {body} = request
 
-    if (body.ssl_check) {
-        response.sendStatus(200)
-    } else if (body.command === '/thing') {
-        if (body.token !== slackConfig.token) {
-            response.sendStatus(400)
-            return
-        }
-
-        const {
-            team_id: teamId,
-            channel_id: channelId,
-            channel_name: channelName,
-            user_id: userId,
-            text,
-            response_url: responseUrl} = body
-
-        const creator = await getUserBySlackId(userId)
-
-        if (!creator) {
-            respondWith(response, 'You are not registered on freection, go to http://freection.com to join')
-            return
-        }
-
-        const team = await getTeam(teamId)
-
-        if (!team) {
-            respondWith(response, 'You have to integrate slack with freection first')
-            return
-        }
-
-        let toUserAddress
-        let subject = text
-
-        if (channelName === 'directmessage') {
-            responseWithEmpty(response, true)
-            toUserAddress = await getSlackUserFromIMId(team, channelId)
-        } else {
-            // we need to find the mentioned user
-            const mentioned = text.match(/@[a-z0-9][a-z0-9._-]*/)
-            if (!mentioned || !mentioned.length) {
-                respondWith(response, 'You must mention a user. Please send again with @username')
+        if (body.ssl_check) {
+            response.sendStatus(200)
+        } else if (body.command === '/thing') {
+            if (body.token !== slackConfig.token) {
+                response.sendStatus(400)
                 return
             }
 
-            responseWithEmpty(response, true)
+            const {
+                team_id: teamId,
+                channel_id: channelId,
+                channel_name: channelName,
+                user_id: userId,
+                text,
+                response_url: responseUrl
+            } = body
 
-            if (text.startsWith(mentioned[0])) {
-                subject = text.substring(mentioned[0].length)
-            }
+            const creator = await getUserBySlackId(userId)
 
-            toUserAddress = await getSlackUserFromMention(team, mentioned[0])
-
-            if (!toUserAddress) {
-                delayRespondWith(responseUrl, 'The mentioned user doesn\'t exist in slack and therefor was not added to freection')
+            if (!creator) {
+                respondWith(response, 'You are not registered on freection, go to http://freection.com to join')
                 return
             }
-        }
 
-        const toUser = await getUserBySlackId(toUserAddress.id)
+            const team = await getTeam(teamId)
 
-        if (toUser) {
-            await ThingService.newThing(creator, toUser.email, subject, '')
-            delayRespondWith(responseUrl, 'New thing created on freection')
+            if (!team) {
+                respondWith(response, 'You have to integrate slack with freection first')
+                return
+            }
+
+            let toUserAddress
+            let subject = text
+
+            if (channelName === 'directmessage') {
+                respondWithEmpty(response, true)
+                toUserAddress = await getSlackUserFromIMId(team, channelId)
+            } else {
+                // we need to find the mentioned user
+                const mentioned = text.match(/@[a-z0-9][a-z0-9._-]*/)
+                if (!mentioned || !mentioned.length) {
+                    respondWith(response, 'You must mention a user. Please send again with @username')
+                    return
+                }
+
+                respondWithEmpty(response, true)
+
+                if (text.startsWith(mentioned[0])) {
+                    subject = text.substring(mentioned[0].length)
+                }
+
+                toUserAddress = await getSlackUserFromMention(team, mentioned[0])
+
+                if (!toUserAddress) {
+                    delayRespondWith(responseUrl, 'The mentioned user doesn\'t exist in slack and therefore thing was not created on freection')
+                    return
+                }
+            }
+
+            const toUser = await getUserBySlackId(toUserAddress.id)
+
+            if (toUser) {
+                await ThingService.newThing(creator, toUser.email, subject, '')
+                delayRespondWith(responseUrl, 'New thing created on freection')
+            } else {
+                // Creating slack thing as peer is not on freection
+                await SlackThingService.newThing(creator, toUserAddress, subject)
+                delayRespondWith(responseUrl, 'New thing created on freection')
+            }
+
         } else {
-            // Creating slack thing as peer is not on freection
-            await SlackThingService.newThing(creator, toUserAddress, subject)
-            delayRespondWith(responseUrl, 'New thing created on freection')
+            response.sendStatus(500)
         }
-
-    } else {
-        response.sendStatus(500)
+    } catch(error) {
+        logger.error('Slack - error while handling webhook from slack', error)
     }
 })
 
-function delayRespondWith(url, text, isPublic = false) {
+async function delayRespondWith(url, text, isPublic = false) {
 
-    // TODO: log errors
-    post(url, {
-        response_type: isPublic ? 'in_channel' : 'ephemeral ',
-        text: text
-    })
+    try {
+        await post(url, {
+            response_type: isPublic ? 'in_channel' : 'ephemeral ',
+            text: text
+        })
+    }
+    catch (error) {
+        logger.error('Slack - Error while sending delay response to /thing command', error)
+    }
 }
 
 function respondWith(response, text, isPublic = false) {
@@ -113,7 +123,7 @@ function respondWith(response, text, isPublic = false) {
     })
 }
 
-function responseWithEmpty(response, isPublic = false) {
+function respondWithEmpty(response, isPublic = false) {
     response.json({
         response_type: isPublic ? 'in_channel' : 'ephemeral '
     })
@@ -127,6 +137,8 @@ async function getUserBySlackId(userId) {
         if (error === 'NotFound') {
             return null
         }
+
+        logger.error('Slack - error while trying to user by slack id from db', error)
 
         throw error
     }
@@ -142,39 +154,54 @@ async function getTeam(teamId) {
             return null
         }
 
+
+        logger.error('Slack - error while trying to get slack team from db', error)
+
         throw error
     }
 }
 
 async function getSlackUserFromIMId(team, channelId) {
-    const client = new WebClient(team.accessToken)
-    const ims = await client.im.list()
-    const toUserId = head(ims.ims.filter(im => im.id === channelId)).user
-    const toUserName = (await client.users.info(toUserId)).user.name
 
-    const toUser = {
-        id: toUserId,
-        type: UserTypes.SLACK.key,
-        displayName: toUserName
+    try {
+        const client = new WebClient(team.accessToken)
+        const ims = await client.im.list()
+        const toUserId = head(ims.ims.filter(im => im.id === channelId)).user
+        const toUserName = (await client.users.info(toUserId)).user.name
+
+        const toUser = {
+            id: toUserId,
+            type: UserTypes.SLACK.key,
+            displayName: toUserName
+        }
+
+        return toUser
+    } catch (error) {
+        logger.error('Slack - error while trying to get slack user from IM', error)
+        throw error
     }
-
-    return toUser
 }
 
 async function getSlackUserFromMention(team, mention) {
-    const username = mention.substring(1)
 
-    const client = new WebClient(team.accessToken)
-    const users = await client.users.list()
-    const toUser = head(users.members.filter(user => user.name === username))
+    try {
+        const username = mention.substring(1)
 
-    if (!toUser)
-        return null
+        const client = new WebClient(team.accessToken)
+        const users = await client.users.list()
+        const toUser = head(users.members.filter(user => user.name === username))
 
-    return {
-        id: toUser.id,
-        type: UserTypes.SLACK.key,
-        displayName: toUser.name
+        if (!toUser)
+            return null
+
+        return {
+            id: toUser.id,
+            type: UserTypes.SLACK.key,
+            displayName: toUser.name
+        }
+    } catch(error) {
+        logger.error('Slack - error while trying to get slack user from mention', error)
+        throw error
     }
 }
 
