@@ -13,8 +13,8 @@
     "init-demo": "babel-node scripts/init-demo-db.js --presets babel-async-preset",
     "dev": "nodemon --watch src/server src/server/index.js --exec babel-node --presets babel-async-preset",
     "generate": "node scripts/generate-actions.js",
-    "build": "cd scripts && build",
-    "postinstall": "cd scripts && postinstall",
+    "build": "bash ./scripts/build",
+    "postinstall": "bash ./scripts/postinstall",
     "lint": "./node_modules/.bin/eslint ."
   },
   "repository": {
