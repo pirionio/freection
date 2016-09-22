@@ -1,6 +1,7 @@
 import {Router} from 'express'
 
 import token from '../../shared/utils/token-strategy'
+import GeneralRoute from './general-route'
 import NewRoute from './new-route'
 import ThingRoute from './thing-route'
 import EventRoute from './event-route'
@@ -11,6 +12,7 @@ import ContactsRoute from './contacts-route'
 const router = Router()
 
 router.use('/', token.auth())
+router.use('/general', GeneralRoute)
 router.use('/new', NewRoute)
 router.use('/things', ThingRoute)
 router.use('/events', EventRoute)

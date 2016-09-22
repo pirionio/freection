@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import ThingStatus from '../../../common/enums/thing-status'
 import * as ThingPageActions from '../../actions/thing-page-actions'
 import * as ThingHelper from '../../helpers/thing-helper'
-import PreviewItem, { PreviewItemUser, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
+import PreviewItem, {PreviewItemStatus, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
 import {ThingPreviewText} from '../Preview/Thing'
 import ToDoActionsBar from './ToDoActionsBar'
 import styleVars from '../style-vars'
@@ -43,9 +43,9 @@ class TodoPreviewItem extends Component {
                          date={thing.createdAt}
                          expandedMessages={this.getExpandedMessages()}
                          onClick={() => dispatch(ThingPageActions.showThingPage(thing))}>
-                <PreviewItemUser>
+                <PreviewItemStatus>
                     <strong>{thing.creator.displayName}</strong>
-                </PreviewItemUser>
+                </PreviewItemStatus>
                 <PreviewItemText>{textPreview}</PreviewItemText>
                 <PreviewItemActions>
                     <ToDoActionsBar thing={thing}/>
