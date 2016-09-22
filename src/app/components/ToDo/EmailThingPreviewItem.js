@@ -1,14 +1,12 @@
 import React, {PropTypes, Component} from 'react'
+import {connect} from 'react-redux'
 import useSheet from 'react-jss'
 import classAutobind from 'class-autobind'
 
 import PreviewItem, { PreviewItemUser, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
 import GithubActionsBar from './GithubActionsBar'
-import TextTruncate from '../UI/TextTruncate'
 import ThingStatus from '../../../common/enums/thing-status'
 import styleVars from '../style-vars'
-import Flexbox from '../UI/Flexbox'
-import TextSeparator from '../UI/TextSeparator'
 
 class EmailThingPreviewItem extends Component {
     constructor(props) {
@@ -33,8 +31,8 @@ class EmailThingPreviewItem extends Component {
     }
 
     getEmailUrl() {
-        const {thing} = this.props
-        return `https://mail.google.com/mail/u/${thing.creator.payload.email}/#inbox/${thing.payload.threadIdHex}`
+        const {thing, currentUser} = this.props
+        return `https://mail.google.com/mail/u/${currentUser.email}/#inbox/${thing.payload.threadIdHex}`
     }
 
     render() {
@@ -63,7 +61,14 @@ const style = {
 }
 
 EmailThingPreviewItem.propTypes = {
-    thing: PropTypes.object.isRequired
+    thing: PropTypes.object.isRequired,
+    currentUser: PropTypes.object.isRequired
 }
 
-export default useSheet(EmailThingPreviewItem, style)
+function mapStateToProps(state) {
+    return {
+        currentUser: state.auth
+    }
+}
+
+export default useSheet(connect(mapStateToProps)(EmailThingPreviewItem), style)
