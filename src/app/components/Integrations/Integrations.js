@@ -33,7 +33,8 @@ const style = {
     },
     link: {
         color: 'black',
-        fontSize: '1.4em'
+        fontSize: '1.4em',
+        marginBottom: 15,
     },
     icon: {
         marginRight: 10
