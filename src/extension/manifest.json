@@ -15,6 +15,7 @@
       ],
       "js": [
         "lib/inboxsdk.js",
+        "lib/chrome-storage-promise.js",
         "src/loader.js"
       ],
       "run_at": "document_end"
@@ -34,7 +35,8 @@
     "storage"
   ],
   "web_accessible_resources": [
-    "images/do.png"
+    "images/do.png",
+    "images/do-disabled.png"
   ],
   "manifest_version": 2
 }

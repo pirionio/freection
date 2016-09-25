@@ -39,6 +39,17 @@ export function getFollowUps(user) {
         })
 }
 
+export function getEmailThings(user) {
+    return Thing.getUserToDos(user.id)
+        .then(emailThings => emailThings
+            .filter(thing => thing.type === EntityTypes.EMAIL_THING.key)
+            .map(thing => thingToDto(thing, user)))
+        .catch(error => {
+            logger.error(`error while fetching email things for user ${user.email}`, error)
+            throw error
+        })
+}
+
 export function getThing(user, thingId) {
     return Thing.getFullThing(thingId)
         .then(thing => thingToDto(thing, user))

@@ -26,6 +26,12 @@ router.get('/followups', (request, response) => {
     })
 })
 
+router.get('/emailthings', (request, response) => {
+    EndpointUtil.handleGet(request, response, ThingService.getEmailThings, {
+        type: 'Email Things'
+    })
+})
+
 router.get('/:thingId', (request, response) => {
     EndpointUtil.handleGet(request, response, ThingService.getThing, {
         type: 'thing',
