@@ -7,6 +7,7 @@ import {Event, MailNotification} from '../shared/models'
 import logger from '../shared/utils/logger'
 import {eventToDto} from '../shared/application/transformers'
 import SharedConstants from '../../common/shared-constants'
+import {crash} from '../shared/utils/graceful-shutdown'
 
 export function configure(app) {
     const io = SocketIO(app.server, {path: '/push'})
@@ -31,6 +32,7 @@ export function configure(app) {
             .then(auditChanges)
             .catch(error => {
                 logger.error('Error reading changes from the DB:', error)
+                crash()
             })
     }
 
@@ -39,6 +41,7 @@ export function configure(app) {
             .then(auditMailNotifications)
             .catch(error => {
                 logger.error('Error reading mail notifications from the DB:', error)
+                crash()
             })
     }
 
@@ -46,6 +49,7 @@ export function configure(app) {
         changes.each((error, doc) => {
             if (error) {
                 logger.error('Error reading changes from the DB:', error)
+                crash()
             } else {
                 auditEvent(doc)
             }
@@ -56,6 +60,7 @@ export function configure(app) {
         changes.each((error, doc) => {
             if (error) {
                 logger.error('Error reading changes from the DB:', error)
+                crash()
             } else {
                 // TODO: we might want to emit a different notification on update
                 if (doc.type === 'NEW' || doc.type === 'UPDATE')

@@ -12,15 +12,20 @@ process.on('SIGINT', () => {
     cleanUp()
 })
 
-function cleanUp() {
+function cleanUp(code = 0) {
     const promises = cleanupCallbacks.map(callback => callback())
 
     Promise.all(promises)
         .then(() => {
             logger.info('shutting-down')
 
-            process.exit()
+            process.exit(code)
         })
+}
+
+export function crash(reason = '') {
+    logger.warn(`crashing process ${reason}`)
+    cleanUp(1)
 }
 
 export function registerCleanupCallback(callback) {
