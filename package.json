@@ -14,6 +14,7 @@
     "dev": "nodemon --watch src/server src/server/index.js --exec babel-node --presets babel-async-preset",
     "generate": "node scripts/generate-actions.js",
     "build": "bash ./scripts/build",
+    "watch-babel": "babel --watch src -d dist --presets react,babel-async-preset --copy-files",
     "postinstall": "bash ./scripts/postinstall",
     "lint": "./node_modules/.bin/eslint ."
   },
