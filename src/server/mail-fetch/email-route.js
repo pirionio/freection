@@ -35,7 +35,7 @@ router.post('/:emailThreadId/do', (request, response) => {
 router.post('/do', (request, response) => {
     EndpointUtil.handlePost(request, response, EmailService.doEmail, {
         body: ['emailData', 'isHex'],
-        result: true,
+        result: false,
         errorTemplates: {
             general: 'Error while creating a thing from email'
         }

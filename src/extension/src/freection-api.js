@@ -1,19 +1,11 @@
+const ResourceUtil = require('../../app/util/resource-util')
+
 function getUser(options) {
-    return fetch(options.baseUrl + '/api/general/user', {
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        credentials: 'include'
-    }).then(response => response.json())
+    return ResourceUtil.get(options.baseUrl + '/api/general/user')
 }
 
 function getEmailThings(options) {
-    return fetch(options.baseUrl + '/api/things/emailthings', {
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        credentials: 'include'
-    }).then(response => response.json())
+    return ResourceUtil.get(options.baseUrl + '/api/things/emailthings')
 }
 
 function doEmail(options, threadRowView) {
@@ -29,20 +21,13 @@ function createThing(options, threadRowView) {
     // The API of Freection needs to be notified about it, because it essentially works with IMAP which expects decimal values.
     const url = options.baseUrl + '/emails/api/do'
 
-    return fetch(url, {
-        method: 'POST',
-        body: JSON.stringify({
-            isHex: true,
-            emailData: {
-                threadId: threadId,
-                subject: subject,
-                recipients: contacts
-            }
-        }),
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        credentials: 'include'
+    return ResourceUtil.post(url, {
+        isHex: true,
+        emailData: {
+            threadId: threadId,
+            subject: subject,
+            recipients: contacts
+        }
     })
 }
 
