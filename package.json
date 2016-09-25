@@ -68,6 +68,7 @@
     "jss-nested": "2.1.0",
     "jss-vendor-prefixer": "3.0.0",
     "juice": "2.0.0",
+    "kefir": "3.5.1",
     "lodash": "4.13.1",
     "mailparser": "0.6.1",
     "node-cache": "3.2.1",
