@@ -5,10 +5,23 @@ import GoogleImapConnection from './google-imap-connection'
 import config from '../../config/google-oauth'
 import promisify from '../promisify'
 import logger from '../logger'
+import {registerCleanupCallback} from '../graceful-shutdown'
 
 const connectionCache = new NodeCache({ stdTTL: 30 * 60, useClones: false})
 
 connectionCache.on('del', onDeleted)
+
+registerCleanupCallback(() => {
+    logger.info('Connection Cache - application is shutting-down, gracefully destroying all connections')
+
+    const keys = connectionCache.keys()
+    const promises = keys.map(key => connectionCache.get(key).close())
+
+    connectionCache.close()
+
+    return Promise.all(promises)
+        .then(() => logger.info('Connection Cache - closed'))
+})
 
 function onDeleted(email, connection) {
     logger.info(`connection cache - closing connection for ${email}`)

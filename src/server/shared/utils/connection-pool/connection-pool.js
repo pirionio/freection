@@ -1,18 +1,21 @@
 import OAuth2 from 'google-auth-library/lib/auth/oauth2client'
 import {Pool} from 'generic-pool'
 import autobind from 'class-autobind'
-import {forOwn} from 'lodash'
+import {values} from 'lodash'
 
 import config from '../../config/google-oauth'
 import {User} from '../../models'
 import promisify from '../promisify'
 import logger from '../logger'
+import {registerCleanupCallback} from '../graceful-shutdown'
 
 export default class ConnectionPool {
     constructor(connectionCreator, options) {
         this._connectionCreator = connectionCreator
         this._options = options
         this._userConnectionPools = {}
+        this._draining = false
+        this._drainingPromises = []
 
         autobind(this, ConnectionPool.prototype)
 
@@ -45,7 +48,9 @@ export default class ConnectionPool {
                 this.establishConnection(user).then(connection => callback(null, connection))
             },
             destroy: connection => {
-                connection.close()
+                const promise = connection.close()
+                if (this._draining)
+                    this._drainingPromises.push(promise)
             },
             max: 1,
             idleTimeoutMillis: this._options.maxAllowedIdleTime
@@ -122,23 +127,32 @@ export default class ConnectionPool {
         }
     }
 
-    drainAll() {
-        forOwn(this._userConnectionPools, userPool => {
-            userPool.pool && userPool.pool.drain(() => {
-                userPool.pool.destroyAllNow()
-            })
+    drainUserPool(userPool) {
+        return new Promise(resolve => {
+            if (userPool.pool)
+                userPool.pool.drain(() => userPool.pool.destroyAllNow(() => resolve()))
+            else
+                resolve()
         })
     }
 
-    registerDrainAll() {
-        process.on('SIGTERM', () => {
-            logger.info('Connection Pool - application got SIGTERM, gracefully destroying all connections')
-            this.drainAll()
-        })
+    drainAll() {
+        return new Promise(resolve => {
+            this._draining = true
 
-        process.on('SIGINT', () => {
-            logger.info('Connection Pool - application got SIGINT, gracefully destroying all connections')
-            this.drainAll()
+            const promises = values(this._userConnectionPools).map(this.drainUserPool)
+
+            Promise.all(promises)
+                .then(() => Promise.all(this._drainingPromises))
+                .then(() => resolve())
+        })
+            .then(() => logger.info('Connection Pool - closed'))
+    }
+
+    registerDrainAll() {
+        registerCleanupCallback(() => {
+            logger.info('Connection Pool - application is shutting-down, gracefully destroying all connections')
+            return this.drainAll()
         })
     }
 }
