@@ -1,7 +1,7 @@
 {
   "name": "Freection",
   "description": "Freection Chrome Extension",
-  "version": "0.1",
+  "version": "0.2",
   "browser_action": {
     "default_icon": "images/extension-icon-19.png",
     "default_popup": "popup.html",
@@ -15,7 +15,6 @@
       ],
       "js": [
         "lib/inboxsdk.js",
-        "lib/chrome-storage-promise.js",
         "src/loader.js"
       ],
       "run_at": "document_end"
