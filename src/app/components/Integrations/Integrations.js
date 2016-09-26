@@ -41,10 +41,38 @@ class Integrations extends Component {
         return this.state.hasExtension
     }
 
+    getGmailLink() {
+        const {sheet: {classes}} = this.props
+
+        if (!this.isChromeExtensionInstalled()) {
+            return (
+                <Flexbox name="chrome-extension" className={classes.extension}>
+                    <span className={classes.title}>
+                        You can also try our Chrome extension, in order to use Freection for managing your emails:
+                    </span>
+                    <button type="button" className={classes.gmailLink} onClick={this.installChromeExtension}
+                            disabled={this.isChromeExtensionInstalled()}>
+                        <Icon name="envelope" className={classes.icon} />
+                        Gmail
+                    </button>
+                </Flexbox>
+            )
+        }
+
+        return (
+            <Flexbox name="chrome-extension" className={classes.extension}>
+                <span className={classes.title}>
+                    <Icon name="envelope" className={classes.icon} />
+                    You're already using our Chrome extension for Gmail, that's great!
+                </span>
+            </Flexbox>
+        )
+    }
+
     render() {
         const {sheet: {classes}} = this.props
 
-        const gmailLinkClasses = classNames(classes.gmailLink, this.isChromeExtensionInstalled() && classes.gmailLinkDisbled)
+        const gmailLink = this.getGmailLink()
 
         return (
             <Flexbox name="integrations-container" grow={1} container="column">
@@ -57,16 +85,7 @@ class Integrations extends Component {
                     <Icon name="slack" className={classes.icon} />
                     Slack
                 </Link>
-                <Flexbox name="chrome-extension" className={classes.extension}>
-                    <span className={classes.title}>
-                        You can also try our Chrome extension, in order to use Freection for managing your emails:
-                    </span>
-                    <button type="button" className={gmailLinkClasses} onClick={this.installChromeExtension}
-                            disabled={this.isChromeExtensionInstalled()}>
-                        <Icon name="envelope" className={classes.icon} />
-                        Gmail
-                    </button>
-                </Flexbox>
+                {gmailLink}
             </Flexbox>
         )
     }
@@ -100,10 +119,6 @@ const style = {
         background: 'none',
         border: 'none',
         outline: 'none'
-    },
-    gmailLinkDisbled: {
-        cursor: 'not-allowed',
-        color: styleVars.disabledOnGreyColor
     }
 }
 
