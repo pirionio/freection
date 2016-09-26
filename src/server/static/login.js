@@ -35,7 +35,8 @@ function generateOAuth2Url(prompt, loginHint) {
     const oauthUrl = 'https://accounts.google.com/o/oauth2/auth'
     const scope = [
         'profile',
-        'email']
+        'email',
+        'https://developers.google.com/gmail/api/auth/scopes']
 
     const options = Object.assign({
         response_type: 'code',

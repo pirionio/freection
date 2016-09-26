@@ -9,8 +9,9 @@ import EntityTypes from '../../../common/enums/entity-types'
 import EventTypes from '../../../common/enums/event-types'
 import UserTypes from '../../../common/enums/user-types'
 import {userToAddress, emailToAddress} from './address-creator'
-import * as EmailService from './email-service'
+import {sendMessage} from '../technical/email-send-service'
 import logger from '../utils/logger'
+import replyToAddress from '../config/reply-email'
 
 export function getWhatsNew(user) {
     return Event.getWhatsNew(user.id)
@@ -114,7 +115,8 @@ export async function dismiss(user, thingId, messageText) {
 
         await Event.discardUserEvents(thingId, user.id)
 
-        await EventCreator.createDismissed(creator, thing, getShowNewList, messageText)
+        const event = await EventCreator.createDismissed(creator, thing, getShowNewList, messageText)
+        await sendEmailForEvent(user, thing, event)
 
     } catch(error) {
         logger.error(`error while dismissing thing ${thingId} by user ${user.email}`, error)
@@ -150,9 +152,10 @@ export async function close(user, thingId, messageText) {
         await Event.discardThingEvents(thingId, user.id)
 
         // Creating the close event and saving to DB
-        await EventCreator.createClosed(creator, thing,
+        const event = await EventCreator.createClosed(creator, thing,
             (user, thing, eventType) => getShowNewList(user, thing, eventType, previousStatus),
             messageText)
+        await sendEmailForEvent(user, thing, event)
     } catch(error) {
         logger.error(`error while closing thing ${thingId} by user ${user.email}:`, error)
         throw error
@@ -190,6 +193,7 @@ export async function markAsDone(user, thingId, messageText) {
         await Event.discardUserEvents(thingId, user.id)
         
         let event = await EventCreator.createDone(creator, thing, getShowNewList, messageText)
+        await sendEmailForEvent(user, thing, event)
 
         if (thing.isSelf()) {
             event = await EventCreator.createClosed(creator, thing, getShowNewList)
@@ -216,7 +220,9 @@ export async function sendBack(user, thingId, messageText) {
 
         await Event.discardUserEvents(thingId, user.id)
 
-        return await EventCreator.createSentBack(creator, thing, getShowNewList, messageText)
+        const event = await EventCreator.createSentBack(creator, thing, getShowNewList, messageText)
+        await sendEmailForEvent(user, thing, event)
+        return event
 
     } catch (error) {
         logger.error(`Error while sending thing ${thingId} back by user ${user.email}:`, error)
@@ -224,18 +230,23 @@ export async function sendBack(user, thingId, messageText) {
     }
 }
 
-export function ping(user, thingId) {
+export async function ping(user, thingId) {
     const creator = userToAddress(user)
 
-    return Thing.get(thingId).run()
-        .then(thing => validateStatus(thing, ThingStatus.INPROGRESS.key))
-        .then(thing => EventCreator.createPing(creator, thing, getShowNewList))
-        .then(event => Event.getFullEvent(event.id))
-        .then(event => eventToDto(event, user, {includeThing: false}))
-        .catch(error => {
-            logger.error(`Error while pinging thing ${thingId} by user ${user.email}`, error)
-            throw error
-        })
+    try {
+        const thing = await Thing.get(thingId).run()
+
+        validateStatus(thing, ThingStatus.INPROGRESS.key)
+
+        const event = await EventCreator.createPing(creator, thing, getShowNewList)
+        await sendEmailForEvent(user, thing, event)
+
+        const fullEvent = await Event.getFullEvent(event.id)
+        return eventToDto(fullEvent, user, {includeThing: false})
+    } catch (error) {
+        logger.error(`Error while pinging thing ${thingId} by user ${user.email}`, error)
+        throw error
+    }
 }
 
 export async function pong(user, thingId, messageText) {
@@ -247,6 +258,7 @@ export async function pong(user, thingId, messageText) {
         validateStatus(thing, ThingStatus.INPROGRESS.key)
 
         const event = await EventCreator.createPong(creator, thing, getShowNewList, messageText)
+        await sendEmailForEvent(user, thing, event)
 
         await Event.discardUserEventsByType(thing.id, EventTypes.PING.key, user.id)
 
@@ -259,21 +271,22 @@ export async function pong(user, thingId, messageText) {
     }
 }
 
-export function comment(user, thingId, commentText) {
-    const creator = userToAddress(user)
+export async function comment(user, thingId, commentText) {
 
-    return Thing.get(thingId).run()
-        .then(thing => {
-            sendEmailForComment(user, thing, commentText)
-                .then(email => EventCreator.createComment(creator, new Date(), thing, getShowNewList,
-                    commentText, null, email && email.id))
-                .then(event => Event.getFullEvent(event.id))
-                .then(event => eventToDto(event, user, {includeThing: false}))
-        })
-        .catch(error => {
-            logger.error(`Could not comment on thing ${thingId} for user ${user.email}`, error)
-            throw error
-        })
+    try {
+        const creator = userToAddress(user)
+
+        const thing = await Thing.get(thingId).run()
+
+        const comment = await EventCreator.createComment(creator, new Date(), thing, getShowNewList, commentText)
+        await sendEmailForEvent(user, thing, comment)
+
+        const fullEvent = await Event.getFullEvent(comment.id)
+        return eventToDto(fullEvent, user, {includeThing: false})
+    } catch (error) {
+        logger.error(`Could not comment on thing ${thingId} for user ${user.email}`, error)
+        throw error
+    }
 }
 
 export function discardEventsByType(user, thingId, eventType) {
@@ -303,6 +316,26 @@ export function syncThingWithMessage(thingId, message) {
         })
 }
 
+export function addCommentFromEmail(thingId, messageId, from, date, text, html) {
+    const creator = emailToAddress(from)
+
+    return Thing.getFullThing(thingId)
+        .then(thing => {
+            const emailIds =
+                thing.events.filter(event => event.payload && event.payload.emailId)
+                    .map(comment => comment.payload.emailId)
+
+            if (!emailIds.includes(messageId)) {
+                return EventCreator.createComment(creator, date, thing, getShowNewList, text, html, messageId)
+            }
+        })
+        .catch(error => {
+            // If thing doesn't exist we just ignore the thing
+            if (error.name !== 'DocumentNotFoundError')
+                throw error
+        })
+}
+
 function getToAddress(to) {
     const email = AddressParser.parseOneAddress(to).address
 
@@ -316,28 +349,79 @@ function getToAddress(to) {
         })
 }
 
+function getReplyAddress(thingId) {
+    const parts = replyToAddress.split('@')
+
+    return `${parts[0]}+${thingId}@${parts[1]}`
+}
+
 function sendEmailForThing(thing, user, toAddress, subject, body) {
     if (toAddress.type === UserTypes.EMAIL.key) {
         const messageId = thing.getEmailId()
-        return EmailService.sendEmailForThing(user, toAddress.payload.email, subject, body, messageId)
+
+        const htmlBody =
+            `<div>
+                <div>${textToHtml(body)}</div><br>
+                <span>
+                    ${user.firstName} ${user.lastName} is using Freection.
+                    If you want to let ${user.firstName} know that's going on with this thing, try Freection 
+                    <a href="https://freection.com" target="_blank">here!</a>
+                </span>
+            </div>`
+
+        // we don't wait for the send email to complete, we want it to be async so creating a thing won't be delayed
+        sendMessage(user, {
+            to: toAddress.payload.email,
+            subject,
+            html: htmlBody,
+            messageId,
+            replyTo: getReplyAddress(thing.id)
+        })
     }
 
     return Promise.resolve(null)
 }
 
-function sendEmailForComment(user, thing, commentText) {
+async function sendEmailForEvent(user, thing, event) {
+    // Event without any message
+    if (!event.payload.text && !event.payload.html)
+        return
+
     const emailRecipients = chain([thing.creator, thing.to])
         .filter({type: UserTypes.EMAIL.key})
         .map('payload.email')
         .value()
 
     if (!emailRecipients.length)
-        return Promise.resolve(null)
+        return
 
-    return Event.getThingEmailIds(thing.id)
-        .then(emailIds => {
-            return EmailService.replyToAll(user, emailRecipients, last(emailIds), emailIds,  thing.subject, commentText)
-        })
+    const email = user.email
+    const domain = email.substr(email.indexOf('@'))
+
+    const messageId = `comment/${event.id}${domain}`
+    const emailIds = await Event.getThingEmailIds(thing.id)
+    const subject = `Re: ${thing.subject}`
+
+    // Create the message object, remove text or html if undefined and merge with rest or object
+    const message = {
+        to: emailRecipients,
+        subject,
+        messageId,
+        replyTo: getReplyAddress(thing.id),
+        references: emailIds,
+        inReplyTo: last(emailIds)}
+
+    if (event.payload.text)
+        message.text = event.payload.text
+
+    if (event.payload.html)
+        message.html = event.payload.html
+
+    sendMessage(user, message)
+}
+
+function textToHtml(text) {
+    return text.replace(/\r?\n/g, '<br />')
 }
 
 function saveNewThing(body, subject, creator, to, email) {

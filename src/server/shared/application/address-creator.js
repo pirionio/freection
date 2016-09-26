@@ -28,7 +28,7 @@ export function emailToAddress(email, name) {
         displayName = `<${address.address}>`
 
     return {
-        id: email,
+        id: address.address,
         type: UserTypes.EMAIL.key,
         payload: {
             email: address.address
