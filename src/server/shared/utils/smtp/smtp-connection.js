@@ -37,6 +37,14 @@ export default class SmtpConnection {
         })
     }
 
+    sendMessage(message) {
+        const messageWithFrom = message.from ? message : Object.assign({}, message, {
+            from: createFromAddress(this._user)
+        })
+
+        return this._transport.sendMailAsync(messageWithFrom)
+    }
+
     replyToAll(to, inReplyTo, references, subject, messageText, messageHtml) {
         return this._transport.sendMailAsync({
             from: createFromAddress(this._user),

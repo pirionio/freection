@@ -108,9 +108,9 @@ async function delayRespondWith(url, text, isPublic = false) {
 
     try {
         await post(url, {
-            response_type: isPublic ? 'in_channel' : 'ephemeral ',
+            response_type: isPublic ? 'in_channel' : 'ephemeral',
             text: text
-        })
+        }, {responseType: 'text'})
     }
     catch (error) {
         logger.error('Slack - Error while sending delay response to /thing command', error)

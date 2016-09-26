@@ -5,15 +5,16 @@ import App from './components/App/App'
 import MainApp from './components/MainApp/MainApp'
 import WhatsNew from './components/WhatsNew/WhatsNew'
 import UnreadNotifications from './components/WhatsNew/UnreadNotifications'
-import UnreadEmails from './components/Emails/UnreadEmails'
 import ToDo from './components/ToDo/ToDo'
 import FollowUp from './components/FollowUp/FollowUp'
 import Integrations from './components/Integrations/Integrations'
 import Github from './components/Github/Github'
 import Slack from './components/Slack/Slack'
 import FullThing from './components/Thing/FullThing'
-import FullEmail from './components/Emails/FullEmail'
 import Board from './components/Board/Board'
+
+// import UnreadEmails from './components/Emails/UnreadEmails'
+// import FullEmail from './components/Emails/FullEmail'
 
 const routes = (
     <Route path="/" component={App}>
@@ -24,9 +25,11 @@ const routes = (
                 <Route path="things" component={UnreadNotifications}>
                     <Route path=":thingId" component={FullThing} />
                 </Route>
-                <Route path="emails" component={UnreadEmails}>
-                    <Route path=":emailThreadId" component={FullEmail} />
-                </Route>
+                {/*
+                    <Route path="emails" component={UnreadEmails}>
+                        <Route path=":emailThreadId" component={FullEmail}/>
+                    </Route>
+                */}
             </Route>
             <Route path="todo" component={ToDo}>
                 <Route path=":thingId" component={FullThing} />
