@@ -1,29 +1,50 @@
-import React, {Component} from 'react'
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
 import useSheet from 'react-jss'
 import Icon from 'react-fontawesome'
 import classAutobind from 'class-autobind'
+import classNames from 'classnames'
 
 import Flexbox from '../UI/Flexbox'
 import Link from '../UI/Link'
+import styleVars from '../style-vars'
 
 class Integrations extends Component {
     constructor(props) {
         super(props)
         classAutobind(this, Integrations.prototype)
+
+        this.state = {
+            hasExtension: false
+        }
+    }
+
+    componentWillMount() {
+        const {config} = this.props
+
+        // This is the way to communicate with the Chrome Extension.
+        // It is risky, since we accept messages from outside, so we accept only messages from our same origin.
+        window.addEventListener('message', event => {
+            if (event.origin === config.baseUrl) {
+                this.setState({hasExtension: true})
+            }
+        }, false)
     }
 
     installChromeExtension() {
-        console.log('installChromeExtension')
-        chrome.webstore.install('', () => {
-            console.log('success')
-        },
-        error => {
-            console.log('error:', error)
-        })
+        if (!this.isChromeExtensionInstalled()) {
+            chrome.webstore.install()
+        }
+    }
+
+    isChromeExtensionInstalled() {
+        return this.state.hasExtension
     }
 
     render() {
         const {sheet: {classes}} = this.props
+
+        const gmailLinkClasses = classNames(classes.gmailLink, this.isChromeExtensionInstalled() && classes.gmailLinkDisbled)
 
         return (
             <Flexbox name="integrations-container" grow={1} container="column">
@@ -40,7 +61,8 @@ class Integrations extends Component {
                     <span className={classes.title}>
                         You can also try our Chrome extension, in order to use Freection for managing your emails:
                     </span>
-                    <button type="button" className={classes.gmailLink} onClick={this.installChromeExtension}>
+                    <button type="button" className={gmailLinkClasses} onClick={this.installChromeExtension}
+                            disabled={this.isChromeExtensionInstalled()}>
                         <Icon name="envelope" className={classes.icon} />
                         Gmail
                     </button>
@@ -78,7 +100,21 @@ const style = {
         background: 'none',
         border: 'none',
         outline: 'none'
+    },
+    gmailLinkDisbled: {
+        cursor: 'not-allowed',
+        color: styleVars.disabledOnGreyColor
     }
 }
 
-export default useSheet(Integrations, style)
+Integrations.propTypes = {
+    config: PropTypes.object.isRequired
+}
+
+function mapStateToProps(state) {
+    return {
+        config: state.config
+    }
+}
+
+export default useSheet(connect(mapStateToProps)(Integrations), style)

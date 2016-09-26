@@ -3,6 +3,7 @@ import path from 'path'
 import express from 'express'
 import jwt from 'jsonwebtoken'
 
+import SharedConstants from '../../common/shared-constants'
 import {isDemo} from '../shared/config/demo'
 import tokenConfig from '../shared/config/token'
 import logger from '../shared/utils/logger'
@@ -117,6 +118,7 @@ function getAuthState(request) {
 
 function getConfig() {
     return {
-        isDemo: isDemo
+        isDemo: isDemo,
+        baseUrl: process.env.FREECTION_HOST || SharedConstants.DEFAULT_BASE_URL
     }
 }

@@ -11,7 +11,11 @@
     {
       "matches": [
         "https://mail.google.com/*",
-        "https://inbox.google.com/*"
+        "https://inbox.google.com/*",
+        "https://freection.com/*",
+        "https://demo.freection.com/*",
+        "https://freection1.ngrok.io/*",
+        "https://freection2.ngrok.io/*"
       ],
       "js": [
         "lib/inboxsdk.js",

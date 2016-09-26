@@ -4,7 +4,7 @@ const FreectionApi = require('./freection-api')
 let emailThingsTimeout = null
 const threadsStore = new ThreadsStore()
 
-InboxSDK.load('1', 'dminajjlkgaiglfccanighbpkdiojnpg').then(go)
+InboxSDK.load('1', 'sdk_freection_ccfa62bcce').then(go)
 
 function go(sdk) {
 	getOptions().then(options => {

@@ -8,6 +8,7 @@ export default {
     baseBorderColor: '#e0e0e0',
     watermarkColor: 'darkgrey',
     disabledColor: '#f5f4f4',
+    disabledOnGreyColor: '#afafaf',
     baseBlueColor: '#448ccb',
     basePurpleColor: '#7985ce',
     basePinkColor: '#ff3a4e',

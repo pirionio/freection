@@ -20,6 +20,9 @@ module.exports = {
     "settings": {
         "import/ignore": [/\.(png)$/, 'node_modules']
     },
+    "globals": {
+        "chrome": true
+    },
     "rules": {
         "strict": 0,
         "indent": [
