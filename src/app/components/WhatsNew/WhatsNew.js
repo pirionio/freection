@@ -2,15 +2,17 @@ import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import useSheet from 'react-jss'
 
-import Link from '../UI/Link'
 import Flexbox from '../UI/Flexbox'
+
+// import Link from '../UI/Link'
 
 class WhatsNew extends Component {
     render() {
-        const {config, sheet: {classes}} = this.props
+        //const {config, sheet: {classes}} = this.props
+        const { sheet: {classes}} = this.props
 
         // Don't show the menu in demos for now - we to keep emails out of focus.
-        const menu = !config.isDemo ?
+        /*const menu = !config.isDemo ?
             <Flexbox name="whats-new-menu" shrink={0} alignItems="flex-start" className={classes.menu}>
                 <Link to="/whatsnew/things" className={classes.link} activeClassName={classes.activeLink}>
                     Things
@@ -19,11 +21,11 @@ class WhatsNew extends Component {
                     Emails
                 </Link>
             </Flexbox> :
-            null
+            null*/
 
         return (
             <Flexbox name="whats-new-container" grow={1} container="column" className={classes.container}>
-                {menu}
+                { /* menu */ }
                 {this.props.children}
             </Flexbox>
         )
