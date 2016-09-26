@@ -1,4 +1,4 @@
-import {remove, castArray, union, chain, omitBy, isNil, last} from 'lodash'
+import {remove, castArray, union, chain, omitBy, isNil, last, trimStart} from 'lodash'
 import AddressParser from 'email-addresses'
 
 import {Event, Thing, User} from '../models'
@@ -8,6 +8,7 @@ import ThingStatus from '../../../common/enums/thing-status'
 import EntityTypes from '../../../common/enums/entity-types'
 import EventTypes from '../../../common/enums/event-types'
 import UserTypes from '../../../common/enums/user-types'
+import SharedConstants from '../../../common/shared-constants'
 import {userToAddress, emailToAddress} from './address-creator'
 import {sendMessage} from '../technical/email-send-service'
 import logger from '../utils/logger'
@@ -65,12 +66,20 @@ export async function newThing(user, to, subject, body) {
 
     try {
         const toAddress = await getToAddress(to)
-        const thing = await saveNewThing(body, subject, creator, toAddress)
+        const mentions = await getMentions(body)
+        
+        const thing = await saveNewThing(body, subject, creator, toAddress, mentions)
         await EventCreator.createCreated(creator, thing, getShowNewList, body, thing.getEmailId())
 
         if (thing.isSelf()) {
             await EventCreator.createAccepted(creator, thing, getShowNewList)
         }
+
+        mentions.forEach(mention => {
+            if (mention) {
+                EventCreator.createMentioned(creator, thing, () => [mention.id], body)
+            }
+        })
 
         await sendEmailForThing(thing, user, toAddress, subject, body)
 
@@ -424,12 +433,13 @@ function textToHtml(text) {
     return text.replace(/\r?\n/g, '<br />')
 }
 
-function saveNewThing(body, subject, creator, to, email) {
+function saveNewThing(body, subject, creator, to, mentions) {
     // check if thing is self thing (assigned to creator)
     const isSelfThing = creator.id === to.id
     const status = isSelfThing ? ThingStatus.INPROGRESS.key : ThingStatus.NEW.key
     const followUpers = isSelfThing ? [] : [creator.id]
     const doers = isSelfThing ? [creator.id] : []
+    const mentioned = mentions.map(mention => mention.id)
 
     return Thing.save({
         createdAt: new Date(),
@@ -439,37 +449,36 @@ function saveNewThing(body, subject, creator, to, email) {
         subject,
         followUpers,
         doers,
+        mentioned,
         type: EntityTypes.THING.key,
         payload: omitBy({
-            status,
-            emailId: email ? email.id : null
+            status
         }, isNil)
     })
 }
 
 function getShowNewList(user, thing, eventType, previousStatus) {
     if (thing.isSelf())
-        return []
+        return thing.mentioned && thing.mentioned.length ? thing.mentioned : []
 
     switch (eventType) {
         case EventTypes.CREATED.key:
             return getToList(thing)
         case EventTypes.DISMISSED.key:
         case EventTypes.DONE.key:
-            return [thing.creator.id]
+            return [thing.creator.id, ...thing.mentioned]
         case EventTypes.CLOSED.key:
             if ([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(previousStatus))
-                return union(thing.doers, getToList(thing))
-
-            return thing.doers
+                return union(thing.doers, thing.mentioned, getToList(thing))
+            return [...thing.doers, ...thing.mentioned]
         case EventTypes.SENT_BACK.key:
             return union(thing.doers, getToList(thing))
         case EventTypes.COMMENT.key:
-            return union(thing.followUpers, thing.doers, [thing.creator.id]).filter(userId => userId !== user.id)
+            return union(thing.followUpers, thing.doers, thing.mentioned, [thing.creator.id]).filter(userId => userId !== user.id)
         case EventTypes.PING.key:
-            return  [...thing.doers]
+            return  [...thing.doers, ...thing.mentioned]
         case EventTypes.PONG.key:
-            return  [...thing.followUpers]
+            return  [...thing.followUpers, ...thing.mentioned]
         case EventTypes.ACCEPTED.key:
         case EventTypes.CLOSE_ACKED.key:
             return []
@@ -505,4 +514,17 @@ function validateType(thing) {
         throw 'InvalidEntityType'
 
     return thing
+}
+
+async function getMentions(text) {
+    const matches = text.match(SharedConstants.MENTION_REGEX)
+    return Promise.all(matches
+        .map(match => {
+            const username = match.replace(/^\s*@/, '')
+            return User.getUserByUsername(username).catch(error => {
+                if (error === 'NotFound')
+                    return null
+                throw error
+            })
+        }))
 }

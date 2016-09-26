@@ -38,5 +38,9 @@ export default {
     SENT_BACK: {
         key: 'SENT_BACK',
         label: 'Sent back'
+    },
+    MENTIONED: {
+        key: 'MENTIONED',
+        label: 'Mentioned'
     }
 }

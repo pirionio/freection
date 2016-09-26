@@ -21,6 +21,7 @@ const Thing = thinky.createModel('Thing', {
     subject: type.string().required(),
     doers: [type.string()],
     followUpers: [type.string()],
+    mentioned: [type.string()],
     payload: type.object(),
     type: type.string()
 })

@@ -137,3 +137,17 @@ export function createCloseAck(creator, thing, getShowNewList) {
         showNewList: getShowNewList(creator, thing, EventTypes.CLOSE_ACKED.key)
     })
 }
+
+export function createMentioned(creator, thing, getShowNewList, messageText) {
+    return Event.save({
+        thingId: thing.id,
+        eventType: EventTypes.MENTIONED.key,
+        createdAt: new Date(),
+        creator,
+        payload: {
+            text: messageText,
+            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
+        },
+        showNewList: getShowNewList(creator, thing, EventTypes.MENTIONED.key)
+    })
+}

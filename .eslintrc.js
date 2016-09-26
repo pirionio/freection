@@ -49,6 +49,7 @@ module.exports = {
         "eqeqeq": ["error", "smart"],
         "no-else-return": ["error"],
         "no-confusing-arrow": ["error"],
+        "require-yield": 0,
         "react/prop-types":["error", {
             ignore: ["dispatch", "children", "sheet", "params"]
         }],

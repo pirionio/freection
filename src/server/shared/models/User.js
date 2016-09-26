@@ -36,13 +36,14 @@ const User = thinky.createModel('User', {
 
 User.ensureIndex('googleId')
 User.ensureIndex('email')
+User.ensureIndex('username')
+User.ensureIndex('organization')
 User.ensureIndex('githubUserId', doc => {
     return doc('integrations')('github')('userId')
 })
 User.ensureIndex('slackUserId', doc => {
     return doc('integrations')('slack')('userId')
 })
-User.ensureIndex('organization')
 
 User.defineStatic('getUserByGoogleId', function(googleId) {
     return this.getAll(googleId, {index: 'googleId'}).run().then(users => {
@@ -54,7 +55,16 @@ User.defineStatic('getUserByGoogleId', function(googleId) {
 })
 
 User.defineStatic('getUserByEmail', function(email) {
-    return this.getAll(email, {index:'email'}).run().then(users => {
+    return this.getAll(email, {index: 'email'}).run().then(users => {
+        if (users.length === 0)
+            throw 'NotFound'
+
+        return users[0]
+    })
+})
+
+User.defineStatic('getUserByUsername', function(username) {
+    return this.getAll(username, {index: 'username'}).run().then(users => {
         if (users.length === 0)
             throw 'NotFound'
 

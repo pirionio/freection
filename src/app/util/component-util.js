@@ -3,7 +3,7 @@ import find from 'lodash/find'
 import omit from 'lodash/omit'
 
 export function getChildOfType(children, type) {
-    return find(children, child => child.type.name === type.name)
+    return find(children, child => child && child.type && child.type.name === type.name)
 }
 
 export function createSlots(...names) {

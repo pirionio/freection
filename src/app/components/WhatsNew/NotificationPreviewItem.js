@@ -6,7 +6,7 @@ import SharedConstants from '../../../common/shared-constants'
 import EventTypes from '../../../common/enums/event-types'
 import * as ThingPageActions from '../../actions/thing-page-actions'
 import PreviewItem, { PreviewItemStatus, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
-import {CommentPreviewText, PingPreviewText} from '../Preview/Thing'
+import {CommentPreviewText, PingPreviewText, MentionPreviewText} from '../Preview/Thing'
 import NotificationActionsBar from './NotificationActionsBar'
 import TextSeparator from '../UI/TextSeparator'
 import Flexbox from '../UI/Flexbox'
@@ -22,6 +22,10 @@ class NotificationPreviewItem extends Component {
         if (notification.eventType.key === EventTypes.PING.key)
             text = <PingPreviewText />
 
+        else if (notification.eventType.key === EventTypes.MENTIONED.key)
+            text = <MentionPreviewText comment={notification.payload.text}
+                                       newNotifications={notification.payload.newNotifications} />
+                                       
         else if (SharedConstants.MESSAGE_TYPED_EVENTS.includes(notification.eventType.key))
             text = <CommentPreviewText comment={notification.payload.text}
                                        newNotifications={notification.payload.newNotifications} />
@@ -62,6 +66,8 @@ class NotificationPreviewItem extends Component {
                 return <span><strong>{creator.displayName}</strong> sent a thing back</span>
             case EventTypes.CLOSED.key:
                 return <span><strong>{creator.displayName}</strong> closed a thing</span>
+            case EventTypes.MENTIONED.key:
+                return <span><strong>{creator.displayName}</strong> mentioned you</span>
             default:
                 return <span><strong>{creator.displayName}</strong> {notification.eventType.label}</span>
         }
@@ -74,6 +80,7 @@ class NotificationPreviewItem extends Component {
             case EventTypes.COMMENT.key:
             case EventTypes.PING.key:
             case EventTypes.PONG.key:
+            case EventTypes.MENTIONED.key:
                 return styleVars.yellowCircleColor
             case EventTypes.CREATED.key:
             case EventTypes.SENT_BACK.key:

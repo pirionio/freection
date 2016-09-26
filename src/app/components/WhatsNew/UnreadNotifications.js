@@ -45,7 +45,8 @@ class WhatsNew extends Component {
         // We want to aggregate notifications that belong to the very same thing. That's why we grouped them according to Thing.
         forOwn(notificationsByThing, thingNotifications => {
             const commentNotifications = chain(thingNotifications)
-                .filter(notification => [EventTypes.CREATED.key, EventTypes.COMMENT.key].includes(notification.eventType.key))
+                .filter(notification => [EventTypes.CREATED.key, EventTypes.COMMENT.key, EventTypes.MENTIONED.key]
+                    .includes(notification.eventType.key))
                 .sortBy('createdAt')
                 .value()
             const oldest = first(commentNotifications)
@@ -65,7 +66,7 @@ class WhatsNew extends Component {
 
             // Here we add the rest of the notifications.
             aggregatedNotifications.push(...reject(thingNotifications, notification =>
-                [EventTypes.CREATED.key, EventTypes.COMMENT.key].includes(notification.eventType.key)
+                [EventTypes.CREATED.key, EventTypes.COMMENT.key, EventTypes.MENTIONED.key].includes(notification.eventType.key)
             ))
         })
 
