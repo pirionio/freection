@@ -17,13 +17,17 @@ function parseJSON(response) {
     return response.json()
 }
 
+function parseText(response) {
+    return response.text()
+}
+
 export function get(endpoint) {
     return fetch(endpoint, {
         credentials: 'include'
     }).then(checkStatus).then(parseJSON)
 }
 
-export function post(endpoint, body) {
+export function post(endpoint, body, { responseType = 'json'} = {}) {
     return fetch(endpoint, {
         method: 'POST',
         headers: {
@@ -32,5 +36,5 @@ export function post(endpoint, body) {
         },
         credentials: 'include',
         body: JSON.stringify(body)
-    }).then(checkStatus).then(parseJSON)
+    }).then(checkStatus).then(responseType === 'json' ? parseJSON : parseText)
 }
