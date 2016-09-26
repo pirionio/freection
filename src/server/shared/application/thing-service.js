@@ -1,4 +1,4 @@
-import {remove, castArray, union, chain, omitBy, isNil, last, trimStart} from 'lodash'
+import {remove, castArray, union, chain, omitBy, isNil, last, map} from 'lodash'
 import AddressParser from 'email-addresses'
 
 import {Event, Thing, User} from '../models'
@@ -66,20 +66,15 @@ export async function newThing(user, to, subject, body) {
 
     try {
         const toAddress = await getToAddress(to)
-        const mentions = await getMentions(body)
+        const mentionedUsers = await getMentions(body)
         
-        const thing = await saveNewThing(body, subject, creator, toAddress, mentions)
+        const thing = await saveNewThing(body, subject, creator, toAddress, mentionedUsers)
         await EventCreator.createCreated(creator, thing, getShowNewList, body, thing.getEmailId())
+        await createMentionEvents(mentionedUsers, creator, thing, body)
 
         if (thing.isSelf()) {
             await EventCreator.createAccepted(creator, thing, getShowNewList)
         }
-
-        mentions.forEach(mention => {
-            if (mention) {
-                EventCreator.createMentioned(creator, thing, () => [mention.id], body)
-            }
-        })
 
         await sendEmailForThing(thing, user, toAddress, subject, body)
 
@@ -288,6 +283,14 @@ export async function comment(user, thingId, commentText) {
         const thing = await Thing.get(thingId).run()
 
         const comment = await EventCreator.createComment(creator, new Date(), thing, getShowNewList, commentText)
+
+        // It's important to update the mentioned users in the Thing only after generating the Comment event,
+        // because otherwise the new mentioned users will get the Comment event itslef - which they should not yet get -
+        // they should only get the Mentioned event now.
+        const mentionedUsers = await getMentions(commentText)
+        await updateThingMentions(thing, mentionedUsers)
+        await createMentionEvents(mentionedUsers, creator, thing, commentText)
+
         await sendEmailForEvent(user, thing, comment)
 
         const fullEvent = await Event.getFullEvent(comment.id)
@@ -457,6 +460,15 @@ function saveNewThing(body, subject, creator, to, mentions) {
     })
 }
 
+function updateThingMentions(thing, mentionedUsers) {
+    if (!mentionedUsers || !mentionedUsers.length) {
+        return Promise.resolve()
+    }
+
+    thing.mentioned = [...thing.mentioned, ...map(mentionedUsers, 'id')]
+    return thing.save()
+}
+
 function getShowNewList(user, thing, eventType, previousStatus) {
     if (thing.isSelf())
         return thing.mentioned && thing.mentioned.length ? thing.mentioned : []
@@ -518,13 +530,26 @@ function validateType(thing) {
 
 async function getMentions(text) {
     const matches = text.match(SharedConstants.MENTION_REGEX)
-    return Promise.all(matches
-        .map(match => {
-            const username = match.replace(/^\s*@/, '')
+
+    if (!matches || !matches.length)
+        return Promise.resolve([])
+
+    return Promise.all(chain(matches)
+        .map(match => match.replace(/^\s*@/, ''))
+        .uniq()
+        .map(username => {
             return User.getUserByUsername(username).catch(error => {
                 if (error === 'NotFound')
                     return null
                 throw error
             })
-        }))
+        })
+    )
+}
+
+async function createMentionEvents(mentionedUsers, creator, thing, messageText) {
+    Promise.all(mentionedUsers
+        .filter(mention => !!mention)
+        .map(mention => EventCreator.createMentioned(creator, thing, () => [mention.id], messageText))
+    )
 }
