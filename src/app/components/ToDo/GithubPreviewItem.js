@@ -1,7 +1,7 @@
 import React, {PropTypes, Component} from 'react'
 import useSheet from 'react-jss'
 
-import PreviewItem, { PreviewItemUser, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
+import PreviewItem, {PreviewItemStatus, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
 import GithubActionsBar from './GithubActionsBar'
 import TextTruncate from '../UI/TextTruncate'
 import ThingStatus from '../../../common/enums/thing-status'
@@ -52,9 +52,9 @@ class GithubTodoPreviewItem extends Component {
                          title={thing.subject}
                          date={thing.createdAt}
                          onClick={() => window.open(thing.payload.url, '_blank')}>
-                <PreviewItemUser>
+                <PreviewItemStatus>
                     <strong>{thing.creator.displayName}</strong>
-                </PreviewItemUser>
+                </PreviewItemStatus>
                 <PreviewItemText>
                     {this.getTextElement()}
                 </PreviewItemText>
