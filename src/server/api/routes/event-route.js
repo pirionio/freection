@@ -19,7 +19,7 @@ router.post('/:eventId/discard', (request, response) => {
 router.post('/:eventId/markasread', (request, response) => {
     EndpointUtil.handlePost(request, response, EventService.markAsRead, {
         params: ['eventId'],
-        result: true,
+        result: false,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
             general: 'Could not mark event <%=eventId%> as read by user <%=user%>'

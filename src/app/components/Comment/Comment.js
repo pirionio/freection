@@ -28,9 +28,8 @@ class Comment extends Component {
     }
 
     markAsRead() {
-        const {comment, currentUser} = this.props
-
-        this.props.dispatch(ThingCommandActions.markCommentAsRead(comment, currentUser))
+        const {comment} = this.props
+        this.props.dispatch(ThingCommandActions.markCommentAsRead(comment))
     }
 
     getCommentText() {

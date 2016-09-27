@@ -3,7 +3,7 @@ import {ActionStatus} from '../../constants'
 import * as ResourceUtil from '../../util/resource-util'
 import EventTypes from '../../../common/enums/event-types'
 
-export function comment(thingId, commentText) {
+export function _comment(thingId, commentText) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.COMMENT, 
@@ -101,24 +101,30 @@ export function pong(thing, messageText) {
     }
 }
 
-export function markCommentAsRead(comment) {
+export function markCommentAsRead(comment, updateInitialIsRead) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.MARK_COMMENT_AS_READ, 
             status: ActionStatus.START,
-            comment
+            comment,
+            updateInitialIsRead
         })
         return ResourceUtil.post(`/api/events/${comment.id}/markasread`)
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.MARK_COMMENT_AS_READ, 
                 status: ActionStatus.COMPLETE,
-                comment
+                comment: comment,
+                updateInitialIsRead: updateInitialIsRead
             }))
-            .catch(() => dispatch({
-                type: ThingCommandActionsTypes.MARK_COMMENT_AS_READ, 
-                status: ActionStatus.ERROR,
-                comment
-            }))
+            .catch(error => {
+                console.log('error:', error)
+                return dispatch({
+                    type: ThingCommandActionsTypes.MARK_COMMENT_AS_READ,
+                    status: ActionStatus.ERROR,
+                    comment,
+                    updateInitialIsRead
+                })
+            })
     }
 }
 

@@ -14,6 +14,10 @@ export function getUnreadMessages(thing) {
     return filterEventsByRead(thing, false)
 }
 
+export function getInitialUnreadMessages(thing) {
+    return filterEventsByRead(thing, false, 'initialIsRead')
+}
+
 export function getReadMessages(thing) {
     return filterEventsByRead(thing, true)
 }
@@ -22,10 +26,10 @@ export function getLastMessage(thing) {
     return last(getAllMessages(thing))
 }
 
-function filterEventsByRead(thing, isRead) {
+function filterEventsByRead(thing, isRead, isReadField='isRead') {
     return chain(thing.events)
         .filter(event => SharedConstants.MESSAGE_TYPED_EVENTS.includes(event.eventType.key) &&
-                (event.payload.text || event.payload.html) && event.payload.isRead === isRead)
+                (event.payload.text || event.payload.html) && event.payload[isReadField] === isRead)
         .sortBy('createdAt')
         .value()
 }

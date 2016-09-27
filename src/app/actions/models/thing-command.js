@@ -15,7 +15,8 @@ module.exports = {
             completeParams: {
                 thingId: 'thingId',
                 comment: 'result'
-            }
+            },
+            private: true
         },
         {
             name: 'new thing',
@@ -52,9 +53,13 @@ module.exports = {
         },
         {
             name: 'mark comment as read',
-            params: ['comment'],
+            params: ['comment', 'updateInitialIsRead'],
             type: 'post',
-            path: '/api/events/${comment.id}/markasread'
+            path: '/api/events/${comment.id}/markasread',
+            completeParams: {
+                comment: 'comment',
+                updateInitialIsRead: 'updateInitialIsRead'
+            }
         },
         {
             name: 'doThing',

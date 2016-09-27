@@ -143,10 +143,16 @@ function markCommentAsRead(state, action) {
         case ActionStatus.COMPLETE:
             return immutable(state)
                 .touch('thing')
-                .arrayMergeItem('thing.events', {id: action.comment.id}, {
-                    payload: {
-                        isRead: true
+                .arrayMergeItem('thing.events', {id: action.comment.id}, () => {
+                    const result = {
+                        payload: {
+                            isRead: true
+                        }
                     }
+                    if (action.updateInitialIsRead) {
+                        result.payload.initialIsRead = true
+                    }
+                    return result
                 })
                 .value()
         case ActionStatus.START:
