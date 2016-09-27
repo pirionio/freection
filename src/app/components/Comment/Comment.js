@@ -11,6 +11,7 @@ import * as ThingCommandActions from '../../actions/thing-command-actions'
 import Flexbox from '../UI/Flexbox'
 import TextTruncate from '../UI/TextTruncate'
 import styleVars from '../style-vars'
+import textToHtml from '../../../common/util/textToHtml'
 
 class Comment extends Component {
     constructor(props) {
@@ -33,15 +34,14 @@ class Comment extends Component {
     }
 
     getCommentText() {
-        const {comment, sheet: {classes}} = this.props
+        const {comment} = this.props
 
         if (comment.eventType && comment.eventType.key === EventTypes.PING.key)
             return 'Ping!'
 
-        if (comment.payload.html)
-            return this.parseEmailHtml(comment.payload.html)
+        const html = comment.payload.html ? comment.payload.html : textToHtml(comment.payload.text)
 
-        return <pre className={classes.pre}>{comment.payload.text}</pre>
+        return this.parseEmailHtml(html)
     }
 
     parseEmailHtml(html) {
@@ -105,12 +105,6 @@ const style = {
     },
     text: {
         lineHeight: '1.5'
-    },
-    pre: {
-        padding: 0,
-        margin: 0,
-        whiteSpace: 'pre-wrap',
-        fontFamily: 'Roboto, Arial'
     }
 }
 
