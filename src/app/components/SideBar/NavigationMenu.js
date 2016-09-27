@@ -18,9 +18,11 @@ class NavigationMenu extends Component {
 
     getLink({pathname, title, count}) {
         const {classes} = this.props.sheet
+        const {router} = this.context
 
-        const countCircle = count.count ?
-            <Ellipse color={count.color} text={count.count} oval={true} className={classes.circle} /> :
+        const countCircle = count ?
+            <Ellipse color={router.isActive(pathname, false) ? styleVars.highlightColor : styleVars.menuTextColor }
+                     text={count} oval={true} className={classes.circle} /> :
             null
 
         const arrow = window.location.pathname.startsWith(pathname) && <span className={classes.arrow}></span>
@@ -40,28 +42,19 @@ class NavigationMenu extends Component {
 
     getWhatsNewCount() {
         const {config} = this.props
-        
+
         const unreadThingsCount = keys(groupBy(this.props.newNotifications, 'thing.id')).length
         const unreadEmailsCount = keys(groupBy(this.props.newEmails, 'payload.threadId')).length
 
-        return {
-            color: styleVars.highlightColor,
-            count: config.isDemo ? unreadThingsCount : unreadThingsCount + unreadEmailsCount
-    }
+        return config.isDemo ? unreadThingsCount : unreadThingsCount + unreadEmailsCount
     }
 
     getToDoCount() {
-        return {
-            color: styleVars.baseBlueColor,
-            count: this.props.todoThings.length
-        }
+        return this.props.todoThings.length
     }
 
     getFollowUpCount() {
-        return {
-            color: styleVars.basePurpleColor,
-            count: this.props.followUpThings.length
-        }
+        return this.props.followUpThings.length
     }
 
     render() {
@@ -115,11 +108,11 @@ const style = {
         textDecoration: 'none',
         letterSpacing: '0.05em',
         '&:hover': {
-            color: styleVars.highlightColor
+            color: 'white'
         }
     },
     linkActive: {
-        color: 'white'
+        color: styleVars.highlightColor
     },
     circle: {
         width: 30,
@@ -147,6 +140,10 @@ NavigationMenu.propTypes = {
     followUpThings: PropTypes.array.isRequired,
     newEmails: PropTypes.array.isRequired,
     config: PropTypes.object.isRequired
+}
+
+NavigationMenu.contextTypes = {
+    router: PropTypes.object
 }
 
 function mapStateToProps(state) {
