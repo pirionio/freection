@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react'
 import classAutobind from 'class-autobind'
 import useSheet from 'react-jss'
 import {chain} from 'lodash/core'
+import last from 'lodash/last'
 
 import Comment from './Comment'
 import Scrollable from '../Scrollable/Scrollable'
@@ -14,7 +15,7 @@ class CommentList extends Component {
         classAutobind(this, CommentList.prototype)
     }
 
-    componentDidMount() {
+    getScrollToElementId() {
         const {comments} = this.props
 
         const firstUnreadMessage = chain(comments)
@@ -23,11 +24,12 @@ class CommentList extends Component {
             .head()
             .value()
 
-        if (firstUnreadMessage && this._scrollable) {
-            this._scrollable.scrollTo(firstUnreadMessage.id)
-        } else {
-            this._scrollable.scrollToBottom()
+        if (firstUnreadMessage) {
+            return firstUnreadMessage.id
         }
+
+        const lastComment = last(comments)
+        return lastComment && lastComment.id
     }
 
     render() {
@@ -47,16 +49,16 @@ class CommentList extends Component {
 
         if (!unreadComments || !unreadComments.length) {
             return (
-                <Scrollable stickToBottom={true} ref={scrollable => this._scrollable = scrollable}>
+                <Scrollable stickToBottom={true} getScrollToElementId={this.getScrollToElementId}>
                     {readComments}
                 </Scrollable>
             )
         }
 
         return (
-            <Scrollable stickToBottom={true} ref={scrollable => this._scrollable = scrollable}>
+            <Scrollable stickToBottom={true} getScrollToElementId={this.getScrollToElementId}>
                 {readComments}
-                <Flexbox container="row" justifyContent="center" alignItems="center" className={classes.title}>
+                <Flexbox container="row" justifyContent="center" alignItems="center" className={classes.title} key="unrad-title">
                     Unread Messages
                 </Flexbox>
                 {unreadComments}

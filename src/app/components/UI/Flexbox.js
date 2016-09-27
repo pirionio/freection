@@ -3,7 +3,7 @@ import merge from 'lodash/merge'
 
 class Flexbox extends Component {
     render() {
-        const {children, className, style, name, onClick, container} = this.props
+        const {children, className, style, id, name, onClick, container} = this.props
 
         const finalStyle = merge({}, {
             display: container ? 'flex' : undefined,
@@ -17,7 +17,7 @@ class Flexbox extends Component {
         }, style)
 
         return (
-            <div name={name} style={finalStyle} className={className} onClick={onClick}>
+            <div id={id} name={name} style={finalStyle} className={className} onClick={onClick}>
                 {children}
             </div>
         )
@@ -25,6 +25,7 @@ class Flexbox extends Component {
 }
 
 Flexbox.propTypes = {
+    id: PropTypes.string,
     name: PropTypes.string,
     className: PropTypes.string,
     style: PropTypes.object,
