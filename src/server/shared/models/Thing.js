@@ -1,4 +1,5 @@
 import thinky from './thinky'
+import ThingStatus from '../../../common/enums/thing-status'
 
 const type = thinky.type
 
@@ -29,11 +30,15 @@ const Thing = thinky.createModel('Thing', {
 
 Thing.ensureIndex('followUpers', doc => {
     return doc('followUpers')
-}, {multi:true})
+}, {multi: true})
 
 Thing.ensureIndex('doers', doc => {
     return doc('doers')
-}, {multi:true})
+}, {multi: true})
+
+Thing.ensureIndex('mentioned', doc => {
+    return doc('mentioned')
+}, {multi: true})
 
 Thing.ensureIndex('githubIssueId', doc => {
     return thinky.r.branch(doc('type').eq('GITHUB'), doc('payload')('id'), null)
@@ -49,6 +54,10 @@ Thing.defineStatic('getUserFollowUps', function(userId) {
 
 Thing.defineStatic('getUserToDos', function(userId) {
     return this.getAll(userId, {index: 'doers'}).getJoin({events: true}).run()
+})
+
+Thing.defineStatic('getUserMentions', function(userId) {
+    return this.getAll(userId, {index: 'mentioned'}).getJoin({events: true}).run()
 })
 
 Thing.defineStatic('getThingsByGithubIssueId', function(githubIssueId) {

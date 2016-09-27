@@ -62,6 +62,15 @@ export function getThing(user, thingId) {
         })
 }
 
+export function getMentions(user) {
+    return Thing.getUserMentions(user.id)
+        .then(things => things.filter(thing => thing.payload.status !== ThingStatus.CLOSE.key).map(thing => thingToDto(thing, user)))
+        .catch(error => {
+            logger.error(`error while fetching mentions for user ${user.email}`, error)
+            throw error
+        })
+}
+
 export async function newThing(user, to, subject, body) {
     const creator = userToAddress(user)
 

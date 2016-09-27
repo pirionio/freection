@@ -57,6 +57,10 @@ class NavigationMenu extends Component {
         return this.props.followUpThings.length
     }
 
+    getMentionedCount() {
+        return this.props.mentions.length
+    }
+
     render() {
         const {sheet: {classes}} = this.props
 
@@ -75,6 +79,11 @@ class NavigationMenu extends Component {
                 pathname: '/followup',
                 title: 'Follow Up',
                 count: this.getFollowUpCount()
+            },
+            {
+                pathname: '/mentions',
+                title: 'Mentioned',
+                count: this.getMentionedCount()
             }
         ].map(this.getLink)
 
@@ -138,6 +147,7 @@ NavigationMenu.propTypes = {
     newNotifications: PropTypes.array.isRequired,
     todoThings: PropTypes.array.isRequired,
     followUpThings: PropTypes.array.isRequired,
+    mentions: PropTypes.array.isRequired,
     newEmails: PropTypes.array.isRequired,
     config: PropTypes.object.isRequired
 }
@@ -152,6 +162,7 @@ function mapStateToProps(state) {
         newNotifications: state.whatsNew.notifications,
         todoThings: state.toDo.things,
         followUpThings: state.followUps.followUps,
+        mentions: state.mentions.things,
         newEmails: state.unreadEmails.emails,
         config: state.config
     }

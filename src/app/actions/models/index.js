@@ -3,6 +3,7 @@ module.exports = [
     require('./event'),
     require('./follow-up'),
     require('./to-do'),
+    require('./mentions'),
     require('./whats-new'),
     require('./thing-page'),
     require('./email'),

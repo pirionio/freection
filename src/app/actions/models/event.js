@@ -38,6 +38,10 @@ module.exports = {
             params: ['event']
         },
         {
+            name: 'mentioned',
+            params: ['event']
+        },
+        {
             name: 'comment created',
             params: ['event']
         },

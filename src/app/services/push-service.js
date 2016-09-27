@@ -43,6 +43,9 @@ export function listenToUpdates(pushToken, dispatch) {
 
         if (event.eventType.key === EventTypes.PONG.key)
             dispatch(EventActions.ponged(event))
+        
+        if (event.eventType.key === EventTypes.MENTIONED.key)
+            dispatch(EventActions.mentioned(event))
     })
 
     socket.on('notification-deleted', event => {

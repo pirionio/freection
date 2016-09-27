@@ -116,15 +116,12 @@ export function markCommentAsRead(comment, updateInitialIsRead) {
                 comment: comment,
                 updateInitialIsRead: updateInitialIsRead
             }))
-            .catch(error => {
-                console.log('error:', error)
-                return dispatch({
-                    type: ThingCommandActionsTypes.MARK_COMMENT_AS_READ,
-                    status: ActionStatus.ERROR,
-                    comment,
-                    updateInitialIsRead
-                })
-            })
+            .catch(() => dispatch({
+                type: ThingCommandActionsTypes.MARK_COMMENT_AS_READ, 
+                status: ActionStatus.ERROR,
+                comment,
+                updateInitialIsRead
+            }))
     }
 }
 

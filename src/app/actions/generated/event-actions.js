@@ -65,6 +65,13 @@ export function ponged(event) {
     }
 }
 
+export function mentioned(event) {
+    return {
+        type: EventActionsTypes.MENTIONED,
+        event
+    }
+}
+
 export function commentCreated(event) {
     return {
         type: EventActionsTypes.COMMENT_CREATED,

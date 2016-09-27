@@ -5,6 +5,7 @@ import whatsNew from './whats-new-reducer'
 import unreadEmails from './unread-emails-reducer'
 import toDo from './to-do-reducer'
 import followUps from './follow-ups-reducer'
+import mentions from './mention-reducer'
 import messagePanel from './message-panel-reducer'
 import {messageBox, messageBoxForm} from './message-box-reducer'
 import {inlineMessage, inlineMessageForm} from './inline-message-reducer'
@@ -20,6 +21,7 @@ export default combineReducers({
     whatsNew,
     toDo,
     followUps,
+    mentions,
     messagePanel,
     messageBox,
     messageBoxForm,
