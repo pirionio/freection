@@ -55,7 +55,7 @@ class NotificationPreviewItem extends Component {
             case EventTypes.PING.key:
                 return <span><strong>{creator.displayName}</strong> pinged you</span>
             case EventTypes.PONG.key:
-                return <span><strong>{creator.displayName}</strong> ponged you</span>
+                return <span><strong>{creator.displayName}</strong> ponged {notification.thing.isFollowUper ? 'you' : ''}</span>
             case EventTypes.CREATED.key:
                 return <span><strong>{creator.displayName}</strong> sent you a thing</span>
             case EventTypes.DONE.key:

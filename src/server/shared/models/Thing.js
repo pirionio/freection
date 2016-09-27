@@ -22,6 +22,7 @@ const Thing = thinky.createModel('Thing', {
     doers: [type.string()],
     followUpers: [type.string()],
     mentioned: [type.string()],
+    subscribers: [type.string()],
     payload: type.object(),
     type: type.string()
 })

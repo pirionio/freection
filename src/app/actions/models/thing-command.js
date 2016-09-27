@@ -102,16 +102,16 @@ module.exports = {
             path: '/api/things/${notification.thing.id}/discard/${EventTypes.COMMENT.key}'
         },
         {
-            name: 'discard ping',
+            name: 'discard single notification',
             params: ['notification'],
             type: 'post',
             path: '/api/events/${notification.id}/discard'
         },
         {
-            name: 'discard pong',
+            name: 'join mention',
             params: ['notification'],
             type: 'post',
-            path: '/api/events/${notification.id}/discard'
+            path: '/api/things/${notification.thing.id}/joinmention'
         },
         {
             name: 'send back',

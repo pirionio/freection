@@ -42,5 +42,9 @@ export default {
     MENTIONED: {
         key: 'MENTIONED',
         label: 'Mentioned'
+    },
+    SUBSCRIBED: {
+        key: 'SUBSCRIBED',
+        label: 'Subscribed'
     }
 }

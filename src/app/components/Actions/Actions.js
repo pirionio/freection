@@ -77,17 +77,17 @@ export function DiscardCommentsAction(notification) {
     }
 }
 
-export function DiscardPingAction(notification) {
+export function DiscardNotificationAction(notification, eventType) {
     return {
-        component: <Action label="Discard" doFunc={ThingCommandActions.discardPing} item={notification} key="action-Discard" />,
-        show: notification.eventType.key === EventTypes.PING.key
+        component: <Action label="Discard" doFunc={ThingCommandActions.discardSingleNotification} item={notification} key="action-Discard" />,
+        show: notification.eventType.key === eventType.key
     }
 }
 
-export function DiscardPongAction(notification) {
+export function JoinMention(notification) {
     return {
-        component: <Action label="Discard" doFunc={ThingCommandActions.discardPong} item={notification} key="action-Discard" />,
-        show: notification.eventType.key === EventTypes.PONG.key
+        component: <Action label="Join" doFunc={ThingCommandActions.joinMention} item={notification} key="action-Join" />,
+        show: notification.eventType.key === EventTypes.MENTIONED.key
     }
 }
 

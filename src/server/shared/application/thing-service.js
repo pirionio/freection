@@ -67,7 +67,7 @@ export async function newThing(user, to, subject, body) {
 
     try {
         const toAddress = await getToAddress(to)
-        const mentionedUsers = await getMentions(body)
+        const mentionedUsers = await getNewMentions(body)
         
         const thing = await saveNewThing(body, subject, creator, toAddress, mentionedUsers)
         await EventCreator.createCreated(creator, thing, getShowNewList, body, thing.getEmailId())
@@ -277,7 +277,6 @@ export async function pong(user, thingId, messageText) {
 }
 
 export async function comment(user, thingId, commentText) {
-
     try {
         const creator = userToAddress(user)
 
@@ -288,9 +287,9 @@ export async function comment(user, thingId, commentText) {
         // It's important to update the mentioned users in the Thing only after generating the Comment event,
         // because otherwise the new mentioned users will get the Comment event itslef - which they should not yet get -
         // they should only get the Mentioned event now.
-        const mentionedUsers = await getMentions(commentText)
-        await updateThingMentions(thing, mentionedUsers)
-        await createMentionEvents(mentionedUsers, creator, thing, commentText)
+        const newMentionedUsers = await getNewMentions(commentText, thing)
+        await updateThingMentions(thing, newMentionedUsers)
+        await createMentionEvents(newMentionedUsers, creator, thing, commentText)
 
         await sendEmailForEvent(user, thing, comment)
 
@@ -299,6 +298,23 @@ export async function comment(user, thingId, commentText) {
     } catch (error) {
         logger.error(`Could not comment on thing ${thingId} for user ${user.email}`, error)
         throw error
+    }
+}
+
+export async function joinMention(user, thingId) {
+    const thing = await Thing.get(thingId).run()
+
+    if (!thing.subscribers)
+        thing.subscribers = []
+
+    if (!thing.subscribers.includes(user.id)) {
+        thing.subscribers.push(user.id)
+        await thing.save()
+
+        const creator = userToAddress(user)
+        await EventCreator.createSubscribed(creator, thing, getShowNewList)
+    
+        Event.discardUserEventsByType(thingId, EventTypes.MENTIONED.key, user.id)
     }
 }
 
@@ -440,6 +456,7 @@ function saveNewThing(body, subject, creator, to, mentions) {
     const followUpers = isSelfThing ? [] : [creator.id]
     const doers = isSelfThing ? [creator.id] : []
     const mentioned = mentions.map(mention => mention.id)
+    const subscribers = []
 
     return Thing.save({
         createdAt: new Date(),
@@ -450,6 +467,7 @@ function saveNewThing(body, subject, creator, to, mentions) {
         followUpers,
         doers,
         mentioned,
+        subscribers,
         type: EntityTypes.THING.key,
         payload: omitBy({
             status
@@ -457,39 +475,47 @@ function saveNewThing(body, subject, creator, to, mentions) {
     })
 }
 
-function updateThingMentions(thing, mentionedUsers) {
-    if (!mentionedUsers || !mentionedUsers.length) {
+function updateThingMentions(thing, newMentionedUsers) {
+    if (!newMentionedUsers || !newMentionedUsers.length) {
         return Promise.resolve()
     }
 
-    thing.mentioned = [...thing.mentioned, ...map(mentionedUsers, 'id')]
+    thing.mentioned = [...thing.mentioned, ...map(newMentionedUsers, 'id')]
     return thing.save()
 }
 
 function getShowNewList(user, thing, eventType, previousStatus) {
-    if (thing.isSelf())
-        return thing.mentioned && thing.mentioned.length ? thing.mentioned : []
+    if (thing.isSelf()) {
+        switch (eventType) {
+            case EventTypes.COMMENT.key:
+            case EventTypes.DONE.key:
+                return thing.subscribers && thing.subscribers.length ? thing.subscribers : []
+            default:
+                return []
+        }
+    }
 
     switch (eventType) {
         case EventTypes.CREATED.key:
             return getToList(thing)
         case EventTypes.DISMISSED.key:
         case EventTypes.DONE.key:
-            return [thing.creator.id, ...thing.mentioned]
+            return [thing.creator.id, ...thing.subscribers]
         case EventTypes.CLOSED.key:
             if ([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(previousStatus))
-                return union(thing.doers, thing.mentioned, getToList(thing))
-            return [...thing.doers, ...thing.mentioned]
+                return union(thing.doers, thing.subscribers, getToList(thing))
+            return [...thing.doers]
         case EventTypes.SENT_BACK.key:
-            return union(thing.doers, getToList(thing))
+            return union(thing.doers, thing.subscribers, getToList(thing))
         case EventTypes.COMMENT.key:
-            return union(thing.followUpers, thing.doers, thing.mentioned, [thing.creator.id]).filter(userId => userId !== user.id)
+            return union(thing.followUpers, thing.doers, thing.subscribers, [thing.creator.id]).filter(userId => userId !== user.id)
         case EventTypes.PING.key:
-            return  [...thing.doers, ...thing.mentioned]
+            return  [...thing.doers]
         case EventTypes.PONG.key:
-            return  [...thing.followUpers, ...thing.mentioned]
+            return  [...thing.followUpers, ...thing.subscribers]
         case EventTypes.ACCEPTED.key:
         case EventTypes.CLOSE_ACKED.key:
+        case EventTypes.SUBSCRIBED.key:
             return []
         default:
             throw 'UnknownEventType'
@@ -525,7 +551,7 @@ function validateType(thing) {
     return thing
 }
 
-async function getMentions(text) {
+async function getNewMentions(text, thing) {
     const matches = text.match(SharedConstants.MENTION_REGEX)
 
     if (!matches || !matches.length)
@@ -541,6 +567,10 @@ async function getMentions(text) {
                 throw error
             })
         })
+        .filter(user => {
+            return thing && thing.mentioned ? !thing.mentioned.includes(user.id) : true
+        })
+        .value()
     )
 }
 

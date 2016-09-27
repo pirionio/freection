@@ -263,42 +263,42 @@ export function discardComments(notification) {
     }
 }
 
-export function discardPing(notification) {
+export function discardSingleNotification(notification) {
     return dispatch => {
         dispatch({
-            type: ThingCommandActionsTypes.DISCARD_PING, 
+            type: ThingCommandActionsTypes.DISCARD_SINGLE_NOTIFICATION, 
             status: ActionStatus.START,
             notification
         })
         return ResourceUtil.post(`/api/events/${notification.id}/discard`)
             .then(result => dispatch({
-                type: ThingCommandActionsTypes.DISCARD_PING, 
+                type: ThingCommandActionsTypes.DISCARD_SINGLE_NOTIFICATION, 
                 status: ActionStatus.COMPLETE,
                 notification
             }))
             .catch(() => dispatch({
-                type: ThingCommandActionsTypes.DISCARD_PING, 
+                type: ThingCommandActionsTypes.DISCARD_SINGLE_NOTIFICATION, 
                 status: ActionStatus.ERROR,
                 notification
             }))
     }
 }
 
-export function discardPong(notification) {
+export function joinMention(notification) {
     return dispatch => {
         dispatch({
-            type: ThingCommandActionsTypes.DISCARD_PONG, 
+            type: ThingCommandActionsTypes.JOIN_MENTION, 
             status: ActionStatus.START,
             notification
         })
-        return ResourceUtil.post(`/api/events/${notification.id}/discard`)
+        return ResourceUtil.post(`/api/things/${notification.thing.id}/joinmention`)
             .then(result => dispatch({
-                type: ThingCommandActionsTypes.DISCARD_PONG, 
+                type: ThingCommandActionsTypes.JOIN_MENTION, 
                 status: ActionStatus.COMPLETE,
                 notification
             }))
             .catch(() => dispatch({
-                type: ThingCommandActionsTypes.DISCARD_PONG, 
+                type: ThingCommandActionsTypes.JOIN_MENTION, 
                 status: ActionStatus.ERROR,
                 notification
             }))

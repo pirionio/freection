@@ -162,6 +162,17 @@ router.post('/:thingId/discard/:eventType', (request, response) => {
     })
 })
 
+router.post('/:thingId/joinmention', (request, response) => {
+    EndpointUtil.handlePost(request, response, ThingService.joinMention, {
+        params: ['thingId'],
+        result: false,
+        errorTemplates: {
+            notFound: getNotFoundErrorTemplate(),
+            general: 'Could not join to mention for user ${user} for thing ${thingId}'
+        }
+    })
+})
+
 function getIllegalOperationErrorTemplate() {
     return 'Illegal operation on thing ${thingId}'
 }

@@ -3,9 +3,8 @@ import {connect} from 'react-redux'
 
 import EventTypes from '../../../common/enums/event-types'
 import ActionsBar from '../Actions/ActionsBar'
-import {DoAction, DoneAction, DismissAction, CloseAction, SendBackAction, DiscardCommentsAction, DiscardPingAction,
-    DiscardPongAction, CloseAckAction,
-    PongAction} from '../Actions/Actions'
+import {DoAction, DoneAction, DismissAction, CloseAction, SendBackAction, DiscardCommentsAction, DiscardNotificationAction, CloseAckAction,
+    PongAction, JoinMention} from '../Actions/Actions'
 
 class NotificationActionsBar extends Component {
     showDo() {
@@ -33,6 +32,26 @@ class NotificationActionsBar extends Component {
         return [EventTypes.PING.key].includes(notification.eventType.key)
     }
 
+    showCloseAck() {
+        const {notification} = this.props
+        return notification.thing.isDoer
+    }
+
+    showDiscardDone() {
+        const {notification} = this.props
+        return notification.thing.isSubscriber
+    }
+
+    showDiscardDismiss() {
+        const {notification} = this.props
+        return notification.thing.isSubscriber
+    }
+
+    showDiscardSentBack() {
+        const {notification} = this.props
+        return notification.thing.isSubscriber
+    }
+
     render() {
         const {notification, currentUser, preDoFunc} = this.props
 
@@ -51,17 +70,33 @@ class NotificationActionsBar extends Component {
         const pongAction = PongAction(notification.thing, currentUser, {preDoFunc})
         pongAction.show = pongAction.show && this.showPong()
 
+        const closeAckAction = CloseAckAction(notification)
+        closeAckAction.show = closeAckAction.show && this.showCloseAck()
+
+        const discardDoneAction = DiscardNotificationAction(notification, EventTypes.DONE)
+        discardDoneAction.show = discardDoneAction.show && this.showDiscardDone()
+
+        const discardDismissAction = DiscardNotificationAction(notification, EventTypes.DISMISSED)
+        discardDismissAction.show = discardDismissAction.show && this.showDiscardDismiss()
+
+        const discardSentBackAction = DiscardNotificationAction(notification, EventTypes.SENT_BACK)
+        discardSentBackAction.show = discardSentBackAction.show && this.showDiscardSentBack()
+
         const actions = [
             doAction,
             doneAction,
             dismissAction,
             closeAction,
             pongAction,
+            closeAckAction,
+            discardDoneAction,
+            discardDismissAction,
+            discardSentBackAction,
             SendBackAction(notification.thing, currentUser, {preDoFunc}),
             DiscardCommentsAction(notification),
-            DiscardPingAction(notification),
-            DiscardPongAction(notification),
-            CloseAckAction(notification)
+            DiscardNotificationAction(notification, EventTypes.PING),
+            DiscardNotificationAction(notification, EventTypes.PONG),
+            JoinMention(notification)
         ]
 
         return (

@@ -151,3 +151,14 @@ export function createMentioned(creator, thing, getShowNewList, messageText) {
         showNewList: getShowNewList(creator, thing, EventTypes.MENTIONED.key)
     })
 }
+
+export function createSubscribed(creator, thing, getShowNewList) {
+    return Event.save({
+        thingId: thing.id,
+        eventType: EventTypes.SUBSCRIBED.key,
+        createdAt: new Date(),
+        creator,
+        payload: {},
+        showNewList: getShowNewList(creator, thing, EventTypes.SUBSCRIBED.key)
+    })
+}
