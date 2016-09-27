@@ -81,7 +81,7 @@ class WhatsNew extends Component {
 
         const groupedNotifications = PreviewHelper.groupByDate(aggregatedNotifications, this.buildPreviewItem)
 
-        const notificationsToShow = chain(toPairs(groupedNotifications))
+        return chain(toPairs(groupedNotifications))
             .filter(([, notifications]) => !isEmpty(notifications))
             .map(([groupTitle, notifications], index) => {
                 const titleClass = classNames(classes.header, index === 0 && classes.first)
@@ -95,13 +95,6 @@ class WhatsNew extends Component {
                 )
             })
             .value()
-
-        return (
-            <Flexbox container="column" grow={1}>
-                {notificationsToShow}
-            </Flexbox>
-        )
-
     }
 
     buildPreviewItem(notification) {
