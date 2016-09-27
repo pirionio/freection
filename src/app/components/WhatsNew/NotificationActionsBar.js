@@ -93,10 +93,11 @@ class NotificationActionsBar extends Component {
             discardDismissAction,
             discardSentBackAction,
             SendBackAction(notification.thing, currentUser, {preDoFunc}),
+            JoinMention(notification),
             DiscardCommentsAction(notification),
             DiscardNotificationAction(notification, EventTypes.PING),
             DiscardNotificationAction(notification, EventTypes.PONG),
-            JoinMention(notification)
+            DiscardNotificationAction(notification, EventTypes.MENTIONED)
         ]
 
         return (
