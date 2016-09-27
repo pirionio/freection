@@ -13,6 +13,7 @@ import {userToAddress, emailToAddress} from './address-creator'
 import {sendMessage} from '../technical/email-send-service'
 import logger from '../utils/logger'
 import replyToAddress from '../config/reply-email'
+import textToHtml from '../../../common/util/textToHtml'
 
 export function getWhatsNew(user) {
     return Event.getWhatsNew(user.id)
@@ -430,10 +431,6 @@ async function sendEmailForEvent(user, thing, event) {
         message.html = event.payload.html
 
     sendMessage(user, message)
-}
-
-function textToHtml(text) {
-    return text.replace(/\r?\n/g, '<br />')
 }
 
 function saveNewThing(body, subject, creator, to, mentions) {
