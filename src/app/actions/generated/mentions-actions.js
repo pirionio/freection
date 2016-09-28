@@ -21,12 +21,9 @@ export function _fetchMentions() {
                 status: ActionStatus.COMPLETE,
                 things: result
             }))
-            .catch((error) => {
-                console.log('error:', error)
-                return dispatch({
-                    type: MentionsActionsTypes.FETCH_MENTIONS,
-                    status: ActionStatus.ERROR
-                })
-            })
+            .catch(() => dispatch({
+                type: MentionsActionsTypes.FETCH_MENTIONS, 
+                status: ActionStatus.ERROR                
+            }))
     }
 }

@@ -101,14 +101,14 @@ function comment(state, action) {
         case ActionStatus.COMPLETE:
             return immutable(state)
                 .touch('thing')
-                .arraySetOrPushItem('thing.events', {id: action.comment.id}, {
-                    id: action.comment.id,
-                    payload: action.comment.payload,
-                    creator: action.comment.creator,
-                    createdAt: action.comment.createdAt,
-                    eventType: action.comment.eventType
+                .arraySetOrPushItem('thing.events', {id: action.event.id}, {
+                    id: action.event.id,
+                    payload: action.event.payload,
+                    creator: action.event.creator,
+                    createdAt: action.event.createdAt,
+                    eventType: action.event.eventType
                 })
-                .arrayMergeItem('thing.events', {id: action.comment.id}, getInitialReadBy)
+                .arrayMergeItem('thing.events', {id: action.event.id}, getInitialReadBy)
                 .value()
         case ActionStatus.START:
         case ActionStatus.ERROR:
@@ -122,14 +122,14 @@ function pingThing(state, action) {
         case ActionStatus.COMPLETE:
             return immutable(state)
                 .touch('thing')
-                .arraySetOrPushItem('thing.events', {id: action.pingEvent.id}, {
-                    id: action.pingEvent.id,
-                    payload: action.pingEvent.payload,
-                    creator: action.pingEvent.creator,
-                    createdAt: action.pingEvent.createdAt,
-                    eventType: action.pingEvent.eventType
+                .arraySetOrPushItem('thing.events', {id: action.event.id}, {
+                    id: action.event.id,
+                    payload: action.event.payload,
+                    creator: action.event.creator,
+                    createdAt: action.event.createdAt,
+                    eventType: action.event.eventType
                 })
-                .arrayMergeItem('thing.events', {id: action.pingEvent.id}, getInitialReadBy)
+                .arrayMergeItem('thing.events', {id: action.event.id}, getInitialReadBy)
                 .value()
         case ActionStatus.START:
         case ActionStatus.ERROR:
@@ -143,7 +143,7 @@ function markCommentAsRead(state, action) {
         case ActionStatus.COMPLETE:
             return immutable(state)
                 .touch('thing')
-                .arrayMergeItem('thing.events', {id: action.comment.id}, () => {
+                .arrayMergeItem('thing.events', {id: action.event.id}, () => {
                     const result = {
                         payload: {
                             isRead: true

@@ -18,7 +18,7 @@ export function _comment(thingId, commentText) {
                 type: ThingCommandActionsTypes.COMMENT, 
                 status: ActionStatus.COMPLETE,
                 thingId: thingId,
-                comment: result
+                event: result
             }))
             .catch(() => dispatch({
                 type: ThingCommandActionsTypes.COMMENT, 
@@ -66,7 +66,7 @@ export function ping(thing) {
                 type: ThingCommandActionsTypes.PING, 
                 status: ActionStatus.COMPLETE,
                 thing: thing,
-                pingEvent: result
+                event: result
             }))
             .catch(() => dispatch({
                 type: ThingCommandActionsTypes.PING, 
@@ -113,7 +113,7 @@ export function markCommentAsRead(comment, updateInitialIsRead) {
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.MARK_COMMENT_AS_READ, 
                 status: ActionStatus.COMPLETE,
-                comment: comment,
+                event: comment,
                 updateInitialIsRead: updateInitialIsRead
             }))
             .catch(() => dispatch({

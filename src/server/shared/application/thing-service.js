@@ -256,7 +256,7 @@ export async function ping(user, thingId) {
         await sendEmailForEvent(user, thing, event)
 
         const fullEvent = await Event.getFullEvent(event.id)
-        return eventToDto(fullEvent, user, {includeThing: false})
+        return eventToDto(fullEvent, user, {includeThing: true})
     } catch (error) {
         logger.error(`Error while pinging thing ${thingId} by user ${user.email}`, error)
         throw error

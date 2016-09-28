@@ -14,7 +14,7 @@ module.exports = {
             },
             completeParams: {
                 thingId: 'thingId',
-                comment: 'result'
+                event: 'result'
             },
             private: true
         },
@@ -36,7 +36,7 @@ module.exports = {
             path: '/api/things/${thing.id}/ping',
             completeParams: {
                 thing: 'thing',
-                pingEvent: 'result'
+                event: 'result'
             }
         },
         {
@@ -57,7 +57,7 @@ module.exports = {
             type: 'post',
             path: '/api/events/${comment.id}/markasread',
             completeParams: {
-                comment: 'comment',
+                event: 'comment',
                 updateInitialIsRead: 'updateInitialIsRead'
             }
         },
