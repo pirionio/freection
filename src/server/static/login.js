@@ -36,7 +36,8 @@ function generateOAuth2Url(prompt, loginHint) {
     const scope = [
         'profile',
         'email',
-        'https://www.googleapis.com/auth/gmail.send']
+        'https://www.googleapis.com/auth/gmail.send',
+        'https://www.googleapis.com/auth/contacts.readonly']
 
     const options = Object.assign({
         response_type: 'code',
