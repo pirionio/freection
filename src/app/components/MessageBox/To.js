@@ -68,7 +68,7 @@ class To extends Component {
     }
 
     render() {
-        const {value, containerClassName, inputClassName, tabIndex , onFocus, inputRef, sheet: {classes}} = this.props
+        const {value, placeholder, containerClassName, inputClassName, tabIndex , onFocus, inputRef, sheet: {classes}} = this.props
 
         const suggestions = this.getSuggestions(value)
 
@@ -81,14 +81,14 @@ class To extends Component {
                              focusFirstSuggestion={true}
                              theme={classes}
                              ref={ref => {
-                                 if(ref)
+                                 if(inputRef && ref)
                                      inputRef(ref.input)
                              }}
                              inputProps={{
                                  type: 'text',
                                  className: inputClassName,
                                  tabIndex: tabIndex,
-                                 placeholder: 'To',
+                                 placeholder: placeholder,
                                  value:  value,
                                  onChange: this.onChange,
                                  onFocus: onFocus
@@ -131,7 +131,8 @@ To.propTypes = {
     inputClassName: PropTypes.string,
     tabIndex: PropTypes.number,
     onFocus: PropTypes.func,
-    inputRef: PropTypes.func
+    inputRef: PropTypes.func,
+    placeholder: PropTypes.string
 }
 
 To.defaultProps = {

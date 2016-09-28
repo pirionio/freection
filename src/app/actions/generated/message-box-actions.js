@@ -41,3 +41,15 @@ export function _setFocus(messageBoxId,focusOn) {
         focusOn
     }
 }
+
+export function openExpanded() {
+    return {
+        type: MessageBoxActionsTypes.OPEN_EXPANDED        
+    }
+}
+
+export function closeExpanded() {
+    return {
+        type: MessageBoxActionsTypes.CLOSE_EXPANDED        
+    }
+}
