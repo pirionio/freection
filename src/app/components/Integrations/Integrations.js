@@ -3,11 +3,9 @@ import {connect} from 'react-redux'
 import useSheet from 'react-jss'
 import Icon from 'react-fontawesome'
 import classAutobind from 'class-autobind'
-import classNames from 'classnames'
 
 import Flexbox from '../UI/Flexbox'
 import Link from '../UI/Link'
-import styleVars from '../style-vars'
 
 class Integrations extends Component {
     constructor(props) {

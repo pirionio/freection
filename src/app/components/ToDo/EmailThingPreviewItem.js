@@ -2,7 +2,6 @@ import React, {PropTypes, Component} from 'react'
 import {connect} from 'react-redux'
 import useSheet from 'react-jss'
 import classAutobind from 'class-autobind'
-
 import trimEnd from 'lodash/trimEnd'
 
 import PreviewItem, {PreviewItemStatus, PreviewItemActions} from '../Preview/PreviewItem'

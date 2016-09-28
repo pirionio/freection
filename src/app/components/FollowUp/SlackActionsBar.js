@@ -2,7 +2,6 @@ import React, {PropTypes} from 'react'
 
 import ActionsBar from '../Actions/ActionsBar'
 import {CloseAction} from '../Actions/Actions'
-import ThingStatus from '../../../common/enums/thing-status'
 
 const SlackActionsBar = ({thing, isRollover}) => {
     const closeAction = CloseAction(thing)
