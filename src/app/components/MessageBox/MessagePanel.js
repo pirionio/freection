@@ -105,7 +105,11 @@ class MessagePanel extends Component {
     }
 
     render () {
-        const {sheet: {classes}} = this.props
+        const {isExpandedOpened, sheet: {classes}} = this.props
+
+        // If expanded is open we don't draw anything
+        if (isExpandedOpened)
+            return null
 
         const messageBox = this.getMessageBox()
         const sendButton = this.getSendButton()
@@ -150,7 +154,8 @@ MessagePanel.propTypes = {
     messageBoxes: PropTypes.array.isRequired,
     activeMessageBox: PropTypes.object,
     messageBox: PropTypes.object.isRequired,
-    currentUser: PropTypes.object.isRequired
+    currentUser: PropTypes.object.isRequired,
+    isExpandedOpened: PropTypes.bool.isRequired
 }
 
 function mapStateToProps(state) {
@@ -158,7 +163,8 @@ function mapStateToProps(state) {
         messageBoxes: state.messagePanel.messageBoxes,
         activeMessageBox: find(state.messagePanel.messageBoxes, {id: state.messagePanel.activeMessageBoxId}),
         messageBox: state.messageBox,
-        currentUser: state.auth
+        currentUser: state.auth,
+        isExpandedOpened: state.expandedMessageBox.opened
     }
 }
 

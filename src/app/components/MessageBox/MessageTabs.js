@@ -24,6 +24,11 @@ class MessageTabs extends Component {
         dispatch(MessageBoxActions.selectMessageBox(activeMessageBox, selectedMessageBox))
     }
 
+    onExpandedClick() {
+        const {dispatch} = this.props
+        dispatch(MessageBoxActions.openExpanded())
+    }
+
     getMessageTabs() {
         const {messageBoxes, activeMessageBox, sheet: {classes}} = this.props
 
@@ -35,13 +40,18 @@ class MessageTabs extends Component {
                 <Icon name="times" className={classes.tabClose} onClick={() => this.closeMessageBox(messageBox)} /> :
                 null
 
+            const expandButton = activeMessageBox && activeMessageBox.id === messageBox.id ?
+                <Icon name="expand" className={classes.tabExpand} onClick={() => this.onExpandedClick()} /> :
+                null
+
             const tabClass = classNames(classes.tab, activeMessageBox && activeMessageBox.id === messageBox.id && classes.tabActive)
 
             return (
-                <Flexbox key={messageBox.id} container="row" justifyContent="center" alignItems="center" className={tabClass}>
+                <Flexbox key={messageBox.id} container="row" justifyContent="flex-end" alignItems="center" className={tabClass}>
                     <a onClick={() => this.selectMessageBox(messageBox)} className={classes.tabLink}>
                         <TextTruncate>{messageBox.title}</TextTruncate>
                     </a>
+                    {expandButton}
                     {closeButton}
                 </Flexbox>
             )
@@ -106,9 +116,8 @@ const style = {
     },
     tab: {
         height: '100%',
-        minWidth: 132,
-        maxWidth: 150,
-        padding: [0, 16],
+        width: 130,
+        padding: [0, 12, 0, 10],
         backgroundColor: styleVars.highlightColor,
         color: 'white',
         opacity: 0.5
@@ -117,16 +126,24 @@ const style = {
         opacity: 1
     },
     tabLink: {
-        width: '100%',
         cursor: 'pointer',
-        textAlign: 'center',
+        fontSize: '0.714em',
         textTransform: 'uppercase',
-        letterSpacing: '0.07em'
+        letterSpacing: '0.1em',
+        flex: '1 1 auto',
+        marginRight: 16,
+        minWidth: 0
     },
     tabClose: {
-        marginLeft: 20,
+        fontSize: '0.714em',
         cursor: 'pointer',
-        color: 'inherit'
+        color: 'inherit',
+    },
+    tabExpand: {
+        fontSize: '0.714em',
+        cursor: 'pointer',
+        color: 'inherit',
+        marginRight: 8
     },
     newSection: {
         '&:hover': {

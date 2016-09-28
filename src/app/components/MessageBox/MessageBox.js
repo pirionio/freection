@@ -83,7 +83,8 @@ class MessageBox extends Component {
                    inputClassName={classes.textField}
                    tabIndex={3}
                    inputRef={ref => this.messageTo = ref}
-                   onFocus={this.focusOnTo} />
+                   onFocus={this.focusOnTo}
+                   placeholder="To" />
     }
 
     focusOnSubject() {

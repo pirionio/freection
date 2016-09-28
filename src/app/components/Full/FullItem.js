@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
 import clickOutside from 'react-click-outside'
 import Delay from 'react-delay'
@@ -32,12 +33,17 @@ class FullItem extends  Component {
     }
 
     handleClickOutside() {
-        // This has to happen in a timeout, since we want to perform the check only after a potential state change,
-        // which will happen in the next event-loop tick.
-        setTimeout(() => {
-            if (this.initialPath === window.location.pathname)
-                this.props.close()
-        })
+        const {isExpandedOpened} = this.props
+
+        // Ignore outside click if the expanded message modal is opened
+        if (!isExpandedOpened) {
+            // This has to happen in a timeout, since we want to perform the check only after a potential state change,
+            // which will happen in the next event-loop tick.
+            setTimeout(() => {
+                if (this.initialPath === window.location.pathname)
+                    this.props.close()
+            })
+        }
     }
 
     getSubject() {
@@ -230,10 +236,18 @@ FullItem.propTypes = {
     isFetching: PropTypes.func.isRequired,
     isEmpty: PropTypes.func.isRequired,
     close: PropTypes.func.isRequired,
-    circleColor: PropTypes.string
+    circleColor: PropTypes.string,
+    isExpandedOpened: PropTypes.bool.isRequired
 }
 
-export default useSheet(clickOutside(FullItem), style)
+function mapStateToProps(state) {
+    return {
+        isExpandedOpened: state.expandedMessageBox.opened
+    }
+}
+
+
+export default useSheet(connect(mapStateToProps)(clickOutside(FullItem)), style)
 
 export {
     FullItemSubject,

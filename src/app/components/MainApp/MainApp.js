@@ -3,6 +3,7 @@ import useSheet from 'react-jss'
 
 import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
+import ExpandedMessageBox from '../MessageBox/ExpandedMessageBox.js'
 
 class MainApp extends Component {
     render () {
@@ -12,6 +13,7 @@ class MainApp extends Component {
                 <Flexbox name="main-app-padding" grow={1} className={classes.padding} />
                 <Flexbox name="main-app-content" container="column" className={classes.content}>
                     {this.props.children}
+                    <ExpandedMessageBox />
                 </Flexbox>
             </Flexbox>
         )
@@ -25,6 +27,7 @@ const style = {
         backgroundColor: styleVars.backgroundColor
     },
     content: {
+        position: 'relative',
         width: '100%',
         maxWidth: 1178,
     },

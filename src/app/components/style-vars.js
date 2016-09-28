@@ -25,5 +25,7 @@ export default {
     backZIndex: 10,
     fullItemBlurZIndex: 40,
     fullItemZIndex: 50,
-    previewInlineReplyZIndex: 100
+    previewInlineReplyZIndex: 100,
+    modalOverlayZIndex: 140,
+    modalZIndex: 150,
 }

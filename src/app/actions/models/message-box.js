@@ -26,6 +26,12 @@ module.exports = {
             name: 'set focus',
             private: true,
             params: ['messageBoxId', 'focusOn']
+        },
+        {
+            name: 'open expanded'
+        },
+        {
+            name: 'close expanded'
         }
     ]
 }

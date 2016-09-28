@@ -6,6 +6,7 @@ import unreadEmails from './unread-emails-reducer'
 import toDo from './to-do-reducer'
 import followUps from './follow-ups-reducer'
 import messagePanel from './message-panel-reducer'
+import expandedMessageBox from './expanded-message-box-reducer'
 import {messageBox, messageBoxForm} from './message-box-reducer'
 import {inlineMessage, inlineMessageForm} from './inline-message-reducer'
 import thingPage from './thing-page-reducer'
@@ -21,6 +22,7 @@ export default combineReducers({
     toDo,
     followUps,
     messagePanel,
+    expandedMessageBox,
     messageBox,
     messageBoxForm,
     inlineMessage,
