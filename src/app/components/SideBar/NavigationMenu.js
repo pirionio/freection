@@ -47,7 +47,7 @@ class NavigationMenu extends Component {
         return {
             color: styleVars.highlightColor,
             count: config.isDemo ? unreadThingsCount : unreadThingsCount + unreadEmailsCount
-    }
+        }
     }
 
     getToDoCount() {
