@@ -3,4 +3,5 @@
 if [ "$NODE_ENV" = "production" ]
 then
     bash ./scripts/build
+    db="$RDB_DB_NAME" host=localhost port=28015 node_modules/rethink-migrate/bin/rethink-migrate up
 fi
