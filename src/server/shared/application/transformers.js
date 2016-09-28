@@ -28,10 +28,10 @@ export function thingToDto(thing, user, {includeEvents = true} = {}) {
     }
 }
 
-export function eventToDto(event, user, {includeThing = true} = {}) {
+export function eventToDto(event, user, {includeThing = true, includeFullThing = false} = {}) {
     return {
         id: event.id,
-        thing: includeThing && event.thing && thingToDto(event.thing, user, {includeEvents: false}),
+        thing: includeThing && event.thing && thingToDto(event.thing, user, {includeEvents: includeFullThing}),
         createdAt: event.createdAt,
         payload: SharedConstants.MESSAGE_TYPED_EVENTS.includes(event.eventType) ?
             commentPayloadToDto(event.payload, user) : event.payload,

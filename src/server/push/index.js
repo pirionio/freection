@@ -103,7 +103,7 @@ export function configure(app) {
     function auditNewEvent(event) {
         logger.info(`New change to audit: event ${event.eventType} on thing ${event.thingId}`)
 
-        Event.getFullEvent(event.id)
+        Event.getFullEvent(event.id, true)
             .then(fullEvent => {
 
                 // Sending notification to any user that might have interest in new event
@@ -113,7 +113,7 @@ export function configure(app) {
                 // TODO: we are not testing if the room even exist
                 subscribers.forEach(userId => {
                     const user = {id: userId}
-                    const dto = eventToDto(fullEvent, user)
+                    const dto = eventToDto(fullEvent, user, {includeFullThing: true})
                     io.to(userId).emit('new-event', dto)
                 })
             })

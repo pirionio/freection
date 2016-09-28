@@ -26,9 +26,9 @@ Event.ensureIndex('whatsnew', doc => {
     return doc('showNewList')
 }, {multi: true})
 
-Event.defineStatic('getFullEvent', function(eventId) {
+Event.defineStatic('getFullEvent', function(eventId, includeFullThing = false) {
     return this.get(eventId).getJoin({
-        thing: true
+        thing: includeFullThing ? {events: true} : true
     }).run()
 })
 
