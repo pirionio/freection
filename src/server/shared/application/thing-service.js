@@ -1,4 +1,4 @@
-import {remove, castArray, union, chain, omitBy, isNil, last, map} from 'lodash'
+import {remove, castArray, union, chain, omitBy, isNil, last, map, clone} from 'lodash'
 import AddressParser from 'email-addresses'
 
 import {Event, Thing, User} from '../models'
@@ -154,6 +154,8 @@ export async function close(user, thingId, messageText) {
         validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key,
             ThingStatus.INPROGRESS.key, ThingStatus.DONE.key, ThingStatus.DISMISS.key])
 
+        const previousMentionedUsers = clone(thing.mentioned)
+
         // Removing the user from the doers and follow upers
         remove(thing.followUpers, followUperId => followUperId === user.id)
         remove(thing.doers, doerUserId => doerUserId === user.id)
@@ -172,8 +174,9 @@ export async function close(user, thingId, messageText) {
 
         // Creating the close event and saving to DB
         const event = await EventCreator.createClosed(creator, thing,
-            (user, thing, eventType) => getShowNewList(user, thing, eventType, previousStatus),
+            (user, thing, eventType) => getShowNewList(user, thing, eventType, previousStatus, previousMentionedUsers),
             messageText)
+
         await sendEmailForEvent(user, thing, event)
     } catch(error) {
         logger.error(`error while closing thing ${thingId} by user ${user.email}:`, error)
@@ -331,6 +334,7 @@ export async function joinMention(user, thingId) {
         await EventCreator.createSubscribed(creator, thing, getShowNewList)
     
         Event.discardUserEventsByType(thingId, EventTypes.MENTIONED.key, user.id)
+        Event.discardUserEventsByType(thingId, EventTypes.SENT_BACK.key, user.id)
     }
 }
 
@@ -500,7 +504,7 @@ function updateThingMentions(thing, newMentionedUsers) {
     return thing.save()
 }
 
-function getShowNewList(user, thing, eventType, previousStatus) {
+function getShowNewList(user, thing, eventType, previousStatus, previousMentionedUsers) {
     if (thing.isSelf()) {
         switch (eventType) {
             case EventTypes.COMMENT.key:
@@ -519,10 +523,10 @@ function getShowNewList(user, thing, eventType, previousStatus) {
             return [thing.creator.id, ...thing.subscribers]
         case EventTypes.CLOSED.key:
             if ([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(previousStatus))
-                return union(thing.doers, thing.subscribers, getToList(thing))
+                return union(thing.doers, previousMentionedUsers, getToList(thing))
             return [...thing.doers]
         case EventTypes.SENT_BACK.key:
-            return union(thing.doers, thing.subscribers, getToList(thing))
+            return union(thing.doers, thing.subscribers, thing.mentioned, getToList(thing))
         case EventTypes.COMMENT.key:
             return union(thing.followUpers, thing.doers, thing.subscribers, [thing.creator.id]).filter(userId => userId !== user.id)
         case EventTypes.PING.key:

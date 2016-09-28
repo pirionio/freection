@@ -73,9 +73,6 @@ function removeMentions(state, action) {
     if (state.invalidationStatus !== InvalidationStatus.FETCHED)
         return state
 
-    if (!action.event.thing.isMentioned)
-        return state
-
     return immutable(state)
         .arrayReject('things', {id: action.event.thing.id})
         .value()
@@ -90,6 +87,7 @@ export default (state = initialState, action) => {
         case MentionActionTypes.FETCH_MENTIONS:
             return setMentions(state, action)
         case EventActionTypes.MENTIONED:
+        case EventActionTypes.SENT_BACK:
             return mentioned(state, action)
         case EventActionTypes.COMMENT_CREATED:
         case EventActionTypes.COMMENT_READ_BY:

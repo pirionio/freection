@@ -37,19 +37,14 @@ class NotificationActionsBar extends Component {
         return notification.thing.isDoer
     }
 
-    showDiscardDone() {
-        const {notification} = this.props
-        return notification.thing.isSubscriber
-    }
-
-    showDiscardDismiss() {
-        const {notification} = this.props
-        return notification.thing.isSubscriber
-    }
-
     showDiscardSentBack() {
         const {notification} = this.props
-        return notification.thing.isSubscriber
+        return notification.thing.isMentioned
+    }
+
+    showDiscardClosed() {
+        const {notification} = this.props
+        return !notification.thing.isDoer
     }
 
     render() {
@@ -73,14 +68,11 @@ class NotificationActionsBar extends Component {
         const closeAckAction = CloseAckAction(notification)
         closeAckAction.show = closeAckAction.show && this.showCloseAck()
 
-        const discardDoneAction = DiscardNotificationAction(notification, EventTypes.DONE)
-        discardDoneAction.show = discardDoneAction.show && this.showDiscardDone()
-
-        const discardDismissAction = DiscardNotificationAction(notification, EventTypes.DISMISSED)
-        discardDismissAction.show = discardDismissAction.show && this.showDiscardDismiss()
-
         const discardSentBackAction = DiscardNotificationAction(notification, EventTypes.SENT_BACK)
         discardSentBackAction.show = discardSentBackAction.show && this.showDiscardSentBack()
+
+        const discardClosedAction = DiscardNotificationAction(notification, EventTypes.CLOSED)
+        discardClosedAction.show = discardClosedAction.show && this.showDiscardClosed()
 
         const actions = [
             doAction,
@@ -89,11 +81,10 @@ class NotificationActionsBar extends Component {
             closeAction,
             pongAction,
             closeAckAction,
-            discardDoneAction,
-            discardDismissAction,
-            discardSentBackAction,
             SendBackAction(notification.thing, currentUser, {preDoFunc}),
             JoinMention(notification),
+            discardSentBackAction,
+            discardClosedAction,
             DiscardCommentsAction(notification),
             DiscardNotificationAction(notification, EventTypes.PING),
             DiscardNotificationAction(notification, EventTypes.PONG),

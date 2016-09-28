@@ -63,7 +63,9 @@ class NotificationPreviewItem extends Component {
             case EventTypes.DISMISSED.key:
                 return <span><strong>{creator.displayName}</strong> dismissed a thing</span>
             case EventTypes.SENT_BACK.key:
-                return <span><strong>{creator.displayName}</strong> sent a thing back</span>
+                return notification.thing.isMentioned ?
+                    <span>Thing sent back to <strong>{notification.thing.to.displayName}</strong> </span> :
+                    <span><strong>{creator.displayName}</strong> sent a thing back</span>
             case EventTypes.CLOSED.key:
                 return <span><strong>{creator.displayName}</strong> closed a thing</span>
             case EventTypes.MENTIONED.key:

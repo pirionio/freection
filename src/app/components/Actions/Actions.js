@@ -87,7 +87,8 @@ export function DiscardNotificationAction(notification, eventType) {
 export function JoinMention(notification) {
     return {
         component: <Action label="Join" doFunc={ThingCommandActions.joinMention} item={notification} key="action-Join" />,
-        show: notification.eventType.key === EventTypes.MENTIONED.key
+        show: [EventTypes.MENTIONED.key, EventTypes.SENT_BACK.key].includes(notification.eventType.key) &&
+            notification.thing.isMentioned && !notification.thing.isSubscriber
     }
 }
 
