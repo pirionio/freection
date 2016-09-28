@@ -23,6 +23,7 @@ export function thingToDto(thing, user, {includeEvents = true} = {}) {
         events: includeEvents && thing.events ? thing.events.map(event => eventToDto(event, user, {includeThing: false})) : [],
         isFollowUper: thing.followUpers.includes(user.id),
         isDoer: thing.doers.includes(user.id),
+        isMentioned: thing.mentioned ? thing.mentioned.includes(user.id) : false,
         isSubscriber: thing.subscribers ? thing.subscribers.includes(user.id) : false,
         isSelf: thing.isSelf()
     }

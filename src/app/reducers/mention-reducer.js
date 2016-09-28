@@ -51,6 +51,9 @@ function mentioned(state, action) {
     if (state.invalidationStatus !== InvalidationStatus.FETCHED)
         return state
 
+    if (!action.event.thing.isMentioned)
+        return state
+
     return immutable(state)
         .arrayPushItem('things', action.event.thing)
         .value()
