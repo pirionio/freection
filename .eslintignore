@@ -4,4 +4,3 @@ src/extension
 scripts/*.js
 config/*.js
 dist/
-migrations/
