@@ -79,7 +79,7 @@ async function getInitialState(request) {
         const followUps = await ThingService.getFollowUps(user)
         state = reducer(state, FollowUpActions.setState(followUps))
 
-        const mentions = await ThingService.getMentions(user)
+        const mentions = await ThingService.getUserMentionedThings(user)
         state = reducer(state, MentionsActions.setState(mentions))
 
         const contacts = await ContactService.get(user)

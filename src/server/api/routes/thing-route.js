@@ -33,7 +33,7 @@ router.get('/emailthings', (request, response) => {
 })
 
 router.get('/mentions', (request, response) => {
-    EndpointUtil.handleGet(request, response, ThingService.getMentions, {
+    EndpointUtil.handleGet(request, response, ThingService.getUserMentionedThings, {
         type: 'Mentions'
     })
 })

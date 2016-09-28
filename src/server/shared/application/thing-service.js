@@ -62,9 +62,11 @@ export function getThing(user, thingId) {
         })
 }
 
-export function getMentions(user) {
+export function getUserMentionedThings(user) {
     return Thing.getUserMentions(user.id)
-        .then(things => things.filter(thing => thing.payload.status !== ThingStatus.CLOSE.key).map(thing => thingToDto(thing, user)))
+        .then(things => things
+            .filter(thing => [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status))
+            .map(thing => thingToDto(thing, user)))
         .catch(error => {
             logger.error(`error while fetching mentions for user ${user.email}`, error)
             throw error
@@ -128,6 +130,7 @@ export async function dismiss(user, thingId, messageText) {
         await thing.save()
 
         await Event.discardUserEvents(thingId, user.id)
+        await Event.discardThingEventsByType(thingId, EventTypes.MENTIONED.key)
 
         const event = await EventCreator.createDismissed(creator, thing, getShowNewList, messageText)
         await sendEmailForEvent(user, thing, event)
@@ -154,6 +157,8 @@ export async function close(user, thingId, messageText) {
         // Removing the user from the doers and follow upers
         remove(thing.followUpers, followUperId => followUperId === user.id)
         remove(thing.doers, doerUserId => doerUserId === user.id)
+        remove(thing.mentioned)
+        remove(thing.subscribers)
 
         // Update the status
         const previousStatus = thing.payload.status
@@ -205,7 +210,8 @@ export async function markAsDone(user, thingId, messageText) {
         await thing.save()
         
         await Event.discardUserEvents(thingId, user.id)
-        
+        await Event.discardThingEventsByType(thingId, EventTypes.MENTIONED.key)
+
         let event = await EventCreator.createDone(creator, thing, getShowNewList, messageText)
         await sendEmailForEvent(user, thing, event)
 
@@ -235,6 +241,7 @@ export async function sendBack(user, thingId, messageText) {
         await Event.discardUserEvents(thingId, user.id)
 
         const event = await EventCreator.createSentBack(creator, thing, getShowNewList, messageText)
+
         await sendEmailForEvent(user, thing, event)
         return event
 

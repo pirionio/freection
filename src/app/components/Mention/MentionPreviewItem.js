@@ -27,8 +27,6 @@ class MentionPreviewItem extends Component {
     render() {
         const {thing, dispatch} = this.props
 
-        const textPreview = <ThingPreviewText thing={thing}/>
-
         return (
             <PreviewItem circleColor={this.getCircleColor()}
                          title={thing.subject}
@@ -37,7 +35,9 @@ class MentionPreviewItem extends Component {
                 <PreviewItemStatus>
                     <strong>{thing.creator.displayName}, {thing.to.displayName}</strong>
                 </PreviewItemStatus>
-                <PreviewItemText>{textPreview}</PreviewItemText>
+                <PreviewItemText>
+                    <ThingPreviewText thing={thing}/>
+                </PreviewItemText>
                 <PreviewItemActions>
                     <MentionActionsBar thing={thing} />
                 </PreviewItemActions>

@@ -69,6 +69,18 @@ function messageReceived(state, action) {
         .value()
 }
 
+function removeMentions(state, action) {
+    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
+        return state
+
+    if (!action.event.thing.isMentioned)
+        return state
+
+    return immutable(state)
+        .arrayReject('things', {id: action.event.thing.id})
+        .value()
+}
+
 export default (state = initialState, action) => {
     switch (action.type) {
         case MentionActionTypes.SET_STATE:
@@ -84,6 +96,10 @@ export default (state = initialState, action) => {
         case EventActionTypes.PINGED:
         case EventActionTypes.PONGED:
             return messageReceived(state, action)
+        case EventActionTypes.MARKED_AS_DONE:
+        case EventActionTypes.DISMISSED:
+        case EventActionTypes.CLOSED:
+            return removeMentions(state, action)
         default:
             return state
     }
