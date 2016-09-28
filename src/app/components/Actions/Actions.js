@@ -94,7 +94,7 @@ export function JoinMention(notification) {
 
 export function CloseAckAction(notification) {
     return {
-        component: <Action label="Stop doing" doFunc={ThingCommandActions.closeAck} item={notification.thing} key="action-StopDoing" />,
+        component: <Action label="Close" doFunc={ThingCommandActions.closeAck} item={notification.thing} key="action-Close" />,
         show: notification.eventType.key === EventTypes.CLOSED.key
     }
 }
