@@ -9,8 +9,8 @@ if (process.env.NODE_ENV === 'production') {
 
     config = {
         servers: [{
-            host: 'aws-us-east-1-portal.16.dblayer.com',
-            port: 11239,
+            host: process.env.RDB_HOST || 'aws-us-east-1-portal.16.dblayer.com',
+            port: process.env.RDB_PORT || 11239,
             ssl: {
                 ca: publicKey
             }

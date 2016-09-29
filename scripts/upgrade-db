@@ -1,0 +1,3 @@
+#!/bin/sh
+
+./node_modules/rethink-migrate/bin/rethink-migrate up --root db "$@"

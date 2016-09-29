@@ -3,4 +3,7 @@
 if [ "$NODE_ENV" = "production" ]
 then
     bash ./scripts/build
+
+    bash cp ./config/rethink-migrate.config.js ./db/database.json -f
+    bash ./scripts/upgrade-db --db "$RDB_DB_NAME" --host "$RDB_HOST" --port "$RDB_PORT" --authKey "$RDB_AUTH_KEY"
 fi
