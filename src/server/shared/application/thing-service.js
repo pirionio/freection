@@ -572,6 +572,9 @@ function validateType(thing) {
 }
 
 async function getNewMentions(text, thing) {
+    if (!text)
+        return Promise.resolve([])
+
     const matches = text.match(SharedConstants.MENTION_REGEX)
 
     if (!matches || !matches.length)
