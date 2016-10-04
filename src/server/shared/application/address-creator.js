@@ -10,7 +10,8 @@ export function userToAddress(user) {
         payload: {
             firstName: user.firstName,
             lastName: user.lastName,
-            email: user.email
+            email: user.email,
+            username: user.username
         }
     }
 }

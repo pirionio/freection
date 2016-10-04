@@ -9,7 +9,7 @@ module.exports = {
         {
             name: 'select message box',
             private: true,
-            params: ['currentMessageBoxId', 'selectedMessageBoxId', 'currentMessage']
+            params: ['currentMessageBoxId', 'selectedMessageBoxId', 'currentMessage', 'editorState']
         },
         {
             name: 'message sent',

@@ -11,7 +11,8 @@ const initialState = {
         to: '',
         body: '',
         subject: ''
-    }
+    },
+    editorState: null
 }
 
 export const messageBox = modelReducer('messageBox', initialState)

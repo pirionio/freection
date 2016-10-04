@@ -21,7 +21,7 @@ export function newMessageBox(messageType, context) {
 export function selectMessageBox(currentMessageBox, selectedMessageBox) {
     return (dispatch, getState) => {
         const {messageBox} = getState()
-        dispatch(_selectMessageBox(currentMessageBox.id, selectedMessageBox.id, messageBox.message))
+        dispatch(_selectMessageBox(currentMessageBox.id, selectedMessageBox.id, messageBox.message, messageBox.editorState))
         dispatch(actions.change('messageBox', selectedMessageBox))
     }
 }

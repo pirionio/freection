@@ -20,8 +20,8 @@ config.module.loaders = [
         ]
     },
     {
-        test: /\.(scss|css)$/,
-        loader: 'style!css!sass'
+        test: /\.(css)$/,
+        loader: 'style!css'
     },
     {
         test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,

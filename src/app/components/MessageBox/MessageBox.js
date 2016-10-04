@@ -6,6 +6,7 @@ import useSheet from 'react-jss'
 import isNil from 'lodash/isNil'
 
 import Flexbox from '../UI/Flexbox'
+import MessageBody from './MessageBody'
 import To from './To'
 import styleVars from '../style-vars'
 import * as MessageBoxActions from '../../actions/message-box-actions'
@@ -38,7 +39,7 @@ class MessageBox extends Component {
             focusOn = this.hasSubject() ? this.messageSubject : this.messageBody
         }
 
-        focusOn && focusOn.focus()
+        focusOn && focusOn.focus && focusOn.focus()
     }
 
     getSubject() {
@@ -59,16 +60,8 @@ class MessageBox extends Component {
     }
 
     getBody() {
-        const {sheet: {classes}} = this.props
-
         return (
-            <Flexbox name="message-body" grow={1} container="row" className={classes.messageBody}>
-                <Field model="messageBox.message.body">
-                    <textarea className={classes.textField} tabIndex="2" placeholder="Write your message here"
-                              ref={ref => this.messageBody = ref}
-                              onFocus={this.focusOnBody} />
-                </Field>
-            </Flexbox>
+            <MessageBody onFocus={this.focusOnBody} tabIndex="2" ref={ref => this.messageBody = ref} />
         )
     }
 
@@ -145,9 +138,6 @@ const style = {
         '&:-webkit-autofill': {
             backgroundColor: 'inherit'
         }
-    },
-    messageBody: {
-        padding: 10
     },
     textField: {
         width: '100%',

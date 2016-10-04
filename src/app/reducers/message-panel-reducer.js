@@ -25,7 +25,8 @@ function newMessageBox(state, action) {
         type: action.messageType,
         title: action.context ? action.context.subject : action.messageType.label,
         context: action.context,
-        ongoingAction: false
+        ongoingAction: false,
+        editorState: null
     }
 
     return immutable(state)
@@ -74,7 +75,7 @@ function closeMessageBox(state, action) {
 
 function selectMessageBox(state, action) {
     return immutable(state)
-        .arrayMergeItem('messageBoxes', {id: action.currentMessageBoxId}, {message: action.currentMessage})
+        .arrayMergeItem('messageBoxes', {id: action.currentMessageBoxId}, {message: action.currentMessage, editorState: action.editorState})
         .set('activeMessageBoxId', action.selectedMessageBoxId)
         .value()
 }

@@ -10,12 +10,13 @@ export function _newMessageBox(messageType,context) {
     }
 }
 
-export function _selectMessageBox(currentMessageBoxId,selectedMessageBoxId,currentMessage) {
+export function _selectMessageBox(currentMessageBoxId,selectedMessageBoxId,currentMessage,editorState) {
     return {
         type: MessageBoxActionsTypes.SELECT_MESSAGE_BOX,
         currentMessageBoxId,
         selectedMessageBoxId,
-        currentMessage
+        currentMessage,
+        editorState
     }
 }
 
