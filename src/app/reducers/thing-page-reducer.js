@@ -175,7 +175,7 @@ function messageReceived(state, action) {
 }
 
 function statusChanged(state, action) {
-    if (!state.thing || !action.thing || state.thing.id !== action.thing.id)
+    if (!state.thing || !action.event.thing || state.thing.id !== action.event.thing.id)
         return state
 
     return immutable(state)
@@ -244,6 +244,8 @@ export default (state = initialState, action) => {
         case EventActionTypes.MARKED_AS_DONE:
         case EventActionTypes.CLOSED:
         case EventActionTypes.DISMISSED:
+        case EventActionTypes.JOINED_MENTION:
+        case EventActionTypes.LEFT_MENTION:
             return statusChanged(state, action)
         case ThingCommandActionTypes.DO_THING:
             return doThing(state, action)

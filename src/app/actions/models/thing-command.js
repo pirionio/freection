@@ -112,11 +112,23 @@ module.exports = {
             type: 'post',
             path: '/api/events/${notification.id}/discard'
         },
-        {
+        { 
             name: 'join mention',
-            params: ['notification'],
+            params: ['thing'],
             type: 'post',
-            path: '/api/things/${notification.thing.id}/joinmention'
+            path: '/api/things/${thing.id}/joinmention',
+            completeParams: {
+                thing: 'result'
+            }
+        },
+        {
+            name: 'leave mention',
+            params: ['thing'],
+            type: 'post',
+            path: '/api/things/${thing.id}/leavemention',
+            completeParams: {
+                thing: 'result'
+            }
         },
         {
             name: 'send back',

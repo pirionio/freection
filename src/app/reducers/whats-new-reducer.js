@@ -150,13 +150,11 @@ export default (state = initialState, action) => {
         case ThingCommandActionTypes.SEND_BACK:
         case ThingCommandActionTypes.CLOSE_ACK:
         case ThingCommandActionTypes.PONG:
+        case ThingCommandActionTypes.JOIN_MENTION:
             return removeNotificationsOfThing(state, action)
         case ThingCommandActionTypes.DISCARD_COMMENTS:
             return discardComments(state, action)
-        case ThingCommandActionTypes.DISCARD_PING:
-        case ThingCommandActionTypes.DISCARD_PONG:
         case ThingCommandActionTypes.DISCARD_SINGLE_NOTIFICATION:
-        case ThingCommandActionTypes.JOIN_MENTION:
             return discardSingleNotification(state, action)
         case WhatsNewActionTypes.NOTIFICATION_RECEIVED:
             return notificationReceived(state, action)

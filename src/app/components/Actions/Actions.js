@@ -84,11 +84,17 @@ export function DiscardNotificationAction(notification, eventType) {
     }
 }
 
-export function JoinMention(notification) {
+export function JoinMention(thing) {
     return {
-        component: <Action label="Join" doFunc={ThingCommandActions.joinMention} item={notification} key="action-Join" />,
-        show: [EventTypes.MENTIONED.key, EventTypes.SENT_BACK.key].includes(notification.eventType.key) &&
-            notification.thing.isMentioned && !notification.thing.isSubscriber
+        component: <Action label="Join" doFunc={ThingCommandActions.joinMention} item={thing} key="action-Join" />,
+        show: thing.isMentioned && !thing.isSubscriber
+    }
+}
+
+export function LeaveMention(thing) {
+    return {
+        component: <Action label="Leave" doFunc={ThingCommandActions.leaveMention} item={thing} key="action-Leave" />,
+        show: thing.isMentioned && thing.isSubscriber
     }
 }
 

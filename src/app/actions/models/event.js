@@ -42,6 +42,14 @@ module.exports = {
             params: ['event']
         },
         {
+            name: 'joined mention',
+            params: ['event']
+        },
+        {
+            name: 'left mention',
+            params: ['event']
+        },
+        {
             name: 'comment created',
             params: ['event']
         },

@@ -331,11 +331,27 @@ export async function joinMention(user, thingId) {
         await thing.save()
 
         const creator = userToAddress(user)
-        await EventCreator.createSubscribed(creator, thing, getShowNewList)
+        await EventCreator.createJoinedMention(creator, thing, getShowNewList)
     
-        Event.discardUserEventsByType(thingId, EventTypes.MENTIONED.key, user.id)
-        Event.discardUserEventsByType(thingId, EventTypes.SENT_BACK.key, user.id)
+        await Event.discardUserEventsByType(thingId, EventTypes.MENTIONED.key, user.id)
+        await Event.discardUserEventsByType(thingId, EventTypes.SENT_BACK.key, user.id)
     }
+
+    return thingToDto(thing, user)
+}
+
+export async function leaveMention(user, thingId) {
+    const thing = await Thing.get(thingId).run()
+
+    if (thing.subscribers.includes(user.id)) {
+        remove(thing.subscribers, userId => userId === user.id)
+        await thing.save()
+
+        const creator = userToAddress(user)
+        await EventCreator.createLeftMention(creator, thing, getShowNewList)
+    }
+
+    return thingToDto(thing, user)
 }
 
 export function discardEventsByType(user, thingId, eventType) {
@@ -535,7 +551,8 @@ function getShowNewList(user, thing, eventType, previousStatus, previousMentione
             return  [...thing.followUpers, ...thing.subscribers]
         case EventTypes.ACCEPTED.key:
         case EventTypes.CLOSE_ACKED.key:
-        case EventTypes.SUBSCRIBED.key:
+        case EventTypes.JOINED_MENTION.key:
+        case EventTypes.LEFT_MENTION.key:
             return []
         default:
             throw 'UnknownEventType'

@@ -152,13 +152,24 @@ export function createMentioned(creator, thing, getShowNewList, messageText) {
     })
 }
 
-export function createSubscribed(creator, thing, getShowNewList) {
+export function createJoinedMention(creator, thing, getShowNewList) {
     return Event.save({
         thingId: thing.id,
-        eventType: EventTypes.SUBSCRIBED.key,
+        eventType: EventTypes.JOINED_MENTION.key,
         createdAt: new Date(),
         creator,
         payload: {},
-        showNewList: getShowNewList(creator, thing, EventTypes.SUBSCRIBED.key)
+        showNewList: getShowNewList(creator, thing, EventTypes.JOINED_MENTION.key)
+    })
+}
+
+export function createLeftMention(creator, thing, getShowNewList) {
+    return Event.save({
+        thingId: thing.id,
+        eventType: EventTypes.LEFT_MENTION.key,
+        createdAt: new Date(),
+        creator,
+        payload: {},
+        showNewList: getShowNewList(creator, thing, EventTypes.LEFT_MENTION.key)
     })
 }

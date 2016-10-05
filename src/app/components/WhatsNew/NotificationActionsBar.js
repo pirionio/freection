@@ -37,6 +37,11 @@ class NotificationActionsBar extends Component {
         return notification.thing.isDoer
     }
 
+    showJoin() {
+        const {notification} = this.props
+        return [EventTypes.MENTIONED.key, EventTypes.SENT_BACK.key].includes(notification.eventType.key)
+    }
+
     showDiscardSentBack() {
         const {notification} = this.props
         return notification.thing.isMentioned
@@ -68,6 +73,9 @@ class NotificationActionsBar extends Component {
         const closeAckAction = CloseAckAction(notification)
         closeAckAction.show = closeAckAction.show && this.showCloseAck()
 
+        const joinMention = JoinMention(notification.thing)
+        joinMention.show = joinMention.show && this.showJoin()
+
         const discardSentBackAction = DiscardNotificationAction(notification, EventTypes.SENT_BACK)
         discardSentBackAction.show = discardSentBackAction.show && this.showDiscardSentBack()
 
@@ -82,7 +90,7 @@ class NotificationActionsBar extends Component {
             pongAction,
             closeAckAction,
             SendBackAction(notification.thing, currentUser, {preDoFunc}),
-            JoinMention(notification),
+            joinMention,
             discardSentBackAction,
             discardClosedAction,
             DiscardCommentsAction(notification),

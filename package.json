@@ -50,7 +50,7 @@
     "css-loader": "0.23.1",
     "date-fns": "1.3.0",
     "draft-js": "0.9.1",
-    "draft-js-mention-plugin": "2.0.0-beta5",
+    "draft-js-mention-plugin": "'2.0.0-beta5",
     "draft-js-plugins-editor": "2.0.0-beta5",
     "ejs": "2.4.2",
     "email-addresses": "2.0.2",

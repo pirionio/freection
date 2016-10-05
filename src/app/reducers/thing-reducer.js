@@ -41,6 +41,8 @@ function statusChanged(state, action) {
         .set('payload.status', action.event.thing.payload.status)
         .set('isDoer', action.event.thing.isDoer)
         .set('isFollowUper', action.event.thing.isFollowUper)
+        .set('isMentioned', action.event.thing.isMentioned)
+        .set('isSubscriber', action.event.thing.isSubscriber)
         .arraySetOrPushItem('events', {id: action.event.id}, action.event)
         .value()
 }
@@ -61,6 +63,8 @@ export default (state, action) => {
         case EventActionTypes.CLOSED:
         case EventActionTypes.DISMISSED:
         case EventActionTypes.SENT_BACK:
+        case EventActionTypes.JOINED_MENTION:
+        case EventActionTypes.LEFT_MENTION:
             return statusChanged(state, action)
         default:
             return state

@@ -287,23 +287,44 @@ export function discardSingleNotification(notification) {
     }
 }
 
-export function joinMention(notification) {
+export function joinMention(thing) {
     return dispatch => {
         dispatch({
             type: ThingCommandActionsTypes.JOIN_MENTION, 
             status: ActionStatus.START,
-            notification
+            thing
         })
-        return ResourceUtil.post(`/api/things/${notification.thing.id}/joinmention`)
+        return ResourceUtil.post(`/api/things/${thing.id}/joinmention`)
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.JOIN_MENTION, 
                 status: ActionStatus.COMPLETE,
-                notification
+                thing: result
             }))
             .catch(() => dispatch({
                 type: ThingCommandActionsTypes.JOIN_MENTION, 
                 status: ActionStatus.ERROR,
-                notification
+                thing
+            }))
+    }
+}
+
+export function leaveMention(thing) {
+    return dispatch => {
+        dispatch({
+            type: ThingCommandActionsTypes.LEAVE_MENTION, 
+            status: ActionStatus.START,
+            thing
+        })
+        return ResourceUtil.post(`/api/things/${thing.id}/leavemention`)
+            .then(result => dispatch({
+                type: ThingCommandActionsTypes.LEAVE_MENTION, 
+                status: ActionStatus.COMPLETE,
+                thing: result
+            }))
+            .catch(() => dispatch({
+                type: ThingCommandActionsTypes.LEAVE_MENTION, 
+                status: ActionStatus.ERROR,
+                thing
             }))
     }
 }

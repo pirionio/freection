@@ -43,8 +43,12 @@ export default {
         key: 'MENTIONED',
         label: 'Mentioned'
     },
-    SUBSCRIBED: {
-        key: 'SUBSCRIBED',
-        label: 'Subscribed'
+    JOINED_MENTION: {
+        key: 'JOINED_MENTION',
+        label: 'Joined'
+    },
+    LEFT_MENTION: {
+        key: 'LEFT_MENTION',
+        label: 'Left'
     }
 }

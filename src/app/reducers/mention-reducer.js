@@ -1,5 +1,6 @@
 import MentionActionTypes from '../actions/types/mentions-action-types'
 import EventActionTypes from '../actions/types/event-action-types'
+import ThingCommandActionTypes from '../actions/types/thing-command-action-types'
 import {ActionStatus, InvalidationStatus} from '../constants'
 import thingReducer from './thing-reducer'
 import immutable from '../util/immutable'
@@ -78,6 +79,18 @@ function removeMentions(state, action) {
         .value()
 }
 
+function statusChanged(state, action) {
+    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
+        return state
+
+    if (action.status !== ActionStatus.COMPLETE)
+        return state
+
+    return immutable(state)
+        .arraySetItem('things', {id: action.thing.id}, action.thing)
+        .value()
+}
+
 export default (state = initialState, action) => {
     switch (action.type) {
         case MentionActionTypes.SET_STATE:
@@ -98,6 +111,9 @@ export default (state = initialState, action) => {
         case EventActionTypes.DISMISSED:
         case EventActionTypes.CLOSED:
             return removeMentions(state, action)
+        case ThingCommandActionTypes.JOIN_MENTION:
+        case ThingCommandActionTypes.LEAVE_MENTION:
+            return statusChanged(state, action)
         default:
             return state
     }

@@ -72,6 +72,20 @@ export function mentioned(event) {
     }
 }
 
+export function joinedMention(event) {
+    return {
+        type: EventActionsTypes.JOINED_MENTION,
+        event
+    }
+}
+
+export function leftMention(event) {
+    return {
+        type: EventActionsTypes.LEFT_MENTION,
+        event
+    }
+}
+
 export function commentCreated(event) {
     return {
         type: EventActionsTypes.COMMENT_CREATED,
