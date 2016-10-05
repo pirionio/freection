@@ -1,4 +1,4 @@
-import ContactsActionTypes from '../actions/types/contacts-action-types'
+import ToActionTypes from '../actions/types/to-action-types'
 import {ActionStatus} from '../constants.js'
 import immutable from '../util/immutable.js'
 
@@ -10,7 +10,7 @@ const initialValue = {
 
 export default function(state = initialValue, action) {
     switch (action.type) {
-        case ContactsActionTypes.GET:
+        case ToActionTypes.GET:
             if (action.status === ActionStatus.START) {
                 return immutable(state)
                     .set('pendingQuery', action.query)
@@ -27,7 +27,7 @@ export default function(state = initialValue, action) {
                 }
             }
             break
-        case ContactsActionTypes.CLEAR:
+        case ToActionTypes.CLEAR:
             return initialValue
     }
 

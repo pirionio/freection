@@ -12,7 +12,7 @@ module.exports = [
     require('./github'),
     require('./message-box'),
     require('./auth'),
-    require('./contacts'),
+    require('./to'),
     require('./glass-pane'),
     require('./inline-message'),
     require('./slack')

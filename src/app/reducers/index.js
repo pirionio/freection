@@ -15,7 +15,7 @@ import emailPage from './email-page-reducer'
 import github from './github'
 import slack from './slack'
 import auth from './auth'
-import contacts from './contacts-reducer'
+import to from './to-reducer'
 import glassPane from './glass-pane-reducer'
 
 export default combineReducers({
@@ -35,7 +35,7 @@ export default combineReducers({
     github,
     slack,
     auth,
-    contacts,
+    to,
     glassPane,
     routing: routerReducer,
     config: (state = {}) => state

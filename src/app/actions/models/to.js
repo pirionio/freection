@@ -1,5 +1,5 @@
 module.exports = {
-    name: 'contacts',
+    name: 'to',
     actions: [
         {
             name: 'get',

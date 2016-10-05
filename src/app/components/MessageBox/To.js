@@ -7,7 +7,7 @@ import omit from 'lodash/omit'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 
-import * as ContactsActions from '../../actions/contacts-actions.js'
+import * as ToActions from '../../actions/to-actions.js'
 
 class To extends Component {
 
@@ -78,7 +78,7 @@ class To extends Component {
 
                 // we are checking again, as we might got a query back
                 if (this.shouldFetchContacts(value))
-                    dispatch(ContactsActions.get(value.toLowerCase()))
+                    dispatch(ToActions.get(value.toLowerCase()))
 
                 this._fetchContactsTimeoutActive = false
             }, 200)
@@ -96,7 +96,7 @@ class To extends Component {
             this._fetchContactsTimeoutActive = false
         }
 
-        dispatch(ContactsActions.clear())
+        dispatch(ToActions.clear())
     }
 
     render() {
@@ -175,9 +175,9 @@ To.defaultProps = {
 
 function mapStateToProps(state, {model}) {
     return {
-        contacts: state.contacts.contacts,
-        query: state.contacts.query,
-        pendingQuery: state.contacts.pendingQuery,
+        contacts: state.to.contacts,
+        query: state.to.query,
+        pendingQuery: state.to.pendingQuery,
         currentUser: state.auth,
         value: get(state, model)
     }
