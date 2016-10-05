@@ -1,3 +1,4 @@
 export default {
-    SET_STATE: 'CONTACTS_SET_STATE'
+    GET: 'CONTACTS_GET',
+    CLEAR: 'CONTACTS_CLEAR'
 }

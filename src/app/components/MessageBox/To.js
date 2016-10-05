@@ -4,10 +4,10 @@ import {actions} from 'react-redux-form'
 import Autosuggest from 'react-autosuggest'
 import useSheet from 'react-jss'
 import omit from 'lodash/omit'
-import some from 'lodash/some'
-import takeRight from 'lodash/takeRight'
-import orderBy from 'lodash/orderBy'
 import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
+
+import * as ContactsActions from '../../actions/contacts-actions.js'
 
 class To extends Component {
 
@@ -15,31 +15,15 @@ class To extends Component {
         super(props)
 
         this.onChange = this.onChange.bind(this)
-    }
+        this.onSuggestionsFetchRequested = this.onSuggestionsFetchRequested.bind(this)
+        this.onSuggestionsClearRequested = this.onSuggestionsClearRequested.bind(this)
 
-    getSuggestions(value) {
-        if (!value)
-            return []
-
-        const valueLowCase = value.toLowerCase()
-        const { contacts, currentUser} = this.props
-        const withMe = [...contacts, { displayName: 'Me', payload: { email: currentUser.email}}]
-
-        const filtered = withMe.filter(contact => {
-            const nameParts = contact.displayName.toLowerCase().split(' ')
-
-            return some(nameParts, part => part.startsWith(valueLowCase))
-        }).map(contact => { return {
-            email: contact.payload.email,
-            text: `${contact.displayName} <${contact.payload.email}>`
-        }})
-
-        return orderBy(takeRight(filtered, 6), ['text'], ['desc'])
+        this._fetchContactsTimeoutActive = false
     }
 
     renderSuggestion(suggestion) {
         return (
-            <span>{suggestion.text}</span>
+            <span>{`${suggestion.displayName} <${suggestion.payload.email}>`}</span>
         )
     }
 
@@ -54,27 +38,75 @@ class To extends Component {
     }
 
     getSuggestionValue(suggestion){
-        return suggestion.text
+        return `${suggestion.displayName} <${suggestion.payload.email}>`
     }
 
     onChange(event, {newValue, method}) {
-        const {model, dispatch} = this.props
+        const {model, dispatch } = this.props
 
         dispatch(actions.change(model, newValue))
 
-        if (method === 'enter') {
+        if (method === 'enter' || method === 'down' || method === 'up') {
             event.preventDefault()
+            event.stopPropagation()
         }
     }
 
-    render() {
-        const {value, placeholder, containerClassName, inputClassName, tabIndex , onFocus, inputRef, sheet: {classes}} = this.props
+    shouldFetchContacts(value) {
+        const {query, pendingQuery} = this.props
 
-        const suggestions = this.getSuggestions(value)
+        const valueLowered = value.toLowerCase()
+
+        return (!isEmpty(valueLowered) &&
+            ((isEmpty(pendingQuery) && valueLowered !== query) || (!isEmpty(pendingQuery) && valueLowered !== pendingQuery)))
+    }
+
+    onSuggestionsFetchRequested(valueObject) {
+        const {dispatch} = this.props
+
+        //Let's go and fetch the new contacts
+        const value = valueObject.value
+
+        if (this.shouldFetchContacts(value)) {
+
+            if (this._fetchContactsTimeoutActive) {
+                clearTimeout(this._timeoutId)
+            }
+
+            this._fetchContactsTimeoutActive = true
+            this._timeoutId = setTimeout(() => {
+
+                // we are checking again, as we might got a query back
+                if (this.shouldFetchContacts(value))
+                    dispatch(ContactsActions.get(value.toLowerCase()))
+
+                this._fetchContactsTimeoutActive = false
+            }, 200)
+        } else if (this._fetchContactsTimeoutActive) {
+            clearTimeout(this._timeoutId)
+            this._fetchContactsTimeoutActive = false
+        }
+    }
+
+    onSuggestionsClearRequested() {
+        const {dispatch} = this.props
+
+        if (this._fetchContactsTimeoutActive) {
+            clearTimeout(this._timeoutId)
+            this._fetchContactsTimeoutActive = false
+        }
+
+        dispatch(ContactsActions.clear())
+    }
+
+    render() {
+        const {value,contacts, placeholder, containerClassName, inputClassName, tabIndex , onFocus, inputRef, sheet: {classes}} = this.props
 
         return (
             <div name="message-to" className={containerClassName}>
-                <Autosuggest suggestions={suggestions}
+                <Autosuggest suggestions={contacts}
+                             onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                             onSuggestionsClearRequested={this.onSuggestionsClearRequested}
                              getSuggestionValue={this.getSuggestionValue}
                              renderSuggestion={this.renderSuggestion}
                              renderSuggestionsContainer={this.renderSuggestionContainer}
@@ -126,6 +158,8 @@ To.propTypes = {
     contacts: PropTypes.array.isRequired,
     currentUser: PropTypes.object.isRequired,
     value: PropTypes.string,
+    query: PropTypes.string,
+    pendingQuery: PropTypes.string,
     model: PropTypes.string.isRequired,
     containerClassName: PropTypes.string,
     inputClassName: PropTypes.string,
@@ -141,7 +175,9 @@ To.defaultProps = {
 
 function mapStateToProps(state, {model}) {
     return {
-        contacts: state.contacts,
+        contacts: state.contacts.contacts,
+        query: state.contacts.query,
+        pendingQuery: state.contacts.pendingQuery,
         currentUser: state.auth,
         value: get(state, model)
     }

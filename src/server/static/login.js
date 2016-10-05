@@ -89,6 +89,13 @@ passport.use(new GoogleStrategy({
                 return user.save()
             }
 
+            // We probably requested more permissions, so updating the scopes
+            if (userData.refreshToken) {
+                user.refreshToken = userData.refreshToken
+                user.accessToken = userData.accessToken
+                return user.save()
+            }
+
             if (!user.accessToken) {
                 user.accessToken = userData.accessToken
                 return user.save()

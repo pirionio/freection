@@ -171,6 +171,9 @@ class ExpandedMessageBox extends Component {
         if (!opened)
             return null
 
+        if (!opened)
+            return null
+
         return (
             <div>
                 <div className={classes.overlay} />
