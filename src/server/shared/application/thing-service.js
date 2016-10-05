@@ -442,6 +442,8 @@ function sendEmailForThing(thing, user, toAddress, subject, body) {
             messageId,
             replyTo: getReplyAddress(thing.id)
         })
+            .then(() => logger.info(`Email send successfully from ${user.email} to ${toAddress.payload.email}`))
+            .catch(error => logger.error(`Error while sending email from ${user.email} to ${toAddress.payload.email}`))
     }
 
     return Promise.resolve(null)
