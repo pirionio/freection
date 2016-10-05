@@ -10,7 +10,7 @@ class ToDoActionsBar extends Component {
 
         const actions = [
             DoAction(thing, currentUser),
-            DoneAction(thing, currentUser, {preDoFunc}),
+            DoneAction(thing, currentUser, {preDoFunc: !thing.isSelf ? preDoFunc : undefined}),
             DismissAction(thing, currentUser, {preDoFunc})
         ]
 
