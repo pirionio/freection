@@ -156,7 +156,7 @@ MessageBody.propTypes = {
 function mapStateToProps(state) {
     return {
         messageBox: state.messageBox,
-        suggestions: fromJS(state.contacts.map(contactToSuggestion))
+        suggestions: fromJS(state.users.map(contactToSuggestion))
     }
 }
 

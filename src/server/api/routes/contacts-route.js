@@ -5,7 +5,7 @@ import {reject, union, flatMap, take} from 'lodash'
 
 import config from '../../shared/config/google-oauth'
 import promisify from '../../shared/utils/promisify'
-import * as ContactService from '../../shared/application/contact-service'
+import {findUsers} from '../../shared/application/users-service'
 import {User} from '../../shared/models'
 import UserTypes from '../../../common/enums/user-types'
 import logger from '../../shared/utils/logger.js'
@@ -20,7 +20,7 @@ router.get('/', async function(request, response) {
 
         // get both freection and google contacts
         const googleContactsPromise = getGoogleContacts(request.user.id, query, max)
-        const freectionContacts = await ContactService.get(request.user, query)
+        const freectionContacts = await findUsers(request.user, query)
         const googleContacts = await googleContactsPromise
 
         // filtering freection users from google contacts

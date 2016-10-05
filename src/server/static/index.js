@@ -9,12 +9,14 @@ import tokenConfig from '../shared/config/token'
 import logger from '../shared/utils/logger'
 import login from './login'
 import * as ThingService from '../shared/application/thing-service'
+import {getUsers} from '../shared/application/users-service.js'
 import reducer from '../../app/reducers'
 import * as WhatsNewActions from '../../app/actions/whats-new-actions'
 import * as ToDoActions from '../../app/actions/to-do-actions'
 import * as FollowUpActions from '../../app/actions/follow-up-actions'
 import * as MentionsActions from '../../app/actions/mentions-actions'
 import * as AuthActions from '../../app/actions/auth-actions'
+import * as UsersActions from '../../app/actions/users-actions.js'
 
 export function configure(app) {
     app.set('views', path.join(__dirname, 'views'))
@@ -79,6 +81,9 @@ async function getInitialState(request) {
 
         const mentions = await ThingService.getUserMentionedThings(user)
         state = reducer(state, MentionsActions.setState(mentions))
+
+        const users = await getUsers(user)
+        state = reducer(state, UsersActions.setState(users))
     }
 
     const authState = getAuthState(request)
