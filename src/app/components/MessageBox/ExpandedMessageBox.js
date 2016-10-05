@@ -12,6 +12,7 @@ import classnames from 'classnames'
 
 import Flexbox from '../UI/Flexbox'
 import TextTruncate from '../UI/TextTruncate'
+import MessageBody from './MessageBody'
 import To from './To'
 import styleVars from '../style-vars'
 import * as ThingCommandActions from '../../actions/thing-command-actions'
@@ -109,15 +110,8 @@ class ExpandedMessageBox extends Component {
     }
 
     getBody() {
-        const {sheet: {classes}} = this.props
-
         return (
-            <Field model="messageBox.message.body">
-                <textarea className={classes.textArea}
-                          tabIndex="2"
-                          placeholder="Write your message here"
-                          ref={ref => this.messageBody = ref} />
-            </Field>
+            <MessageBody tabIndex="2" ref={ref => this.messageBody = ref} />
         )
     }
 
@@ -174,13 +168,13 @@ class ExpandedMessageBox extends Component {
     render() {
         const {opened, sheet: {classes}} = this.props
 
-        const modalClassname = classnames(classes.modal, !opened ? classes.closed : '')
-        const overlayClassname = classnames(classes.overlay, !opened ? classes.closed : '')
+        if (!opened)
+            return null
 
         return (
             <div>
-                <div className={overlayClassname} />
-                <div className={modalClassname}>
+                <div className={classes.overlay} />
+                <div className={classes.modal}>
                     <Form model="messageBox" onSubmit={this.send} className={classes.form}>
                         <Flexbox name="expanded-message-box" container="column" className={classes.container}>
                             {this.getTitle()}
@@ -218,9 +212,6 @@ function mapStateToProps(state) {
 }
 
 const style = {
-    closed: {
-        display: 'none'
-    },
     overlay: {
         backgroundColor: 'rgba(236, 236, 236, 0.5)',
         zIndex: styleVars.modalOverlayZIndex,
@@ -228,7 +219,7 @@ const style = {
         top: 0,
         left: 0,
         right: 0,
-        bottom: 0,
+        bottom: 0
     },
     modal: {
         backgroundColor: 'rgba(0,0,0, 0.0)',

@@ -9,52 +9,48 @@ import {EditorState, convertToRaw} from 'draft-js'
 import 'draft-js-mention-plugin/lib/plugin.css'
 import 'draft-js/dist/Draft.css'
 import {fromJS} from 'immutable'
+import clone from 'lodash/clone'
 
 import Flexbox from '../UI/Flexbox'
-
-const positionSuggestions = ({decoratorRect, state, popover, props}) => {
-    const wrapperRect = popover.parentElement.parentElement.getBoundingClientRect()
-    const topDiff = decoratorRect.top - wrapperRect.top
-    const bottom = wrapperRect.height - topDiff
-
-    const transform = state.isActive && props.suggestions.size > 0 ? 'scale(1)' : 'scale(0)'
-
-    return {
-        bottom: `${bottom}px`,
-        transform
-    }
-}
-
-const mentionPlugin = createMentionPlugin({
-    mentionPrefix: '@',
-    positionSuggestions
-})
-const {MentionSuggestions} = mentionPlugin
-const plugins = [mentionPlugin]
 
 class MessageBody extends Component {
     constructor(props) {
         super(props)
         classAutobind(this, MessageBody.prototype)
 
+        this._mentionPlugin = createMentionPlugin({
+            mentionPrefix: '@',
+            positionSuggestions: this.positionSuggestions
+        })
+
         this.state = {
-            editorState: EditorState.createEmpty(),
-            suggestions: this.props.suggestions
+            editorState: props.messageBox && props.messageBox.editorState ? props.messageBox.editorState : EditorState.createEmpty(),
+            suggestions: clone(this.props.suggestions)
         }
     }
 
     componentWillReceiveProps(props) {
-        // console.log('componentWillReceiveProps, props.messageBox:', props.messageBox)
         if (props.messageBox.editorState) {
-            // console.log('editorState:', this.getContent(props.messageBox.editorState))
             this.setState({
                 editorState: props.messageBox.editorState
             })
         } else {
-            // console.log('editorState null')
             this.setState({
                 editorState: EditorState.createEmpty()
             })
+        }
+    }
+
+    positionSuggestions({decoratorRect, state, popover, props}) {
+        const wrapperRect = popover.parentElement.parentElement.getBoundingClientRect()
+        const topDiff = decoratorRect.top - wrapperRect.top
+        const bottom = wrapperRect.height - topDiff
+
+        const transform = state.isActive && props.suggestions.size > 0 ? 'scale(1)' : 'scale(0)'
+
+        return {
+            bottom: `${bottom}px`,
+            transform
         }
     }
 
@@ -107,6 +103,7 @@ class MessageBody extends Component {
 
     render() {
         const {sheet: {classes}, onFocus, tabIndex} = this.props
+        const {MentionSuggestions} = this._mentionPlugin
 
         return (
             <Flexbox name="message-body" grow={1} container="row" className={classes.container}>
@@ -114,7 +111,7 @@ class MessageBody extends Component {
                     <Editor
                         editorState={this.state.editorState}
                         onChange={this.bodyChanged}
-                        plugins={plugins}
+                        plugins={[this._mentionPlugin]}
                         ref={ref => {this.editor = ref}}
                         onFocus={onFocus}
                         tabIndex={tabIndex}
@@ -151,7 +148,7 @@ const style = {
 MessageBody.propTypes = {
     messageBox: PropTypes.object.isRequired,
     suggestions: PropTypes.object.isRequired,
-    onFocus: PropTypes.func.isRequired,
+    onFocus: PropTypes.func,
     tabIndex: PropTypes.string
 
 }
