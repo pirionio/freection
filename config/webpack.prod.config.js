@@ -7,7 +7,7 @@ const config = require('./webpack.config')
 config.devtool = 'source-map'
 config.plugins = [
     ...config.plugins,
-    new ExtractTextPlugin('style.css'),
+    new ExtractTextPlugin('style.[contentHash].css'),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin(),
     new webpack.EnvironmentPlugin(['NODE_ENV']),
@@ -26,8 +26,8 @@ config.module.loaders = [
         loader:'babel?presets[]=react&presets[]=es2015&presets[]=babel-async-preset'
     },
     {
-        test: /\.(scss|css)$/,
-        loader: ExtractTextPlugin.extract('style', 'css!sass')
+        test: /\.(css)$/,
+        loader: ExtractTextPlugin.extract('style', 'css')
     },
     {
         test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,

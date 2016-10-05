@@ -1,8 +1,9 @@
 {
   "bundle": {
-    "js": "bundle.js"
+    "js": "bundle.js",
+    "css": ""
   },
   "chrome": {
-  "js": "chrome.js"
+    "js": "chrome.js"
   }
 }
