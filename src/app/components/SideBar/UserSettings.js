@@ -33,6 +33,7 @@ class UserSettings extends Component {
         const {sheet: {classes}} = this.props
         return this.isOpen() ? (
             <Flexbox name="settings-menu" grow={1} container="column" justifyContent="space-between" className={classes.menu}>
+                <Link to="/all/things" className={classes.menuOption} onClick={this.closeSettingsMenu}>All Things</Link>
                 <Link to="/integrations" className={classes.menuOption} onClick={this.closeSettingsMenu}>Integrations</Link>
                 <a href="/login/logout" className={classes.menuOption}>Logout</a>
             </Flexbox>
@@ -75,8 +76,8 @@ const style = {
     menu: {
         position: 'absolute',
         width: '100%',
-        height: 90,
-        top: -90,
+        height: 112,
+        top: -112,
         left: 0,
         padding: [23, 27],
         backgroundColor: '#2a373f'

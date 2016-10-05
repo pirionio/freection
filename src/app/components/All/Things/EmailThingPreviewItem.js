@@ -4,10 +4,19 @@ import useSheet from 'react-jss'
 import classAutobind from 'class-autobind'
 import trimEnd from 'lodash/trimEnd'
 
-import PreviewItem, {PreviewItemStatus, PreviewItemActions} from '../Preview/PreviewItem'
-import EmailThingActionsBar from './EmailThingActionsBar'
-import ThingStatus from '../../../common/enums/thing-status'
-import styleVars from '../style-vars'
+import PreviewItem, {PreviewItemStatus, PreviewItemActions} from '../../Preview/PreviewItem'
+import ThingStatus from '../../../../common/enums/thing-status'
+import styleVars from '../../style-vars'
+import ActionsBar from '../../Actions/ActionsBar'
+
+const EmailThingActionsBar = () => {
+    return <ActionsBar actions={[]} />
+}
+
+EmailThingActionsBar.propTypes = {
+    thing: PropTypes.object.isRequired,
+    isRollover: PropTypes.bool
+}
 
 class EmailThingPreviewItem extends Component {
     constructor(props) {

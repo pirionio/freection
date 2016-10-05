@@ -1,4 +1,4 @@
-import {remove} from 'lodash'
+import {remove, uniq} from 'lodash'
 
 import { Thing } from '../models'
 import * as EventCreator from './event-creator'
@@ -44,6 +44,7 @@ function saveNewThing(creator, to, subject, body, id, number, url) {
         subject,
         followUpers: [creator.id],
         doers: [],
+        all: uniq([creator.id, to.id]),
         type: EntityTypes.SLACK.key,
         payload: {
             status: ThingStatus.NEW.key,

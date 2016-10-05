@@ -63,6 +63,7 @@ export default (state, action) => {
         case EventActionTypes.CLOSED:
         case EventActionTypes.DISMISSED:
         case EventActionTypes.SENT_BACK:
+        case EventActionTypes.MENTIONED:
         case EventActionTypes.JOINED_MENTION:
         case EventActionTypes.LEFT_MENTION:
             return statusChanged(state, action)

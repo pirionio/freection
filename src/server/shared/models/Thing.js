@@ -24,6 +24,7 @@ const Thing = thinky.createModel('Thing', {
     followUpers: [type.string()],
     mentioned: [type.string()],
     subscribers: [type.string()],
+    all: [type.string()],
     payload: type.object(),
     type: type.string()
 })
@@ -40,12 +41,20 @@ Thing.ensureIndex('mentioned', doc => {
     return doc('mentioned')
 }, {multi: true})
 
+Thing.ensureIndex('all', doc => {
+    return doc('all')
+}, {multi: true})
+
 Thing.ensureIndex('githubIssueId', doc => {
     return thinky.r.branch(doc('type').eq('GITHUB'), doc('payload')('id'), null)
 })
 
 Thing.defineStatic('getFullThing', function(thingId) {
     return this.get(thingId).getJoin({events: true}).run()
+})
+
+Thing.defineStatic('getAllUserThings', function(userId) {
+    return this.getAll(userId, {index: 'all'}).getJoin({events: true}).run()
 })
 
 Thing.defineStatic('getUserFollowUps', function(userId) {

@@ -1,4 +1,4 @@
-import {chain, some, isUndefined} from 'lodash/core'
+import {chain, some, isUndefined, uniq} from 'lodash'
 import converter from 'hex2dec'
 
 import * as GoogleImapConnectionPool from '../utils/imap/google-imap-connection-pool'
@@ -185,6 +185,7 @@ function saveNewThing(thread, creator, to) {
         subject: thread.subject,
         followUpers: [],
         doers: [to.id],
+        all: uniq([creator.id, to.id]),
         type: EntityTypes.EMAIL_THING.key,
         payload: {
             emailId: thread.id,

@@ -8,6 +8,12 @@ import EntityTypes from '../../../common/enums/entity-types'
 
 const router = Router()
 
+router.get('/all', (request, response) => {
+    EndpointUtil.handleGet(request, response, ThingService.getAllThings, {
+        type: 'All Things'
+    })
+})
+
 router.get('/whatsnew', (request, response) => {
     EndpointUtil.handleGet(request, response, ThingService.getWhatsNew, {
         type: 'What\'s New'

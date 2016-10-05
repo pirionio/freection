@@ -1,4 +1,4 @@
-import {castArray} from 'lodash'
+import {castArray, uniq} from 'lodash'
 
 import { Event, Thing } from '../models'
 import * as EventCreator from './event-creator'
@@ -97,6 +97,7 @@ function saveNewThing(creator, to, subject, body, id, number, url) {
         subject,
         followUpers: [],
         doers: [],
+        all: uniq([creator.id, to.id]),
         type: EntityTypes.GITHUB.key,
         payload: {
             status: ThingStatus.NEW.key,

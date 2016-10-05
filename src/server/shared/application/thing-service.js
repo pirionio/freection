@@ -1,4 +1,4 @@
-import {remove, castArray, union, chain, omitBy, isNil, last, map, clone} from 'lodash'
+import {remove, castArray, union, chain, omitBy, isNil, last, map, clone, uniq} from 'lodash'
 import AddressParser from 'email-addresses'
 
 import {Event, Thing, User} from '../models'
@@ -14,6 +14,15 @@ import {sendMessage} from '../technical/email-send-service'
 import logger from '../utils/logger'
 import replyToAddress from '../config/reply-email'
 import textToHtml from '../../../common/util/textToHtml'
+
+export function getAllThings(user) {
+    return Thing.getAllUserThings(user.id)
+        .then(things => things.map(thing => thingToDto(thing, user)))
+        .catch(error => {
+            logger.error(`error while fetching all things of user ${user.email}`, error)
+            throw error
+        })
+}
 
 export function getWhatsNew(user) {
     return Event.getWhatsNew(user.id)
@@ -147,7 +156,7 @@ export async function close(user, thingId, messageText) {
     try {
         const thing = await Thing.get(thingId).run()
 
-        if (thing.type !== EntityTypes.THING.key)
+        if (![EntityTypes.THING.key, EntityTypes.EMAIL_THING.key].includes(thing.type))
             throw 'InvalidEntityType'
 
         // Validate that the status of the thing matched the action
@@ -508,6 +517,7 @@ function saveNewThing(body, subject, creator, to, mentions) {
         doers,
         mentioned,
         subscribers,
+        all: uniq([creator.id, to.id, ...mentioned]),
         type: EntityTypes.THING.key,
         payload: omitBy({
             status
@@ -520,7 +530,9 @@ function updateThingMentions(thing, newMentionedUsers) {
         return Promise.resolve()
     }
 
-    thing.mentioned = [...thing.mentioned, ...map(newMentionedUsers, 'id')]
+    const newMentionedUserIds = map(newMentionedUsers, 'id')
+    thing.mentioned = [...thing.mentioned, ...newMentionedUserIds]
+    thing.all = uniq([...thing.all, ...newMentionedUserIds])
     return thing.save()
 }
 

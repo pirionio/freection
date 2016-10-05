@@ -25,6 +25,7 @@ export function thingToDto(thing, user, {includeEvents = true} = {}) {
         isDoer: thing.doers.includes(user.id),
         isMentioned: thing.mentioned ? thing.mentioned.includes(user.id) : false,
         isSubscriber: thing.subscribers ? thing.subscribers.includes(user.id) : false,
+        isInAll: thing.all && thing.all.includes(user.id),
         isSelf: thing.isSelf()
     }
 }
