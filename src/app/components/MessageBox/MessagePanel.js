@@ -76,7 +76,7 @@ class MessagePanel extends Component {
 
     getMessageBox() {
         const {activeMessageBox} = this.props
-        return isNil(activeMessageBox) ?
+        return this.isCollapsed() ?
             <CollapsedMessageBox /> :
             <MessageBox to={activeMessageBox.context ? null : ''} subject={activeMessageBox.context ? null : ''} />
     }
@@ -105,6 +105,10 @@ class MessagePanel extends Component {
         return some(messageBoxes, messageBox => [MessageTypes.COMMENT_THING.key, MessageTypes.REPLY_EMAIL.key].includes(messageBox.type.key))
     }
 
+    isCollapsed() {
+        return isNil(this.props.activeMessageBox)
+    }
+
     render () {
         const {isExpandedOpened, sheet: {classes}} = this.props
 
@@ -121,7 +125,7 @@ class MessagePanel extends Component {
             <Form model="messageBox" className={classes.form}>
                 <Flexbox name="message-panel" container="row" className={classes.panel}>
                     <Flexbox name="message-box" grow={1} container="column">
-                        <MessageTabs />
+                        {!this.isCollapsed() ? <MessageTabs /> : null}
                         <Flexbox container="column" className={messageBoxClass}>
                             {messageBox}
                         </Flexbox>
