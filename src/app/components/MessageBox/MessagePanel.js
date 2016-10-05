@@ -86,11 +86,12 @@ class MessagePanel extends Component {
         
         const sendClass = classNames(classes.sendButtonContainer, classes.send)
         const buttonClass = classNames(classes.sendButton, this.isSendDisabled() && componentStyles.disabledSendButton)
-        
+
         return !isNil(activeMessageBox) ?
             <div name="send-container" className={sendClass}>
-                <button type="submit"
+                <button type="button"
                         tabIndex="4"
+                        onClick={this.send}
                         disabled={this.isSendDisabled()}
                         className={buttonClass}>
                     Send
@@ -117,7 +118,7 @@ class MessagePanel extends Component {
         const messageBoxClass = classNames(!this.isFullItemMode() && classes.notFullItemBox)
 
         return (
-            <Form model="messageBox" onSubmit={this.send} className={classes.form}>
+            <Form model="messageBox" className={classes.form}>
                 <Flexbox name="message-panel" container="row" className={classes.panel}>
                     <Flexbox name="message-box" grow={1} container="column">
                         <MessageTabs />
