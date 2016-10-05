@@ -485,6 +485,8 @@ async function sendEmailForEvent(user, thing, event) {
         message.html = event.payload.html
 
     sendMessage(user, message)
+        .then(() => logger.info(`Email send successfully from ${user.email} to ${emailRecipients}`))
+        .catch(error => logger.error(`Error while sending email from ${user.email} to ${emailRecipients}`, error))
 }
 
 function saveNewThing(body, subject, creator, to, mentions) {
