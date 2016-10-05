@@ -23,6 +23,7 @@ export default {
     greyCircleColor: '#646464',
 
     backZIndex: 10,
+    toAutosuggestZIndex: 15,
     fullItemBlurZIndex: 40,
     fullItemZIndex: 50,
     previewInlineReplyZIndex: 100,

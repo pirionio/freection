@@ -8,6 +8,7 @@ import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 
 import * as ToActions from '../../actions/to-actions.js'
+import styleVars from '../style-vars'
 
 class To extends Component {
 
@@ -139,7 +140,8 @@ const style = {
         bottom: 25,
         left: 0,
         border: '1px solid',
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        zIndex: styleVars.toAutosuggestZIndex
     },
     suggestionsList: {
         listStyleType: 'none',
