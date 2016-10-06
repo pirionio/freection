@@ -14,5 +14,9 @@ export default {
     REPLY_EMAIL: {
         key: 'REPLY_EMAIL',
         label: 'Reply'
+    },
+    THING_ACTION: {
+        key: 'THING_ACTION',
+        label: 'Action'
     }
 }

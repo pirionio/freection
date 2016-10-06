@@ -7,9 +7,9 @@ import MessageBoxActionsTypes from'./types/message-box-action-types'
 import {_newMessageBox, _selectMessageBox, _closeMessageBox, _setFocus } from './generated/message-box-actions'
 import {GeneralConstants, ActionStatus} from'../constants'
 
-export function newMessageBox(messageType, context) {
+export function newMessageBox(messageType, context, sendAction, title) {
     return (dispatch, getState) => {
-        dispatch(_newMessageBox(messageType, context))
+        dispatch(_newMessageBox(messageType, context, sendAction, title))
         const {messagePanel} = getState()
         const previousMessageBox = getActiveMessageBox(messagePanel)
         const newMessageBox = last(messagePanel.messageBoxes)

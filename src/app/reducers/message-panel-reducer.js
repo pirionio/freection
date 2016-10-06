@@ -23,15 +23,26 @@ function newMessageBox(state, action) {
     const messageBox = {
         id: uniqueId(),
         type: action.messageType,
-        title: action.context ? action.context.subject : action.messageType.label,
+        title: getMessageBoxTitle(action),
         context: action.context,
         ongoingAction: false,
-        editorState: null
+        editorState: null,
+        action: action.sendAction
     }
 
     return immutable(state)
         .arrayPushItem('messageBoxes', messageBox)
         .value()
+}
+
+function getMessageBoxTitle(action) {
+    if (action.title)
+        return action.title
+
+    if (action.context)
+        return action.context.subject
+
+    return action.messageType.label
 }
 
 function newMessageInThing(state, action) {

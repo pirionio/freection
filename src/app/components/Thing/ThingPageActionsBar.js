@@ -1,12 +1,28 @@
 import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
+import classAutobind from 'class-autobind'
 
 import ActionsBar from '../Actions/ActionsBar'
 import {DoAction, DoneAction, DismissAction, CloseAction, SendBackAction, JoinMention, LeaveMention} from '../Actions/Actions'
+import * as MessageBoxActions from '../../actions/message-box-actions'
+import ThingStatus from '../../../common/enums/thing-status'
+import MessageTypes from '../../../common/enums/message-types'
 
 class ThingPageActionsBar extends Component {
+    constructor(props) {
+        super(props)
+        classAutobind(this, ThingPageActionsBar.prototype)
+    }
+
     isDisabled() {
         return this.props.ongoingAction
+    }
+
+    generatePreDoFunc(messageBoxTitle) {
+        const {dispatch, thing} = this.props
+        return action => {
+            dispatch(MessageBoxActions.newMessageBox(MessageTypes.THING_ACTION, thing, action, messageBoxTitle))
+        }
     }
 
     render() {
@@ -14,10 +30,13 @@ class ThingPageActionsBar extends Component {
 
         const actions = [
             DoAction(thing, currentUser, this.isDisabled()),
-            DoneAction(thing, currentUser, this.isDisabled()),
-            DismissAction(thing, currentUser, this.isDisabled()),
-            CloseAction(thing, currentUser, this.isDisabled()),
-            SendBackAction(thing, currentUser, this.isDisabled()),
+            DoneAction(thing, currentUser, {disabled: this.isDisabled(), preDoFunc: this.generatePreDoFunc('Done')}),
+            DismissAction(thing, currentUser, {disabled: this.isDisabled(), preDoFunc: this.generatePreDoFunc('Dismiss')}),
+            SendBackAction(thing, currentUser, {disabled: this.isDisabled(), preDoFunc: this.generatePreDoFunc('Send Back')}),
+            CloseAction(thing, currentUser, {
+                disabled: this.isDisabled(),
+                preDoFunc: [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status) ?
+                    this.generatePreDoFunc('Close') : undefined}),
             JoinMention(thing, currentUser, this.isDisabled()),
             LeaveMention(thing, currentUser, this.isDisabled())
         ]

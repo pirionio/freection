@@ -10,6 +10,7 @@ import 'draft-js-mention-plugin/lib/plugin.css'
 import 'draft-js/dist/Draft.css'
 import {fromJS} from 'immutable'
 import clone from 'lodash/clone'
+import trimEnd from 'lodash/trimEnd'
 
 import Flexbox from '../UI/Flexbox'
 
@@ -62,7 +63,7 @@ class MessageBody extends Component {
         })
 
         dispatch(actions.change('messageBox.editorState', editorState))
-        dispatch(actions.change('messageBox.message.body', this.getContent(this.state.editorState)))
+        dispatch(actions.change('messageBox.message.body', this.getContent(editorState)))
         dispatch(actions.focus('messageBox.message.body'))
     }
 
@@ -78,13 +79,13 @@ class MessageBody extends Component {
         let content = ''
 
         Object.keys(blocks).map(i => {
-            const { entityRanges, text } = blocks[i]
+            const {entityRanges, text} = blocks[i]
 
             const textLength = text.length
 
             let startRange = 0
             entityRanges.map(range => {
-                content += text.substr(startRange, range.offset - startRange )
+                content += text.substr(startRange, range.offset - startRange)
                 content += '@'
                 content += text.substr(range.offset, range.length)
                 startRange = range.offset + range.length
@@ -94,7 +95,7 @@ class MessageBody extends Component {
             content += '\r\n'
         })
 
-        return content
+        return trimEnd(content, '\r\n')
     }
 
     focus() {

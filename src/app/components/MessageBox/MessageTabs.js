@@ -36,7 +36,7 @@ class MessageTabs extends Component {
             return null
 
         return messageBoxes.map(messageBox => {
-            const closeButton = [MessageTypes.NEW_THING.key, MessageTypes.NEW_EMAIL.key].includes(messageBox.type.key) ?
+            const closeButton = [MessageTypes.NEW_THING.key, MessageTypes.NEW_EMAIL.key, MessageTypes.THING_ACTION.key].includes(messageBox.type.key) ?
                 <Icon name="times" className={classes.tabClose} onClick={() => this.closeMessageBox(messageBox)} /> :
                 null
 

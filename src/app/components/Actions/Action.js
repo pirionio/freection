@@ -16,7 +16,7 @@ class Action extends Component {
 
         if (preDoFunc)
             preDoFunc(result => {
-                dispatch(doFunc(item, result))
+                return dispatch(doFunc(item, result))
             })
         else
             dispatch(doFunc(item))

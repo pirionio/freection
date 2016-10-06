@@ -4,7 +4,7 @@ module.exports = {
         {
             name: 'new message box',
             private: true,
-            params: ['messageType', 'context']
+            params: ['messageType', 'context', 'sendAction', 'title']
         },
         {
             name: 'select message box',

@@ -7,6 +7,7 @@ import useSheet from 'react-jss'
 import classNames from 'classnames'
 import find from 'lodash/find'
 import isNil from 'lodash/isNil'
+import isEmpty from 'lodash/isEmpty'
 import map from 'lodash/map'
 import some from 'lodash/some'
 import {chain} from 'lodash/core'
@@ -51,6 +52,9 @@ class MessagePanel extends Component {
                     activeMessageBox.context.subject, toEmails, lastMessage.id, references))
                 shouldClose = false
                 break
+            case MessageTypes.THING_ACTION.key:
+                promise = messageBox.action(messageBox.message.body)
+                break
         }
 
         dispatch(MessageBoxActions.messageSent(activeMessageBox.id, shouldClose, promise))
@@ -66,12 +70,19 @@ class MessagePanel extends Component {
 
     isSendDisabled() {
         const {activeMessageBox, messageBox} = this.props
-        const addressValid =
-            activeMessageBox && messageBox && messageBox.message &&
-            [MessageTypes.NEW_THING.key, MessageTypes.NEW_EMAIL.key].includes(activeMessageBox.type.key) ?
-                AddressParser.parseOneAddress(messageBox.message.to) :
-                true
-        return isNil(activeMessageBox) || activeMessageBox.ongoingAction || !addressValid
+
+        // Disable if there's no box at all, or there's an ongoing action.
+        if (isNil(activeMessageBox) || activeMessageBox.ongoingAction || !messageBox.message) {
+            return true
+        }
+
+        // In case of a new entity being created, disable only if there's no valid address.
+        if ([MessageTypes.NEW_THING.key, MessageTypes.NEW_EMAIL.key].includes(activeMessageBox.type.key)) {
+            return !AddressParser.parseOneAddress(messageBox.message.to)
+        }
+
+        // In case of a reply to an existing entity, disable if there's no body.
+        return isEmpty(messageBox.message.body)
     }
 
     getMessageBox() {
@@ -83,9 +94,9 @@ class MessagePanel extends Component {
 
     getSendButton() {
         const {activeMessageBox, sheet: {classes}} = this.props
-        
+
         const sendClass = classNames(classes.sendButtonContainer, classes.send)
-        const buttonClass = classNames(classes.sendButton, this.isSendDisabled() && componentStyles.disabledSendButton)
+        const buttonClass = classNames(classes.sendButton, this.isSendDisabled() && classes.disabledSendButton)
 
         return !isNil(activeMessageBox) ?
             <div name="send-container" className={sendClass}>
