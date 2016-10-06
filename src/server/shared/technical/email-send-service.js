@@ -2,6 +2,7 @@
 import google from 'googleapis'
 import mailcomposer from 'mailcomposer'
 import base64url from 'base64url'
+import htmlToText from 'html-to-text'
 
 import {User} from '../models'
 import config from '../config/google-oauth'
@@ -44,7 +45,12 @@ async function gmailSend(auth, raw) {
 }
 
 export async function sendMessage(user, message) {
-    const raw = await getRaw(message)
+
+    const withText = message.text ? message : Object.assign({}, message, {
+        text: htmlToText.fromString(message.html)
+    })
+
+    const raw = await getRaw(withText)
     const fullUser = await getFullUser(user)
     const auth = await getAuth(fullUser)
     await gmailSend(auth, raw)
