@@ -47,6 +47,10 @@ class EmailThingPreviewItem extends Component {
 
     getRecipients() {
         const {thing, currentUser} = this.props
+
+        if (!thing.payload.recipients)
+            return ''
+
         const recipientNames = thing.payload.recipients
             .filter(recipient => recipient.emailAddress !== currentUser.email)
             .map(recipient => recipient.name)
