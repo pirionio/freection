@@ -19,6 +19,7 @@
       ],
       "js": [
         "lib/inboxsdk.js",
+        "lib/jquery-3.1.1.min.js",
         "src/loader.js"
       ],
       "run_at": "document_end"
@@ -39,7 +40,8 @@
   ],
   "web_accessible_resources": [
     "images/do.png",
-    "images/do-disabled.png"
+    "images/do-disabled.png",
+    "styles/style.css"
   ],
   "manifest_version": 2
 }

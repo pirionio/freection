@@ -8,5 +8,7 @@ chrome.storage.sync.get({
 });
 
 function markExtensionInstalled(url) {
-    window.postMessage('FreectionChromeExtension', url);
+    if (url && url.startsWith(window.location.origin)) {
+        window.postMessage('FreectionChromeExtension', url);
+    }
 }

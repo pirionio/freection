@@ -1,5 +1,6 @@
 import thinky from './thinky'
-import ThingStatus from '../../../common/enums/thing-status'
+
+import EntityType from '../../../common/enums/entity-types'
 
 const type = thinky.type
 
@@ -46,7 +47,11 @@ Thing.ensureIndex('all', doc => {
 }, {multi: true})
 
 Thing.ensureIndex('githubIssueId', doc => {
-    return thinky.r.branch(doc('type').eq('GITHUB'), doc('payload')('id'), null)
+    return thinky.r.branch(doc('type').eq(EntityType.GITHUB.key), doc('payload')('id'), null)
+})
+
+Thing.ensureIndex('threadId', doc => {
+    return doc('payload')('threadId')
 })
 
 Thing.defineStatic('getFullThing', function(thingId) {
@@ -71,6 +76,15 @@ Thing.defineStatic('getUserMentions', function(userId) {
 
 Thing.defineStatic('getThingsByGithubIssueId', function(githubIssueId) {
     return this.getAll(githubIssueId, {index: 'githubIssueId'}).run()
+})
+
+Thing.defineStatic('getThingByThreadId', function(threadId) {
+    return this.getAll(threadId, {index: 'threadId'}).run().then(things => {
+        if (things.length === 0)
+            return null
+
+        return things[0]
+    })
 })
 
 Thing.define('isSelf', function() {

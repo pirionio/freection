@@ -127,13 +127,17 @@ export async function doEmail(user, emailData, isHex) {
 
     const thread = {
         subject: emailData.subject,
-        id: emailData.threadId,
+        id: emailThreadIdDec,
         payload: {
             threadId: emailThreadIdDec,
             threadIdHex: emailThreadIdHex,
             recipients: emailData.recipients
         }
     }
+
+    const existingThing = await Thing.getThingByThreadId(thread.id)
+    if (existingThing && existingThing.payload && existingThing.payload.status !== ThingStatus.CLOSE.key)
+        return
 
     const creator = userToAddress(user)
     const doer = userToAddress(user)

@@ -1,5 +1,6 @@
 const ThreadsStore = require('./threads-store')
 const FreectionApi = require('./freection-api')
+const {threadRowToDto, threadViewToDto} = require('./transformers')
 
 let emailThingsTimeout = null
 const threadsStore = new ThreadsStore()
@@ -11,7 +12,9 @@ function go(sdk) {
 		FreectionApi.getUser(options).then(freectionUser => {
 			const gmailUser = getGmailUser(sdk)
 			if (freectionUser.email === gmailUser) {
+				addCss(sdk)
 				addDoButtonToEmailRows(sdk, options)
+				addDoButtonToEmailPage(sdk, options)
 				syncEmailThings(options)
 			}
 		})
@@ -30,6 +33,14 @@ function getOptions() {
 			resolve(options)
 		})
 	})
+}
+
+function addCss() {
+	var cssFile = chrome.extension.getURL('styles/style.css')
+
+	var css = $('<link rel="stylesheet" type="text/css">')
+	css.attr('href', cssFile)
+	$('head').first().append(css)
 }
 
 function addDoButtonToEmailRows(sdk, options) {
@@ -56,11 +67,24 @@ function addDoButtonToEmailRows(sdk, options) {
 				return {
 					iconUrl: chrome.runtime.getURL('images/do.png'),
 					onClick: function() {
-						FreectionApi.doEmail(options, threadRowView).then(() => syncEmailThings(options))
+						FreectionApi.doEmail(options, threadRowToDto(threadRowView)).then(() => syncEmailThings(options))
 					}
 				}
 			})
 		)
+	})
+}
+
+function addDoButtonToEmailPage(sdk, options) {
+	sdk.Toolbars.registerToolbarButtonForThreadView({
+		title: 'Do in Freection',
+		iconUrl: chrome.runtime.getURL('images/do.png'),
+		iconClass: 'freection-toolbar-do',
+		section: sdk.Toolbars.SectionNames.METADATA_STATE,
+		onClick: function(event) {
+			sdk.Router.goto(sdk.Router.NativeRouteIDs.INBOX)
+			FreectionApi.doEmail(options, threadViewToDto(event.threadView)).then(() => syncEmailThings(options))
+		}
 	})
 }
 
