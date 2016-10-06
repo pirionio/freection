@@ -7,8 +7,8 @@ import EventTypes from '../../common/enums/event-types'
 // import EmailLifecycleService from './email-lifecycle-service'
 // import * as EmailPageActions from '../actions/email-page-actions'
 
-export function listenToUpdates(pushToken, dispatch) {
-    const socket = createSocket(pushToken)
+export function listenToUpdates(email, pushToken, dispatch) {
+    const socket = createSocket(email, pushToken)
     
     socket.on('new-event', event => {
         if (event.showNew)

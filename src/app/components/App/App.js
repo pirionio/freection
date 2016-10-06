@@ -18,7 +18,7 @@ class App extends Component {
         const {currentUser, dispatch} = this.props
 
         if (currentUser.isAuthenticated) {
-            PushService.listenToUpdates(currentUser.pushToken, dispatch)
+            PushService.listenToUpdates(currentUser.email, currentUser.pushToken, dispatch)
             //EmailLifecycleService.initialize(dispatch)
         }
     }

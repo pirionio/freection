@@ -1,14 +1,14 @@
 import io from 'socket.io-client'
 
-export function createSocket(pushToken) {
+export function createSocket(email, pushToken) {
+
     const socket = io('', {path: '/push'})
     socket
         .on('connect', () => {
             socket.emit('authenticate', {token: pushToken})
         })
         .on('unauthorized', () => {
-            // TODO Create a logout flow, originating from here.
-            throw Error('User not authenticated')
+            window.location = `/login/google?hint=${email}`
         })
 
     return socket

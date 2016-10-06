@@ -31,7 +31,7 @@ function saveNewUser(userData) {
     })
 }
 
-function generateOAuth2Url(prompt, loginHint) {
+function generateOAuth2Url({prompt, hint} = {}) {
     const oauthUrl = 'https://accounts.google.com/o/oauth2/auth'
     const scope = [
         'profile',
@@ -45,7 +45,7 @@ function generateOAuth2Url(prompt, loginHint) {
         redirect_uri: config.callbackURL,
         access_type: 'offline',
         scope: scope.join(' ')
-    }, prompt ? { prompt } : {}, loginHint ? {login_hint: loginHint} : {})
+    }, prompt ? { prompt } : {}, hint ? {login_hint: hint} : {})
 
     return `${oauthUrl}?${querystring.stringify(options)}`
 }
@@ -118,14 +118,19 @@ passport.use(new GoogleStrategy({
 router.get('/logout', token.logout({redirect: '/'}))
 
 router.get('/google', (request, response) => {
-    const redirectUrl = generateOAuth2Url()
+    const {hint} = request.query
+
+    const redirectUrl = generateOAuth2Url(hint ? {hint} : {})
     response.redirect(302, redirectUrl)
 })
 
 router.get('/google/callback',
     passport.authenticate('google', {session: false, failureRedirect: '/login'}), (request, response, next) => {
         if (request.user.missingRefreshToken) {
-            const redirectUrl = generateOAuth2Url('consent', request.user.email)
+            const redirectUrl = generateOAuth2Url({
+                prompt: 'consent',
+                hint: request.user.email
+            })
             response.redirect(302, redirectUrl)
         } else {
             token.login({ redirect: '/', expiresIn: '30 days' })(request, response, next)
