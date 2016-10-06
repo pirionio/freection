@@ -1,28 +1,58 @@
-// Saves options to chrome.storage
-function saveBaseUrl() {
-    var baseUrl = document.getElementById('baseUrl').value;
-    chrome.storage.sync.set({
-        baseUrl: baseUrl
-    }, function() {
-        // Update status to let user know options were saved.
-        var status = document.getElementById('status');
-        status.textContent = 'Options saved.';
-        setTimeout(function() {
-            status.textContent = '';
-        }, 750);
-    });
+function isDevMode() {
+    return !('update_url' in chrome.runtime.getManifest());
 }
 
-// Restores select box and checkbox state using the preferences
-// stored in chrome.storage.
+function save() {
+    var options = {};
+
+    $(".option-value").each(function() {
+        options[this.name] = this.value;
+    });
+    
+    chrome.storage.sync.set(options, updateSaveStatus);
+}
+
+function updateSaveStatus() {
+    var statusElement = $(".save-status")[0];
+    statusElement.textContent = 'Options saved.';
+    setTimeout(function() {
+        statusElement.textContent = '';
+    }, 750);
+}
+
 function restoreBaseUrl() {
-    // Determining the default value.
+    // Determining the default values.
     chrome.storage.sync.get({
         baseUrl: 'https://freection.com'
     }, function(options) {
-        document.getElementById('baseUrl').value = options.baseUrl;
+        for (var field in options) {
+            if (options.hasOwnProperty(field)) {
+                var element = $("input[name='" + field + "']")[0];
+                if (element) {
+                    element.value = options[field];
+                }
+            }
+        }
     });
 }
 
-document.addEventListener('DOMContentLoaded', restoreBaseUrl);
-document.getElementById('saveBaseUrl').addEventListener('click', saveBaseUrl);
+function createPopupPlaceholder() {
+    $(".save-div").remove();
+    $(".container").append("<span>Thank you for using the Freection Chrome Extension.</span>");
+    $("body").width('200px');
+}
+
+function main() {
+    if (!isDevMode()) {
+        $(".dev-only").remove();
+
+        if (!$(".option").length) {
+            createPopupPlaceholder();
+        }
+    }
+
+    $(document).on('DOMContentLoaded', restoreBaseUrl);
+    $(".save-button").on('click', save);
+}
+
+main();

@@ -12,28 +12,23 @@
             font-size: 0.875em;
         }
 
-        #container {
+        .container {
             height: 100%;
             width: 100%;
             padding: 5px;
         }
 
-        #baseUrlLabel {
+        .option-label {
             display: block;
             font-size: 14px;
             margin-bottom: 15px;
         }
 
-        #baseUrl {
-            height: 16px;
-            padding: 5px;
-        }
-
-        #save-div {
+        .save-div {
             margin-top: 15px;
         }
 
-        #saveBaseUrl {
+        .save-button {
             height: 30px;
             border: 1px solid #1e272c;
             color: #1e272c;
@@ -42,22 +37,30 @@
             cursor: pointer;
         }
 
-        #status {
+        .save-status {
             margin-left: 5px;
+        }
+
+        input {
+            height: 16px;
+            padding: 5px;
         }
     </style>
 </head>
 <body>
-    <div id="container">
-        <span id="baseUrlLabel">Base URL:</span>
-        <input id="baseUrl" type="text" />
+    <div class="container">
+        <div class="option dev-only">
+            <span class="option-label">Base URL:</span>
+            <input name="baseUrl" type="text" class="option-value" />
+        </div>
 
-        <div id="save-div">
-            <button id="saveBaseUrl">Save</button>
-            <span id="status"></span>
+        <div class="save-div">
+            <button class="save-button">Save</button>
+            <span class="save-status"></span>
         </div>
     </div>
 
+    <script src="lib/jquery-3.1.1.min.js"></script>
     <script src="src/popup.js"></script>
 </body>
 </html>
