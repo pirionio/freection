@@ -1,5 +1,7 @@
 import io from 'socket.io-client'
 
+import {relogin} from '../services/auth-service.js'
+
 export function createSocket(email, pushToken) {
 
     const socket = io('', {path: '/push'})
@@ -7,9 +9,7 @@ export function createSocket(email, pushToken) {
         .on('connect', () => {
             socket.emit('authenticate', {token: pushToken})
         })
-        .on('unauthorized', () => {
-            window.location = `/login/google?hint=${email}`
-        })
+        .on('unauthorized', () => relogin(email))
 
     return socket
 }
