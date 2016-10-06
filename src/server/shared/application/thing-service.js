@@ -1,4 +1,4 @@
-import {remove, castArray, union, chain, omitBy, isNil, last, map, clone, uniq} from 'lodash'
+import {remove, castArray, union, chain, omitBy, isNil, last, map, clone, uniq, reject} from 'lodash'
 import AddressParser from 'email-addresses'
 
 import {Event, Thing, User} from '../models'
@@ -537,42 +537,46 @@ function updateThingMentions(thing, newMentionedUsers) {
 }
 
 function getShowNewList(user, thing, eventType, previousStatus, previousMentionedUsers) {
-    if (thing.isSelf()) {
-        switch (eventType) {
-            case EventTypes.COMMENT.key:
-            case EventTypes.DONE.key:
-                return thing.subscribers && thing.subscribers.length ? thing.subscribers : []
-            default:
-                return []
-        }
-    }
+    let showNewList
 
     switch (eventType) {
         case EventTypes.CREATED.key:
-            return getToList(thing)
+            showNewList = getToList(thing)
+            break
         case EventTypes.DISMISSED.key:
         case EventTypes.DONE.key:
-            return [thing.creator.id, ...thing.subscribers]
+            showNewList = [thing.creator.id, ...thing.subscribers]
+            break
         case EventTypes.CLOSED.key:
             if ([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(previousStatus))
-                return union(thing.doers, previousMentionedUsers, getToList(thing))
-            return [...thing.doers]
+                showNewList = union(thing.doers, previousMentionedUsers, getToList(thing))
+            else
+                showNewList = [...thing.doers]
+            break
         case EventTypes.SENT_BACK.key:
-            return union(thing.doers, thing.subscribers, thing.mentioned, getToList(thing))
+            showNewList = union(thing.doers, thing.subscribers, thing.mentioned, getToList(thing))
+            break
         case EventTypes.COMMENT.key:
-            return union(thing.followUpers, thing.doers, thing.subscribers, [thing.creator.id]).filter(userId => userId !== user.id)
+            showNewList = union(thing.followUpers, thing.doers, thing.subscribers, [thing.creator.id])
+            break
         case EventTypes.PING.key:
-            return  [...thing.doers]
+            showNewList = [...thing.doers]
+            break
         case EventTypes.PONG.key:
-            return  [...thing.followUpers, ...thing.subscribers]
+            showNewList = [...thing.followUpers, ...thing.subscribers]
+            break
         case EventTypes.ACCEPTED.key:
         case EventTypes.CLOSE_ACKED.key:
         case EventTypes.JOINED_MENTION.key:
         case EventTypes.LEFT_MENTION.key:
-            return []
+            showNewList = []
+            break
         default:
             throw 'UnknownEventType'
     }
+
+    // Removing the creator of the event from the list
+    return reject(showNewList, id => id === user.id)
 }
 
 function getToList(thing) {
