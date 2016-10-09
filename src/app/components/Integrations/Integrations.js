@@ -11,22 +11,6 @@ class Integrations extends Component {
     constructor(props) {
         super(props)
         classAutobind(this, Integrations.prototype)
-
-        this.state = {
-            hasExtension: false
-        }
-    }
-
-    componentWillMount() {
-        const {config} = this.props
-
-        // This is the way to communicate with the Chrome Extension.
-        // It is risky, since we accept messages from outside, so we accept only messages from our same origin.
-        window.addEventListener('message', event => {
-            if (event.origin === config.baseUrl) {
-                this.setState({hasExtension: true})
-            }
-        }, false)
     }
 
     installChromeExtension() {
@@ -36,7 +20,7 @@ class Integrations extends Component {
     }
 
     isChromeExtensionInstalled() {
-        return this.state.hasExtension
+        return this.props.chromeExtension.isInstalled
     }
 
     getGmailLink() {
@@ -121,12 +105,12 @@ const style = {
 }
 
 Integrations.propTypes = {
-    config: PropTypes.object.isRequired
+    chromeExtension: PropTypes.object.isRequired
 }
 
 function mapStateToProps(state) {
     return {
-        config: state.config
+        chromeExtension: state.chromeExtension
     }
 }
 

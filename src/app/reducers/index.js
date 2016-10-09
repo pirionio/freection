@@ -19,6 +19,7 @@ import auth from './auth'
 import to from './to-reducer'
 import users from './users-reducer'
 import glassPane from './glass-pane-reducer'
+import chromeExtension from './chrome-extension-reducer'
 
 export default combineReducers({
     whatsNew,
@@ -41,6 +42,7 @@ export default combineReducers({
     to,
     users,
     glassPane,
+    chromeExtension,
     routing: routerReducer,
     config: (state = {}) => state
 })

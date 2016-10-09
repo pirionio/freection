@@ -12,6 +12,7 @@ import * as PushService from '../../services/push-service'
 import * as AuthService from '../../services/auth-service.js'
 import FaviconLogo from '../../static/freection-favicon.png'
 import {identify} from '../../util/analytics'
+import * as ChromeExtensionActions from '../../actions/chrome-extension-actions'
 
 // import EmailLifecycleService from '../../services/email-lifecycle-service'
 
@@ -25,6 +26,18 @@ class App extends Component {
             identify(currentUser)
             //EmailLifecycleService.initialize(dispatch)
         }
+    }
+
+    componentWillMount() {
+        const {dispatch, config} = this.props
+
+        // This is the way to communicate with the Chrome Extension.
+        // It is risky, since we accept messages from outside, so we accept only messages from our same origin.
+        window.addEventListener('message', event => {
+            if (event.origin === config.baseUrl) {
+                dispatch(ChromeExtensionActions.setIsInstalled(true))
+            }
+        }, false)
     }
 
     render () {
@@ -60,12 +73,14 @@ const style = {
 }
 
 App.propTypes = {
-    currentUser: PropTypes.object.isRequired
+    currentUser: PropTypes.object.isRequired,
+    config: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => {
     return {
-        currentUser: state.auth
+        currentUser: state.auth,
+        config: state.config
     }
 }
 

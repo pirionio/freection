@@ -1,0 +1,3 @@
+export default {
+    SET_IS_INSTALLED: 'CHROME_EXTENSION_SET_IS_INSTALLED'
+}
