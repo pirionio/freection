@@ -39,7 +39,11 @@ class PreviewItem extends Component {
     }
 
     getPreviewText() {
-        return getChildOfType(this.props.children, PreviewItemText)
+        const {sheet: {classes}} = this.props
+        const textPreview = getChildOfType(this.props.children, PreviewItemText)
+        return textPreview ?
+            <Flexbox name="text" grow={1} className={classes.text}>{textPreview}</Flexbox> :
+            null
     }
 
     getActions() {
@@ -63,15 +67,34 @@ class PreviewItem extends Component {
         return getChildOfType(this.props.children, PreviewItemStatus)
     }
 
+    getStatusCircle() {
+        const {circleColor, sheet: {classes}} = this.props
+
+        return circleColor ?
+            <Flexbox name="preview-circle" shrink={0} container='column' justifyContent="center" className={classes.circleContainer}>
+                <Ellipse color={circleColor} className={classes.circle} />
+            </Flexbox> :
+            null
+    }
+
     getUser() {
         return getChildOfType(this.props.children, PreviewItemUser)
     }
 
-    render() {
-        const {circleColor, title, onClick, sheet: {classes}} = this.props
-
+    getStatusOrUser() {
         const statusPreview = this.getStatus()
         const userPreview = this.getUser()
+
+        return statusPreview ?
+            <Flexbox name="status">{statusPreview}</Flexbox> :
+            <Flexbox name="user">{userPreview}</Flexbox>
+    }
+
+    render() {
+        const {title, onClick, sheet: {classes}} = this.props
+
+        const statusCircle = this.getStatusCircle()
+        const statusOrUser = this.getStatusOrUser()
         const textPreview = this.getPreviewText()
         const inlineMessage = this.getInlineMessage()
 
@@ -79,30 +102,21 @@ class PreviewItem extends Component {
             'withInlineReply': this.state.showInlineMessage
         })
         const leftBoxClass = classNames(classes.leftBox, {
-            'withStatus': !!statusPreview
+            'withStatus': !!this.getStatus()
         })
 
         return (
             <div name="preview-item-container" className={containerClass}>
                 <Flexbox name="preview-item" shrink={0} container='row' className={classes.preview} onClick={onClick}>
-                    { circleColor ?
-                        <Flexbox name="preview-circle" shrink={0} container='column' justifyContent="center" className={classes.circleContainer}>
-                            <Ellipse color={circleColor} className={classes.circle} />
-                        </Flexbox> :
-                        null
-                    }
+                    {statusCircle}
                     <Flexbox name="left-box" shrink={0} container='column' justifyContent="space-around" className={leftBoxClass}>
-                        {
-                            statusPreview ?
-                                <Flexbox name="status">{statusPreview}</Flexbox> :
-                                <Flexbox name="user">{userPreview}</Flexbox>
-                        }
+                        {statusOrUser}
                     </Flexbox>
                     <Flexbox name="center-box" container="row" justifyContent="flex-start" alignItems="center" grow={1} className={classes.centerBox}>
                         <Flexbox name="subject" className={classes.subject}>
                             <TextTruncate><strong>{title}</strong></TextTruncate>
                         </Flexbox>
-                        {textPreview ? <Flexbox name="text" grow={1} className={classes.text}>{textPreview}</Flexbox> : null}
+                        {textPreview}
                     </Flexbox>
                     <Flexbox name="right-box" container="column" justifyContent="center" shrink={0} className={classes.rightBox}>
                         {this.getActions()}
