@@ -149,7 +149,7 @@ const style = {
         }
     },
     containerDefault: {
-        height: 87,
+        height: 87
     },
     editor: {
         width: '100%'

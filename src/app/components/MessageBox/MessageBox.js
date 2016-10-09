@@ -60,8 +60,11 @@ class MessageBox extends Component {
     }
 
     getBody() {
+        const {sheet: {classes}} = this.props
+
+        const bodyClass = (!this.hasSubject() && !this.hasTo()) ? classes.bodyOnly : null
         return (
-            <MessageBody onFocus={this.focusOnBody} tabIndex="2" ref={ref => this.messageBody = ref} />
+            <MessageBody className={bodyClass} onFocus={this.focusOnBody} tabIndex="2" ref={ref => this.messageBody = ref} />
         )
     }
 
@@ -143,6 +146,9 @@ const style = {
         border: 'none',
         outline: 'none',
         resize: 'none'
+    },
+    bodyOnly: {
+        height: 132
     }
 }
 
