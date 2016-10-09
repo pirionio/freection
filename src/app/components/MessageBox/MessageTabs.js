@@ -36,10 +36,6 @@ class MessageTabs extends Component {
             return null
 
         return messageBoxes.map(messageBox => {
-            const closeButton = [MessageTypes.NEW_THING.key, MessageTypes.NEW_EMAIL.key, MessageTypes.THING_ACTION.key].includes(messageBox.type.key) ?
-                <Icon name="times" className={classes.tabClose} onClick={() => this.closeMessageBox(messageBox)} /> :
-                null
-
             const expandButton = activeMessageBox && activeMessageBox.id === messageBox.id ?
                 <Icon name="expand" className={classes.tabExpand} onClick={() => this.onExpandedClick()} /> :
                 null
@@ -52,7 +48,7 @@ class MessageTabs extends Component {
                         <TextTruncate>{messageBox.title}</TextTruncate>
                     </a>
                     {expandButton}
-                    {closeButton}
+                    <Icon name="times" className={classes.tabClose} onClick={() => this.closeMessageBox(messageBox)} />
                 </Flexbox>
             )
         })

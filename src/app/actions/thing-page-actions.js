@@ -17,10 +17,17 @@ export function getThing(thingId) {
 }
 
 export function showThingPage(thing) {
-    return dispatch => {
+    return (dispatch, getState) => {
         dispatch(push(`${window.location.pathname}/${thing.id}`))
         dispatch(_showThingPage(thing))
-        dispatch(MessageBoxActions.newMessageBox(MessageTypes.COMMENT_THING, thing))
+
+        // By default, entering the Thing page won't open a reply Message Box.
+        // But, if the Message Box is already open, then we DO open a reply Message Box.
+        // Otherwise, the user won't have the Collapsed bar to click on, in order to open a reply Message Box.
+        const {messagePanel} = getState()
+        if (messagePanel && messagePanel.messageBoxes && messagePanel.messageBoxes.length) {
+            dispatch(MessageBoxActions.newMessageBox(MessageTypes.COMMENT_THING, thing))
+        }
     }
 }
 

@@ -1,9 +1,6 @@
 import uniqueId from 'lodash/uniqueId'
-import find from 'lodash/find'
 
 import MessageBoxActionTypes from '../actions/types/message-box-action-types'
-import ThingPageActionTypes from '../actions/types/thing-page-action-types'
-import EmailPageActionTypes from '../actions/types/email-page-action-types'
 import immutable from '../util/immutable'
 import {ActionStatus} from '../constants'
 import MessageTypes from '../../common/enums/message-types'
@@ -43,39 +40,6 @@ function getMessageBoxTitle(action) {
         return action.context.subject
 
     return action.messageType.label
-}
-
-function newMessageInThing(state, action) {
-    return newMessageInContext(state, action, MessageTypes.COMMENT_THING, 'thing')
-}
-
-function newMessageInEmail(state, action) {
-    return newMessageInContext(state, action, MessageTypes.REPLY_EMAIL, 'thread')
-}
-
-function newMessageInContext(state, action, type, contextField) {
-    switch (action.status) {
-        case ActionStatus.COMPLETE:
-            const existingMessageBox = find(state.messageBoxes, {context: {id: action[contextField].id}})
-            if (existingMessageBox)
-                return immutable(state)
-                    .arrayMergeItem('messageBoxes', {id: existingMessageBox.id}, {context: action[contextField]})
-                    .value()
-
-            const messageBox = {
-                id: uniqueId(),
-                type,
-                title: action[contextField].subject,
-                context: action[contextField],
-                ongoingAction: false
-            }
-            return immutable(state)
-                .arrayPushItem('messageBoxes', messageBox)
-                .set('activeMessageBoxId', messageBox.id)
-                .value()
-        default:
-            return state
-    }
 }
 
 function closeMessageBox(state, action) {
@@ -130,10 +94,6 @@ export default (state = initialState, action) => {
             return messageSent(state, action)
         case MessageBoxActionTypes.SET_FOCUS:
             return setFocus(state, action)
-        case ThingPageActionTypes.GET_THING:
-            return newMessageInThing(state, action)
-        case EmailPageActionTypes.GET_EMAIL:
-            return newMessageInEmail(state, action)
         default:
             return state
     }

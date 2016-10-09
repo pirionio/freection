@@ -1,7 +1,8 @@
-import React, {Component} from 'react'
+import React, {Component, PropTypes} from 'react'
 import classAutobind from 'class-autobind'
 import {connect} from 'react-redux'
 import useSheet from 'react-jss'
+import isEmpty from 'lodash/isEmpty'
 
 import * as MessageBoxActions from '../../actions/message-box-actions'
 import MessageTypes from '../../../common/enums/message-types'
@@ -14,18 +15,31 @@ class CollapsedMessageBox extends Component {
         classAutobind(this, CollapsedMessageBox.prototype)
     }
 
-    newThingMessageBox() {
-        const {dispatch} = this.props
-        dispatch(MessageBoxActions.newMessageBox(MessageTypes.NEW_THING))
+    openMessageBox() {
+        const {dispatch, thing} = this.props
+
+        if (!this.isInThingPage()) {
+            dispatch(MessageBoxActions.newMessageBox(MessageTypes.NEW_THING))
+        } else {
+            dispatch(MessageBoxActions.newMessageBox(MessageTypes.COMMENT_THING, thing))
+        }
+    }
+
+    isInThingPage() {
+        return !isEmpty(this.props.thing)
+    }
+
+    getPlaceholder() {
+        return !this.isInThingPage() ? 'Create a new Thing by typing here.' : 'Comment by typing here.'
     }
 
     render () {
         const {sheet: {classes}} = this.props
         
         return (
-            <Flexbox name="message-text" container="column" justifyContent="center" onClick={this.newThingMessageBox} className={classes.box}>
+            <Flexbox name="message-text" container="column" justifyContent="center" onClick={this.openMessageBox} className={classes.box}>
                 <span className={classes.placeholder}>
-                    Create a new Thing by typing here.
+                    {this.getPlaceholder()}
                 </span>
             </Flexbox>
         )
@@ -48,4 +62,14 @@ const style = {
     }
 }
 
-export default useSheet(connect()(CollapsedMessageBox), style)
+CollapsedMessageBox.propTypes = {
+    thing: PropTypes.object.isRequired
+}
+
+function mapStateToProps(state) {
+    return {
+        thing: state.thingPage.thing
+    }
+}
+
+export default useSheet(connect(mapStateToProps)(CollapsedMessageBox), style)
