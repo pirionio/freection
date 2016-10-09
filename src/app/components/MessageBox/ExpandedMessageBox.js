@@ -72,7 +72,7 @@ class ExpandedMessageBox extends Component {
             return null
 
         return (
-            <Flexbox grow={0} shrink={0} name="expanded-message-subject" container="row">
+            <Flexbox grow={0} shrink={0} name="expanded-message-subject" container="row" className={classes.subject}>
                 <Flexbox className={classes.label} grow={0} shrink={0} container="column" justifyContent="center"
                          onClick={() => this.messageSubject.focus() }>
                     Subject:
@@ -96,7 +96,7 @@ class ExpandedMessageBox extends Component {
             return null
 
         return (
-            <Flexbox grow={0} shrink={0} name="expanded-message-to" container="row">
+            <Flexbox grow={0} shrink={0} name="expanded-message-to" container="row" className={classes.to}>
                 <Flexbox className={classes.label} grow={0} shrink={0} container="column" justifyContent="center"
                          onClick={() => this.messageTo.focus() }>
                     To:
@@ -110,8 +110,10 @@ class ExpandedMessageBox extends Component {
     }
 
     getBody() {
+        const {sheet: {classes}} = this.props
+
         return (
-            <MessageBody tabIndex="2" ref={ref => this.messageBody = ref} />
+            <MessageBody className={classes.messageBody} tabIndex="2" ref={ref => this.messageBody = ref} />
         )
     }
 
@@ -287,6 +289,12 @@ const style = {
     actions: {
         padding: '20px 30px 20px 30px'
     },
+    subject: {
+        marginBottom: 25
+    },
+    to: {
+        marginTop: 25
+    },
     label: {
         color: '#959595',
         lineHeight: 2,
@@ -342,6 +350,9 @@ const style = {
         '&:hover': {
             cursor: 'not-allowed'
         }
+    },
+    messageBody: {
+        height: 310
     }
 }
 

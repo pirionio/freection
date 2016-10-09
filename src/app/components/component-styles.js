@@ -22,6 +22,9 @@ export default {
     disabledSendButton: {
         backgroundColor: styleVars.disabledColor,
         border: '1px solid #bababa',
-        cursor: 'not-allowed'
+        cursor: 'not-allowed',
+        '&:hover': {
+            cursor: 'not-allowed',
+        }
     }
 }

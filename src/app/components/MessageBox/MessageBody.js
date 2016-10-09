@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import {actions} from 'react-redux-form'
 import classAutobind from 'class-autobind'
+import classNames from 'classnames'
 import useSheet from 'react-jss'
 import Editor from 'draft-js-plugins-editor'
 import createMentionPlugin, {defaultSuggestionsFilter} from 'draft-js-mention-plugin'
@@ -103,11 +104,13 @@ class MessageBody extends Component {
     }
 
     render() {
-        const {sheet: {classes}, onFocus, tabIndex} = this.props
+        const {sheet: {classes}, onFocus, tabIndex, className} = this.props
         const {MentionSuggestions} = this._mentionPlugin
 
+        const containerClasses = classNames(classes.containerBase, className ? className : classes.containerDefault)
+
         return (
-            <Flexbox name="message-body" grow={1} container="row" className={classes.container}>
+            <Flexbox name="message-body" container="row" className={containerClasses}>
                 <div className={classes.editor} onClick={this.focus}>
                     <Editor
                         editorState={this.state.editorState}
@@ -133,13 +136,19 @@ class MessageBody extends Component {
 // Therefore, I'd rather just set a rule for the specific class of the mention component.
 // I have to use its generated name unfortunately, which is the ugly part :/
 const style = {
-    container: {
+    containerBase: {
         position: 'relative',
-        padding: 10,
         '& .draftJsMentionPlugin__mention__29BEd': {
             fontWeight: 'bold',
             backgroundColor: 'transparent'
+        },
+        '& .public-DraftEditor-content': {
+            overflowY: 'auto',
+            maxHeight: '100%'
         }
+    },
+    containerDefault: {
+        height: 87,
     },
     editor: {
         width: '100%'
@@ -150,8 +159,8 @@ MessageBody.propTypes = {
     messageBox: PropTypes.object.isRequired,
     suggestions: PropTypes.object.isRequired,
     onFocus: PropTypes.func,
-    tabIndex: PropTypes.string
-
+    tabIndex: PropTypes.string,
+    className: PropTypes.string
 }
 
 function mapStateToProps(state) {

@@ -10,6 +10,7 @@ import isNil from 'lodash/isNil'
 import isEmpty from 'lodash/isEmpty'
 import map from 'lodash/map'
 import some from 'lodash/some'
+import defaultsDeep from 'lodash/defaultsDeep'
 import {chain} from 'lodash/core'
 
 import * as MessageBoxActions from '../../actions/message-box-actions'
@@ -20,6 +21,7 @@ import MessageTabs from './MessageTabs'
 import * as ThingCommandActions from '../../actions/thing-command-actions'
 import * as EmailCommandActions from '../../actions/email-command-actions'
 import MessageTypes from '../../../common/enums/message-types'
+import styleVars from '../style-vars'
 import componentStyles from '../component-styles'
 
 class MessagePanel extends Component {
@@ -148,7 +150,7 @@ class MessagePanel extends Component {
     }
 }
 
-const style = Object.assign({
+const style = defaultsDeep({
     form: {
         padding: [0, 39],
         marginBottom: 0
@@ -158,11 +160,34 @@ const style = Object.assign({
     },
     send: {
         position: 'absolute',
-        bottom: 15,
-        right: 15
+        bottom: 20,
+        right: 30
     },
     notFullItemBox: {
         boxShadow: '0px 0px 40px 0px rgba(0, 0, 0, 0.15)'
+    },
+    sendButtonContainer: {
+        width: 70
+    },
+    sendButton: {
+        height: 30,
+        backgroundColor: styleVars.highlightColor,
+        color: 'white',
+        border: 'none',
+        '&:focus':{
+            border: `1px solid ${styleVars.primaryColor}`
+        },
+        '&:hover': {
+            color: styleVars.primaryColor
+        }
+    },
+    disabledSendButton: {
+        backgroundColor: styleVars.disabledColor,
+        color: 'darkgrey',
+        border: 'none',
+        '&:hover': {
+            color: 'darkgrey'
+        }
     }
 }, componentStyles)
 

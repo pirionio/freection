@@ -122,19 +122,18 @@ class MessageBox extends Component {
 
 const style = {
     box: {
-        height: 200,
+        height: 235,
+        padding: [30, 30, 20],
         backgroundColor: 'white',
         border: `1px solid ${styleVars.highlightColor}`
     },
     messageSubject: {
-        height: 40,
         width: '100%',
-        padding: [10, 10, 0]
+        marginBottom: 30
     },
     messageTo: {
-        height: 40,
         width: 'calc(100% - 108px)',
-        padding: [10, 10, 0],
+        marginTop: 30,
         '&:-webkit-autofill': {
             backgroundColor: 'inherit'
         }
