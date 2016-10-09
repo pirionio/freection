@@ -8,7 +8,7 @@ import reject from 'lodash/reject'
 
 import ThingPageActionsBar from './ThingPageActionsBar'
 import MessagePanel from '../MessageBox/MessagePanel'
-import FullItem, {FullItemSubject, FullItemStatus, FullItemActions, FullItemBox} from '../Full/FullItem'
+import FullItem, {FullItemSubject, FullItemUser, FullItemStatus, FullItemActions, FullItemBox} from '../Full/FullItem'
 import styleVars from '../style-vars'
 import * as ThingPageActions from '../../actions/thing-page-actions'
 import * as ThingHelper from '../../helpers/thing-helper'
@@ -68,7 +68,7 @@ class FullThing extends Component {
         return thing.events ? ThingHelper.getUnreadMessages(thing) : []
     }
 
-    getCircleColor() {
+    getStatusColor() {
         const {thing} = this.props
 
         // There might not yet be a thing prop when this function is invoked.
@@ -106,13 +106,16 @@ class FullThing extends Component {
         return (
             <DocumentTitle title={this.getDocumentTitle()}>
                 <FullItem messages={this.getAllComments()} close={this.close} isFetching={this.isFetching} isEmpty={this.isEmpty} 
-                          circleColor={this.getCircleColor()}>
+                          statusColor={this.getStatusColor()}>
                     <FullItemSubject>
                         <span>{thing.subject}</span>
                     </FullItemSubject>
                     <FullItemStatus>
-                        <span>({thing.payload ? thing.payload.status : ''})</span>
+                        <span>{thing.payload ? ThingStatus[thing.payload.status].label : ''}</span>
                     </FullItemStatus>
+                    <FullItemUser>
+                        <span>by {thing.creator ? thing.creator.displayName : ''}</span>
+                    </FullItemUser>
                     <FullItemActions>
                         <ThingPageActionsBar thing={thing} />
                     </FullItemActions>

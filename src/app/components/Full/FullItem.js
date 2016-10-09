@@ -5,18 +5,16 @@ import clickOutside from 'react-click-outside'
 import Delay from 'react-delay'
 import Icon from 'react-fontawesome'
 import useSheet from 'react-jss'
-import classNames from 'classnames'
 
 import {getChildOfType, createSlots} from '../../util/component-util'
 import Flexbox from '../UI/Flexbox'
 import CommentList from '../Comment/CommentList'
-import Ellipse from '../UI/Ellipse'
 import TextTruncate from '../UI/TextTruncate'
 import styleVars from '../style-vars'
 import {GeneralConstants} from '../../constants'
 
-const {FullItemSubject, FullItemStatus, FullItemActions, FullItemBox} =
-    createSlots('FullItemSubject', 'FullItemStatus', 'FullItemActions', 'FullItemBox')
+const {FullItemSubject, FullItemUser, FullItemStatus, FullItemActions, FullItemBox} =
+    createSlots('FullItemSubject', 'FullItemUser', 'FullItemStatus', 'FullItemActions', 'FullItemBox')
 
 class FullItem extends  Component {
     constructor(props) {
@@ -51,12 +49,24 @@ class FullItem extends  Component {
     }
 
     getStatus() {
-        const {circleColor, sheet: {classes}} = this.props
+        const {statusColor, sheet: {classes}} = this.props
 
         const status = getChildOfType(this.props.children, FullItemStatus)
         return status ?
-            <Flexbox name="full-item-circle" width='19px' shrink={0} container='column' justifyContent="center">
-                <Ellipse className={classes.statusCircle} color={circleColor} />
+            <Flexbox name="full-item-status" shrink={0} container='column' justifyContent="center"
+                     className={classes.status} style={{backgroundColor: statusColor}}>
+                {status}
+            </Flexbox> :
+            null
+    }
+
+    getUser() {
+        const {sheet: {classes}} = this.props
+
+        const user = getChildOfType(this.props.children, FullItemUser)
+        return user ?
+            <Flexbox name="full-item-user" grow={1} shrink={0} container='column' justifyContent="center" className={classes.user}>
+                {user}
             </Flexbox> :
             null
     }
@@ -106,29 +116,20 @@ class FullItem extends  Component {
         const {messages, sheet: {classes}} = this.props
 
         const status = this.getStatus()
+        const user = this.getUser()
         const actions = this.getActions()
-
-        const prevClass = classNames(classes.navigationOption, classes.prev)
-        const nextClass = classNames(classes.navigationOption, classes.next)
 
         return (
             <Flexbox name="full-item-content" grow={1} container="column" className={classes.item}>
-                <Flexbox name="full-item-navigation" container="row" alignItems="center" className={classes.navigationBar}>
-                    <Flexbox name="prev-item" className={prevClass}>
-                        <Icon name="chevron-left" className={classes.prevArrow} />
-                        <span>Previous</span>
-                    </Flexbox>
-                    <Flexbox name="next-item" className={nextClass}>
-                        <span>Next</span>
-                        <Icon name="chevron-right" className={classes.nextArrow} />
-                    </Flexbox>
-                </Flexbox>
-                <Flexbox name="full-item-header" container="row" alignItems="center" className={classes.header}>
-                    {status}
-                    <Flexbox name="full-item-subject" grow={1} className={classes.subject}>
+                <Flexbox name="full-item-header" shrink={0} container="column" className={classes.header}>
+                    <Flexbox name="first-header-row" className={classes.subject}>
                         <TextTruncate>{this.getSubject()}</TextTruncate>
                     </Flexbox>
-                    {actions}
+                    <Flexbox name="second-header-row" container="row" justifyContent="flex-end" alignItems="center">
+                        {status}
+                        {user}
+                        {actions}
+                    </Flexbox>
                 </Flexbox>
                 <Flexbox name="full-item-body-container" grow={1} container="column" className={classes.content}>
                     <CommentList comments={messages} />
@@ -176,33 +177,12 @@ const style = {
         padding: [0, 39],
         backgroundColor: styleVars.secondaryBackgroundColor
     },
-    navigationBar: {
-        height: 80
-    },
-    navigationOption: {
-        fontSize: '0.7em',
-        fontWeight: 'bold',
-        color: 'black',
-        cursor: 'pointer',
-        textTransform: 'uppercase'
-    },
-    prev: {
-        borderRight: '1px solid black',
-        paddingRight: 25
-    },
-    prevArrow: {
-        marginRight: 25
-    },
-    next: {
-        marginLeft: 25
-    },
-    nextArrow: {
-        marginLeft: 25
-    },
     header: {
-        height: 75
+        height: 80,
+        marginTop: 30
     },
     subject: {
+        marginBottom: 17,
         fontSize: '1.5em',
         fontWeight: 'bold',
         textTransform: 'uppercase',
@@ -214,10 +194,20 @@ const style = {
         overflowY: 'hidden',
         marginTop: 10
     },
-    statusCircle: {
-        height: 8,
-        width: 8,
-        marginRight: 11
+    status: {
+        height: 20,
+        width: 100,
+        color: 'white',
+        border: 'none',
+        textTransform: 'uppercase',
+        textAlign: 'center'
+    },
+    user: {
+        marginLeft: 12,
+        fontSize: '0.750em',
+        color: 'black',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em'
     },
     close: {
         position: 'absolute',
@@ -236,7 +226,7 @@ FullItem.propTypes = {
     isFetching: PropTypes.func.isRequired,
     isEmpty: PropTypes.func.isRequired,
     close: PropTypes.func.isRequired,
-    circleColor: PropTypes.string,
+    statusColor: PropTypes.string,
     isExpandedOpened: PropTypes.bool.isRequired
 }
 
@@ -251,6 +241,7 @@ export default useSheet(connect(mapStateToProps)(clickOutside(FullItem)), style)
 
 export {
     FullItemSubject,
+    FullItemUser,
     FullItemStatus,
     FullItemActions,
     FullItemBox

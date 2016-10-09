@@ -9,7 +9,7 @@ export default {
     },
     DISMISS: {
         key: 'DISMISS',
-        label: 'Dismiss'
+        label: 'Dismissed'
     },
     DONE: {
         key: 'DONE',
@@ -17,7 +17,7 @@ export default {
     },
     CLOSE: {
         key: 'CLOSE',
-        label: 'Close'
+        label: 'Closed'
     },
     REOPENED: {
         key: 'REOPENED',
