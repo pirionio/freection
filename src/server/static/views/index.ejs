@@ -30,12 +30,6 @@
     <body>
         <div id="app"></div>
 
-        <script type="text/javascript">
-            window.__STATE__ = <%- JSON.stringify(state) %>
-        </script>
-
-        <script type="application/javascript" src="/<%- assets.bundle.js %>"></script>
-
         <%if (isAnalyticsEnabled) { %>
         <!-- Begin Inspectlet Embed Code -->
         <script type="text/javascript" id="inspectletjs">
@@ -48,5 +42,11 @@
         </script>
         <!-- End Inspectlet Embed Code -->
         <% } %>
+
+        <script type="text/javascript">
+            window.__STATE__ = <%- JSON.stringify(state) %>
+        </script>
+
+        <script type="application/javascript" src="/<%- assets.bundle.js %>"></script>
     </body>
 </html>
