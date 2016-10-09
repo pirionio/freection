@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 
 import SharedConstants from '../../common/shared-constants'
 import {isDemo} from '../shared/config/demo'
+import {isAnalyticsEnabled} from '../shared/config/analytics.js'
 import tokenConfig from '../shared/config/token'
 import logger from '../shared/utils/logger'
 import login from './login'
@@ -57,7 +58,7 @@ export function configure(app) {
     // to support URL navigation without hash tags.
     app.get('*', (request, response) => {
         getInitialState(request)
-            .then(state => response.render('index', { state, assets }))
+            .then(state => response.render('index', { state, assets, isAnalyticsEnabled }))
             .catch(error => {
                 logger.error('error while trying to serve index', error)
                 response.status(500).send('Error while trying to get the file')

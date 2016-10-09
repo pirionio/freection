@@ -16,6 +16,7 @@ module.exports = {
                 thingId: 'thingId',
                 event: 'result'
             },
+            track: 'comment',
             private: true
         },
         {
@@ -27,7 +28,8 @@ module.exports = {
                 to: 'thing.to',
                 body: 'thing.body',
                 subject: 'thing.subject'
-            }
+            },
+            track: 'newThing'
         },
         {
             name: 'ping',
@@ -37,7 +39,8 @@ module.exports = {
             completeParams: {
                 thing: 'thing',
                 event: 'result'
-            }
+            },
+            track: 'ping'
         },
         {
             name: 'pong',
@@ -49,7 +52,8 @@ module.exports = {
             },
             completeParams: {
                 thing: 'thing'
-            }
+            },
+            track: 'pong'
         },
         {
             name: 'mark comment as read',
@@ -65,7 +69,8 @@ module.exports = {
             name: 'doThing',
             params: ['thing'],
             type: 'post',
-            path: '/api/things/${thing.type.key}/${thing.id}/do'
+            path: '/api/things/${thing.type.key}/${thing.id}/do',
+            track: 'doThing'
         },
         {
             name: 'close ack',
@@ -80,7 +85,8 @@ module.exports = {
             path: '/api/things/${thing.type.key}/${thing.id}/close',
             body: {
                 messageText: 'messageText'
-            }
+            },
+            track: 'close'
         },
         {
             name: 'dismiss',
@@ -89,7 +95,8 @@ module.exports = {
             path: '/api/things/${thing.type.key}/${thing.id}/dismiss',
             body: {
                 messageText: 'messageText'
-            }
+            },
+            track: 'dismiss'
         },
         {
             name: 'mark as done',
@@ -98,19 +105,22 @@ module.exports = {
             path: '/api/things/${thing.id}/done',
             body: {
                 messageText: 'messageText'
-            }
+            },
+            track: 'done'
         },
         {
             name: 'discard comments',
             params: ['notification'],
             type: 'post',
-            path: '/api/things/${notification.thing.id}/discard/${EventTypes.COMMENT.key}'
+            path: '/api/things/${notification.thing.id}/discard/${EventTypes.COMMENT.key}',
+            track: 'discard'
         },
         {
             name: 'discard single notification',
             params: ['notification'],
             type: 'post',
-            path: '/api/events/${notification.id}/discard'
+            path: '/api/events/${notification.id}/discard',
+            track: 'discard'
         },
         { 
             name: 'join mention',
@@ -119,7 +129,8 @@ module.exports = {
             path: '/api/things/${thing.id}/joinmention',
             completeParams: {
                 thing: 'result'
-            }
+            },
+            track: 'join'
         },
         {
             name: 'leave mention',
@@ -128,7 +139,8 @@ module.exports = {
             path: '/api/things/${thing.id}/leavemention',
             completeParams: {
                 thing: 'result'
-            }
+            },
+            track: 'leave'
         },
         {
             name: 'send back',
@@ -137,7 +149,8 @@ module.exports = {
             path: '/api/things/${thing.id}/sendback',
             body: {
                 messageText: 'messageText'
-            }
+            },
+            track: 'sendback'
         }
     ]
 }

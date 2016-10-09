@@ -1,7 +1,7 @@
 const fs = require('fs')
 const models = require('../src/app/actions/models')
 const {camelCase, snakeCase, toUpper, repeat,
-    upperFirst, kebabCase, isFunction, toPairs} = require('lodash')
+    upperFirst, kebabCase, isFunction, toPairs, some} = require('lodash')
 
 function generateActionsCode(model) {
     const actionsFileName = getActionsFilename(model.name)
@@ -25,9 +25,12 @@ function generateActionsCode(model) {
 function generateRequireCode(model) {
     const requires = model.requires ? model.requires : []
 
+    const trackEnabled = some(model.actions, action => !!action.track)
+
     return `import ${getTypesVariable(model.name)} from '../types/${getTypesFilename(model.name)}'\r\n` +
             `import {ActionStatus} from '../../constants'\r\n` +
             `import * as ResourceUtil from '../../util/resource-util'\r\n` +
+            (trackEnabled ? `import * as analytics from '../../util/analytics'\r\n` : '') +
             toPairs(requires).map(_require => `import ${_require[0]} from '${_require[1]}'\r\n`).join('')
 }
 
@@ -61,6 +64,7 @@ function generateAsyncActionCode(modelName, action) {
 
     return `export function ${functionName}(${params.join(', ')}) {\r\n` +
         `    return dispatch => {\r\n` +
+        getAnalyticsCode(action) +
         `        dispatch({\r\n` +
         `            type: ${typeName}, \r\n` +
         `            status: ActionStatus.START${restOfParamsComma}` +
@@ -79,6 +83,16 @@ function generateAsyncActionCode(modelName, action) {
         `            }))\r\n` +
         `    }\r\n` +
         `}\r\n`
+}
+
+function getAnalyticsCode(action) {
+    if (action.track) {
+        const params = action.trackParams ? action.trackParams.join(', ') : ''
+
+        return `        analytics.${action.track}(${params})\r\n\r\n`
+    }
+
+    return ''
 }
 
 function pairsToStrings(params) {

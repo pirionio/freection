@@ -21,7 +21,8 @@ module.exports = {
         "import/ignore": [/\.(png)$/, 'node_modules']
     },
     "globals": {
-        "chrome": true
+        "chrome": true,
+        "__insp": true
     },
     "rules": {
         "strict": 0,

@@ -1,10 +1,13 @@
 import ThingCommandActionsTypes from '../types/thing-command-action-types'
 import {ActionStatus} from '../../constants'
 import * as ResourceUtil from '../../util/resource-util'
+import * as analytics from '../../util/analytics'
 import EventTypes from '../../../common/enums/event-types'
 
 export function _comment(thingId, commentText) {
     return dispatch => {
+        analytics.comment()
+
         dispatch({
             type: ThingCommandActionsTypes.COMMENT, 
             status: ActionStatus.START,
@@ -31,6 +34,8 @@ export function _comment(thingId, commentText) {
 
 export function newThing(thing) {
     return dispatch => {
+        analytics.newThing()
+
         dispatch({
             type: ThingCommandActionsTypes.NEW_THING, 
             status: ActionStatus.START,
@@ -56,6 +61,8 @@ export function newThing(thing) {
 
 export function ping(thing) {
     return dispatch => {
+        analytics.ping()
+
         dispatch({
             type: ThingCommandActionsTypes.PING, 
             status: ActionStatus.START,
@@ -78,6 +85,8 @@ export function ping(thing) {
 
 export function pong(thing, messageText) {
     return dispatch => {
+        analytics.pong()
+
         dispatch({
             type: ThingCommandActionsTypes.PONG, 
             status: ActionStatus.START,
@@ -127,6 +136,8 @@ export function markCommentAsRead(comment, updateInitialIsRead) {
 
 export function doThing(thing) {
     return dispatch => {
+        analytics.doThing()
+
         dispatch({
             type: ThingCommandActionsTypes.DO_THING, 
             status: ActionStatus.START,
@@ -169,6 +180,8 @@ export function closeAck(thing) {
 
 export function close(thing, messageText) {
     return dispatch => {
+        analytics.close()
+
         dispatch({
             type: ThingCommandActionsTypes.CLOSE, 
             status: ActionStatus.START,
@@ -195,6 +208,8 @@ export function close(thing, messageText) {
 
 export function dismiss(thing, messageText) {
     return dispatch => {
+        analytics.dismiss()
+
         dispatch({
             type: ThingCommandActionsTypes.DISMISS, 
             status: ActionStatus.START,
@@ -221,6 +236,8 @@ export function dismiss(thing, messageText) {
 
 export function markAsDone(thing, messageText) {
     return dispatch => {
+        analytics.done()
+
         dispatch({
             type: ThingCommandActionsTypes.MARK_AS_DONE, 
             status: ActionStatus.START,
@@ -247,6 +264,8 @@ export function markAsDone(thing, messageText) {
 
 export function discardComments(notification) {
     return dispatch => {
+        analytics.discard()
+
         dispatch({
             type: ThingCommandActionsTypes.DISCARD_COMMENTS, 
             status: ActionStatus.START,
@@ -268,6 +287,8 @@ export function discardComments(notification) {
 
 export function discardSingleNotification(notification) {
     return dispatch => {
+        analytics.discard()
+
         dispatch({
             type: ThingCommandActionsTypes.DISCARD_SINGLE_NOTIFICATION, 
             status: ActionStatus.START,
@@ -289,6 +310,8 @@ export function discardSingleNotification(notification) {
 
 export function joinMention(thing) {
     return dispatch => {
+        analytics.join()
+
         dispatch({
             type: ThingCommandActionsTypes.JOIN_MENTION, 
             status: ActionStatus.START,
@@ -310,6 +333,8 @@ export function joinMention(thing) {
 
 export function leaveMention(thing) {
     return dispatch => {
+        analytics.leave()
+
         dispatch({
             type: ThingCommandActionsTypes.LEAVE_MENTION, 
             status: ActionStatus.START,
@@ -331,6 +356,8 @@ export function leaveMention(thing) {
 
 export function sendBack(thing, messageText) {
     return dispatch => {
+        analytics.sendback()
+
         dispatch({
             type: ThingCommandActionsTypes.SEND_BACK, 
             status: ActionStatus.START,

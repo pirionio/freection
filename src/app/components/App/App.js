@@ -11,6 +11,7 @@ import GlassPane from '../GlassPane/GlassPane'
 import * as PushService from '../../services/push-service'
 import * as AuthService from '../../services/auth-service.js'
 import FaviconLogo from '../../static/freection-favicon.png'
+import {identify} from '../../util/analytics'
 
 // import EmailLifecycleService from '../../services/email-lifecycle-service'
 
@@ -21,6 +22,7 @@ class App extends Component {
         if (currentUser.isAuthenticated) {
             PushService.listenToUpdates(currentUser.email, currentUser.pushToken, dispatch)
             AuthService.initialize(currentUser)
+            identify(currentUser)
             //EmailLifecycleService.initialize(dispatch)
         }
     }
