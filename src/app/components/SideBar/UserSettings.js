@@ -6,6 +6,7 @@ import Icon from 'react-fontawesome'
 
 import Flexbox from '../UI/Flexbox'
 import Link from '../UI/Link'
+import TextTruncate from '../UI/TextTruncate'
 
 class UserSettings extends Component {
     constructor(props) {
@@ -47,7 +48,9 @@ class UserSettings extends Component {
 
         return (
             <Flexbox name="settings" container="row" justifyContent="space-between" alignItems="center" className={classes.container}>
-                <span className={classes.user}>{currentUser.firstName}</span>
+                <span className={classes.user}>
+                    <TextTruncate><span>{currentUser.firstName}</span></TextTruncate>
+                </span>
                 <Icon name={this.isOpen() ? 'chevron-down' : 'chevron-up'} onClick={this.toggleSettingsMenu} className={classes.menuButton} />
                 {settingsMenu}
             </Flexbox>
@@ -66,7 +69,9 @@ const style = {
     },
     user: {
         letterSpacing: '0.1em',
-        textTransform: 'uppercase'
+        textTransform: 'uppercase',
+        paddingRight: 8,
+        minWidth: 0
     },
     menuButton: {
         marginRight: 10,
