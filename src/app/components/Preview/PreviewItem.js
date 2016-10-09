@@ -19,7 +19,7 @@ const PreviewItemStatus = ({status, children}) => {
     if (status)
         return <span>{status}</span>
 
-    return React.Children.only(children)
+    return <TextTruncate>{React.Children.only(children)}</TextTruncate>
 }
 
 PreviewItemStatus.propTypes = {
@@ -113,7 +113,7 @@ class PreviewItem extends Component {
                         {statusOrUser}
                     </Flexbox>
                     <Flexbox name="center-box" container="row" justifyContent="flex-start" alignItems="center" grow={1} className={classes.centerBox}>
-                        <Flexbox name="subject" className={classes.subject}>
+                        <Flexbox name="subject" shrink={0} className={classes.subject}>
                             <TextTruncate><strong>{title}</strong></TextTruncate>
                         </Flexbox>
                         {textPreview}
@@ -167,7 +167,7 @@ const style = {
     },
     leftBox: {
         width: 160,
-        padding: [4, 0],
+        padding: [4, 15, 4, 0],
         '&.withStatus': {
             width: 250
         }
@@ -188,7 +188,8 @@ const style = {
         marginRight: 11
     },
     subject: {
-        marginRight: 0
+        marginRight: 0,
+        minWidth: 0
     },
     text: {
         minWidth: 0
