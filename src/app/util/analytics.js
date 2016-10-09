@@ -1,10 +1,10 @@
 function tagSession(tag) {
-    if (__insp)
+    if (typeof __insp !== 'undefined' && __insp)
         __insp.push(['tagSession', tag])
 }
 
 export function identify(user) {
-    if (__insp)
+    if (typeof __insp !== 'undefined' && __insp)
         __insp.push(['identify', user.email])
 }
 
