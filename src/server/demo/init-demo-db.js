@@ -1,6 +1,6 @@
 import * as ThingService from '../shared/application/thing-service'
 import * as EventService from '../shared/application/event-service'
-import * as EmailService from '../shared/application/email-service'
+//import * as EmailService from '../shared/application/email-service'
 import {User, Thing, Event} from '../shared/models'
 import EventTypes from '../../common/enums/event-types'
 import SharedConstants from '../../common/shared-constants'
@@ -121,8 +121,8 @@ export default async function() {
     await Event.delete().execute()
     await createUsers()
 
-    const user = await User.get(userId).run()
-    await EmailService.deleteAllEmails(user)
+    //const user = await User.get(userId).run()
+    //await EmailService.deleteAllEmails(user)
 
     // American express
     const americanExpress = await sendThing('Peter', 'Max', 'Supporting American Express', 'Hi Max, \r\n\r\nIt’s growing urgent to support these, guys at the field say our churn might be related.\r\nLet’s see what it takes on engineering side.')
@@ -172,7 +172,7 @@ export default async function() {
     await sendThing('Steve', 'Max', 'let\'s talk about my salary', 'Hey what’s up?\r\n\r\nI’ve been in the company for a while now, I would appreciate it if we could have a talk about upgrading my salary.\r\n\r\nThank you!')
     await sendThing('Peter', 'Max', 'How many active users so far this month', 'I have a meeting soon, can’t remember the exact number we talked about last week in the meeting.')
 
-    const peter = await User.get('066c2cc8-32ad-4919-a943-d8ccc3c0db58').run()
+   /* const peter = await User.get('066c2cc8-32ad-4919-a943-d8ccc3c0db58').run()
     await EmailService.sendEmail(peter, 'max.freection@gmail.com', 'Company Update',
         'Hi all,\r\n\r\n' +
         'To begin with, this was a very encouraging week!\r\n\r\n' +
@@ -192,5 +192,5 @@ export default async function() {
         '* We need to start thinking about the strategy for 2000 Q1 - Peter set up a meeting?\r\n\r\bRegards,\r\n\r\nDavid')
 
     const steve = await User.get('5f9a8dcb-3ad8-40e6-9966-f92c9135b74f').run()
-    await EmailService.sendEmail(steve, 'max.freection@gmail.com', 'Ordering from Giraffe at 12:01!', 'All welcomed!')
+    await EmailService.sendEmail(steve, 'max.freection@gmail.com', 'Ordering from Giraffe at 12:01!', 'All welcomed!')*/
 }
