@@ -18,7 +18,8 @@ export function initialize(user) {
                 id: user.organization
             },
             slack: user.slack,
-            github: user.github
+            github: user.github,
+            hostname: window.location.hostname
         })
     }
 }
