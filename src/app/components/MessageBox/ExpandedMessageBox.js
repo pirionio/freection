@@ -50,10 +50,6 @@ class ExpandedMessageBox extends Component {
     getTitle() {
         const {sheet: {classes}, activeMessageBox} = this.props
 
-        const closeButton = activeMessageBox && [MessageTypes.NEW_THING.key, MessageTypes.NEW_EMAIL.key].includes(activeMessageBox.type.key) ?
-            <Icon name="times" className={classes.titleClose} onClick={() => this.closeMessageBox()} /> :
-            null
-
         const expandButton =
             <Icon name="compress" className={classes.titleCompress} onClick={() => this.onCompressClick()} />
 
@@ -61,7 +57,7 @@ class ExpandedMessageBox extends Component {
             <Flexbox className={classes.title} container="row" justifyContent="flex-end" alignItems="center">
                 <TextTruncate className={classes.titleText}>{activeMessageBox ? activeMessageBox.title: ''}</TextTruncate>
                 {expandButton}
-                {closeButton}
+                <Icon name="times" className={classes.titleClose} onClick={() => this.closeMessageBox()} />
             </Flexbox>)
     }
 
@@ -112,8 +108,10 @@ class ExpandedMessageBox extends Component {
     getBody() {
         const {sheet: {classes}} = this.props
 
+        const bodyClass = this.hasSubject() && this.hasTo() ? classes.bodyWithSubject : classes.bodyAlone
+
         return (
-            <MessageBody className={classes.messageBody} tabIndex="2" ref={ref => this.messageBody = ref} />
+            <MessageBody className={bodyClass} tabIndex="2" ref={ref => this.messageBody = ref} />
         )
     }
 
@@ -238,7 +236,6 @@ const style = {
         maxWidth: '760px',
         maxHeight: '575px',
         transform: 'translate(-50%, -50%)',
-        overflow: 'auto',
         WebkitOverflowScrolling: 'touch',
         zIndex: styleVars.modalZIndex,
         outline: 'none'
@@ -351,8 +348,11 @@ const style = {
             cursor: 'not-allowed'
         }
     },
-    messageBody: {
+    bodyWithSubject: {
         height: 310
+    },
+    bodyAlone: {
+        height: 420
     }
 }
 
