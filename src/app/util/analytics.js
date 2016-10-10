@@ -23,6 +23,12 @@ export function initialize(user) {
     }
 }
 
+export function clean() {
+    if (window.Intercom) {
+        window.Intercom('shutdown')
+    }
+}
+
 export function newThing() {
     tagSession('newThing')
 }

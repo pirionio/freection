@@ -11,7 +11,7 @@ import GlassPane from '../GlassPane/GlassPane'
 import * as PushService from '../../services/push-service'
 import * as AuthService from '../../services/auth-service.js'
 import FaviconLogo from '../../static/freection-favicon.png'
-import {initialize} from '../../util/analytics'
+import {initialize, clean} from '../../util/analytics'
 import * as ChromeExtensionActions from '../../actions/chrome-extension-actions'
 
 // import EmailLifecycleService from '../../services/email-lifecycle-service'
@@ -25,6 +25,8 @@ class App extends Component {
             AuthService.initialize(currentUser)
             initialize(currentUser)
             //EmailLifecycleService.initialize(dispatch)
+        } else {
+            clean()
         }
     }
 
