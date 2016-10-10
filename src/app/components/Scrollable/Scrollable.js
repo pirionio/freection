@@ -19,25 +19,19 @@ class Scrollable extends Component {
     }
 
     componentWillReceiveProps () {
-        const node = ReactDOM.findDOMNode(this)
-        this.shouldScrollBottom = (node.scrollTop + node.offsetHeight) === node.scrollHeight
+        this.shouldScrollBottom = this.scrollableContent ? this.isAtBottom() : false
     }
 
     componentDidMount() {
-        this.checkScroll()
+        const {getScrollToElementId} = this.props
+        if (getScrollToElementId && !this.state.isInitialized) {
+            this.scrollTo(getScrollToElementId())
+        }
     }
 
     componentDidUpdate () {
-        this.checkScroll()
-    }
-
-    checkScroll() {
-        const {getScrollToElementId} = this.props
-
         if (this.shouldScrollBottom && this.props.stickToBottom) {
             this.scrollToBottom()
-        } else if (getScrollToElementId) {
-            this.scrollTo(getScrollToElementId())
         }
     }
 
@@ -52,15 +46,20 @@ class Scrollable extends Component {
         this.scrollTo(lastId)
     }
 
+    isAtBottom() {
+        const node = ReactDOM.findDOMNode(this.scrollableContent)
+        return node.scrollHeight - node.scrollTop === node.clientHeight
+    }
+
     render() {
         const childrenToRender = React.Children.map(this.props.children, element => {
-            return (
+            return element ?
                 // Name is needed in order to react-scroll to recognize this element.
                 // Ref is needed in order for us to be able to reference all elements, and find specific ones in them (like the last one).
                 <Element name={element.key} ref={element.key}>
                     {element}
-                </Element>
-            )
+                </Element> :
+                null
         })
 
         // We must not use JSS here, because it's used with a decorator,
@@ -80,7 +79,7 @@ class Scrollable extends Component {
 
         return (
             <Flexbox name="scrollable-container" container="column" grow={1} style={style.container}>
-                <Flexbox name="scrollable-content" style={style.content} id={this.state.containerId}>
+                <Flexbox name="scrollable-content" style={style.content} id={this.state.containerId} ref={ref => this.scrollableContent = ref}>
                     {childrenToRender}
                 </Flexbox>
             </Flexbox>
