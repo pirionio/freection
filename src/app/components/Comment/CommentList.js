@@ -58,7 +58,7 @@ class CommentList extends Component {
         return (
             <Scrollable stickToBottom={true} getScrollToElementId={this.getScrollToElementId}>
                 {readComments}
-                <Flexbox container="row" justifyContent="center" alignItems="center" className={classes.title} key="unrad-title">
+                <Flexbox container="row" justifyContent="center" alignItems="center" className={classes.title} key="unread-title">
                     Unread Messages
                 </Flexbox>
                 {unreadComments}
@@ -69,8 +69,12 @@ class CommentList extends Component {
 
 const style = {
     title: {
-        height: 25,
-        color: styleVars.highlightColor
+        height: 32,
+        marginBottom: 5,
+        color: styleVars.highlightColor,
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+        fontWeight: 500
     }
 }
 

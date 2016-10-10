@@ -54,7 +54,7 @@ class Comment extends Component {
 
         const unread = !comment.payload.initialIsRead ?
             <Flexbox name="comment-unread" className={classes.unread}>
-                <span>***</span>
+                <span>*</span>
             </Flexbox> :
             null
 
