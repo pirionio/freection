@@ -59,9 +59,11 @@ class CommentList extends Component {
         const currentlyUnreadComments = this.getCurrentlyUnreadComments()
 
         return !this.state.isUnreadTitleVisible && currentlyUnreadComments.length && this.state.showUnreadNotification ?
-            <Flexbox name="unread-notification" className={classes.unreadMessagesNotification} onClick={this.goToUnreadMessages}>
-                <Icon name="arrow-down" className={classes.arrowDown} />
-                <span>{currentlyUnreadComments.length} new messages</span>
+            <Flexbox name="unread-notification-container" container="row" justifyContent="center" className={classes.unreadNotificationContainer}>
+                <Flexbox name="unread-notification" className={classes.unreadNotification} onClick={this.goToUnreadMessages}>
+                    <Icon name="arrow-down" className={classes.arrowDown} />
+                    <span>{currentlyUnreadComments.length} new messages</span>
+                </Flexbox>
             </Flexbox> :
             null
     }
@@ -137,13 +139,13 @@ const style = {
         letterSpacing: '0.05em',
         fontWeight: 500
     },
-    unreadMessagesNotification: {
+    unreadNotificationContainer: {
         position: 'absolute',
         bottom: 0,
-        left: '50%',
-        width: 196,
+        width: '100%'
+    },
+    unreadNotification: {
         padding: [10, 20],
-        marginLeft: -98,
         color: 'white',
         backgroundColor: styleVars.primaryColor,
         textTransform: 'uppercase',
