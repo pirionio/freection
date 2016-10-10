@@ -1,5 +1,7 @@
 import React,{PropTypes, Component} from 'react'
 import {connect} from 'react-redux'
+import uniq from 'lodash/uniq'
+import trimEnd from 'lodash/trimEnd'
 
 import ThingStatus from '../../../common/enums/thing-status'
 import * as ThingPageActions from '../../actions/thing-page-actions'
@@ -24,6 +26,12 @@ class MentionPreviewItem extends Component {
         }
     }
 
+    getStatus() {
+        const {thing} = this.props
+        const users = uniq([thing.creator.displayName, thing.to.displayName])
+        return trimEnd(users.join(', '), ', ')
+    }
+
     render() {
         const {thing, dispatch} = this.props
 
@@ -33,7 +41,7 @@ class MentionPreviewItem extends Component {
                          date={thing.createdAt}
                          onClick={() => dispatch(ThingPageActions.showThingPage(thing))}>
                 <PreviewItemStatus>
-                    <strong>{thing.creator.displayName}, {thing.to.displayName}</strong>
+                    <strong>{this.getStatus()}</strong>
                 </PreviewItemStatus>
                 <PreviewItemText>
                     <ThingPreviewText thing={thing}/>
