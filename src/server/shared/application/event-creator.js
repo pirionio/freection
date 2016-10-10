@@ -1,8 +1,11 @@
 import {Event} from '../models'
 import EventTypes from '../../../common/enums/event-types'
 import UserTypes from '../../../common/enums/user-types'
+import * as analytics from '../utils/analytics.js'
 
 export function createCreated(creator, thing, getShowNewList, body, emailId) {
+    analytics.thingCreated(thing)
+
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.CREATED.key,
@@ -29,6 +32,8 @@ export function createAccepted(creator, thing, getShowNewList) {
 }
 
 export function createDismissed(creator, thing, getShowNewList, messageText) {
+    analytics.thingDismissed(creator, thing)
+
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.DISMISSED.key,
@@ -43,6 +48,8 @@ export function createDismissed(creator, thing, getShowNewList, messageText) {
 }
 
 export function createDone(creator, thing, getShowNewList, messageText) {
+    analytics.thingMarkedAsDone(creator, thing)
+
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.DONE.key,
@@ -57,6 +64,10 @@ export function createDone(creator, thing, getShowNewList, messageText) {
 }
 
 export function createComment(creator, createdAt, thing, getShowNewList, commentText, commentHtml, emailId) {
+    const showNewList = getShowNewList(creator, thing, EventTypes.COMMENT.key)
+
+    analytics.commentCreated(creator, thing, showNewList)
+
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.COMMENT.key,
@@ -68,11 +79,13 @@ export function createComment(creator, createdAt, thing, getShowNewList, comment
             text: commentText,
             readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
         },
-        showNewList: getShowNewList(creator, thing, EventTypes.COMMENT.key)
+        showNewList
     })
 }
 
 export function createClosed(creator, thing, getShowNewList, messageText) {
+    analytics.closed(creator, thing)
+
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.CLOSED.key,
@@ -87,6 +100,8 @@ export function createClosed(creator, thing, getShowNewList, messageText) {
 }
 
 export function createPing(creator, thing, getShowNewList) {
+    analytics.pingCreated(creator, thing)
+
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.PING.key,
@@ -100,6 +115,8 @@ export function createPing(creator, thing, getShowNewList) {
 }
 
 export function createPong(creator, thing, getShowNewList, messageText) {
+    analytics.pongCreated(creator, thing)
+
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.PONG.key,
@@ -114,6 +131,8 @@ export function createPong(creator, thing, getShowNewList, messageText) {
 }
 
 export function createSentBack(creator, thing, getShowNewList, messageText) {
+    analytics.sentBack(creator, thing)
+
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.SENT_BACK.key,
@@ -139,6 +158,12 @@ export function createCloseAck(creator, thing, getShowNewList) {
 }
 
 export function createMentioned(creator, thing, getShowNewList, messageText) {
+    const showNewList = getShowNewList(creator, thing, EventTypes.MENTIONED.key)
+
+    showNewList.forEach(userId => {
+        analytics.mentioned(creator, thing, userId)
+    })
+
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.MENTIONED.key,
@@ -148,11 +173,13 @@ export function createMentioned(creator, thing, getShowNewList, messageText) {
             text: messageText,
             readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
         },
-        showNewList: getShowNewList(creator, thing, EventTypes.MENTIONED.key)
+        showNewList
     })
 }
 
 export function createJoinedMention(creator, thing, getShowNewList) {
+    analytics.joined(creator, thing)
+
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.JOINED_MENTION.key,
@@ -164,6 +191,8 @@ export function createJoinedMention(creator, thing, getShowNewList) {
 }
 
 export function createLeftMention(creator, thing, getShowNewList) {
+    analytics.left(creator, thing)
+
     return Event.save({
         thingId: thing.id,
         eventType: EventTypes.LEFT_MENTION.key,
