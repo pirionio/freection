@@ -64,7 +64,7 @@ class MessageBox extends Component {
 
         const bodyClass = (!this.hasSubject() && !this.hasTo()) ? classes.bodyOnly : null
         return (
-            <MessageBody className={bodyClass} onFocus={this.focusOnBody} tabIndex="2" ref={ref => this.messageBody = ref} />
+            <MessageBody className={bodyClass} onFocus={this.focusOnBody} tabIndex="2" editorRef={ref => this.messageBody = ref} />
         )
     }
 

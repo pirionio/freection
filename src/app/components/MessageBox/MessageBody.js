@@ -103,6 +103,15 @@ class MessageBody extends Component {
         this.editor.focus()
     }
 
+    setEditorRef(ref) {
+        const {editorRef} = this.props
+
+        this.editor = ref
+
+        if (editorRef)
+            editorRef(ref)
+    }
+
     render() {
         const {sheet: {classes}, onFocus, tabIndex, className} = this.props
         const {MentionSuggestions} = this._mentionPlugin
@@ -116,7 +125,7 @@ class MessageBody extends Component {
                         editorState={this.state.editorState}
                         onChange={this.bodyChanged}
                         plugins={[this._mentionPlugin]}
-                        ref={ref => {this.editor = ref}}
+                        ref={this.setEditorRef}
                         onFocus={onFocus}
                         tabIndex={tabIndex}
                         placeholder="Write your message here" />
@@ -161,7 +170,8 @@ MessageBody.propTypes = {
     suggestions: PropTypes.object.isRequired,
     onFocus: PropTypes.func,
     tabIndex: PropTypes.string,
-    className: PropTypes.string
+    className: PropTypes.string,
+    editorRef: PropTypes.func
 }
 
 function mapStateToProps(state) {
