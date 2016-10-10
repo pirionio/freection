@@ -12,8 +12,13 @@ export function initialize(user) {
             app_id: 's9inbvkn',
             name: `${user.firstName} ${user.lastName}`,
             email: user.email,
-            user_id: user.id
-            //created_at: 1312182000 // Unix timestamp, TODO: we don't have this information from server
+            user_id: user.id,
+            company: {
+                name: user.organization,
+                id: user.organization
+            },
+            slack: user.slack,
+            github: user.github
         })
     }
 }

@@ -110,6 +110,8 @@ function getAuthState(request) {
     auth.lastName = request.user.lastName
     auth.email = request.user.email
     auth.expire = request.user.exp * 1000 // Convert to ms since epoch
+    auth.github = request.user.github
+    auth.slack = request.user.slack
 
     const tokenOptions = request.user.exp ? {} : {expiresIn: '30 days'}
     try {
