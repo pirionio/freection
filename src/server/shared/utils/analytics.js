@@ -9,15 +9,14 @@ const client = isAnalyticsEnabled ? new Client({token: intercomToken}) : null
 
 function trackIntercomEvent(name, userId, metadata = {}) {
     if (client) {
-        const created_at = toInteger(now() / 1000)
+        const createdAt = toInteger(now() / 1000)
 
         client.events.create({
             event_name: name,
             user_id: userId,
-            created_at,
+            created_at: createdAt,
             metadata
-        })
-            .catch(error => logger.error('error while posting event to intercom', error))
+        }).catch(error => logger.error('error while posting event to intercom', error))
     }
 }
 
