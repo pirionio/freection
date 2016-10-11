@@ -4,7 +4,6 @@ import useSheet from 'react-jss'
 import Favicon from 'react-favicon'
 
 import Flexbox from '../UI/Flexbox'
-import LoginTopBar from '../TopBar/LoginTopBar'
 import SideBar from '../SideBar/SideBar'
 import Login from '../Login/Login'
 import GlassPane from '../GlassPane/GlassPane'
@@ -61,7 +60,6 @@ class App extends Component {
         return (
             <Flexbox name="root" container="column" className={classes.container}>
                 <Favicon url={FaviconLogo} />
-                <LoginTopBar />
                 <Login />
             </Flexbox>
         )
