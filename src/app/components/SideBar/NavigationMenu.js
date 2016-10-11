@@ -102,15 +102,14 @@ const style = {
     },
     linkRow: {
         height: 25,
-        marginBottom: 40,
+        marginBottom: 28,
         position: 'relative'
     },
     linkBlock: {
         display: 'inline-block'
     },
     link: {
-        fontFamily: 'Roboto Mono, monospace',
-        fontSize: 0.857,
+        fontSize: '0.857em',
         fontWeight: 500,
         color: styleVars.menuTextColor,
         textTransform: 'uppercase',
@@ -124,7 +123,7 @@ const style = {
         color: styleVars.highlightColor
     },
     circle: {
-        width: 30,
+        width: 33,
         height: 22,
         marginRight: 26,
         paddingTop: 3,
