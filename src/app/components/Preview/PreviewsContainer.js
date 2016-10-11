@@ -50,6 +50,10 @@ class PreviewsContainer extends Component {
         )
     }
 
+    isInFullItemMode() {
+        return this.props.children
+    }
+
     getPreviews() {
         const {previewItems, children, sheet: {classes}} = this.props
 
@@ -62,13 +66,13 @@ class PreviewsContainer extends Component {
         return (
             <Flexbox name="preview-container" grow={1} container="column" justifyContent="flex-end">
                 <Flexbox name="preview-content" container="column" grow={1} style={{marginBottom: '15px'}}>
-                    <Scrollable>
+                    <Scrollable className={this.isInFullItemMode() && classes.blur}>
                         {previewItems}
                     </Scrollable>
-                    {children ? <Flexbox name="full-item-blur" container="column" className={classes.blur} /> : null}
-                    {children ? children : null}
+                    {this.isInFullItemMode() ? <Flexbox name="full-item-blur" container="column" className={classes.overlay} /> : null}
+                    {this.isInFullItemMode() ? children : null}
                 </Flexbox>
-                {!children ?
+                {!this.isInFullItemMode() ?
                     <Flexbox container="column" alignSelf="center" className={classes.messagePanel}>
                         <MessagePanel />
                     </Flexbox> :
@@ -91,17 +95,18 @@ class PreviewsContainer extends Component {
 }
 
 const style = {
-    blur: {
-        height: '100%',
-        backgroundColor: styleVars.secondaryBackgroundColor,
-        '-webkit-filter': 'blur(50px)',
-        filter: 'blur(50px)',
+    overlay: {
+        opacity: 1,
+        height: `calc(100% + ${styleVars.mainAppPadding}px)`,
+        width: `calc(100% + (${styleVars.mainAppPadding}px * 2))`,
+        backgroundColor: 'rgba(250, 250, 250, 0.5)',
         position: 'absolute',
-        top: -35,
-        left: 0,
-        right: 0,
-        bottom: 0,
+        top: -styleVars.mainAppPadding,
+        left: -styleVars.mainAppPadding,
         zIndex: styleVars.fullItemBlurZIndex
+    },
+    blur: {
+        filter: 'blur(3px)'
     },
     noPreviewsText: {
         color: styleVars.watermarkColor,

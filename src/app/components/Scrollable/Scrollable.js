@@ -52,7 +52,9 @@ class Scrollable extends Component {
     }
 
     render() {
-        const childrenToRender = React.Children.map(this.props.children, element => {
+        const {children, className} = this.props
+
+        const childrenToRender = React.Children.map(children, element => {
             return element ?
                 // Name is needed in order to react-scroll to recognize this element.
                 // Ref is needed in order for us to be able to reference all elements, and find specific ones in them (like the last one).
@@ -78,7 +80,7 @@ class Scrollable extends Component {
         }
 
         return (
-            <Flexbox name="scrollable-container" container="column" grow={1} style={style.container}>
+            <Flexbox name="scrollable-container" container="column" grow={1} style={style.container} className={className}>
                 <Flexbox name="scrollable-content" style={style.content} id={this.state.containerId} ref={ref => this.scrollableContent = ref}>
                     {childrenToRender}
                 </Flexbox>
@@ -90,7 +92,8 @@ class Scrollable extends Component {
 Scrollable.propTypes = {
     children: PropTypes.node.isRequired,
     stickToBottom: PropTypes.bool,
-    getScrollToElementId: PropTypes.func
+    getScrollToElementId: PropTypes.func,
+    className: PropTypes.string
 }
 
 Scrollable.defaultProps = {

@@ -14,7 +14,6 @@ export default {
     basePinkColor: '#ff3a4e',
     baseGrayColor: '#565656',
     baseGreenColor: '#b7cbc0',
-    previewLineHeight: 1.571,
 
     redCircleColor: '#ff3a4e',
     blueCircleColor: '#448ccb',
@@ -22,11 +21,14 @@ export default {
     yellowCircleColor: '#ffd200',
     greyCircleColor: '#646464',
 
+    previewLineHeight: 1.571,
+    mainAppPadding: 35,
+
     backZIndex: 10,
     toAutosuggestZIndex: 15,
     fullItemBlurZIndex: 40,
     fullItemZIndex: 50,
     previewInlineReplyZIndex: 100,
     modalOverlayZIndex: 140,
-    modalZIndex: 150,
+    modalZIndex: 150
 }

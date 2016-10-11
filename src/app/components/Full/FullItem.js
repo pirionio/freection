@@ -164,18 +164,18 @@ class FullItem extends  Component {
 const style = {
     page: {
         position: 'absolute',
-        top: -35,
+        top: -styleVars.mainAppPadding,
         left: 40,
         right: 40,
         bottom: 0,
         zIndex: styleVars.fullItemZIndex,
-        filter: 'none',
-        boxShadow: '0px 0px 40px 0px rgba(0, 0, 0, 0.2)'
+        backgroundColor: styleVars.secondaryBackgroundColor,
+        borderRight: '1px solid #e0e0e0',
+        borderLeft: '1px solid #e0e0e0'
     },
     item: {
         marginBottom: 30,
-        padding: [0, 39],
-        backgroundColor: styleVars.secondaryBackgroundColor
+        padding: [0, 39]
     },
     header: {
         height: 80,
