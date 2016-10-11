@@ -12,6 +12,7 @@ import CommentList from '../Comment/CommentList'
 import TextTruncate from '../UI/TextTruncate'
 import styleVars from '../style-vars'
 import {GeneralConstants} from '../../constants'
+import Close from '../../static/close-full-item.png'
 
 const {FullItemSubject, FullItemUser, FullItemStatus, FullItemActions, FullItemBox} =
     createSlots('FullItemSubject', 'FullItemUser', 'FullItemStatus', 'FullItemActions', 'FullItemBox')
@@ -153,8 +154,8 @@ class FullItem extends  Component {
             <Flexbox name="full-item-page" container="column" className={classes.page}>
                 {content}
                 {this.getBox()}
-                <Flexbox name="close" className={classes.close}>
-                    <Icon name="times-circle" onClick={this.props.close} />
+                <Flexbox name="close" className={classes.close} onClick={this.props.close}>
+                    <img src={Close} />
                 </Flexbox>
             </Flexbox>
         )
@@ -211,8 +212,8 @@ const style = {
     },
     close: {
         position: 'absolute',
-        top: 25,
-        left: -31,
+        top: 27,
+        left: -54,
         fontSize: '2em',
         cursor: 'pointer'
     },
