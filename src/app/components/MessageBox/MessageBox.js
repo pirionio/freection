@@ -132,7 +132,8 @@ const style = {
     },
     messageSubject: {
         width: '100%',
-        marginBottom: 30
+        marginBottom: 30,
+        fontWeight: 'bold'
     },
     messageTo: {
         width: 'calc(100% - 108px)',
@@ -145,7 +146,8 @@ const style = {
         width: '100%',
         border: 'none',
         outline: 'none',
-        resize: 'none'
+        resize: 'none',
+        letterSpacing: '0.025em'
     },
     bodyOnly: {
         height: 132

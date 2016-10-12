@@ -146,7 +146,8 @@ class MessageBody extends Component {
 // I have to use its generated name unfortunately, which is the ugly part :/
 const style = {
     containerBase: {
-        lineHeight: 1.5,
+        lineHeight: 2,
+        letterSpacing: '0.025em',
         position: 'relative',
         '& .draftJsMentionPlugin__mention__29BEd': {
             fontWeight: 'bold',
