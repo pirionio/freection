@@ -15,7 +15,7 @@ function doEmail(options, threadData) {
 function createThing(options, threadData) {
     // Notice that the threadId here is in hex.
     // The API of Freection needs to be notified about it, because it essentially works with IMAP which expects decimal values.
-    const url = options.baseUrl + '/emails/api/do'
+    const url = options.baseUrl + '/api/emailthing'
 
     return ResourceUtil.post(url, {
         isHex: true,

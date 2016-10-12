@@ -121,7 +121,7 @@ export function sendEmailForThing(user, to, subject, body, messageId) {
     return sendEmail(user, to, subject, undefined, emailForThingHtml, messageId)
 }
 
-export async function doEmail(user, emailData, isHex) {
+export async function newEmailThing(user, emailData, isHex) {
     const emailThreadIdDec = isHex ? converter.hexToDec(emailData.threadId) : emailData.threadId
     const emailThreadIdHex = !isHex ? converter.decToHex(emailData.threadId) : emailData.threadId
 
@@ -147,7 +147,7 @@ export async function doEmail(user, emailData, isHex) {
     await EventsCreator.createAccepted(creator, thing, getShowNewList)
 }
 
-export async function doEmailByThreadId(user, emailThreadId, isHex) {
+export async function doEmail(user, emailThreadId, isHex) {
     // Thread ID in Gmail is hex (in the Gmail API or in the website)m but dec in the IMAP API.
     // Since we're gonna work with IMAP here, we convert the ID to dec, and we should therefore know if it's received as hex or dec here.
     const emailThreadIdDec = isHex ? converter.hexToDec(emailThreadId) : emailThreadId
