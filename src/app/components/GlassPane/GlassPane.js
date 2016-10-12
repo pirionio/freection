@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
 import useSheet from 'react-jss'
 import classNames from 'classnames'
+import find from 'lodash/find'
 
 import * as GlassPaneActions from '../../actions/glass-pane-actions'
 import styleVars from '../style-vars'
@@ -14,17 +15,28 @@ class GlassPane extends Component {
     }
 
     close() {
-        if (this.props.backdropCallback) {
-            this.props.backdropCallback()
+        const backdropCallback = this.getGlassPane().backdropCallback
+
+        if (backdropCallback) {
+            backdropCallback()
 
             const {dispatch} = this.props
             dispatch(GlassPaneActions.hide())
         }
     }
 
+    getGlassPane() {
+        return find(this.props.glassPanes, {id: this.props.name})
+    }
+
+    shouldShow() {
+        const glassPane = this.getGlassPane()
+        return glassPane && glassPane.show
+    }
+
     render() {
-        const {show, sheet: {classes}} = this.props
-        const glassPaneClass = classNames(classes.glassPane, !show && classes.hide)
+        const {sheet: {classes}} = this.props
+        const glassPaneClass = classNames(classes.glassPane, !this.shouldShow() && classes.hide)
         return (
             <div className={glassPaneClass} onClick={this.close}></div>
         )
@@ -36,10 +48,9 @@ const style = {
         position: 'absolute',
         top: 0,
         bottom: 0,
-        height: '100%',
-        width: '100%',
-        opacity: 0.2,
-        backgroundColor: 'grey',
+        left: 0,
+        right: 0,
+        backgroundColor: styleVars.glassPaneColor,
         zIndex: styleVars.backZIndex,
         display: 'block'
     },
@@ -49,14 +60,13 @@ const style = {
 }
 
 GlassPane.propTypes = {
-    show: PropTypes.bool.isRequired,
-    backdropCallback: PropTypes.func
+    name: PropTypes.string.isRequired,
+    glassPanes: PropTypes.array.isRequired
 }
 
 function mapStateToProps(state) {
     return {
-        show: state.glassPane.show,
-        backdropCallback: state.glassPane.backdropCallback
+        glassPanes: state.glassPane.glassPanes
     }
 }
 

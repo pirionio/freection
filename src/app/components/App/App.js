@@ -7,6 +7,7 @@ import Flexbox from '../UI/Flexbox'
 import SideBar from '../SideBar/SideBar'
 import Login from '../Login/Login'
 import GlassPane from '../GlassPane/GlassPane'
+import {GlassPaneIds} from '../../constants'
 import * as PushService from '../../services/push-service'
 import * as AuthService from '../../services/auth-service.js'
 import FaviconLogo from '../../static/freection-favicon.png'
@@ -52,7 +53,7 @@ class App extends Component {
                     <Flexbox name="app-section" grow={1} container="column">
                         {this.props.children}
                     </Flexbox>
-                    <GlassPane />
+                    <GlassPane name={GlassPaneIds.WHOLE_APP} />
                 </Flexbox>
             )
         }
@@ -68,7 +69,8 @@ class App extends Component {
 
 const style = {
     container: {
-        height: '100%'
+        height: '100%',
+        position: 'relative'
     }
 }
 

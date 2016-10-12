@@ -3,6 +3,8 @@ import find from 'lodash/find'
 
 import {_getThing, _showThingPage, _hideThingPage} from'./generated/thing-page-actions'
 import * as MessageBoxActions from './message-box-actions'
+import * as GlassPaneActions from '../actions/glass-pane-actions'
+import {GlassPaneIds} from '../constants'
 import {InvalidationStatus} from '../constants'
 import MessageTypes from '../../common/enums/message-types'
 
@@ -19,6 +21,9 @@ export function getThing(thingId) {
 export function showThingPage(thing) {
     return (dispatch, getState) => {
         dispatch(push(`${window.location.pathname}/${thing.id}`))
+        dispatch(GlassPaneActions.show(GlassPaneIds.MAIN_APP, () => {
+            dispatch(GlassPaneActions.hide(GlassPaneIds.MAIN_APP))
+        }))
         dispatch(_showThingPage(thing))
 
         // By default, entering the Thing page won't open a reply Message Box.
@@ -36,6 +41,7 @@ export function hideThingPage() {
         const {thingPage, messagePanel} = getState()
         const thingId = thingPage.thing.id
 
+        dispatch(GlassPaneActions.hide(GlassPaneIds.MAIN_APP))
         dispatch(_hideThingPage())
 
         const thingMessageBox = find(messagePanel.messageBoxes, {context: {id: thingId}})

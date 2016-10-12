@@ -1,11 +1,12 @@
 import {actions} from 'react-redux-form'
 
 import * as GlassPaneActions from '../actions/glass-pane-actions'
+import {GlassPaneIds} from '../constants'
 
 export function show(action) {
     return dispatch => {
         dispatch(actions.change('inlineMessage', {show: true, action}))
-        dispatch(GlassPaneActions.show(() => {
+        dispatch(GlassPaneActions.show(GlassPaneIds.MAIN_APP, () => {
             dispatch(close())
         }))
     }
@@ -14,7 +15,7 @@ export function show(action) {
 export function close() {
     return dispatch => {
         dispatch(actions.reset('inlineMessage'))
-        dispatch(GlassPaneActions.hide())
+        dispatch(GlassPaneActions.hide(GlassPaneIds.MAIN_APP))
     }
 }
 

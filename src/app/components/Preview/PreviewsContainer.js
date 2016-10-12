@@ -59,8 +59,6 @@ class PreviewsContainer extends Component {
 
         // We use the children props to understand if we're in full-item mode or not.
         // The children arrive from the Router, and they would exist if the user navigated to a route that has a full-item in it.
-        // Notice that when in full-item mode, we have two divs in absolute position, right next to another.
-        // One of them acts as the blurry overlay of the background, and the other is the actual content of the full item.
         // The Message Panel, in this case, is included in the full item page, so that it appears above the overlay.
 
         return (
@@ -69,7 +67,6 @@ class PreviewsContainer extends Component {
                     <Scrollable className={this.isInFullItemMode() && classes.blur}>
                         {previewItems}
                     </Scrollable>
-                    {this.isInFullItemMode() ? <Flexbox name="full-item-blur" container="column" className={classes.overlay} /> : null}
                     {this.isInFullItemMode() ? children : null}
                 </Flexbox>
                 {!this.isInFullItemMode() ?
@@ -95,16 +92,6 @@ class PreviewsContainer extends Component {
 }
 
 const style = {
-    overlay: {
-        opacity: 1,
-        height: `calc(100% + ${styleVars.mainAppPadding}px)`,
-        width: `calc(100% + (${styleVars.mainAppPadding}px * 2))`,
-        backgroundColor: 'rgba(250, 250, 250, 0.5)',
-        position: 'absolute',
-        top: -styleVars.mainAppPadding,
-        left: -styleVars.mainAppPadding,
-        zIndex: styleVars.fullItemBlurZIndex
-    },
     blur: {
         filter: 'blur(3px)'
     },

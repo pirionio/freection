@@ -23,3 +23,8 @@ export const PreviewDateGroups = {
     LAST_WEEK: 'LAST WEEK',
     OLDER: 'OLDER'
 }
+
+export const GlassPaneIds = {
+    WHOLE_APP: 'WHOLE_APP',
+    MAIN_APP: 'MAIN_APP'
+}

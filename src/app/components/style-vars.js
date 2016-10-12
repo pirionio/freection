@@ -20,6 +20,8 @@ export default {
     greenCircleColor: 'green',
     yellowCircleColor: '#ffd200',
     greyCircleColor: '#646464',
+    
+    glassPaneColor: 'rgba(250, 250, 250, 0.5)',
 
     previewLineHeight: 1.571,
     mainAppPadding: 35,

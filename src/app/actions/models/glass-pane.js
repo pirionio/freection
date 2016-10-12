@@ -3,10 +3,11 @@ module.exports = {
     actions: [
         {
             name: 'show',
-            params: ['backdropCallback']
+            params: ['id', 'backdropCallback']
         },
         {
-            name: 'hide'
+            name: 'hide',
+            params: ['id']
         }
     ]
 }

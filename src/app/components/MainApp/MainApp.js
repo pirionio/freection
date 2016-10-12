@@ -4,6 +4,8 @@ import useSheet from 'react-jss'
 import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
 import ExpandedMessageBox from '../MessageBox/ExpandedMessageBox.js'
+import GlassPane from '../GlassPane/GlassPane'
+import {GlassPaneIds} from '../../constants'
 
 class MainApp extends Component {
     render () {
@@ -15,6 +17,7 @@ class MainApp extends Component {
                     {this.props.children}
                     <ExpandedMessageBox />
                 </Flexbox>
+                <GlassPane name={GlassPaneIds.MAIN_APP} />
             </Flexbox>
         )
     }
@@ -24,7 +27,8 @@ const style = {
     container: {
         minWidth: 0,
         padding: [styleVars.mainAppPadding, styleVars.mainAppPadding, 0, 0],
-        backgroundColor: styleVars.backgroundColor
+        backgroundColor: styleVars.backgroundColor,
+        position: 'relative'
     },
     content: {
         position: 'relative',
