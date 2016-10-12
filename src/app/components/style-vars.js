@@ -25,6 +25,7 @@ export default {
 
     previewLineHeight: 1.571,
     mainAppPadding: 35,
+    messageLetterSpacing: '0.025em',
 
     backZIndex: 10,
     toAutosuggestZIndex: 15,

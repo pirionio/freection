@@ -14,6 +14,7 @@ import clone from 'lodash/clone'
 import trimEnd from 'lodash/trimEnd'
 
 import Flexbox from '../UI/Flexbox'
+import styleVars from '../style-vars'
 
 class MessageBody extends Component {
     constructor(props) {
@@ -147,7 +148,7 @@ class MessageBody extends Component {
 const style = {
     containerBase: {
         lineHeight: 2,
-        letterSpacing: '0.025em',
+        letterSpacing: styleVars.messageLetterSpacing,
         position: 'relative',
         '& .draftJsMentionPlugin__mention__29BEd': {
             fontWeight: 'bold',

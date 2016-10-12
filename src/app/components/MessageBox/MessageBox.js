@@ -147,7 +147,7 @@ const style = {
         border: 'none',
         outline: 'none',
         resize: 'none',
-        letterSpacing: '0.025em'
+        letterSpacing: styleVars.messageLetterSpacing
     },
     bodyOnly: {
         height: 132

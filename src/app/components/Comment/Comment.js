@@ -103,7 +103,8 @@ const style = {
         color: styleVars.baseGrayColor
     },
     text: {
-        lineHeight: '1.5'
+        lineHeight: '2',
+        letterSpacing: styleVars.messageLetterSpacing
     }
 }
 
