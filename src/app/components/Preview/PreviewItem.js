@@ -189,7 +189,8 @@ const style = {
     },
     subject: {
         marginRight: 0,
-        minWidth: 0
+        minWidth: 0,
+        maxWidth: '100%'
     },
     text: {
         minWidth: 0
