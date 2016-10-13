@@ -1,7 +1,6 @@
 import {actions} from 'react-redux-form'
 import find from 'lodash/find'
 import last from 'lodash/last'
-import findIndex from 'lodash/findIndex'
 
 import MessageBoxActionsTypes from'./types/message-box-action-types'
 import {_newMessageBox, _selectMessageBox, _closeMessageBox, _setFocus } from './generated/message-box-actions'
@@ -28,20 +27,14 @@ export function selectMessageBox(currentMessageBox, selectedMessageBox) {
 
 export function closeMessageBox(messageBoxId) {
     return (dispatch, getState) => {
-        const {messagePanel} = getState()
-
-        // We need to select the new active message box, only if the closed one if the currently active one.
-        // First try to set the active one to the next one, if none exists (since the user closed the last message box),
-        // set the previous one as the active, and as last resort set none as the active.
-        if (messagePanel.activeMessageBoxId === messageBoxId) {
-            const messageBoxIndex = findIndex(messagePanel.messageBoxes, {id: messageBoxId})
-            const next = messageBoxIndex + 1 < messagePanel.messageBoxes.length ? messagePanel.messageBoxes[messageBoxIndex + 1] : null
-            const prev = messageBoxIndex - 1 >= 0 ? messagePanel.messageBoxes[messageBoxIndex - 1] : null
-            const newActiveMessageBox = next || prev || {}
-            dispatch(selectMessageBox(messageBoxId, newActiveMessageBox))
-        }
-
         dispatch(_closeMessageBox(messageBoxId))
+
+        // It might be that the closed message box that had been closed was the active one.
+        // In this case, we have to let the message box state know that a different box is now active instead.
+        const {messagePanel} = getState()
+        if (messagePanel.activeMessageBoxId !== messageBoxId) {
+            dispatch(actions.change('messageBox', getActiveMessageBox(messagePanel)))
+        }
     }
 }
 

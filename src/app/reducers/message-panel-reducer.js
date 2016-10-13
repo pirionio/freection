@@ -1,4 +1,5 @@
 import uniqueId from 'lodash/uniqueId'
+import findIndex from 'lodash/findIndex'
 
 import MessageBoxActionTypes from '../actions/types/message-box-action-types'
 import immutable from '../util/immutable'
@@ -45,6 +46,7 @@ function getMessageBoxTitle(action) {
 function closeMessageBox(state, action) {
     return immutable(state)
         .arrayReject('messageBoxes', {id: action.messageBoxId})
+        .set('activeMessageBoxId', determineActive(state, action.messageBoxId))
         .value()
 }
 
@@ -69,7 +71,7 @@ function messageSent(state, action) {
 
             return immutable(state)
                 .arrayReject('messageBoxes', {id: action.messageBoxId})
-                .set('activeMessageBoxId', state.messageBoxes.length > 1 ? state.messageBoxes[1].id : null)
+                .set('activeMessageBoxId', determineActive(state, action.messageBoxId))
                 .value()
         default:
             return state
@@ -80,6 +82,20 @@ function setFocus(state, action) {
     return immutable(state)
         .arrayMergeItem('messageBoxes', {id: action.messageBoxId}, {focusOn: action.focusOn})
         .value()
+}
+
+function determineActive(state, messageBoxId) {
+    if (messageBoxId !== state.activeMessageBoxId)
+        return state.activeMessageBoxId
+
+    const activeIndex = findIndex(state.messageBoxes, {id: state.activeMessageBoxId})
+    const next = activeIndex + 1 < state.messageBoxes.length ? state.messageBoxes[activeIndex + 1] : null
+    const prev = activeIndex - 1 >= 0 ? state.messageBoxes[activeIndex - 1] : null
+    if (next)
+        return next.id
+    if (prev)
+        return prev.id
+    return null
 }
 
 export default (state = initialState, action) => {
