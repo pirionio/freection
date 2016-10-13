@@ -5,6 +5,7 @@ import useSheet from 'react-jss'
 import keys from 'lodash/keys'
 import groupBy from 'lodash/groupBy'
 
+import * as ThingHelper from '../../helpers/thing-helper'
 import Link from '../UI/Link'
 import Flexbox from '../UI/Flexbox'
 import Ellipse from '../UI/Ellipse'
@@ -43,7 +44,7 @@ class NavigationMenu extends Component {
     getWhatsNewCount() {
         const {config} = this.props
 
-        const unreadThingsCount = keys(groupBy(this.props.newNotifications, 'thing.id')).length
+        const unreadThingsCount = ThingHelper.groupNotificationsByThing(this.props.newNotifications).length
         const unreadEmailsCount = keys(groupBy(this.props.newEmails, 'payload.threadId')).length
 
         return config.isDemo ? unreadThingsCount : unreadThingsCount + unreadEmailsCount

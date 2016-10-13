@@ -5,8 +5,8 @@ import useSheet from 'react-jss'
 import orderBy from 'lodash/orderBy'
 import {chain} from 'lodash/core'
 
+import Flexbox from '../../UI/Flexbox'
 import * as AllThingsActions from '../../../actions/all-things-actions'
-import Page from '../../UI/Page'
 import styleVars from '../../style-vars'
 import PreviewsContainer from '../../Preview/PreviewsContainer'
 import AllThingsPreviewItem from './AllThingsPreviewItem'
@@ -41,13 +41,6 @@ class AllThings extends Component {
         return chain(thing.events).map('createdAt').max().value()
     }
 
-    getTitle() {
-        if (this.props.things.length > 0)
-            return `Freection (${this.props.things.length}) - All Things`
-
-        return 'Freection - All Things'
-    }
-
     getNoPreviews() {
         return {
             texts: [
@@ -62,20 +55,20 @@ class AllThings extends Component {
         const {invalidationStatus, sheet: {classes}} = this.props
 
         return (
-            <Page title={this.getTitle()} className={classes.page}>
+            <Flexbox name="all-things-container" grow={1} container="column" className={classes.container}>
                 <PreviewsContainer previewItems={this.getAllThings()}
                                    fetchPreviews={this.fetchAllThings}
                                    noPreviews={this.getNoPreviews()}
                                    invalidationStatus={invalidationStatus}>
                     {this.props.children}
                 </PreviewsContainer>
-            </Page>
+            </Flexbox>
         )
     }
 }
 
 const style = {
-    page: {
+    container: {
         position: 'relative'
     }
 }

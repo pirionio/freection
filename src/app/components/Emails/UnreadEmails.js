@@ -13,7 +13,6 @@ import toPairs from 'lodash/toPairs'
 
 import * as PreviewHelper from '../../helpers/preview-helper'
 import * as EmailActions from '../../actions/email-actions'
-import Page from '../UI/Page'
 import Flexbox from '../UI/Flexbox'
 import PreviewsContainer from '../Preview/PreviewsContainer'
 import EmailPreviewItem from './EmailPreviewItem'
@@ -23,14 +22,6 @@ class UnreadEmails extends Component {
     constructor(props) {
         super(props)
         classAutobind(this, UnreadEmails.prototype)
-    }
-
-    getTitle() {
-        // TODO: should we return the aggregated number instead?
-        if (this.props.emails.length > 0)
-            return `Freection (${this.props.emails.length}) - Unread Emails`
-
-        return 'Freection - Unread Emails'
     }
 
     fetchUnreadEmails() {
@@ -105,14 +96,14 @@ class UnreadEmails extends Component {
         const {invalidationStatus} = this.props
 
         return (
-            <Page title={this.getTitle()}>
+            <Flexbox name="unread-emails-container" grow={1} container="column">
                 <PreviewsContainer previewItems={this.getEmailRows()}
                                    fetchPreviews={this.fetchUnreadEmails}
                                    noPreviews={this.getNoPreviews()}
                                    invalidationStatus={invalidationStatus}>
                     {this.props.children}
                 </PreviewsContainer>
-            </Page>
+            </Flexbox>
         )
     }
 }

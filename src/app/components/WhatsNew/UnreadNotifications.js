@@ -3,26 +3,18 @@ import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
 import useSheet from 'react-jss'
 import classNames from 'classnames'
-import groupBy from 'lodash/groupBy'
-import first from 'lodash/first'
-import last from 'lodash/last'
-import merge from 'lodash/merge'
-import reject from 'lodash/reject'
-import forOwn from 'lodash/forOwn'
-import clone from 'lodash/clone'
 import isEmpty from 'lodash/isEmpty'
 import toPairs from 'lodash/toPairs'
 import {chain} from 'lodash/core'
 
+import * as ThingHelper from '../../helpers/thing-helper'
 import Flexbox from '../UI/Flexbox'
-import Page from '../UI/Page'
 import styleVars from '../style-vars'
 import PreviewsContainer from '../Preview/PreviewsContainer'
 import NotificationPreviewItem from './NotificationPreviewItem'
 import GithubPreviewItem from './GithubPreviewItem'
 import * as PreviewHelper from '../../helpers/preview-helper'
 import * as WhatsNewActions from '../../actions/whats-new-actions'
-import EventTypes from '../../../common/enums/event-types'
 import EntityTypes from '../../../common/enums/entity-types'
 
 class WhatsNew extends Component {
@@ -38,44 +30,10 @@ class WhatsNew extends Component {
 
     getNotificationRows() {
         const {notifications} = this.props
-        const notificationsByThing = groupBy(notifications, notification => notification.thing.id)
-
-        const aggregatedNotifications = []
-
-        // We want to aggregate notifications that belong to the very same thing. That's why we grouped them according to Thing.
-        forOwn(notificationsByThing, thingNotifications => {
-            const commentNotifications = chain(thingNotifications)
-                .filter(notification => [EventTypes.CREATED.key, EventTypes.COMMENT.key, EventTypes.MENTIONED.key]
-                    .includes(notification.eventType.key))
-                .sortBy('createdAt')
-                .value()
-            const oldest = first(commentNotifications)
-            const newest = last(commentNotifications)
-
-            // Notice below how the createdAt field will be taken from the newest comment we found.
-            // That's because if indeed many comments arrived, we'd like the final aggregated notification to be ordered among all other notifications
-            // based on the last comment that arrived. The text, however, of the notification, will be that of the FIRST comment that arrived.
-            if (oldest) {
-                aggregatedNotifications.push(merge(clone(oldest), {
-                    payload: {
-                        newNotifications: commentNotifications
-                    },
-                    createdAt: newest ? newest.createdAt : oldest.createdAt
-                }))
-            }
-
-            // Here we add the rest of the notifications.
-            aggregatedNotifications.push(...reject(thingNotifications, notification =>
-                [EventTypes.CREATED.key, EventTypes.COMMENT.key, EventTypes.MENTIONED.key].includes(notification.eventType.key)
-            ))
-        })
-
-        if (!aggregatedNotifications || !aggregatedNotifications.length)
-            return []
-
+        const aggregatedNotifications = ThingHelper.groupNotificationsByThing(notifications)
         return this.groupNotificationsByDate(aggregatedNotifications)
     }
-    
+
     groupNotificationsByDate(aggregatedNotifications) {
         const {sheet: {classes}} = this.props
 
@@ -103,14 +61,6 @@ class WhatsNew extends Component {
             <NotificationPreviewItem notification={notification} key={notification.id} />
     }
 
-    getTitle() {
-        // TODO: should we return the aggregated number instead?
-        if (this.props.notifications.length > 0)
-            return `Freection (${this.props.notifications.length}) - What's New?`
-
-        return 'Freection - What\'s New?'
-    }
-
     getNoPreviews() {
         return {
             texts: [
@@ -123,16 +73,16 @@ class WhatsNew extends Component {
 
     render () {
         const {invalidationStatus} = this.props
-        
+
         return (
-            <Page title={this.getTitle()}>
+            <Flexbox name="unread-notifications-container" grow={1} container="column">
                 <PreviewsContainer previewItems={this.getNotificationRows()}
                                    fetchPreviews={this.fetchWhatsNew}
                                    noPreviews={this.getNoPreviews()}
                                    invalidationStatus={invalidationStatus}>
                     {this.props.children}
                 </PreviewsContainer>
-            </Page>
+            </Flexbox>
         )
     }
 }

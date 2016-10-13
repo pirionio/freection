@@ -1,11 +1,14 @@
 import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import useSheet from 'react-jss'
+import classAutobind from 'class-autobind'
 import Favicon from 'react-favicon'
 
+import * as ThingHelper from '../../helpers/thing-helper'
 import Flexbox from '../UI/Flexbox'
 import SideBar from '../SideBar/SideBar'
 import Login from '../Login/Login'
+import Page from '../UI/Page'
 import GlassPane from '../GlassPane/GlassPane'
 import {GlassPaneIds} from '../../constants'
 import * as PushService from '../../services/push-service'
@@ -17,6 +20,11 @@ import * as ChromeExtensionActions from '../../actions/chrome-extension-actions'
 // import EmailLifecycleService from '../../services/email-lifecycle-service'
 
 class App extends Component {
+    constructor(props) {
+        super(props)
+        classAutobind(this, App.prototype)
+    }
+
     componentDidMount() {
         const {currentUser, dispatch} = this.props
 
@@ -42,19 +50,27 @@ class App extends Component {
         }, false)
     }
 
+    getTitle() {
+        const {newNotifications} = this.props
+        const notificationsPerThing = ThingHelper.groupNotificationsByThing(newNotifications)
+        return notificationsPerThing && notificationsPerThing.length ? `Freection (${notificationsPerThing.length})` : 'Freection'
+    }
+    
     render () {
         const {currentUser, sheet: {classes}} = this.props
 
         if (currentUser.isAuthenticated) {
             return (
-                <Flexbox name="root" container="row" className={classes.container}>
-                    <Favicon url={FaviconLogo} />
-                    <SideBar currentUser={currentUser} />
-                    <Flexbox name="app-section" grow={1} container="column">
-                        {this.props.children}
+                <Page title={this.getTitle()} className={classes.page}>
+                    <Flexbox name="root" container="row" className={classes.container}>
+                        <Favicon url={FaviconLogo} />
+                        <SideBar currentUser={currentUser} />
+                        <Flexbox name="app-section" grow={1} container="column">
+                            {this.props.children}
+                        </Flexbox>
+                        <GlassPane name={GlassPaneIds.WHOLE_APP} />
                     </Flexbox>
-                    <GlassPane name={GlassPaneIds.WHOLE_APP} />
-                </Flexbox>
+                </Page>
             )
         }
 
@@ -68,21 +84,26 @@ class App extends Component {
 }
 
 const style = {
-    container: {
+    page: {
         height: '100%',
         position: 'relative'
+    },
+    container: {
+        height: '100%'
     }
 }
 
 App.propTypes = {
     currentUser: PropTypes.object.isRequired,
-    config: PropTypes.object.isRequired
+    config: PropTypes.object.isRequired,
+    newNotifications: PropTypes.array.isRequired
 }
 
 const mapStateToProps = state => {
     return {
         currentUser: state.auth,
-        config: state.config
+        config: state.config,
+        newNotifications: state.whatsNew.notifications
     }
 }
 

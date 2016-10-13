@@ -4,7 +4,7 @@ import orderBy from 'lodash/orderBy'
 import classAutobind from 'class-autobind'
 import useSheet from 'react-jss'
 
-import Page from '../UI/Page'
+import Flexbox from '../UI/Flexbox'
 import PreviewsContainer from '../Preview/PreviewsContainer'
 import styleVars from '../style-vars'
 import * as  FollowUpsActions from '../../actions/follow-up-actions'
@@ -33,13 +33,6 @@ class FollowUp extends Component {
         })
     }
 
-    getTitle() {
-        if (this.props.things.length > 0)
-            return `Freection (${this.props.things.length}) - Follow Up`
-
-        return 'Freection - Follow Up'
-    }
-
     getNoPreviews() {
         return {
             texts: [
@@ -54,7 +47,7 @@ class FollowUp extends Component {
         const {invalidationStatus, sheet: {classes}} = this.props
 
         return (
-            <Page title={this.getTitle()} className={classes.page}>
+            <Flexbox name="follow-ups-container" grow={1} container="column" className={classes.container}>
                 <PreviewsContainer previewItems={this.getThingsToFollowUp()}
                                    fetchPreviews={this.fetchFollowUps}
                                    noPreviews={this.getNoPreviews()}
@@ -62,13 +55,13 @@ class FollowUp extends Component {
                     {this.props.children}
 
                 </PreviewsContainer>
-            </Page>
+            </Flexbox>
         )
     }
 }
 
 const style = {
-    page: {
+    container: {
         position: 'relative'
     }
 }

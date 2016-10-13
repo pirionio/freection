@@ -4,7 +4,7 @@ import orderBy from 'lodash/orderBy'
 import classAutobind from 'class-autobind'
 import useSheet from 'react-jss'
 
-import Page from '../UI/Page'
+import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
 import PreviewsContainer from '../Preview/PreviewsContainer'
 import * as ToDoActions from '../../actions/to-do-actions'
@@ -36,13 +36,6 @@ class ToDo extends Component {
         })
     }
 
-    getTitle() {
-        if (this.props.things.length > 0)
-            return `Freection (${this.props.things.length}) - To Do`
-
-        return 'Freection - To Do'
-    }
-
     getNoPreviews() {
         return {
             texts: [
@@ -57,20 +50,20 @@ class ToDo extends Component {
         const {invalidationStatus, sheet: {classes}} = this.props
         
         return (
-            <Page title={this.getTitle()} className={classes.page}>
+            <Flexbox name="todo-container" grow={1} container="column" className={classes.container}>
                 <PreviewsContainer previewItems={this.getThingsToDo()}
                                    fetchPreviews={this.fetchToDo}
                                    noPreviews={this.getNoPreviews()}
                                    invalidationStatus={invalidationStatus}>
                     {this.props.children}
                 </PreviewsContainer>
-            </Page>
+            </Flexbox>
         )
     }
 }
 
 const style = {
-    page: {
+    container: {
         position: 'relative'
     }
 }

@@ -4,7 +4,7 @@ import orderBy from 'lodash/orderBy'
 import classAutobind from 'class-autobind'
 import useSheet from 'react-jss'
 
-import Page from '../UI/Page'
+import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
 import PreviewsContainer from '../Preview/PreviewsContainer'
 import * as MentionActions from '../../actions/mentions-actions'
@@ -27,13 +27,6 @@ class Mentions extends Component {
         })
     }
 
-    getTitle() {
-        if (this.props.things.length > 0)
-            return `Freection (${this.props.things.length}) - Mentioned`
-
-        return 'Freection - Mentioned'
-    }
-
     getNoPreviews() {
         return {
             texts: [
@@ -48,20 +41,20 @@ class Mentions extends Component {
         const {invalidationStatus, sheet: {classes}} = this.props
 
         return (
-            <Page title={this.getTitle()} className={classes.page}>
+            <Flexbox name="mentions-container" grow={1} container="column" className={classes.container}>
                 <PreviewsContainer previewItems={this.getMentionedThings()}
                                    fetchPreviews={this.fetchMentions}
                                    noPreviews={this.getNoPreviews()}
                                    invalidationStatus={invalidationStatus}>
                     {this.props.children}
                 </PreviewsContainer>
-            </Page>
+            </Flexbox>
         )
     }
 }
 
 const style = {
-    page: {
+    container: {
         position: 'relative'
     }
 }
