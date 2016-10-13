@@ -3,7 +3,7 @@ module.exports = {
     actions: [
         {
             name: 'get',
-            params: ['query'],
+            params: ['query', 'forCacheOnly'],
             type: 'get',
             path: '/api/contacts?query=${query}&max=6',
             completeParams: {
@@ -13,6 +13,10 @@ module.exports = {
         },
         {
             name: 'clear'
+        },
+        {
+            name: 'getFromCache',
+            params: ['query']
         }
     ]
 }

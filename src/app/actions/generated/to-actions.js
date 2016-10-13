@@ -2,12 +2,13 @@ import ToActionsTypes from '../types/to-action-types'
 import {ActionStatus} from '../../constants'
 import * as ResourceUtil from '../../util/resource-util'
 
-export function get(query) {
+export function get(query, forCacheOnly) {
     return dispatch => {
         dispatch({
             type: ToActionsTypes.GET, 
             status: ActionStatus.START,
-            query
+            query,
+            forCacheOnly
         })
         return ResourceUtil.get(`/api/contacts?query=${query}&max=6`)
             .then(result => dispatch({
@@ -19,7 +20,8 @@ export function get(query) {
             .catch(() => dispatch({
                 type: ToActionsTypes.GET, 
                 status: ActionStatus.ERROR,
-                query
+                query,
+                forCacheOnly
             }))
     }
 }
@@ -27,5 +29,12 @@ export function get(query) {
 export function clear() {
     return {
         type: ToActionsTypes.CLEAR        
+    }
+}
+
+export function getFromCache(query) {
+    return {
+        type: ToActionsTypes.GET_FROM_CACHE,
+        query
     }
 }

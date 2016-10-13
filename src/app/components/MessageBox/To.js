@@ -22,6 +22,18 @@ class To extends Component {
         this._fetchContactsTimeoutActive = false
     }
 
+    componentDidMount() {
+        const { dispatch } = this.props
+
+        if (!this.isCached('m') && !this.isPending('m')) {
+            dispatch(ToActions.get('m', true))
+        }
+
+        if (!this.isCached('me') && !this.isPending('me')) {
+            dispatch(ToActions.get('me', true))
+        }
+    }
+
     renderSuggestion(suggestion) {
         return (
             <span>{`${suggestion.displayName} <${suggestion.payload.email}>`}</span>
@@ -53,49 +65,52 @@ class To extends Component {
         }
     }
 
-    shouldFetchContacts(value) {
-        const {query, pendingQuery} = this.props
+    isCached(value) {
+        const {cache} = this.props
 
-        const valueLowered = value.toLowerCase()
+        return cache[value]
+    }
 
-        return (!isEmpty(valueLowered) &&
-            ((isEmpty(pendingQuery) && valueLowered !== query) || (!isEmpty(pendingQuery) && valueLowered !== pendingQuery)))
+    isPending(value) {
+        const {pendingQueries} = this.props
+
+        pendingQueries.includes(value)
+    }
+
+    cancelTimer() {
+        if (this._fetchContactsTimeoutActive) {
+            clearTimeout(this._timeoutId)
+            this._fetchContactsTimeoutActive = false
+        }
     }
 
     onSuggestionsFetchRequested(valueObject) {
-        const {dispatch} = this.props
+        const {dispatch, query} = this.props
 
         //Let's go and fetch the new contacts
-        const value = valueObject.value
+        const value = valueObject.value.toLowerCase()
 
-        if (this.shouldFetchContacts(value)) {
-
-            if (this._fetchContactsTimeoutActive) {
-                clearTimeout(this._timeoutId)
-            }
+        if (this.isCached(value)) {
+            this.cancelTimer()
+            dispatch(ToActions.getFromCache(value))
+        }
+        else if (query !== value && !this.isPending(value)) {
+            this.cancelTimer()
 
             this._fetchContactsTimeoutActive = true
             this._timeoutId = setTimeout(() => {
-
-                // we are checking again, as we might got a query back
-                if (this.shouldFetchContacts(value))
-                    dispatch(ToActions.get(value.toLowerCase()))
-
+                dispatch(ToActions.get(value))
                 this._fetchContactsTimeoutActive = false
             }, 200)
-        } else if (this._fetchContactsTimeoutActive) {
-            clearTimeout(this._timeoutId)
-            this._fetchContactsTimeoutActive = false
+        } else {
+            this.cancelTimer()
         }
     }
 
     onSuggestionsClearRequested() {
         const {dispatch} = this.props
 
-        if (this._fetchContactsTimeoutActive) {
-            clearTimeout(this._timeoutId)
-            this._fetchContactsTimeoutActive = false
-        }
+        this.cancelTimer()
 
         dispatch(ToActions.clear())
     }
@@ -158,10 +173,11 @@ const style = {
 
 To.propTypes = {
     contacts: PropTypes.array.isRequired,
-    currentUser: PropTypes.object.isRequired,
+    cache: PropTypes.object.isRequired,
+    pendingQueries: PropTypes.array.isRequired,
     value: PropTypes.string,
     query: PropTypes.string,
-    pendingQuery: PropTypes.string,
+    currentUser: PropTypes.object.isRequired,
     model: PropTypes.string.isRequired,
     containerClassName: PropTypes.string,
     inputClassName: PropTypes.string,
@@ -179,7 +195,8 @@ function mapStateToProps(state, {model}) {
     return {
         contacts: state.to.contacts,
         query: state.to.query,
-        pendingQuery: state.to.pendingQuery,
+        pendingQueries: state.to.pendingQueries,
+        cache: state.to.cache,
         currentUser: state.auth,
         value: get(state, model)
     }
