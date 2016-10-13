@@ -20,16 +20,20 @@ export function handlePost(request, response, action, options) {
 
     const params = getParams(request, options)
     const notFoundError = getNotFoundErrorMessage(options, user, params)
+    const illegalOperationError = getIllegalOperationErrorMessage(options, user, params)
     const generalError = getGeneralErrorMessage(options, user, params)
 
     action(user, ...params)
         .then(result => response.json(options.result ? result : {}))
         .catch(error => {
-            logger.error(generalError, error)
-
             if (error && error.name === 'DocumentNotFoundError' && notFoundError) {
+                logger.error(notFoundError, error)
                 response.status(404).send(notFoundError)
+            } else if (error === 'IllegalOperation' && illegalOperationError) {
+                logger.error(illegalOperationError, error)
+                response.status(400).send(illegalOperationError)
             } else {
+                logger.error(generalError, error)
                 response.status(500).send(`${generalError}: ${error.message}`)
             }
         })
@@ -47,6 +51,12 @@ function getParams(request, options) {
 function getNotFoundErrorMessage(options, user, params) {
     return options.errorTemplates && options.errorTemplates.notFound ?
         template(options.errorTemplates.notFound)(getTemplateOptions(options, user, params)) :
+        null
+}
+
+function getIllegalOperationErrorMessage(options, user, params) {
+    return options.errorTemplates && options.errorTemplates.illegalOperation ?
+        template(options.errorTemplates.illegalOperation)(getTemplateOptions(options, user, params)) :
         null
 }
 

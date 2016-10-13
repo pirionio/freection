@@ -57,7 +57,7 @@ router.post('/:type/:thingId/do', (request, response) => {
         result: false,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
-            IllegalOperation: getIllegalOperationErrorTemplate(),
+            illegalOperation: getIllegalOperationErrorTemplate(),
             general: 'Could not save user ${user} as a doer of thing ${thingId}'
         }
     })
@@ -70,7 +70,7 @@ router.post('/:type/:thingId/dismiss', (request, response) => {
         result: false,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
-            IllegalOperation: getIllegalOperationErrorTemplate(),
+            illegalOperation: getIllegalOperationErrorTemplate(),
             general: 'Could not dismiss thing ${thingId} by user user ${user}'
         }
     })
@@ -83,7 +83,7 @@ router.post('/:thingId/done', (request, response) => {
         result: false,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
-            IllegalOperation: getIllegalOperationErrorTemplate(),
+            illegalOperation: getIllegalOperationErrorTemplate(),
             general: 'Could not mark thing ${thingId} as done by user user ${user}'
         }
     })
@@ -96,7 +96,7 @@ router.post('/:type/:thingId/close', (request, response) => {
         result: false,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
-            IllegalOperation: getIllegalOperationErrorTemplate(),
+            illegalOperation: getIllegalOperationErrorTemplate(),
             general: 'Could not close thing ${thingId} by user user ${user}'
         }
     })
@@ -120,7 +120,7 @@ router.post('/:thingId/sendback', (request, response) => {
         result: false,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
-            IllegalOperation: getIllegalOperationErrorTemplate(),
+            illegalOperation: getIllegalOperationErrorTemplate(),
             general: 'Could not send back thing ${thingId} by user user ${user}'
         }
     })
@@ -132,7 +132,7 @@ router.post('/:thingId/ping', (request, response) => {
         result: true,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
-            IllegalOperation: getIllegalOperationErrorTemplate(),
+            illegalOperation: getIllegalOperationErrorTemplate(),
             general: 'Could not ping thing ${thingId} by user user ${user}'
         }
     })
@@ -145,7 +145,7 @@ router.post('/:thingId/pong', (request, response) => {
         result: false,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
-            IllegalOperation: getIllegalOperationErrorTemplate(),
+            illegalOperation: getIllegalOperationErrorTemplate(),
             general: 'Could not pong thing ${thingId} by user user ${user}'
         }
     })
