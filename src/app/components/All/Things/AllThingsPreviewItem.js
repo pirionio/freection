@@ -31,7 +31,7 @@ class AllThingsPreviewItem extends Component {
     getStatusText() {
         const {thing, currentUser} = this.props
 
-        if (thing.isSelf)
+        if (thing.isSelf && thing.creator.id === currentUser.id)
             return <strong>Sent to myself</strong>
 
         if (thing.creator.id === currentUser.id)
