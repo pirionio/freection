@@ -160,6 +160,9 @@ class ExpandedMessageBox extends Component {
                 promise = dispatch(ThingCommandActions.comment(activeMessageBox.context.id, messageBox.message.body))
                 shouldClose = false
                 break
+            case MessageTypes.THING_ACTION.key:
+                promise = messageBox.action(messageBox.message.body)
+                break
         }
 
         dispatch(MessageBoxActions.messageSent(activeMessageBox.id, shouldClose, promise))
