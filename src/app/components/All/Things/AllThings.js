@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
 import useSheet from 'react-jss'
 import orderBy from 'lodash/orderBy'
+import {chain} from 'lodash/core'
 
 import * as AllThingsActions from '../../../actions/all-things-actions'
 import Page from '../../UI/Page'
@@ -25,7 +26,7 @@ class AllThings extends Component {
     }
 
     getAllThings() {
-        return orderBy(this.props.things, 'createdAt', 'desc').map(thing => {
+        return orderBy(this.props.things, this.getThingUpdateDate, 'desc').map(thing => {
             if (thing.type.key === EntityTypes.GITHUB.key) {
                 return <GithubPreviewItem thing={thing} key={thing.id} />
             } else if (thing.type.key === EntityTypes.EMAIL_THING.key) {
@@ -34,6 +35,10 @@ class AllThings extends Component {
 
             return <AllThingsPreviewItem thing={thing} key={thing.id} />
         })
+    }
+
+    getThingUpdateDate(thing) {
+        return chain(thing.events).map('createdAt').max().value()
     }
 
     getTitle() {
