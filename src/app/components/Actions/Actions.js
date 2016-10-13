@@ -38,13 +38,14 @@ export function CloseAction(thing, currentUser, options={}) {
         component: <Action label="Close" doFunc={ThingCommandActions.close} preDoFunc={options.preDoFunc}
                            item={thing} disabled={options.disabled} key="action-Close" />,
         show: currentUser && currentUser.id === thing.creator.id &&
-            [ThingStatus.DONE.key, ThingStatus.DISMISS.key, ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key].includes(thing.payload.status)
+            [ThingStatus.DONE.key, ThingStatus.DISMISS.key, ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key].includes(thing.payload.status) &&
+            !thing.isSelf
     }
 }
 
 export function SendBackAction(thing, currentUser, options={}) {
     return {
-        component: <Action label="SendBack" doFunc={ThingCommandActions.sendBack} preDoFunc={options.preDoFunc}
+        component: <Action label="Send Back" doFunc={ThingCommandActions.sendBack} preDoFunc={options.preDoFunc}
                            item={thing} disabled={options.disabled} key="action-SendBack" />,
         show: currentUser.id === thing.creator.id &&
             [ThingStatus.DONE.key, ThingStatus.DISMISS.key].includes(thing.payload.status)

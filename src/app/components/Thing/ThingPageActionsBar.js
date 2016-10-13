@@ -30,7 +30,7 @@ class ThingPageActionsBar extends Component {
 
         const actions = [
             DoAction(thing, currentUser, this.isDisabled()),
-            DoneAction(thing, currentUser, {disabled: this.isDisabled(), preDoFunc: this.generatePreDoFunc('Done')}),
+            DoneAction(thing, currentUser, {disabled: this.isDisabled(), preDoFunc: !thing.isSelf ? this.generatePreDoFunc('Done') : undefined}),
             DismissAction(thing, currentUser, {disabled: this.isDisabled(), preDoFunc: this.generatePreDoFunc('Dismiss')}),
             SendBackAction(thing, currentUser, {disabled: this.isDisabled(), preDoFunc: this.generatePreDoFunc('Send Back')}),
             CloseAction(thing, currentUser, {
