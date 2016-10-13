@@ -52,6 +52,11 @@ class NotificationActionsBar extends Component {
         return !notification.thing.isDoer
     }
 
+    showDiscardDone() {
+        const {notification} = this.props
+        return !notification.thing.isDoer
+    }
+
     render() {
         const {notification, currentUser, preDoFunc} = this.props
 
@@ -82,6 +87,9 @@ class NotificationActionsBar extends Component {
         const discardClosedAction = DiscardNotificationAction(notification, EventTypes.CLOSED)
         discardClosedAction.show = discardClosedAction.show && this.showDiscardClosed()
 
+        const discardDoneAction = DiscardNotificationAction(notification, EventTypes.DONE)
+        discardDoneAction.show = discardDoneAction.show && this.showDiscardDone()
+
         const actions = [
             doAction,
             doneAction,
@@ -93,6 +101,7 @@ class NotificationActionsBar extends Component {
             joinMention,
             discardSentBackAction,
             discardClosedAction,
+            discardDoneAction,
             DiscardCommentsAction(notification),
             DiscardNotificationAction(notification, EventTypes.PING),
             DiscardNotificationAction(notification, EventTypes.PONG),
