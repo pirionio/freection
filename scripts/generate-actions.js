@@ -3,21 +3,24 @@ const models = require('../src/app/actions/models')
 const {camelCase, snakeCase, toUpper, repeat,
     upperFirst, kebabCase, isFunction, toPairs, some} = require('lodash')
 
+const isWin = /^win/.test(process.platform)
+const EOL = isWin ? '\r\n' : '\n'
+
 function generateActionsCode(model) {
     const actionsFileName = getActionsFilename(model.name)
     const actionsPath = `./src/app/actions/generated/${actionsFileName}.js`
 
     const actionsCode = model.actions.map(action => {
         if (isFunction(action)) {
-            return action.toString() + '\r\n'
+            return action.toString() + EOL
         }
         else if (action.type === 'post' || action.type === 'get')
             return generateAsyncActionCode(model.name, action)
         else
             return generateActionCode(model.name, action)
-    }).join('\r\n')
+    }).join(EOL)
 
-    const code = generateRequireCode(model) + '\r\n' + actionsCode
+    const code = generateRequireCode(model) + EOL + actionsCode
 
     fs.writeFileSync(actionsPath, code)
 }
@@ -27,11 +30,11 @@ function generateRequireCode(model) {
 
     const trackEnabled = some(model.actions, action => !!action.track)
 
-    return `import ${getTypesVariable(model.name)} from '../types/${getTypesFilename(model.name)}'\r\n` +
-            `import {ActionStatus} from '../../constants'\r\n` +
-            `import * as ResourceUtil from '../../util/resource-util'\r\n` +
-            (trackEnabled ? `import * as analytics from '../../util/analytics'\r\n` : '') +
-            toPairs(requires).map(_require => `import ${_require[0]} from '${_require[1]}'\r\n`).join('')
+    return `import ${getTypesVariable(model.name)} from '../types/${getTypesFilename(model.name)}'${EOL}` +
+            `import {ActionStatus} from '../../constants'${EOL}` +
+            `import * as ResourceUtil from '../../util/resource-util'${EOL}` +
+            (trackEnabled ? `import * as analytics from '../../util/analytics'${EOL}` : '') +
+            toPairs(requires).map(_require => `import ${_require[0]} from '${_require[1]}'${EOL}`).join('')
 }
 
 function generateActionCode(modelName, action) {
@@ -39,14 +42,14 @@ function generateActionCode(modelName, action) {
     const functionName = getFunctionName(action)
     const typeName = `${getTypesVariable(modelName)}.${getTypeName(actionName)}`
     const params = action.params ? action.params : []
-    const restOfParamsComma = params.length > 0 ? ',\r\n' : ''
+    const restOfParamsComma = params.length > 0 ? `,${EOL}` : ''
 
-    return `export function ${functionName}(${params.join()}) {\r\n` +
-            `    return {\r\n` +
+    return `export function ${functionName}(${params.join()}) {${EOL}` +
+            `    return {${EOL}` +
             `        type: ${typeName}${restOfParamsComma}` +
-            `        ${params.join(',\r\n        ')}\r\n` +
-            `    }\r\n` +
-            '}\r\n'
+            `        ${params.join(`,${EOL}        `)}${EOL}` +
+            `    }${EOL}` +
+            `}${EOL}`
 }
 
 function generateAsyncActionCode(modelName, action) {
@@ -58,38 +61,38 @@ function generateAsyncActionCode(modelName, action) {
     const params = action.params ? action.params : []
     const completeParams = action.completeParams ?
         pairsToStrings(action.completeParams) : params
-    const restOfParamsComma = params.length > 0 ? ',\r\n' : ''
-    const restOfCompleteParamsComma = completeParams.length > 0 ? ',\r\n' : ''
+    const restOfParamsComma = params.length > 0 ? `,${EOL}` : ''
+    const restOfCompleteParamsComma = completeParams.length > 0 ? `,${EOL}` : ''
     const body = action.body ? `, ${generateBody( action.body, 3)}` : ''
 
-    return `export function ${functionName}(${params.join(', ')}) {\r\n` +
-        `    return dispatch => {\r\n` +
+    return `export function ${functionName}(${params.join(', ')}) {${EOL}` +
+        `    return dispatch => {${EOL}` +
         getAnalyticsCode(action) +
-        `        dispatch({\r\n` +
-        `            type: ${typeName}, \r\n` +
+        `        dispatch({${EOL}` +
+        `            type: ${typeName}, ${EOL}` +
         `            status: ActionStatus.START${restOfParamsComma}` +
-        `            ${params.join(',\r\n            ')}\r\n` +
-        `        })\r\n` +
-        `        return ResourceUtil.${method}(\`${postPath}\`${body})\r\n` +
-        `            .then(result => dispatch({\r\n` +
-        `                type: ${typeName}, \r\n` +
+        `            ${params.join(`,${EOL}            `)}${EOL}` +
+        `        })${EOL}` +
+        `        return ResourceUtil.${method}(\`${postPath}\`${body})${EOL}` +
+        `            .then(result => dispatch({${EOL}` +
+        `                type: ${typeName}, ${EOL}` +
         `                status: ActionStatus.COMPLETE${restOfCompleteParamsComma}` +
-        `                ${completeParams.join(',\r\n                ')}\r\n` +
-        `            }))\r\n` +
-        `            .catch(() => dispatch({\r\n` +
-        `                type: ${typeName}, \r\n` +
+        `                ${completeParams.join(`,${EOL}                `)}${EOL}` +
+        `            }))${EOL}` +
+        `            .catch(() => dispatch({${EOL}` +
+        `                type: ${typeName}, ${EOL}` +
         `                status: ActionStatus.ERROR${restOfParamsComma}` +
-        `                ${params.join(',\r\n                ')}\r\n` +
-        `            }))\r\n` +
-        `    }\r\n` +
-        `}\r\n`
+        `                ${params.join(`,${EOL}                `)}${EOL}` +
+        `            }))${EOL}` +
+        `    }${EOL}` +
+        `}${EOL}`
 }
 
 function getAnalyticsCode(action) {
     if (action.track) {
         const params = action.trackParams ? action.trackParams.join(', ') : ''
 
-        return `        analytics.${action.track}(${params})\r\n\r\n`
+        return `        analytics.${action.track}(${params})${EOL}${EOL}`
     }
 
     return ''
@@ -102,11 +105,11 @@ function pairsToStrings(params) {
 function generateBody(body, indent) {
     const space = repeat(' ', indent * 4)
     const innerSpace = repeat(' ', (indent+1) * 4)
-    const seperator = `,\r\n${innerSpace}`
+    const seperator = `,${EOL}${innerSpace}`
 
-    return `{\r\n${innerSpace}` +
+    return `{${EOL}${innerSpace}` +
         pairsToStrings(body).join(seperator) +
-        `\r\n${space}}`
+        `${EOL}${space}}`
 }
 
 function getFunctionName(action) {
@@ -134,11 +137,11 @@ function generateTypesCode(model) {
     const typesFileName = getTypesFilename(model.name)
     const typesPath =  `./src/app/actions/types/${typesFileName}.js`
 
-    const code = `export default {\r\n` +
+    const code = `export default {${EOL}` +
         `    ${model.actions.map(action => {
             const typeName = getTypeName(action.name)
             return `${typeName}: '${modelName}_${typeName}'`
-        }).join(',\r\n    ')}\r\n` +
+        }).join(`,${EOL}    `)}${EOL}` +
         '}'
 
     fs.writeFileSync(typesPath, code)
