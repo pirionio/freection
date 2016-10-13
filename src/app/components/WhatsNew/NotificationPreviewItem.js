@@ -17,6 +17,9 @@ class NotificationPreviewItem extends Component {
     getTextElement() {
         const {notification, sheet: {classes}} = this.props
 
+        if (!notification.payload.text && notification.eventType.key !== EventTypes.PING.key)
+            return null
+
         let text = null
 
         if (notification.eventType.key === EventTypes.PING.key)
