@@ -212,13 +212,29 @@ function asyncStatusOperation(state, action, status) {
             return immutable(state)
                 .touch('thing')
                 .touch('thing.payload')
-                .set('thing.payload.status',  status)
+                .set('thing.payload.status', currentStatus => updateStatus(currentStatus, status))
                 .set('ongoingAction', false)
                 .value()
         case ActionStatus.ERROR:
         default:
             return state
     }
+}
+
+function updateStatus(currentStatus, newStatus) {
+    // TODO An aleternative to the following approach would be to get the Thing with its correct status in every async action against the server,
+    // and then update the status here according to that result.
+    // This is not done right now because many actions in the server return an event, and not the thing.
+    // Getting the status from the event is not straight-forward.
+    // We can change these server actions so that they'd return the thing.
+
+    // We don't update the status in case it is CLOSED, because:
+    // 1) This is our flow - there's no way back from CLOSED.
+    // 2) More importantly, when the user clicks DONE on a self-assigned Thing, the server would change its status to Done and then Closed.
+    // This reducer will get both server notifications, and update the status to Closed.
+    // But in addition to that, this reducer will get the result of the actual call of the Done click asynchronously - after the two server
+    // notifications. It will then change the status back to Done (as implied by the result of clicking Done).
+    return currentStatus === ThingStatus.CLOSE.key ? currentStatus : newStatus
 }
 
 export default (state = initialState, action) => {

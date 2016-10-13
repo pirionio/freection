@@ -20,7 +20,7 @@ class Immutable {
     }
 
     set(path, value) {
-        set(this._object, path, value)
+        set(this._object, path, getItemValue(get(this._object, path), value))
 
         return this
     }
