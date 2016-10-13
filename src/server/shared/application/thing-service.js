@@ -610,12 +610,12 @@ function validateType(thing) {
 
 async function getNewMentions(text, thing) {
     if (!text)
-        return Promise.resolve([])
+        return []
 
     const matches = text.match(SharedConstants.MENTION_REGEX)
 
     if (!matches || !matches.length)
-        return Promise.resolve([])
+        return []
 
     return Promise.all(chain(matches)
         .map(match => match.replace(/^\s*@/, ''))
@@ -636,7 +636,7 @@ async function getNewMentions(text, thing) {
 
 async function createMentionEvents(mentionedUsers, creator, thing, messageText) {
     Promise.all(mentionedUsers
-        .filter(mention => !!mention)
-        .map(mention => EventCreator.createMentioned(creator, thing, () => [mention.id], messageText))
+        .filter(mentionedUser => !!mentionedUser)
+        .map(mentionedUser => EventCreator.createMentioned(creator, thing, () => [mentionedUser.id], mentionedUser, messageText))
     )
 }
