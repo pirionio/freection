@@ -124,7 +124,7 @@ class FullItem extends  Component {
             <Flexbox name="full-item-content" grow={1} container="column" className={classes.item}>
                 <Flexbox name="full-item-header" shrink={0} container="column" className={classes.header}>
                     <Flexbox name="first-header-row" className={classes.subject}>
-                        <TextTruncate>{this.getSubject()}</TextTruncate>
+                        <TextTruncate tooltip={true}>{this.getSubject()}</TextTruncate>
                     </Flexbox>
                     <Flexbox name="second-header-row" container="row" justifyContent="flex-end" alignItems="center">
                         {status}

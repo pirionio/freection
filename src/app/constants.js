@@ -6,7 +6,8 @@ export const ActionStatus = {
 
 export const GeneralConstants = {
     FETCHING_DELAY_MILLIS: 1000,
-    ONGOING_ACTION_DELAY_MILLIS: 500
+    ONGOING_ACTION_DELAY_MILLIS: 500,
+    TOOLTIP_DELAY: 400
 }
 
 export const InvalidationStatus = {

@@ -15,11 +15,8 @@ import PreviewItemText from './PreviewItemText'
 
 const {PreviewItemActions, PreviewItemUser} = createSlots('PreviewItemActions', 'PreviewItemUser')
 
-const PreviewItemStatus = ({status, children}) => {
-    if (status)
-        return <span>{status}</span>
-
-    return <TextTruncate>{React.Children.only(children)}</TextTruncate>
+const PreviewItemStatus = ({children}) => {
+    return <TextTruncate tooltip={true}>{React.Children.only(children)}</TextTruncate>
 }
 
 PreviewItemStatus.propTypes = {

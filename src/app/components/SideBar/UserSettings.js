@@ -49,7 +49,7 @@ class UserSettings extends Component {
         return (
             <Flexbox name="settings" container="row" justifyContent="space-between" alignItems="center" className={classes.container}>
                 <span className={classes.user}>
-                    <TextTruncate><span>{currentUser.firstName}</span></TextTruncate>
+                    <TextTruncate tooltip={true}><span>{currentUser.firstName}</span></TextTruncate>
                 </span>
                 <Icon name={this.isOpen() ? 'chevron-down' : 'chevron-up'} onClick={this.toggleSettingsMenu} className={classes.menuButton} />
                 {settingsMenu}
