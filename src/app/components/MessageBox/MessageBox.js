@@ -39,7 +39,12 @@ class MessageBox extends Component {
             focusOn = this.hasSubject() ? this.messageSubject : this.messageBody
         }
 
-        focusOn && focusOn.focus && focusOn.focus()
+        // This timeout seems to be essential in order to make the focus of the draft-js, in the MessageBody, work.
+        // Here is an issue about it: https://github.com/draft-js-plugins/draft-js-plugins/issues/357.
+        // I guess there's something internal in the component that needs to be initialized before the focus occurs.
+        setTimeout(() => {
+            focusOn && focusOn.focus && focusOn.focus()
+        })
     }
 
     getSubject() {
