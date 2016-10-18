@@ -2,6 +2,7 @@ import React, {PropTypes} from 'react'
 import useSheet from 'react-jss'
 
 import Flexbox from '../../UI/Flexbox'
+import TextTruncate from '../../UI/TextTruncate'
 import styleVars from '../../style-vars'
 
 const MentionPreviewText = ({comment, newNotifications, sheet: {classes}}) => {
@@ -13,7 +14,7 @@ const MentionPreviewText = ({comment, newNotifications, sheet: {classes}}) => {
     return (
         <Flexbox container="row" alignItems="center">
             <Flexbox className={classes.text}>
-                {comment}
+                <TextTruncate className={classes.textTruncate}>{comment}</TextTruncate>
             </Flexbox>
             {unreadCount}
         </Flexbox>
@@ -27,7 +28,11 @@ const style = {
         fontSize: '0.85em'
     },
     text: {
-        display: 'inline-block'
+        minWidth: 0
+    },
+    textTruncate: {
+        display: 'inline-block',
+        width: '100%'
     }
 }
 
