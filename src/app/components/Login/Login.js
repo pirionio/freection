@@ -64,7 +64,7 @@ const style = {
         fontSize: '2.357em',
         letterSpacing: '0.05em',
         textTransform: 'uppercase',
-        fontFamily: 'Roboto thin',
+        fontWeight: '100',
         '& span': {
             display: 'block',
             marginBottom: 10
