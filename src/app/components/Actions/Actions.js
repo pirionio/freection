@@ -78,9 +78,9 @@ export function DiscardCommentsAction(notification) {
     }
 }
 
-export function DiscardNotificationAction(notification, eventType) {
+export function DiscardNotificationAction(notification, eventType, label = 'Discard') {
     return {
-        component: <Action label="Discard" doFunc={ThingCommandActions.discardSingleNotification} item={notification} key="action-Discard" />,
+        component: <Action label={label} doFunc={ThingCommandActions.discardSingleNotification} item={notification} key="action-Discard" />,
         show: notification.eventType.key === eventType.key
     }
 }
@@ -88,21 +88,41 @@ export function DiscardNotificationAction(notification, eventType) {
 export function JoinMention(thing) {
     return {
         component: <Action label="Join" doFunc={ThingCommandActions.joinMention} item={thing} key="action-Join" />,
-        show: thing.isMentioned && !thing.isSubscriber
+        show: !thing.isFollowUper && !thing.isSubscriber && (thing.isMentioned || thing.isCreator)
     }
 }
 
 export function LeaveMention(thing) {
     return {
         component: <Action label="Leave" doFunc={ThingCommandActions.leaveMention} item={thing} key="action-Leave" />,
-        show: thing.isMentioned && thing.isSubscriber
+        show: thing.isSubscriber && !thing.isCreator && !thing.isTo
     }
 }
 
 export function CloseAckAction(notification) {
     return {
         component: <Action label="Close" doFunc={ThingCommandActions.closeAck} item={notification.thing} key="action-Close" />,
-        show: notification.eventType.key === EventTypes.CLOSED.key
+        show: notification.thing.isDoer && notification.eventType.key === EventTypes.CLOSED.key
+    }
+}
+
+export function FollowUpAction(thing) {
+    return {
+        component: <Action label="Follow Up" doFunc={ThingCommandActions.followUp} item={thing} key="action-FollowUp" />,
+        show: !thing.isFollowUper && (thing.isCreator || thing.isMentioned)
+    }
+}
+
+export function UnfollowAction(thing, label = 'Unfollow') {
+
+    const canCreatorUnfollow  = (thing.isFollowUper && thing.isCreator &&
+        [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status))
+
+    const canFollowUpperUnfollow = (thing.isFollowUper && !thing.isCreator)
+
+    return {
+        component: <Action label={label} doFunc={ThingCommandActions.unfollow} item={thing} key="action-Unfollow" />,
+        show: canCreatorUnfollow || canFollowUpperUnfollow
     }
 }
 

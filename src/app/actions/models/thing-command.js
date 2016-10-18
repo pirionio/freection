@@ -151,6 +151,20 @@ module.exports = {
                 messageText: 'messageText'
             },
             track: 'sendback'
+        },
+        {
+            name: 'follow up',
+            params: ['thing'],
+            type: 'post',
+            path: '/api/things/${thing.id}/followup',
+            track: 'followup'
+        },
+        {
+            name: 'unfollow',
+            params: ['thing'],
+            type: 'post',
+            path: '/api/things/${thing.id}/unfollow',
+            track: 'unfollow'
         }
     ]
 }

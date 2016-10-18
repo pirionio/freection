@@ -2,9 +2,10 @@ import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 
 import EventTypes from '../../../common/enums/event-types'
+import ThingStatus from '../../../common/enums/thing-status'
 import ActionsBar from '../Actions/ActionsBar'
 import {DoAction, DoneAction, DismissAction, CloseAction, SendBackAction, DiscardCommentsAction, DiscardNotificationAction, CloseAckAction,
-    PongAction, JoinMention} from '../Actions/Actions'
+    PongAction, JoinMention, FollowUpAction, UnfollowAction} from '../Actions/Actions'
 
 class NotificationActionsBar extends Component {
     showDo() {
@@ -42,6 +43,26 @@ class NotificationActionsBar extends Component {
         return [EventTypes.MENTIONED.key, EventTypes.SENT_BACK.key].includes(notification.eventType.key)
     }
 
+    showFollowUp() {
+        const {notification} = this.props
+        return [EventTypes.MENTIONED.key, EventTypes.SENT_BACK.key].includes(notification.eventType.key)
+    }
+
+    showUnfollow() {
+        const {notification} = this.props
+        return [EventTypes.DONE.key, EventTypes.DISMISSED.key, EventTypes.CLOSED.key].includes(notification.eventType.key)
+    }
+
+    getUnfollowLabel() {
+        const {notification} = this.props
+
+        if ([ThingStatus.DONE.key, ThingStatus.DISMISS.key, ThingStatus.CLOSE.key].includes(notification.thing.payload.status)) {
+            return 'Close'
+        } else {
+            return 'Unfollow'
+        }
+    }
+
     showDiscardSentBack() {
         const {notification} = this.props
         return notification.thing.isMentioned
@@ -49,12 +70,14 @@ class NotificationActionsBar extends Component {
 
     showDiscardClosed() {
         const {notification} = this.props
-        return !notification.thing.isDoer
+        return notification.thing.isSubscriber
     }
 
-    showDiscardDone() {
+    showDiscardDoneOrDismissed() {
         const {notification} = this.props
-        return !notification.thing.isDoer
+        return notification.thing.isSubscriber ||
+            (notification.thing.isFollowUper &&
+            [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(notification.thing.payload.status))
     }
 
     render() {
@@ -81,14 +104,23 @@ class NotificationActionsBar extends Component {
         const joinMention = JoinMention(notification.thing)
         joinMention.show = joinMention.show && this.showJoin()
 
+        const followUpAction = FollowUpAction(notification.thing)
+        followUpAction.show = followUpAction.show && this.showFollowUp()
+
+        const unfollowAction = UnfollowAction(notification.thing, this.getUnfollowLabel())
+        unfollowAction.show = unfollowAction.show && this.showUnfollow()
+
         const discardSentBackAction = DiscardNotificationAction(notification, EventTypes.SENT_BACK)
         discardSentBackAction.show = discardSentBackAction.show && this.showDiscardSentBack()
 
-        const discardClosedAction = DiscardNotificationAction(notification, EventTypes.CLOSED)
+        const discardClosedAction = DiscardNotificationAction(notification, EventTypes.CLOSED, 'Close')
         discardClosedAction.show = discardClosedAction.show && this.showDiscardClosed()
 
         const discardDoneAction = DiscardNotificationAction(notification, EventTypes.DONE)
-        discardDoneAction.show = discardDoneAction.show && this.showDiscardDone()
+        discardDoneAction.show = discardDoneAction.show && this.showDiscardDoneOrDismissed()
+
+        const discardDismissedAction = DiscardNotificationAction(notification, EventTypes.DISMISSED)
+        discardDismissedAction.show = discardDismissedAction.show && this.showDiscardDoneOrDismissed()
 
         const actions = [
             doAction,
@@ -98,10 +130,13 @@ class NotificationActionsBar extends Component {
             pongAction,
             closeAckAction,
             SendBackAction(notification.thing, currentUser, {preDoFunc}),
+            discardDoneAction,
+            discardDismissedAction,
+            followUpAction,
+            unfollowAction,
             joinMention,
             discardSentBackAction,
             discardClosedAction,
-            discardDoneAction,
             DiscardCommentsAction(notification),
             DiscardNotificationAction(notification, EventTypes.PING),
             DiscardNotificationAction(notification, EventTypes.PONG),

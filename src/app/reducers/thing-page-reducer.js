@@ -262,6 +262,8 @@ export default (state = initialState, action) => {
         case EventActionTypes.DISMISSED:
         case EventActionTypes.JOINED_MENTION:
         case EventActionTypes.LEFT_MENTION:
+        case EventActionTypes.FOLLOW_UP:
+        case EventActionTypes.UNFOLLOW:
             return statusChanged(state, action)
         case ThingCommandActionTypes.DO_THING:
             return doThing(state, action)

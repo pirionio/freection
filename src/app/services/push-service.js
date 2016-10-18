@@ -52,6 +52,12 @@ export function listenToUpdates(email, pushToken, dispatch) {
 
         if (event.eventType.key === EventTypes.LEFT_MENTION.key)
             dispatch(EventActions.leftMention(event))
+
+        if (event.eventType.key === EventTypes.FOLLOWED_UP.key)
+            dispatch(EventActions.followUp(event))
+
+        if (event.eventType.key === EventTypes.UNFOLLOWED.key)
+            dispatch(EventActions.unfollow(event))
     })
 
     socket.on('notification-deleted', event => {

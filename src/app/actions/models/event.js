@@ -50,6 +50,14 @@ module.exports = {
             params: ['event']
         },
         {
+            name: 'follow up',
+            params: ['event']
+        },
+        {
+            name: 'unfollow',
+            params: ['event']
+        },
+        {
             name: 'comment created',
             params: ['event']
         },

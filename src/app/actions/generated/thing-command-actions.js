@@ -381,3 +381,49 @@ export function sendBack(thing, messageText) {
             }))
     }
 }
+
+export function followUp(thing) {
+    return dispatch => {
+        analytics.followup()
+
+        dispatch({
+            type: ThingCommandActionsTypes.FOLLOW_UP, 
+            status: ActionStatus.START,
+            thing
+        })
+        return ResourceUtil.post(`/api/things/${thing.id}/followup`)
+            .then(result => dispatch({
+                type: ThingCommandActionsTypes.FOLLOW_UP, 
+                status: ActionStatus.COMPLETE,
+                thing
+            }))
+            .catch(() => dispatch({
+                type: ThingCommandActionsTypes.FOLLOW_UP, 
+                status: ActionStatus.ERROR,
+                thing
+            }))
+    }
+}
+
+export function unfollow(thing) {
+    return dispatch => {
+        analytics.unfollow()
+
+        dispatch({
+            type: ThingCommandActionsTypes.UNFOLLOW, 
+            status: ActionStatus.START,
+            thing
+        })
+        return ResourceUtil.post(`/api/things/${thing.id}/unfollow`)
+            .then(result => dispatch({
+                type: ThingCommandActionsTypes.UNFOLLOW, 
+                status: ActionStatus.COMPLETE,
+                thing
+            }))
+            .catch(() => dispatch({
+                type: ThingCommandActionsTypes.UNFOLLOW, 
+                status: ActionStatus.ERROR,
+                thing
+            }))
+    }
+}

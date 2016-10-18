@@ -71,17 +71,6 @@ export function getThing(user, thingId) {
         })
 }
 
-export function getUserMentionedThings(user) {
-    return Thing.getUserMentions(user.id)
-        .then(things => things
-            .filter(thing => [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status))
-            .map(thing => thingToDto(thing, user)))
-        .catch(error => {
-            logger.error(`error while fetching mentions for user ${user.email}`, error)
-            throw error
-        })
-}
-
 export async function newThing(user, to, subject, body) {
     const creator = userToAddress(user)
 
@@ -154,6 +143,8 @@ export async function close(user, thingId, messageText) {
     const creator = userToAddress(user)
 
     try {
+        // TODO: only creator can close a thing
+
         const thing = await Thing.get(thingId).run()
 
         if (![EntityTypes.THING.key, EntityTypes.EMAIL_THING.key].includes(thing.type))
@@ -163,13 +154,9 @@ export async function close(user, thingId, messageText) {
         validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key,
             ThingStatus.INPROGRESS.key, ThingStatus.DONE.key, ThingStatus.DISMISS.key])
 
-        const previousMentionedUsers = clone(thing.mentioned)
-
         // Removing the user from the doers and follow upers
         remove(thing.followUpers, followUperId => followUperId === user.id)
         remove(thing.doers, doerUserId => doerUserId === user.id)
-        remove(thing.mentioned)
-        remove(thing.subscribers)
 
         // Update the status
         const previousStatus = thing.payload.status
@@ -178,12 +165,13 @@ export async function close(user, thingId, messageText) {
         // saving the thing
         await thing.save()
 
-        // Discard all existing user evens from the Whatsnew page
-        await Event.discardThingEvents(thingId, user.id)
+        // Discard all existing user events from the Whatsnew page
+        if ([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(previousStatus))
+            await Event.discardThingEvents(thingId)
 
         // Creating the close event and saving to DB
         const event = await EventCreator.createClosed(creator, thing,
-            (user, thing, eventType) => getShowNewList(user, thing, eventType, previousStatus, previousMentionedUsers),
+            (user, thing, eventType) => getShowNewList(user, thing, eventType, previousStatus),
             messageText)
 
         await sendEmailForEvent(user, thing, event)
@@ -193,19 +181,24 @@ export async function close(user, thingId, messageText) {
     }
 }
 
-export function closeAck(user, thingId) {
+export async function closeAck(user, thingId) {
     const creator = userToAddress(user)
 
-    return Thing.get(thingId).run()
-        .then(thing => {
-            return performCloseAck(thing, user)
-                .then(() => Event.discardUserEventsByType(thingId, EventTypes.CLOSED.key, user.id))
-                .then(() => EventCreator.createCloseAck(creator, thing, getShowNewList))
-        })
-        .catch(error => {
-            logger.error(`error while accepting close of thing ${thingId} by user ${user.email}:`, error)
-            throw error
-        })
+    try {
+        const thing = await Thing.get(thingId).run()
+
+        remove(thing.doers, doerUserId => doerUserId === user.id)
+        remove(thing.followUpers, followUpperUserId => followUpperUserId === user.id)
+        thing.subscribers.push(user.id)
+        await thing.save()
+
+        await Event.discardUserEventsByType(thingId, EventTypes.CLOSED.key, user.id)
+        await EventCreator.createCloseAck(creator, thing, getShowNewList)
+    }
+    catch(error) {
+        logger.error(`error while accepting close of thing ${thingId} by user ${user.email}:`, error)
+        throw error
+    }
 }
 
 export async function markAsDone(user, thingId, messageText) {
@@ -329,11 +322,64 @@ export async function comment(user, thingId, commentText) {
     }
 }
 
+export async function followUp(user, thingId) {
+    try {
+        const creator = userToAddress(user)
+
+        const thing = await Thing.get(thingId).run()
+
+        if (!isCreatorOrMentioned(thing, user)) {
+            throw 'UserNotMentioned'
+        }
+
+        if (!thing.followUpers.includes(user.id)) {
+            thing.followUpers.push(user.id)
+            remove(thing.subscribers, userId => userId === user.id)
+            await thing.save()
+
+            await EventCreator.createFollowedUp(creator, thing, getShowNewList)
+
+            await Event.discardUserEventsByType(thingId, EventTypes.MENTIONED.key, user.id)
+            await Event.discardUserEventsByType(thingId, EventTypes.SENT_BACK.key, user.id)
+        }
+
+        return thingToDto(thing, user)
+    } catch (error) {
+        logger.error(`Could not folloup on thing ${thingId} for user ${user.email}`, error)
+        throw error
+    }
+}
+
+export async function unfollow(user, thingId) {
+    const creator = userToAddress(user)
+
+    const thing = await Thing.get(thingId).run()
+
+    if (thing.followUpers.includes(user.id)) {
+        remove(thing.followUpers, userId => userId === user.id)
+        thing.subscribers.push(user.id)
+        await thing.save()
+
+        await EventCreator.createUnfollowedUp(creator, thing, getShowNewList)
+
+        await Event.discardUserEventsByType(thingId, EventTypes.CLOSED.key, user.id)
+        await Event.discardUserEventsByType(thingId, EventTypes.DONE.key, user.id)
+        await Event.discardUserEventsByType(thingId, EventTypes.DISMISSED.key, user.id)
+    }
+
+    return thingToDto(thing, user)
+}
+
 export async function joinMention(user, thingId) {
     const thing = await Thing.get(thingId).run()
 
-    if (!thing.subscribers)
-        thing.subscribers = []
+    if (!isCreatorOrMentioned(thing, user)) {
+        throw 'UserNotMentioned'
+    }
+
+    if (thing.followUpers.includes(user.id)) {
+        throw 'UserAlreadyFollowUper'
+    }
 
     if (!thing.subscribers.includes(user.id)) {
         thing.subscribers.push(user.id)
@@ -351,6 +397,14 @@ export async function joinMention(user, thingId) {
 
 export async function leaveMention(user, thingId) {
     const thing = await Thing.get(thingId).run()
+
+    if (thing.creator.id === user.id) {
+        throw 'CreatorCannotLeave'
+    }
+
+    if (thing.to.id === user.id) {
+        throw 'ToCannotLeave'
+    }
 
     if (thing.subscribers.includes(user.id)) {
         remove(thing.subscribers, userId => userId === user.id)
@@ -525,18 +579,22 @@ function saveNewThing(body, subject, creator, to, mentions) {
     })
 }
 
-function updateThingMentions(thing, newMentionedUsers) {
+function isCreatorOrMentioned(thing, user) {
+    return thing.mentioned.includes(user.id) || thing.creator.id === user.id
+}
+
+async function updateThingMentions(thing, newMentionedUsers) {
     if (!newMentionedUsers || !newMentionedUsers.length) {
-        return Promise.resolve()
+        return
     }
 
     const newMentionedUserIds = map(newMentionedUsers, 'id')
     thing.mentioned = [...thing.mentioned, ...newMentionedUserIds]
     thing.all = uniq([...thing.all, ...newMentionedUserIds])
-    return thing.save()
+    await thing.save()
 }
 
-function getShowNewList(user, thing, eventType, previousStatus, previousMentionedUsers) {
+function getShowNewList(user, thing, eventType, previousStatus) {
     let showNewList
 
     switch (eventType) {
@@ -545,16 +603,16 @@ function getShowNewList(user, thing, eventType, previousStatus, previousMentione
             break
         case EventTypes.DISMISSED.key:
         case EventTypes.DONE.key:
-            showNewList = [thing.creator.id, ...thing.subscribers]
+            showNewList = union(thing.followUpers, thing.subscribers)
             break
         case EventTypes.CLOSED.key:
             if ([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(previousStatus))
-                showNewList = union(thing.doers, previousMentionedUsers, getToList(thing))
+                showNewList = union(thing.doers, thing.followUpers, thing.subscribers, getToList(thing))
             else
-                showNewList = [...thing.doers]
+                showNewList = []
             break
         case EventTypes.SENT_BACK.key:
-            showNewList = union(thing.doers, thing.subscribers, thing.mentioned, getToList(thing))
+            showNewList = union(thing.doers, thing.followUpers, thing.subscribers, getToList(thing))
             break
         case EventTypes.COMMENT.key:
             showNewList = union(thing.followUpers, thing.doers, thing.subscribers, [thing.creator.id])
@@ -569,6 +627,8 @@ function getShowNewList(user, thing, eventType, previousStatus, previousMentione
         case EventTypes.CLOSE_ACKED.key:
         case EventTypes.JOINED_MENTION.key:
         case EventTypes.LEFT_MENTION.key:
+        case EventTypes.FOLLOWED_UP.key:
+        case EventTypes.UNFOLLOWED.key:
             showNewList = []
             break
         default:
@@ -586,11 +646,6 @@ function getToList(thing) {
 function performDoThing(thing, user) {
     thing.doers.push(user.id)
     thing.payload.status = ThingStatus.INPROGRESS.key
-    return thing.save()
-}
-
-function performCloseAck(thing, user) {
-    remove(thing.doers, doerUserId => doerUserId === user.id)
     return thing.save()
 }
 

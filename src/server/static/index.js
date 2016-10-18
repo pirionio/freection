@@ -15,7 +15,6 @@ import reducer from '../../app/reducers'
 import * as WhatsNewActions from '../../app/actions/whats-new-actions'
 import * as ToDoActions from '../../app/actions/to-do-actions'
 import * as FollowUpActions from '../../app/actions/follow-up-actions'
-import * as MentionsActions from '../../app/actions/mentions-actions'
 import * as AuthActions from '../../app/actions/auth-actions'
 import * as UsersActions from '../../app/actions/users-actions.js'
 
@@ -79,9 +78,6 @@ async function getInitialState(request) {
 
         const followUps = await ThingService.getFollowUps(user)
         state = reducer(state, FollowUpActions.setState(followUps))
-
-        const mentions = await ThingService.getUserMentionedThings(user)
-        state = reducer(state, MentionsActions.setState(mentions))
 
         const users = await getUsers(user)
         state = reducer(state, UsersActions.setState(users))

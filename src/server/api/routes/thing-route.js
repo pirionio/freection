@@ -174,6 +174,28 @@ router.post('/:thingId/discard/:eventType', (request, response) => {
     })
 })
 
+router.post('/:thingId/followup', (request, response) => {
+    EndpointUtil.handlePost(request, response, ThingService.followUp, {
+        params: ['thingId'],
+        result: true,
+        errorTemplates: {
+            notFound: getNotFoundErrorTemplate(),
+            general: 'Could not follow up thing ${thingId} for user ${user}'
+        }
+    })
+})
+
+router.post('/:thingId/unfollow', (request, response) => {
+    EndpointUtil.handlePost(request, response, ThingService.unfollow, {
+        params: ['thingId'],
+        result: true,
+        errorTemplates: {
+            notFound: getNotFoundErrorTemplate(),
+            general: 'Could not stop following up thing ${thingId} for user ${user}'
+        }
+    })
+})
+
 router.post('/:thingId/joinmention', (request, response) => {
     EndpointUtil.handlePost(request, response, ThingService.joinMention, {
         params: ['thingId'],

@@ -78,3 +78,10 @@ export function leave() {
     tagSession('leave')
 }
 
+export function followup() {
+    tagSession('followup')
+}
+
+export function unfollow() {
+    tagSession('unfollow')
+}

@@ -86,6 +86,20 @@ export function leftMention(event) {
     }
 }
 
+export function followUp(event) {
+    return {
+        type: EventActionsTypes.FOLLOW_UP,
+        event
+    }
+}
+
+export function unfollow(event) {
+    return {
+        type: EventActionsTypes.UNFOLLOW,
+        event
+    }
+}
+
 export function commentCreated(event) {
     return {
         type: EventActionsTypes.COMMENT_CREATED,

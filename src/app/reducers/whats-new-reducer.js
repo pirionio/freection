@@ -1,8 +1,11 @@
+import some from 'lodash/some'
+
 import WhatsNewActionTypes from '../actions/types/whats-new-action-types'
 import ThingCommandActionTypes from '../actions/types/thing-command-action-types'
 import EventActionTypes from '../actions/types/event-action-types'
 import {ActionStatus, InvalidationStatus} from '../constants'
 import EventTypes from '../../common/enums/event-types'
+import thingReducer from './thing-reducer'
 import immutable from '../util/immutable'
 
 const initialState = {
@@ -134,16 +137,39 @@ function notificationDeleted(state, action) {
         .value()
 }
 
+function updateThing(state, action) {
+
+    if (!action.event || !action.event.thing)
+        return state
+
+    // We ran into a bug, in which React gets stuck if it tries to replace a notification with a new object
+    // that had just arrived in the action, which is in fact the very same object.
+    // That's why in this case we'd rather skip updating the state.
+    if (some(state.notifications, notification => notification === action.event))
+        return state
+
+    return immutable(state)
+        .arraySetItem('notifications', notification => notification.thing.id === action.event.thing.id,
+            notification => immutable(notification)
+                .set('thing', thingReducer(notification.thing, action))
+                .value())
+        .value()
+}
+
 export default (state = initialState, action) => {
+
+    const updatedState = updateThing(state, action)
+    // const updatedState = state
+
     switch (action.type) {
         case WhatsNewActionTypes.SET_STATE:
-            return setState(state, action)
+            return setState(updatedState, action)
         case EventActionTypes.RECONNECTED:
-            return reconnected(state, action)
+            return reconnected(updatedState, action)
         case WhatsNewActionTypes.FETCH_WHATS_NEW:
-            return fetchWhatsNew(state, action)
+            return fetchWhatsNew(updatedState, action)
         case ThingCommandActionTypes.DO_THING:
-            return doThing(state, action)
+            return doThing(updatedState, action)
         case ThingCommandActionTypes.DISMISS:
         case ThingCommandActionTypes.MARK_AS_DONE:
         case ThingCommandActionTypes.CLOSE:
@@ -151,16 +177,16 @@ export default (state = initialState, action) => {
         case ThingCommandActionTypes.CLOSE_ACK:
         case ThingCommandActionTypes.PONG:
         case ThingCommandActionTypes.JOIN_MENTION:
-            return removeNotificationsOfThing(state, action)
+            return removeNotificationsOfThing(updatedState, action)
         case ThingCommandActionTypes.DISCARD_COMMENTS:
-            return discardComments(state, action)
+            return discardComments(updatedState, action)
         case ThingCommandActionTypes.DISCARD_SINGLE_NOTIFICATION:
-            return discardSingleNotification(state, action)
+            return discardSingleNotification(updatedState, action)
         case WhatsNewActionTypes.NOTIFICATION_RECEIVED:
-            return notificationReceived(state, action)
+            return notificationReceived(updatedState, action)
         case WhatsNewActionTypes.NOTIFICATION_DELETED:
-            return notificationDeleted(state, action)
+            return notificationDeleted(updatedState, action)
         default:
-            return state
+            return updatedState
     }
 }

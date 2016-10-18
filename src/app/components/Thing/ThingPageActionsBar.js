@@ -3,7 +3,8 @@ import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
 
 import ActionsBar from '../Actions/ActionsBar'
-import {DoAction, DoneAction, DismissAction, CloseAction, SendBackAction, JoinMention, LeaveMention} from '../Actions/Actions'
+import {DoAction, DoneAction, DismissAction, CloseAction, SendBackAction, JoinMention, LeaveMention, FollowUpAction,
+    UnfollowAction} from '../Actions/Actions'
 import * as MessageBoxActions from '../../actions/message-box-actions'
 import ThingStatus from '../../../common/enums/thing-status'
 import MessageTypes from '../../../common/enums/message-types'
@@ -37,8 +38,10 @@ class ThingPageActionsBar extends Component {
                 disabled: this.isDisabled(),
                 preDoFunc: [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status) ?
                     this.generatePreDoFunc('Close') : undefined}),
-            JoinMention(thing, currentUser, this.isDisabled()),
-            LeaveMention(thing, currentUser, this.isDisabled())
+            FollowUpAction(thing),
+            JoinMention(thing),
+            UnfollowAction(thing),
+            LeaveMention(thing)
         ]
 
         return (

@@ -50,5 +50,14 @@ export default {
     LEFT_MENTION: {
         key: 'LEFT_MENTION',
         label: 'Left'
+    },
+    FOLLOWED_UP: {
+        key: 'FOLLOWED_UP',
+        label:'Followed up'
+    },
+    UNFOLLOWED: {
+        key: 'UNFOLLOWED',
+        label:'Unfollowed'
     }
+
 }

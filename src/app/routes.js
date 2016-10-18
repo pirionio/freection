@@ -7,7 +7,6 @@ import WhatsNew from './components/WhatsNew/WhatsNew'
 import UnreadNotifications from './components/WhatsNew/UnreadNotifications'
 import ToDo from './components/ToDo/ToDo'
 import FollowUp from './components/FollowUp/FollowUp'
-import Mentions from './components/Mention/Mentions'
 import AllThings from './components/All/Things/AllThings'
 import Integrations from './components/Integrations/Integrations'
 import Github from './components/Github/Github'
@@ -37,9 +36,6 @@ const routes = (
                 <Route path=":thingId" component={FullThing} />
             </Route>
             <Route path="followup" component={FollowUp}>
-                <Route path=":thingId" component={FullThing} />
-            </Route>
-            <Route path="mentions" component={Mentions}>
                 <Route path=":thingId" component={FullThing} />
             </Route>
             <Route path="all/things" component={AllThings}>

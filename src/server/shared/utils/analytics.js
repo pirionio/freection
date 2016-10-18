@@ -139,3 +139,19 @@ export function left(user, thing) {
         })
     }
 }
+
+export function followedUp(user, thing) {
+    if (user.type === userTypes.FREECTION.key) {
+        trackIntercomEvent('followed_up', user.id, {
+            type: thing.type
+        })
+    }
+}
+
+export function unfollowed(user, thing) {
+    if (user.type === userTypes.FREECTION.key) {
+        trackIntercomEvent('unfollowed', user.id, {
+            type: thing.type
+        })
+    }
+}

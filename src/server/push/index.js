@@ -108,7 +108,7 @@ export function configure(app) {
 
                 // Sending notification to any user that might have interest in new event
                 const subscribers = union(fullEvent.showNewList, fullEvent.thing.doers,
-                    fullEvent.thing.followUpers, fullEvent.thing.mentioned, [fullEvent.thing.to.id, fullEvent.thing.creator.id])
+                    fullEvent.thing.followUpers, fullEvent.thing.subscribers, fullEvent.thing.mentioned, [fullEvent.thing.to.id, fullEvent.thing.creator.id])
 
                 // TODO: we are not testing if the room even exist
                 subscribers.forEach(userId => {

@@ -201,3 +201,29 @@ export function createLeftMention(creator, thing, getShowNewList) {
         showNewList: getShowNewList(creator, thing, EventTypes.LEFT_MENTION.key)
     })
 }
+
+export function createFollowedUp(creator, thing, getShowNewList) {
+    analytics.followedUp(creator, thing)
+
+    return Event.save({
+        thingId: thing.id,
+        eventType: EventTypes.FOLLOWED_UP.key,
+        createdAt: new Date(),
+        creator,
+        payload: {},
+        showNewList: getShowNewList(creator, thing, EventTypes.FOLLOWED_UP.key)
+    })
+}
+
+export function createUnfollowedUp(creator, thing, getShowNewList) {
+    analytics.unfollowed(creator, thing)
+
+    return Event.save({
+        thingId: thing.id,
+        eventType: EventTypes.UNFOLLOWED.key,
+        createdAt: new Date(),
+        creator,
+        payload: {},
+        showNewList: getShowNewList(creator, thing, EventTypes.UNFOLLOWED.key)
+    })
+}

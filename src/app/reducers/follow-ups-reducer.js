@@ -86,15 +86,6 @@ function messageReceived(state, action) {
         .value()
 }
 
-function created(state, action) {
-    // let's add the event to the thing
-    const thing = immutable(action.event.thing)
-        .set('events', [action.event])
-        .value()
-
-    return statusChangedReceived(state, merge({}, action, {event: {thing}}))
-}
-
 function statusChangedReceived(state, action) {
     if (state.invalidationStatus !== InvalidationStatus.FETCHED)
         return state
@@ -128,13 +119,14 @@ export default (state = initialState, action) => {
         case EventActionTypes.PONGED:
             return pongReceived(state, action)
         case EventActionTypes.CREATED:
-            return created(state, action)
         case EventActionTypes.ACCEPTED:
         case EventActionTypes.MARKED_AS_DONE:
         case EventActionTypes.DISMISSED:
         case EventActionTypes.CLOSED:
         case EventActionTypes.CLOSE_ACKED:
         case EventActionTypes.SENT_BACK:
+        case EventActionTypes.FOLLOW_UP:
+        case EventActionTypes.UNFOLLOW:
             return statusChangedReceived(state, action)
         default:
             return state
