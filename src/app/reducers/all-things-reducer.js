@@ -85,8 +85,8 @@ export default (state = initialState, action) => {
         case EventActionTypes.CLOSE_ACKED:
         case EventActionTypes.SENT_BACK:
         case EventActionTypes.MENTIONED:
-        case EventActionTypes.JOINED_MENTION:
-        case EventActionTypes.LEFT_MENTION:
+        case EventActionTypes.UNMUTED:
+        case EventActionTypes.MUTED:
             return updateThing(state, action)
         default:
             return state

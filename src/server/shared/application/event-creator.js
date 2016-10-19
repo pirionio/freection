@@ -176,29 +176,29 @@ export function createMentioned(creator, thing, getShowNewList, mentionedUser, m
     })
 }
 
-export function createJoinedMention(creator, thing, getShowNewList) {
-    analytics.joined(creator, thing)
+export function createUnmute(creator, thing, getShowNewList) {
+    analytics.unmuted(creator, thing)
 
     return Event.save({
         thingId: thing.id,
-        eventType: EventTypes.JOINED_MENTION.key,
+        eventType: EventTypes.UNMUTED.key,
         createdAt: new Date(),
         creator,
         payload: {},
-        showNewList: getShowNewList(creator, thing, EventTypes.JOINED_MENTION.key)
+        showNewList: getShowNewList(creator, thing, EventTypes.UNMUTED.key)
     })
 }
 
-export function createLeftMention(creator, thing, getShowNewList) {
-    analytics.left(creator, thing)
+export function createMute(creator, thing, getShowNewList) {
+    analytics.muted(creator, thing)
 
     return Event.save({
         thingId: thing.id,
-        eventType: EventTypes.LEFT_MENTION.key,
+        eventType: EventTypes.MUTED.key,
         createdAt: new Date(),
         creator,
         payload: {},
-        showNewList: getShowNewList(creator, thing, EventTypes.LEFT_MENTION.key)
+        showNewList: getShowNewList(creator, thing, EventTypes.MUTED.key)
     })
 }
 

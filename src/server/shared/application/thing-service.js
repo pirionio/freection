@@ -374,7 +374,7 @@ export async function unfollow(user, thingId) {
     return thingToDto(thing, user)
 }
 
-export async function joinMention(user, thingId) {
+export async function unmute(user, thingId) {
     const thing = await Thing.get(thingId).run()
 
     if (!isCreatorOrMentioned(thing, user)) {
@@ -390,24 +390,21 @@ export async function joinMention(user, thingId) {
         await thing.save()
 
         const creator = userToAddress(user)
-        await EventCreator.createJoinedMention(creator, thing, getShowNewList)
-    
-        await Event.discardUserEventsByType(thingId, EventTypes.MENTIONED.key, user.id)
-        await Event.discardUserEventsByType(thingId, EventTypes.SENT_BACK.key, user.id)
+        await EventCreator.createUnmute(creator, thing, getShowNewList)
     }
 
     return thingToDto(thing, user)
 }
 
-export async function leaveMention(user, thingId) {
+export async function mute(user, thingId) {
     const thing = await Thing.get(thingId).run()
 
     if (thing.creator.id === user.id) {
-        throw 'CreatorCannotLeave'
+        throw 'CreatorCannotMute'
     }
 
     if (thing.to.id === user.id) {
-        throw 'ToCannotLeave'
+        throw 'ToCannotMute'
     }
 
     if (thing.subscribers.includes(user.id)) {
@@ -415,7 +412,7 @@ export async function leaveMention(user, thingId) {
         await thing.save()
 
         const creator = userToAddress(user)
-        await EventCreator.createLeftMention(creator, thing, getShowNewList)
+        await EventCreator.createMute(creator, thing, getShowNewList)
     }
 
     return thingToDto(thing, user)
@@ -629,8 +626,8 @@ function getShowNewList(user, thing, eventType, previousStatus) {
             break
         case EventTypes.ACCEPTED.key:
         case EventTypes.CLOSE_ACKED.key:
-        case EventTypes.JOINED_MENTION.key:
-        case EventTypes.LEFT_MENTION.key:
+        case EventTypes.UNMUTED.key:
+        case EventTypes.MUTED.key:
         case EventTypes.FOLLOWED_UP.key:
         case EventTypes.UNFOLLOWED.key:
             showNewList = []

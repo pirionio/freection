@@ -308,46 +308,46 @@ export function discardSingleNotification(notification) {
     }
 }
 
-export function joinMention(thing) {
+export function unmute(thing) {
     return dispatch => {
-        analytics.join()
+        analytics.unmute()
 
         dispatch({
-            type: ThingCommandActionsTypes.JOIN_MENTION, 
+            type: ThingCommandActionsTypes.UNMUTE, 
             status: ActionStatus.START,
             thing
         })
-        return ResourceUtil.post(`/api/things/${thing.id}/joinmention`)
+        return ResourceUtil.post(`/api/things/${thing.id}/unmute`)
             .then(result => dispatch({
-                type: ThingCommandActionsTypes.JOIN_MENTION, 
+                type: ThingCommandActionsTypes.UNMUTE, 
                 status: ActionStatus.COMPLETE,
                 thing: result
             }))
             .catch(() => dispatch({
-                type: ThingCommandActionsTypes.JOIN_MENTION, 
+                type: ThingCommandActionsTypes.UNMUTE, 
                 status: ActionStatus.ERROR,
                 thing
             }))
     }
 }
 
-export function leaveMention(thing) {
+export function mute(thing) {
     return dispatch => {
-        analytics.leave()
+        analytics.mute()
 
         dispatch({
-            type: ThingCommandActionsTypes.LEAVE_MENTION, 
+            type: ThingCommandActionsTypes.MUTE, 
             status: ActionStatus.START,
             thing
         })
-        return ResourceUtil.post(`/api/things/${thing.id}/leavemention`)
+        return ResourceUtil.post(`/api/things/${thing.id}/mute`)
             .then(result => dispatch({
-                type: ThingCommandActionsTypes.LEAVE_MENTION, 
+                type: ThingCommandActionsTypes.MUTE, 
                 status: ActionStatus.COMPLETE,
                 thing: result
             }))
             .catch(() => dispatch({
-                type: ThingCommandActionsTypes.LEAVE_MENTION, 
+                type: ThingCommandActionsTypes.MUTE, 
                 status: ActionStatus.ERROR,
                 thing
             }))

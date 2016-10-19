@@ -70,12 +70,12 @@ export function sendback() {
     tagSession('sendback')
 }
 
-export function join() {
-    tagSession('join')
+export function unmute() {
+    tagSession('unmute')
 }
 
-export function leave() {
-    tagSession('leave')
+export function mute() {
+    tagSession('mute')
 }
 
 export function followup() {

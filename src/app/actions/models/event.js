@@ -42,11 +42,11 @@ module.exports = {
             params: ['event']
         },
         {
-            name: 'joined mention',
+            name: 'unmuted',
             params: ['event']
         },
         {
-            name: 'left mention',
+            name: 'muted',
             params: ['event']
         },
         {

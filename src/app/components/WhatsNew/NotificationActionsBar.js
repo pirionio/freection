@@ -5,7 +5,7 @@ import EventTypes from '../../../common/enums/event-types'
 import ThingStatus from '../../../common/enums/thing-status'
 import ActionsBar from '../Actions/ActionsBar'
 import {DoAction, DoneAction, DismissAction, CloseAction, SendBackAction, DiscardCommentsAction, DiscardNotificationAction, CloseAckAction,
-    PongAction, JoinMention, FollowUpAction, UnfollowAction} from '../Actions/Actions'
+    PongAction, FollowUpAction, UnfollowAction} from '../Actions/Actions'
 
 class NotificationActionsBar extends Component {
     showDo() {
@@ -36,11 +36,6 @@ class NotificationActionsBar extends Component {
     showCloseAck() {
         const {notification} = this.props
         return notification.thing.isDoer
-    }
-
-    showJoin() {
-        const {notification} = this.props
-        return [EventTypes.MENTIONED.key, EventTypes.SENT_BACK.key].includes(notification.eventType.key)
     }
 
     showFollowUp() {
@@ -101,9 +96,6 @@ class NotificationActionsBar extends Component {
         const closeAckAction = CloseAckAction(notification)
         closeAckAction.show = closeAckAction.show && this.showCloseAck()
 
-        const joinMention = JoinMention(notification.thing)
-        joinMention.show = joinMention.show && this.showJoin()
-
         const followUpAction = FollowUpAction(notification.thing)
         followUpAction.show = followUpAction.show && this.showFollowUp()
 
@@ -134,7 +126,6 @@ class NotificationActionsBar extends Component {
             discardDismissedAction,
             followUpAction,
             unfollowAction,
-            joinMention,
             discardSentBackAction,
             discardClosedAction,
             DiscardCommentsAction(notification),

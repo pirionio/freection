@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
 
 import ActionsBar from '../Actions/ActionsBar'
-import {DoAction, DoneAction, DismissAction, CloseAction, SendBackAction, JoinMention, LeaveMention, FollowUpAction,
+import {DoAction, DoneAction, DismissAction, CloseAction, SendBackAction, Unmute, Mute, FollowUpAction,
     UnfollowAction} from '../Actions/Actions'
 import * as MessageBoxActions from '../../actions/message-box-actions'
 import ThingStatus from '../../../common/enums/thing-status'
@@ -39,9 +39,9 @@ class ThingPageActionsBar extends Component {
                 preDoFunc: [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status) ?
                     this.generatePreDoFunc('Close') : undefined}),
             FollowUpAction(thing),
-            JoinMention(thing),
+            Unmute(thing),
             UnfollowAction(thing),
-            LeaveMention(thing)
+            Mute(thing)
         ]
 
         return (

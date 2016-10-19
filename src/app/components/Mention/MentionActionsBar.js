@@ -2,15 +2,15 @@ import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 
 import ActionsBar from '../Actions/ActionsBar'
-import {JoinMention, LeaveMention} from '../Actions/Actions'
+import {Unmute, Mute} from '../Actions/Actions'
 
 class MentionActionsBar extends Component {
     render() {
         const {thing} = this.props
 
         const actions = [
-            JoinMention(thing),
-            LeaveMention(thing)
+            Unmute(thing),
+            Mute(thing)
         ]
 
         return <ActionsBar actions={actions} />

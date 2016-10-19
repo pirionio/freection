@@ -85,16 +85,16 @@ export function DiscardNotificationAction(notification, eventType, label = 'Disc
     }
 }
 
-export function JoinMention(thing) {
+export function Unmute(thing) {
     return {
-        component: <Action label="Join" doFunc={ThingCommandActions.joinMention} item={thing} key="action-Join" />,
+        component: <Action label="Unmute" doFunc={ThingCommandActions.unmute} item={thing} key="action-unmute" />,
         show: !thing.isFollowUper && !thing.isSubscriber && (thing.isMentioned || thing.isCreator)
     }
 }
 
-export function LeaveMention(thing) {
+export function Mute(thing) {
     return {
-        component: <Action label="Leave" doFunc={ThingCommandActions.leaveMention} item={thing} key="action-Leave" />,
+        component: <Action label="Mute" doFunc={ThingCommandActions.mute} item={thing} key="action-mute" />,
         show: thing.isSubscriber && !thing.isCreator && !thing.isTo
     }
 }

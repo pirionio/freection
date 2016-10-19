@@ -124,17 +124,17 @@ export function mentioned(user, thing, mentionedUserId) {
     })
 }
 
-export function joined(user, thing) {
+export function unmuted(user, thing) {
     if (user.type === userTypes.FREECTION.key) {
-        trackIntercomEvent('joined_mention', user.id, {
+        trackIntercomEvent('unmuted', user.id, {
             type: thing.type
         })
     }
 }
 
-export function left(user, thing) {
+export function muted(user, thing) {
     if (user.type === userTypes.FREECTION.key) {
-        trackIntercomEvent('left_mention', user.id, {
+        trackIntercomEvent('muted', user.id, {
             type: thing.type
         })
     }

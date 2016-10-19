@@ -43,13 +43,13 @@ export default {
         key: 'MENTIONED',
         label: 'Mentioned'
     },
-    JOINED_MENTION: {
-        key: 'JOINED_MENTION',
-        label: 'Joined'
+    UNMUTED: {
+        key: 'UNMUTED',
+        label: 'Unmuted'
     },
-    LEFT_MENTION: {
-        key: 'LEFT_MENTION',
-        label: 'Left'
+    MUTED: {
+        key: 'MUTED',
+        label: 'Muted'
     },
     FOLLOWED_UP: {
         key: 'FOLLOWED_UP',

@@ -72,16 +72,16 @@ export function mentioned(event) {
     }
 }
 
-export function joinedMention(event) {
+export function unmuted(event) {
     return {
-        type: EventActionsTypes.JOINED_MENTION,
+        type: EventActionsTypes.UNMUTED,
         event
     }
 }
 
-export function leftMention(event) {
+export function muted(event) {
     return {
-        type: EventActionsTypes.LEFT_MENTION,
+        type: EventActionsTypes.MUTED,
         event
     }
 }

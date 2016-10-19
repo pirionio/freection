@@ -123,24 +123,24 @@ module.exports = {
             track: 'discard'
         },
         { 
-            name: 'join mention',
+            name: 'unmute',
             params: ['thing'],
             type: 'post',
-            path: '/api/things/${thing.id}/joinmention',
+            path: '/api/things/${thing.id}/unmute',
             completeParams: {
                 thing: 'result'
             },
-            track: 'join'
+            track: 'unmute'
         },
         {
-            name: 'leave mention',
+            name: 'mute',
             params: ['thing'],
             type: 'post',
-            path: '/api/things/${thing.id}/leavemention',
+            path: '/api/things/${thing.id}/mute',
             completeParams: {
                 thing: 'result'
             },
-            track: 'leave'
+            track: 'mute'
         },
         {
             name: 'send back',

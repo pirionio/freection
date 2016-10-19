@@ -260,8 +260,8 @@ export default (state = initialState, action) => {
         case EventActionTypes.MARKED_AS_DONE:
         case EventActionTypes.CLOSED:
         case EventActionTypes.DISMISSED:
-        case EventActionTypes.JOINED_MENTION:
-        case EventActionTypes.LEFT_MENTION:
+        case EventActionTypes.UNMUTED:
+        case EventActionTypes.MUTED:
         case EventActionTypes.FOLLOW_UP:
         case EventActionTypes.UNFOLLOW:
             return statusChanged(state, action)
