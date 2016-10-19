@@ -332,6 +332,10 @@ export async function followUp(user, thingId) {
             throw 'UserNotMentioned'
         }
 
+        if (![ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status)) {
+            throw 'ThingIsClosed'
+        }
+
         if (!thing.followUpers.includes(user.id)) {
             thing.followUpers.push(user.id)
             remove(thing.subscribers, userId => userId === user.id)

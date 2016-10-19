@@ -109,7 +109,8 @@ export function CloseAckAction(notification) {
 export function FollowUpAction(thing) {
     return {
         component: <Action label="Follow Up" doFunc={ThingCommandActions.followUp} item={thing} key="action-FollowUp" />,
-        show: !thing.isFollowUper && (thing.isCreator || thing.isMentioned)
+        show: [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status) &&
+            !thing.isFollowUper && (thing.isCreator || thing.isMentioned)
     }
 }
 
