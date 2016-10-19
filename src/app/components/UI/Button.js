@@ -15,7 +15,7 @@ class Button extends Component {
 
 const style = {
     button: {
-        margin: [0, 0, 0, 28],
+        margin: [0, 0, 0, 20],
         border: `1px solid ${styleVars.secondaryColor}`,
         backgroundColor: 'rgba(0, 0, 0, 0)',
         textTransform: 'uppercase',
