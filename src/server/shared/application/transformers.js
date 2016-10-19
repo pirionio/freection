@@ -10,7 +10,6 @@ import EventTypes from '../../../common/enums/event-types'
 import SharedConstants from '../../../common/shared-constants'
 
 export function thingToDto(thing, user, {includeEvents = true} = {}) {
-
     return {
         id: thing.id,
         createdAt: thing.createdAt,
@@ -45,17 +44,15 @@ export function eventToDto(event, user, {includeThing = true, includeFullThing =
     }
 }
 
-export function userToDto(user) {
-    return pick(user, ['id', 'firstName', 'lastName', 'email'])
-}
-
 function commentPayloadToDto(payload, user) {
-    if (!payload.readByList)
+    if (!payload.readByList && !payload.mentioned)
         return payload
 
     return Object.assign({}, payload, {
-        isRead: payload.readByList.includes(user.id),
-        readByList: undefined
+        isRead: payload.readByList ? payload.readByList.includes(user.id) : false,
+        isMentioned: payload.mentioned ? payload.mentioned.includes(user.id) : false,
+        readByList: undefined,
+        mentioned: undefined
     })
 }
 

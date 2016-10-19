@@ -25,10 +25,6 @@ class NotificationPreviewItem extends Component {
         if (notification.eventType.key === EventTypes.PING.key)
             text = <PingPreviewText />
 
-        else if (notification.eventType.key === EventTypes.MENTIONED.key)
-            text = <MentionPreviewText comment={notification.payload.text}
-                                       newNotifications={notification.payload.newNotifications} />
-                                       
         else if (SharedConstants.MESSAGE_TYPED_EVENTS.includes(notification.eventType.key))
             text = <CommentPreviewText comment={notification.payload.text}
                                        newNotifications={notification.payload.newNotifications} />
@@ -54,13 +50,17 @@ class NotificationPreviewItem extends Component {
 
         switch (notification.eventType.key) {
             case EventTypes.COMMENT.key:
-                return <span><strong>{creator.displayName}</strong> commented</span>
+                return  notification.payload.isMentioned ?
+                    <span><strong>{creator.displayName}</strong> mentioned you</span> :
+                    <span><strong>{creator.displayName}</strong> commented</span>
             case EventTypes.PING.key:
                 return <span><strong>{creator.displayName}</strong> pinged you</span>
             case EventTypes.PONG.key:
                 return <span><strong>{creator.displayName}</strong> ponged {notification.thing.isFollowUper ? 'you' : ''}</span>
             case EventTypes.CREATED.key:
-                return <span><strong>{creator.displayName}</strong> sent you a thing</span>
+                return notification.payload.isMentioned ?
+                    <span><strong>{creator.displayName}</strong> mentioned you</span> :
+                    <span><strong>{creator.displayName}</strong> sent you a thing</span>
             case EventTypes.DONE.key:
                 return <span><strong>{creator.displayName}</strong> completed a thing</span>
             case EventTypes.DISMISSED.key:
@@ -71,8 +71,6 @@ class NotificationPreviewItem extends Component {
                     <span><strong>{creator.displayName}</strong> sent a thing back</span>
             case EventTypes.CLOSED.key:
                 return <span><strong>{creator.displayName}</strong> closed a thing</span>
-            case EventTypes.MENTIONED.key:
-                return <span><strong>{creator.displayName}</strong> mentioned you</span>
             default:
                 return <span><strong>{creator.displayName}</strong> {notification.eventType.label}</span>
         }
@@ -85,11 +83,12 @@ class NotificationPreviewItem extends Component {
             case EventTypes.COMMENT.key:
             case EventTypes.PING.key:
             case EventTypes.PONG.key:
-            case EventTypes.MENTIONED.key:
                 return styleVars.yellowCircleColor
             case EventTypes.CREATED.key:
             case EventTypes.SENT_BACK.key:
-                return styleVars.blueCircleColor
+                return notification.payload && notification.payload.isMentioned ?
+                    styleVars.yellowCircleColor :
+                    styleVars.blueCircleColor
             case EventTypes.CLOSED.key:
             case EventTypes.DISMISSED.key:
                 return styleVars.redCircleColor

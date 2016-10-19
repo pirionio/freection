@@ -14,8 +14,6 @@ export function listenToUpdates(email, pushToken, dispatch) {
         if (event.showNew)
             dispatch(WhatsNewActions.notificationReceived(event))
 
-        console.log(event)
-
         if (event.eventType.key === EventTypes.COMMENT.key)
             dispatch(EventActions.commentCreated(event))
 
@@ -45,9 +43,6 @@ export function listenToUpdates(email, pushToken, dispatch) {
 
         if (event.eventType.key === EventTypes.PONG.key)
             dispatch(EventActions.ponged(event))
-
-        if (event.eventType.key === EventTypes.MENTIONED.key)
-            dispatch(EventActions.mentioned(event))
 
         if (event.eventType.key === EventTypes.UNMUTED.key)
             dispatch(EventActions.unmuted(event))

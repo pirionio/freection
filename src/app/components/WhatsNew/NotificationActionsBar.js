@@ -40,7 +40,12 @@ class NotificationActionsBar extends Component {
 
     showFollowUp() {
         const {notification} = this.props
-        return [EventTypes.MENTIONED.key, EventTypes.SENT_BACK.key].includes(notification.eventType.key)
+        // You have the Follow Up action if:
+        // You were mentioned directly in a comment.
+        // You were mentioned in a new Thing.
+        // You were mentioned sometime in a Thing, which is now reopened, and you are not the To recipient (the prospected doer) of the Thing.
+        return (notification.eventType.key === EventTypes.COMMENT.key &&  notification.payload.isMentioned) ||
+            ([EventTypes.CREATED.key, EventTypes.SENT_BACK.key].includes(notification.eventType.key) && notification.thing.isMentioned && !notification.thing.isTo)
     }
 
     showUnfollow() {
@@ -56,6 +61,11 @@ class NotificationActionsBar extends Component {
         } else {
             return 'Unfollow'
         }
+    }
+
+    showDiscardMention() {
+        const {notification} = this.props
+        return notification.payload.isMentioned
     }
 
     showDiscardSentBack() {
@@ -102,6 +112,12 @@ class NotificationActionsBar extends Component {
         const unfollowAction = UnfollowAction(notification.thing, this.getUnfollowLabel())
         unfollowAction.show = unfollowAction.show && this.showUnfollow()
 
+        const discardMentionComment = DiscardNotificationAction(notification, EventTypes.COMMENT)
+        discardMentionComment.show = discardMentionComment.show && this.showDiscardMention()
+
+        const discardCreated = DiscardNotificationAction(notification, EventTypes.CREATED)
+        discardCreated.show = discardCreated.show && this.showDiscardMention()
+
         const discardSentBackAction = DiscardNotificationAction(notification, EventTypes.SENT_BACK)
         discardSentBackAction.show = discardSentBackAction.show && this.showDiscardSentBack()
 
@@ -126,12 +142,13 @@ class NotificationActionsBar extends Component {
             discardDismissedAction,
             followUpAction,
             unfollowAction,
+            discardCreated,
             discardSentBackAction,
+            discardMentionComment,
             discardClosedAction,
             DiscardCommentsAction(notification),
             DiscardNotificationAction(notification, EventTypes.PING),
-            DiscardNotificationAction(notification, EventTypes.PONG),
-            DiscardNotificationAction(notification, EventTypes.MENTIONED)
+            DiscardNotificationAction(notification, EventTypes.PONG)
         ]
 
         return (

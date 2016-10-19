@@ -3,7 +3,7 @@ import EventTypes from '../../../common/enums/event-types'
 import UserTypes from '../../../common/enums/user-types'
 import * as analytics from '../utils/analytics.js'
 
-export function createCreated(creator, thing, getShowNewList, body, emailId) {
+export function createCreated(creator, thing, getShowNewList, mentionedUserIds, body, emailId) {
     analytics.thingCreated(thing)
 
     return Event.save({
@@ -14,6 +14,7 @@ export function createCreated(creator, thing, getShowNewList, body, emailId) {
         payload: {
             text: body,
             readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : [],
+            mentioned: mentionedUserIds,
             emailId
         },
         showNewList: getShowNewList(creator, thing, EventTypes.CREATED.key)
@@ -63,7 +64,7 @@ export function createDone(creator, thing, getShowNewList, messageText) {
     })
 }
 
-export function createComment(creator, createdAt, thing, getShowNewList, commentText, commentHtml, emailId) {
+export function createComment(creator, createdAt, thing, getShowNewList, mentionedUserIds, commentText, commentHtml, emailId) {
     const showNewList = getShowNewList(creator, thing, EventTypes.COMMENT.key)
 
     analytics.commentCreated(creator, thing, showNewList)
@@ -77,7 +78,8 @@ export function createComment(creator, createdAt, thing, getShowNewList, comment
             emailId,
             html: commentHtml,
             text: commentText,
-            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
+            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : [],
+            mentioned: mentionedUserIds
         },
         showNewList
     })
@@ -157,27 +159,8 @@ export function createCloseAck(creator, thing, getShowNewList) {
     })
 }
 
-export function createMentioned(creator, thing, getShowNewList, mentionedUser, messageText) {
-    const showNewList = getShowNewList(creator, thing, EventTypes.MENTIONED.key)
-
-    analytics.mentioned(creator, thing, mentionedUser.id)
-
-    return Event.save({
-        thingId: thing.id,
-        eventType: EventTypes.MENTIONED.key,
-        createdAt: new Date(),
-        creator,
-        payload: {
-            mentionedUserId: mentionedUser.id,
-            text: messageText,
-            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
-        },
-        showNewList
-    })
-}
-
 export function createUnmute(creator, thing, getShowNewList) {
-    analytics.unmuted(creator, thing)
+    analytics.joined(creator, thing)
 
     return Event.save({
         thingId: thing.id,

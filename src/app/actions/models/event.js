@@ -38,10 +38,6 @@ module.exports = {
             params: ['event']
         },
         {
-            name: 'mentioned',
-            params: ['event']
-        },
-        {
             name: 'unmuted',
             params: ['event']
         },

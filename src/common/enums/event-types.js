@@ -39,10 +39,6 @@ export default {
         key: 'SENT_BACK',
         label: 'Sent back'
     },
-    MENTIONED: {
-        key: 'MENTIONED',
-        label: 'Mentioned'
-    },
     UNMUTED: {
         key: 'UNMUTED',
         label: 'Unmuted'

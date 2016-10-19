@@ -74,7 +74,7 @@ export function PongAction(thing, currentUser, options={}) {
 export function DiscardCommentsAction(notification) {
     return {
         component: <Action label="Discard" doFunc={ThingCommandActions.discardComments} item={notification} key="action-Discard" />,
-        show: notification.eventType.key === EventTypes.COMMENT.key
+        show: notification.eventType.key === EventTypes.COMMENT.key && (!notification.payload || !notification.payload.isMentioned)
     }
 }
 

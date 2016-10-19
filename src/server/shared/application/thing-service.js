@@ -76,14 +76,13 @@ export async function newThing(user, to, subject, body) {
 
     try {
         const toAddress = await getToAddress(to)
-        const mentionedUsers = await getNewMentions(body)
-        
-        const thing = await saveNewThing(body, subject, creator, toAddress, mentionedUsers)
-        await EventCreator.createCreated(creator, thing, getShowNewList, body, thing.getEmailId())
-        await createMentionEvents(mentionedUsers, creator, thing, body)
+        const mentionedUserIds = await getMentionsFromText(body)
+
+        const thing = await saveNewThing(body, subject, creator, toAddress, mentionedUserIds)
+        await EventCreator.createCreated(creator, thing, getShowNewList, mentionedUserIds, body, thing.getEmailId())
 
         if (thing.isSelf()) {
-            await EventCreator.createAccepted(creator, thing, getShowNewList)
+            await EventCreator.createAccepted(creator, thing, getShowNewList, mentionedUserIds)
         }
 
         await sendEmailForThing(thing, user, toAddress, subject, body)
@@ -128,7 +127,6 @@ export async function dismiss(user, thingId, messageText) {
         await thing.save()
 
         await Event.discardUserEvents(thingId, user.id)
-        await Event.discardThingEventsByType(thingId, EventTypes.MENTIONED.key)
 
         const event = await EventCreator.createDismissed(creator, thing, getShowNewList, messageText)
         await sendEmailForEvent(user, thing, event)
@@ -215,7 +213,6 @@ export async function markAsDone(user, thingId, messageText) {
         await thing.save()
         
         await Event.discardUserEvents(thingId, user.id)
-        await Event.discardThingEventsByType(thingId, EventTypes.MENTIONED.key)
 
         let event = await EventCreator.createDone(creator, thing, getShowNewList, messageText)
         await sendEmailForEvent(user, thing, event)
@@ -303,14 +300,12 @@ export async function comment(user, thingId, commentText) {
 
         const thing = await Thing.get(thingId).run()
 
-        const comment = await EventCreator.createComment(creator, new Date(), thing, getShowNewList, commentText)
+        const mentionedUserIds = await getMentionsFromText(commentText)
+        const comment = await EventCreator.createComment(creator, new Date(), thing,
+            (creator, thing, eventType) => getShowNewList(creator, thing, eventType, null, mentionedUserIds),
+            mentionedUserIds, commentText)
 
-        // It's important to update the mentioned users in the Thing only after generating the Comment event,
-        // because otherwise the new mentioned users will get the Comment event itslef - which they should not yet get -
-        // they should only get the Mentioned event now.
-        const newMentionedUsers = await getNewMentions(commentText, thing)
-        await updateThingMentions(thing, newMentionedUsers)
-        await createMentionEvents(newMentionedUsers, creator, thing, commentText)
+        await updateThingMentions(thing, mentionedUserIds)
 
         await sendEmailForEvent(user, thing, comment)
 
@@ -343,7 +338,8 @@ export async function followUp(user, thingId) {
 
             await EventCreator.createFollowedUp(creator, thing, getShowNewList)
 
-            await Event.discardUserEventsByType(thingId, EventTypes.MENTIONED.key, user.id)
+            await Event.discardUserEventsByType(thingId, EventTypes.CREATED.key, user.id)
+            await Event.discardUserEventsByType(thingId, EventTypes.COMMENT.key, user.id)
             await Event.discardUserEventsByType(thingId, EventTypes.SENT_BACK.key, user.id)
         }
 
@@ -434,7 +430,7 @@ export function syncThingWithMessage(thingId, message) {
                     .map(comment => comment.payload.emailId)
 
             if (!emailIds.includes(message.id)) {
-                return EventCreator.createComment(message.creator, message.createdAt, thing, getShowNewList, message.payload.text,
+                return EventCreator.createComment(message.creator, message.createdAt, thing, getShowNewList, [], message.payload.text,
                     message.payload.html, message.id)
             }
         })
@@ -455,7 +451,7 @@ export function addCommentFromEmail(thingId, messageId, from, date, text, html) 
                     .map(comment => comment.payload.emailId)
 
             if (!emailIds.includes(messageId)) {
-                return EventCreator.createComment(creator, date, thing, getShowNewList, text, html, messageId)
+                return EventCreator.createComment(creator, date, thing, getShowNewList, [], text, html, messageId)
             }
         })
         .catch(error => {
@@ -553,14 +549,14 @@ async function sendEmailForEvent(user, thing, event) {
         .catch(error => logger.error(`Error while sending email from ${user.email} to ${emailRecipients}`, error))
 }
 
-function saveNewThing(body, subject, creator, to, mentions) {
+function saveNewThing(body, subject, creator, to, mentionedUserIds) {
     // check if thing is self thing (assigned to creator)
     const isSelfThing = creator.id === to.id
     const status = isSelfThing ? ThingStatus.INPROGRESS.key : ThingStatus.NEW.key
     const followUpers = isSelfThing ? [] : [creator.id]
     const doers = isSelfThing ? [creator.id] : []
-    const mentioned = mentions.map(mention => mention.id)
-    const subscribers = []
+    const mentioned = mentionedUserIds
+    const subscribers = mentionedUserIds
 
     return Thing.save({
         createdAt: new Date(),
@@ -584,23 +580,22 @@ function isCreatorOrMentioned(thing, user) {
     return thing.mentioned.includes(user.id) || thing.creator.id === user.id
 }
 
-async function updateThingMentions(thing, newMentionedUsers) {
-    if (!newMentionedUsers || !newMentionedUsers.length) {
+async function updateThingMentions(thing, mentionedUserIds) {
+    if (!mentionedUserIds || !mentionedUserIds.length)
         return
-    }
 
-    const newMentionedUserIds = map(newMentionedUsers, 'id')
-    thing.mentioned = [...thing.mentioned, ...newMentionedUserIds]
-    thing.all = uniq([...thing.all, ...newMentionedUserIds])
+    thing.mentioned = uniq([...thing.mentioned, ...mentionedUserIds])
+    thing.subscribers = uniq([...thing.subscribers, ...mentionedUserIds])
+    thing.all = uniq([...thing.all, ...mentionedUserIds])
     await thing.save()
 }
 
-function getShowNewList(user, thing, eventType, previousStatus) {
+function getShowNewList(user, thing, eventType, previousStatus, mentionedUserIdsInEvent) {
     let showNewList
 
     switch (eventType) {
         case EventTypes.CREATED.key:
-            showNewList = getToList(thing)
+            showNewList = [...getToList(thing), ...thing.mentioned]
             break
         case EventTypes.DISMISSED.key:
         case EventTypes.DONE.key:
@@ -616,7 +611,7 @@ function getShowNewList(user, thing, eventType, previousStatus) {
             showNewList = union(thing.doers, thing.followUpers, thing.subscribers, getToList(thing))
             break
         case EventTypes.COMMENT.key:
-            showNewList = union(thing.followUpers, thing.doers, thing.subscribers, [thing.creator.id])
+            showNewList = union(thing.followUpers, thing.doers, thing.subscribers, mentionedUserIdsInEvent, [thing.creator.id])
             break
         case EventTypes.PING.key:
             showNewList = [...thing.doers]
@@ -664,7 +659,7 @@ function validateType(thing) {
     return thing
 }
 
-async function getNewMentions(text, thing) {
+async function getMentionsFromText(text) {
     if (!text)
         return []
 
@@ -673,7 +668,7 @@ async function getNewMentions(text, thing) {
     if (!matches || !matches.length)
         return []
 
-    return Promise.all(chain(matches)
+    const mentionedUsers = await Promise.all(chain(matches)
         .map(match => match.replace(/^\s*@/, ''))
         .uniq()
         .map(username => {
@@ -683,16 +678,8 @@ async function getNewMentions(text, thing) {
                 throw error
             })
         })
-        .filter(user => {
-            return thing && thing.mentioned ? !thing.mentioned.includes(user.id) : true
-        })
         .value()
     )
-}
 
-async function createMentionEvents(mentionedUsers, creator, thing, messageText) {
-    Promise.all(mentionedUsers
-        .filter(mentionedUser => !!mentionedUser)
-        .map(mentionedUser => EventCreator.createMentioned(creator, thing, () => [mentionedUser.id], mentionedUser, messageText))
-    )
+    return mentionedUsers.map(user => user.id)
 }
