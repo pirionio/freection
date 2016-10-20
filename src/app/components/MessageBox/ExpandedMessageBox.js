@@ -7,7 +7,6 @@ import useSheet from 'react-jss'
 import find from 'lodash/find'
 import isEmpty from 'lodash/isEmpty'
 import isNil from 'lodash/isNil'
-import Icon from 'react-fontawesome'
 import classnames from 'classnames'
 
 import Flexbox from '../UI/Flexbox'
@@ -18,6 +17,8 @@ import styleVars from '../style-vars'
 import * as ThingCommandActions from '../../actions/thing-command-actions'
 import * as MessageBoxActions from '../../actions/message-box-actions'
 import MessageTypes from '../../../common/enums/message-types'
+import Close from '../../static/close-message-box.svg'
+import Collapse from '../../static/collapse-message-box.svg'
 
 class ExpandedMessageBox extends Component {
     constructor(props) {
@@ -30,7 +31,7 @@ class ExpandedMessageBox extends Component {
         dispatch(MessageBoxActions.closeMessageBox(activeMessageBox.id))
     }
 
-    onCompressClick() {
+    onCollapseClick() {
         const {dispatch} = this.props
         dispatch(MessageBoxActions.closeExpanded())
     }
@@ -51,13 +52,13 @@ class ExpandedMessageBox extends Component {
         const {sheet: {classes}, activeMessageBox} = this.props
 
         const expandButton =
-            <Icon name="compress" className={classes.titleCompress} onClick={() => this.onCompressClick()} />
+            <img src={Collapse} className={classes.titleCollapse} onClick={() => this.onCollapseClick()} />
 
         return (
             <Flexbox className={classes.title} container="row" justifyContent="flex-end" alignItems="center">
                 <TextTruncate className={classes.titleText}>{activeMessageBox ? activeMessageBox.title: ''}</TextTruncate>
                 {expandButton}
-                <Icon name="times" className={classes.titleClose} onClick={() => this.closeMessageBox()} />
+                <img src={Close} className={classes.titleClose} onClick={() => this.closeMessageBox()} />
             </Flexbox>)
     }
 
@@ -266,13 +267,15 @@ const style = {
         marginRight: 8
     },
     titleClose: {
-        fontSize: '0.714em',
+        height: 7,
+        width: 7,
         cursor: 'pointer',
         color: 'inherit',
         marginLeft: 8
     },
-    titleCompress: {
-        fontSize: '0.714em',
+    titleCollapse: {
+        height: 7,
+        width: 7,
         cursor: 'pointer',
         color: 'inherit',
         marginLeft: 8

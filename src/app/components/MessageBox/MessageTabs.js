@@ -12,6 +12,8 @@ import MessageTypes from '../../../common/enums/message-types'
 import Flexbox from '../UI/Flexbox'
 import TextTruncate from '../UI/TextTruncate'
 import styleVars from '../style-vars'
+import Close from '../../static/close-message-box.svg'
+import Expand from '../../static/expand-message-box.svg'
 
 class MessageTabs extends Component {
     constructor(props) {
@@ -37,7 +39,7 @@ class MessageTabs extends Component {
 
         return messageBoxes.map(messageBox => {
             const expandButton = activeMessageBox && activeMessageBox.id === messageBox.id ?
-                <Icon name="expand" className={classes.tabExpand} onClick={() => this.onExpandedClick()} /> :
+                <img src={Expand} className={classes.tabExpand} onClick={() => this.onExpandedClick()} /> :
                 null
 
             const tabClass = classNames(classes.tab, activeMessageBox && activeMessageBox.id === messageBox.id && classes.tabActive)
@@ -48,7 +50,7 @@ class MessageTabs extends Component {
                         <TextTruncate>{messageBox.title}</TextTruncate>
                     </a>
                     {expandButton}
-                    <Icon name="times" className={classes.tabClose} onClick={() => this.closeMessageBox(messageBox)} />
+                    <img src={Close} className={classes.tabClose} onClick={() => this.closeMessageBox(messageBox)} />
                 </Flexbox>
             )
         })
@@ -106,12 +108,14 @@ const style = {
         minWidth: 0
     },
     tabClose: {
-        fontSize: '0.714em',
+        height: 7,
+        width: 7,
         cursor: 'pointer',
         color: 'inherit'
     },
     tabExpand: {
-        fontSize: '0.714em',
+        height: 7,
+        width: 7,
         cursor: 'pointer',
         color: 'inherit',
         marginRight: 8

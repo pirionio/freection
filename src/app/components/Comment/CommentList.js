@@ -2,7 +2,6 @@ import React, {Component, PropTypes} from 'react'
 import classAutobind from 'class-autobind'
 import useSheet from 'react-jss'
 import VisibilitySensor from 'react-visibility-sensor'
-import Icon from 'react-fontawesome'
 import {chain} from 'lodash/core'
 import last from 'lodash/last'
 
@@ -10,6 +9,7 @@ import Comment from './Comment'
 import Scrollable from '../Scrollable/Scrollable'
 import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
+import Down from '../../static/unread-comments-arrow.svg'
 
 class CommentList extends Component {
     constructor(props) {
@@ -61,7 +61,7 @@ class CommentList extends Component {
         return !this.state.isUnreadTitleVisible && currentlyUnreadComments.length && this.state.showUnreadNotification ?
             <Flexbox name="unread-notification-container" container="row" justifyContent="center" className={classes.unreadNotificationContainer}>
                 <Flexbox name="unread-notification" className={classes.unreadNotification} onClick={this.goToUnreadMessages}>
-                    <Icon name="arrow-down" className={classes.arrowDown} />
+                    <img src={Down} className={classes.arrowDown} />
                     <span>{currentlyUnreadComments.length} new messages</span>
                 </Flexbox>
             </Flexbox> :
@@ -145,17 +145,21 @@ const style = {
         width: '100%'
     },
     unreadNotification: {
-        padding: [10, 20],
+        padding: [9, 20],
         color: 'white',
         backgroundColor: styleVars.primaryColor,
         textTransform: 'uppercase',
-        letterSpacing: '0.05em',
+        letterSpacing: '0.025em',
+        fontSize: '0.857em',
         fontWeight: 500,
         borderRadius: 18,
         cursor: 'pointer'
-    },
+        },
     arrowDown: {
-        marginRight: 10
+        height: 10,
+        width: 8,
+        marginRight: 10,
+        paddingTop: 3
     }
 }
 
