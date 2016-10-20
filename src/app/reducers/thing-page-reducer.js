@@ -271,6 +271,16 @@ export default (state = initialState, action) => {
             return comment(state, action)
         case ThingCommandActionTypes.PING:
             return pingThing(state, action)
+        case ThingCommandActionTypes.DO_THING:
+            return doThing(state, action)
+        case ThingCommandActionTypes.MARK_AS_DONE:
+            return markThingAsDone(state, action)
+        case ThingCommandActionTypes.CLOSE:
+            return closeThing(state, action)
+        case ThingCommandActionTypes.DISMISS:
+            return dismissThing(state, action)
+        case ThingCommandActionTypes.SEND_BACK:
+            return sendBack(state, action)
         case ThingCommandActionTypes.MARK_COMMENT_AS_READ:
             return markCommentAsRead(state, action)
         case EventActionTypes.COMMENT_CREATED:
@@ -288,16 +298,6 @@ export default (state = initialState, action) => {
         case EventActionTypes.FOLLOW_UP:
         case EventActionTypes.UNFOLLOW:
             return statusChanged(state, action)
-        case ThingCommandActionTypes.DO_THING:
-            return doThing(state, action)
-        case ThingCommandActionTypes.MARK_AS_DONE:
-            return markThingAsDone(state, action)
-        case ThingCommandActionTypes.CLOSE:
-            return closeThing(state, action)
-        case ThingCommandActionTypes.DISMISS:
-            return dismissThing(state, action)
-        case ThingCommandActionTypes.SEND_BACK:
-            return sendBack(state, action)
         default:
             return state
     }

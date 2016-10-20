@@ -172,7 +172,6 @@ export default (state = initialState, action) => {
         case ThingCommandActionTypes.SEND_BACK:
         case ThingCommandActionTypes.CLOSE_ACK:
         case ThingCommandActionTypes.PONG:
-        case ThingCommandActionTypes.JOIN_MENTION:
             return removeNotificationsOfThing(updatedState, action)
         case ThingCommandActionTypes.DISCARD_COMMENTS:
             return discardComments(updatedState, action)
