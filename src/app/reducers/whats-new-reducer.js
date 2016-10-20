@@ -142,17 +142,14 @@ function updateThing(state, action) {
     if (!action.event || !action.event.thing)
         return state
 
-    // We ran into a bug, in which React gets stuck if it tries to replace a notification with a new object
-    // that had just arrived in the action, which is in fact the very same object.
-    // That's why in this case we'd rather skip updating the state.
-    if (some(state.notifications, notification => notification === action.event))
-        return state
-
     return immutable(state)
         .arraySetItem('notifications', notification => notification.thing.id === action.event.thing.id,
-            notification => immutable(notification)
-                .set('thing', thingReducer(notification.thing, action))
-                .value())
+            notification => {
+                return notification === action.event ? notification :
+                    immutable(notification)
+                        .set('thing', thingReducer(notification.thing, action))
+                        .value()
+            })
         .value()
 }
 
