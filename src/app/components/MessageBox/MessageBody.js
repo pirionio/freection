@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import useSheet from 'react-jss'
 import Editor from 'draft-js-plugins-editor'
 import createMentionPlugin, {defaultSuggestionsFilter} from 'draft-js-mention-plugin'
-import {EditorState, convertToRaw} from 'draft-js'
+import {EditorState, ContentState, convertToRaw} from 'draft-js'
 import 'draft-js-mention-plugin/lib/plugin.css'
 import 'draft-js/dist/Draft.css'
 import {fromJS} from 'immutable'
@@ -33,13 +33,16 @@ class MessageBody extends Component {
     }
 
     componentWillReceiveProps(props) {
-        if (props.messageBox.editorState) {
+        // Change the whole state only if the message box itself had been changed.
+        if (this.props.messageBox.id !== props.messageBox.id) {
+
+            // This the correct way to change the editor's state according to draft-js: change only its content, not the whole editor.
+            const newContentState = props.messageBox.editorState ?
+                props.messageBox.editorState.getCurrentContent() :
+                ContentState.createFromText('')
+
             this.setState({
-                editorState: props.messageBox.editorState
-            })
-        } else {
-            this.setState({
-                editorState: EditorState.createEmpty()
+                editorState: EditorState.push(this.state.editorState, newContentState)
             })
         }
     }
