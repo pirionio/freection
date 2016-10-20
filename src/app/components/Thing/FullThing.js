@@ -29,7 +29,7 @@ class FullThing extends Component {
 
     componentWillUnmount() {
         const {dispatch} = this.props
-        dispatch(ThingPageActions.hideThingPage())
+        dispatch(ThingPageActions.hide())
     }
 
     componentWillReceiveProps() {

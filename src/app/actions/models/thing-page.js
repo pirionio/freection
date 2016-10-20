@@ -2,12 +2,12 @@ module.exports = {
     name: 'thing page',
     actions: [
         {
-            name: 'show thing page',
+            name: 'show',
             private: true,
             params: ['thing']
         },
         {
-            name: 'hide thing page',
+            name: 'hide',
             private: true
         },
         {

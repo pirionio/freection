@@ -59,7 +59,7 @@ class FollowUpPreviewItem extends Component {
                          title={thing.subject}
                          date={thing.createdAt}
                          expandedMessages={this.getExpandedMessages()}
-                         onClick={() => dispatch(ThingPageActions.showThingPage(thing))}>
+                         onClick={() => dispatch(ThingPageActions.show(thing))}>
                 <PreviewItemStatus>
                     {this.getStatusText()}
                 </PreviewItemStatus>

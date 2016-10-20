@@ -52,7 +52,7 @@ class AllThingsPreviewItem extends Component {
             <PreviewItem circleColor={this.getCircleColor()}
                          title={thing.subject}
                          date={thing.createdAt}
-                         onClick={() => dispatch(ThingPageActions.showThingPage(thing))}>
+                         onClick={() => dispatch(ThingPageActions.show(thing))}>
                 <PreviewItemStatus>
                     {this.getStatusText()}
                 </PreviewItemStatus>

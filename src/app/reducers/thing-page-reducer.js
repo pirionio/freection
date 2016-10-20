@@ -243,7 +243,7 @@ export default (state = initialState, action) => {
             return reconnected(state, action)
         case ThingPageActionTypes.GET_THING:
             return get(state, action)
-        case ThingPageActionTypes.HIDE_THING_PAGE:
+        case ThingPageActionTypes.HIDE:
             return hide(state, action)
         case ThingCommandActionTypes.COMMENT:
             return comment(state, action)

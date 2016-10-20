@@ -1,7 +1,7 @@
 import {push} from 'react-router-redux'
 import find from 'lodash/find'
 
-import {_getThing, _showThingPage, _hideThingPage} from'./generated/thing-page-actions'
+import {_getThing, _show, _hide} from'./generated/thing-page-actions'
 import * as MessageBoxActions from './message-box-actions'
 import * as GlassPaneActions from '../actions/glass-pane-actions'
 import {GlassPaneIds} from '../constants'
@@ -18,13 +18,13 @@ export function getThing(thingId) {
     }
 }
 
-export function showThingPage(thing) {
+export function show(thing) {
     return (dispatch, getState) => {
         dispatch(push(`${window.location.pathname}/${thing.id}`))
         dispatch(GlassPaneActions.show(GlassPaneIds.MAIN_APP, () => {
             dispatch(GlassPaneActions.hide(GlassPaneIds.MAIN_APP))
         }))
-        dispatch(_showThingPage(thing))
+        dispatch(_show(thing))
 
         // By default, entering the Thing page won't open a reply Message Box.
         // But, if the Message Box is already open, then we DO open a reply Message Box.
@@ -36,13 +36,13 @@ export function showThingPage(thing) {
     }
 }
 
-export function hideThingPage() {
+export function hide() {
     return (dispatch, getState) => {
         const {thingPage, messagePanel} = getState()
         const thingId = thingPage.thing.id
 
         dispatch(GlassPaneActions.hide(GlassPaneIds.MAIN_APP))
-        dispatch(_hideThingPage())
+        dispatch(_hide())
 
         const thingMessageBox = find(messagePanel.messageBoxes, {context: {id: thingId}})
         thingMessageBox && dispatch(MessageBoxActions.closeMessageBox(thingMessageBox.id))

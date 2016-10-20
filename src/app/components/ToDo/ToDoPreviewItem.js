@@ -42,7 +42,7 @@ class TodoPreviewItem extends Component {
                          title={thing.subject}
                          date={thing.createdAt}
                          expandedMessages={this.getExpandedMessages()}
-                         onClick={() => dispatch(ThingPageActions.showThingPage(thing))}>
+                         onClick={() => dispatch(ThingPageActions.show(thing))}>
                 <PreviewItemStatus>
                     <strong>{thing.creator.displayName}</strong>
                 </PreviewItemStatus>

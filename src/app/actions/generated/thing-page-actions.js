@@ -2,16 +2,16 @@ import ThingPageActionsTypes from '../types/thing-page-action-types'
 import {ActionStatus} from '../../constants'
 import * as ResourceUtil from '../../util/resource-util'
 
-export function _showThingPage(thing) {
+export function _show(thing) {
     return {
-        type: ThingPageActionsTypes.SHOW_THING_PAGE,
+        type: ThingPageActionsTypes.SHOW,
         thing
     }
 }
 
-export function _hideThingPage() {
+export function _hide() {
     return {
-        type: ThingPageActionsTypes.HIDE_THING_PAGE        
+        type: ThingPageActionsTypes.HIDE        
     }
 }
 

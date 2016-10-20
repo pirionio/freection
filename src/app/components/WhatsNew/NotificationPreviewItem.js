@@ -108,7 +108,7 @@ class NotificationPreviewItem extends Component {
                              title={notification.thing.subject}
                              date={notification.createdAt}
                              expandedMessages={this.getExpandedMessages()}
-                             onClick={() => dispatch(ThingPageActions.showThingPage(notification.thing))}>
+                             onClick={() => dispatch(ThingPageActions.show(notification.thing))}>
                 <PreviewItemStatus>
                     {this.getStatusText()}
                 </PreviewItemStatus>
