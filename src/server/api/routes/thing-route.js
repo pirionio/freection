@@ -67,7 +67,7 @@ router.post('/:type/:thingId/dismiss', (request, response) => {
     EndpointUtil.handlePost(request, response, getServiceByType(request).dismiss, {
         params: ['thingId'],
         body: ['messageText'],
-        result: false,
+        result: true,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
             illegalOperation: getIllegalOperationErrorTemplate(),
@@ -80,7 +80,7 @@ router.post('/:thingId/done', (request, response) => {
     EndpointUtil.handlePost(request, response, ThingService.markAsDone, {
         params: ['thingId'],
         body: ['messageText'],
-        result: false,
+        result: true,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
             illegalOperation: getIllegalOperationErrorTemplate(),
@@ -93,7 +93,7 @@ router.post('/:type/:thingId/close', (request, response) => {
     EndpointUtil.handlePost(request, response, getServiceByType(request).close, {
         params: ['thingId'],
         body: ['messageText'],
-        result: false,
+        result: true,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
             illegalOperation: getIllegalOperationErrorTemplate(),
@@ -117,7 +117,7 @@ router.post('/:thingId/sendback', (request, response) => {
     EndpointUtil.handlePost(request, response, ThingService.sendBack, {
         params: ['thingId'],
         body: ['messageText'],
-        result: false,
+        result: true,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
             illegalOperation: getIllegalOperationErrorTemplate(),

@@ -178,7 +178,7 @@ export function closeAck(thing) {
     }
 }
 
-export function close(thing, messageText) {
+export function _close(thing, messageText) {
     return dispatch => {
         analytics.close()
 
@@ -194,8 +194,8 @@ export function close(thing, messageText) {
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.CLOSE, 
                 status: ActionStatus.COMPLETE,
-                thing,
-                messageText
+                thing: thing,
+                event: result
             }))
             .catch(() => dispatch({
                 type: ThingCommandActionsTypes.CLOSE, 
@@ -206,7 +206,7 @@ export function close(thing, messageText) {
     }
 }
 
-export function dismiss(thing, messageText) {
+export function _dismiss(thing, messageText) {
     return dispatch => {
         analytics.dismiss()
 
@@ -222,8 +222,8 @@ export function dismiss(thing, messageText) {
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.DISMISS, 
                 status: ActionStatus.COMPLETE,
-                thing,
-                messageText
+                thing: thing,
+                event: result
             }))
             .catch(() => dispatch({
                 type: ThingCommandActionsTypes.DISMISS, 
@@ -234,7 +234,7 @@ export function dismiss(thing, messageText) {
     }
 }
 
-export function markAsDone(thing, messageText) {
+export function _markAsDone(thing, messageText) {
     return dispatch => {
         analytics.done()
 
@@ -250,8 +250,8 @@ export function markAsDone(thing, messageText) {
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.MARK_AS_DONE, 
                 status: ActionStatus.COMPLETE,
-                thing,
-                messageText
+                thing: thing,
+                event: result
             }))
             .catch(() => dispatch({
                 type: ThingCommandActionsTypes.MARK_AS_DONE, 
@@ -354,7 +354,7 @@ export function mute(thing) {
     }
 }
 
-export function sendBack(thing, messageText) {
+export function _sendBack(thing, messageText) {
     return dispatch => {
         analytics.sendback()
 
@@ -370,8 +370,8 @@ export function sendBack(thing, messageText) {
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.SEND_BACK, 
                 status: ActionStatus.COMPLETE,
-                thing,
-                messageText
+                thing: thing,
+                event: result
             }))
             .catch(() => dispatch({
                 type: ThingCommandActionsTypes.SEND_BACK, 

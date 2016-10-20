@@ -86,7 +86,12 @@ module.exports = {
             body: {
                 messageText: 'messageText'
             },
-            track: 'close'
+            completeParams: {
+                thing: 'thing',
+                event: 'result'
+            },
+            track: 'close',
+            private: true
         },
         {
             name: 'dismiss',
@@ -96,7 +101,12 @@ module.exports = {
             body: {
                 messageText: 'messageText'
             },
-            track: 'dismiss'
+            completeParams: {
+                thing: 'thing',
+                event: 'result'
+            },
+            track: 'dismiss',
+            private: true
         },
         {
             name: 'mark as done',
@@ -106,7 +116,12 @@ module.exports = {
             body: {
                 messageText: 'messageText'
             },
-            track: 'done'
+            completeParams: {
+                thing: 'thing',
+                event: 'result'
+            },
+            track: 'done',
+            private: true
         },
         {
             name: 'discard comments',
@@ -150,7 +165,12 @@ module.exports = {
             body: {
                 messageText: 'messageText'
             },
-            track: 'sendback'
+            completeParams: {
+                thing: 'thing',
+                event: 'result'
+            },
+            track: 'sendback',
+            private: true
         },
         {
             name: 'follow up',

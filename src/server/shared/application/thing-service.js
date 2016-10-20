@@ -130,6 +130,8 @@ export async function dismiss(user, thingId, messageText) {
 
         const event = await EventCreator.createDismissed(creator, thing, getShowNewList, messageText)
         await sendEmailForEvent(user, thing, event)
+        
+        return event
 
     } catch(error) {
         logger.error(`error while dismissing thing ${thingId} by user ${user.email}`, error)
@@ -176,6 +178,8 @@ export async function close(user, thingId, messageText) {
             messageText)
 
         await sendEmailForEvent(user, thing, event)
+        
+        return event
     } catch(error) {
         logger.error(`error while closing thing ${thingId} by user ${user.email}:`, error)
         throw error

@@ -214,6 +214,10 @@ function closeThing(state, action) {
     return asyncStatusOperation(state, action, ThingStatus.CLOSE.key)
 }
 
+function sendBack(state, action) {
+    return asyncStatusOperation(state, action, ThingStatus.REOPENED.key)
+}
+
 function asyncStatusOperation(state, action, status) {
     if (!state.thing || !action.thing || state.thing.id !== action.thing.id)
         return state
@@ -229,6 +233,7 @@ function asyncStatusOperation(state, action, status) {
                 .touch('thing.payload')
                 .set('thing.payload.status', currentStatus => updateStatus(currentStatus, status))
                 .set('ongoingAction', false)
+                .arrayMergeItem('thing.events', {id: action.event.id}, getInitialReadBy)
                 .value()
         case ActionStatus.ERROR:
         default:
@@ -277,6 +282,7 @@ export default (state = initialState, action) => {
         case EventActionTypes.MARKED_AS_DONE:
         case EventActionTypes.CLOSED:
         case EventActionTypes.DISMISSED:
+        case EventActionTypes.SENT_BACK:
         case EventActionTypes.UNMUTED:
         case EventActionTypes.MUTED:
         case EventActionTypes.FOLLOW_UP:
@@ -290,6 +296,8 @@ export default (state = initialState, action) => {
             return closeThing(state, action)
         case ThingCommandActionTypes.DISMISS:
             return dismissThing(state, action)
+        case ThingCommandActionTypes.SEND_BACK:
+            return sendBack(state, action)
         default:
             return state
     }
