@@ -35,16 +35,11 @@ class PreviewsContainer extends Component {
         const texts = noPreviews.texts.map((text, index) => <span key={`text-${index}`} className={classes.noPreviewsText}>{text}</span>)
 
         return (
-            <Flexbox name="preview-container" grow={1} container="column" justifyContent="flex-end">
-                <Flexbox name="preview-content" grow={1} container="column" justifyContent="center" alignItems="center">
-                    <Flexbox container="column">
-                        <span className={classes.noPreviewsLogo} style={{color: noPreviews.logoColor}}>***</span>
-                        {texts}
-                        <span className={classes.noPreviewsLogo} style={{color: noPreviews.logoColor}}>***</span>
-                    </Flexbox>
-                </Flexbox>
-                <Flexbox container="column" alignSelf="center" className={classes.messagePanel}>
-                    <MessagePanel />
+            <Flexbox name="preview-content" grow={1} container="column" justifyContent="center" alignItems="center">
+                <Flexbox container="column">
+                    <span className={classes.noPreviewsLogo} style={{color: noPreviews.logoColor}}>***</span>
+                    {texts}
+                    <span className={classes.noPreviewsLogo} style={{color: noPreviews.logoColor}}>***</span>
                 </Flexbox>
             </Flexbox>
         )
@@ -55,39 +50,41 @@ class PreviewsContainer extends Component {
     }
 
     getPreviews() {
-        const {previewItems, children, sheet: {classes}} = this.props
+        const {previewItems, sheet: {classes}} = this.props
 
         // We use the children props to understand if we're in full-item mode or not.
         // The children arrive from the Router, and they would exist if the user navigated to a route that has a full-item in it.
         // The Message Panel, in this case, is included in the full item page, so that it appears above the overlay.
 
         return (
-            <Flexbox name="preview-container" grow={1} container="column" justifyContent="flex-end">
-                <Flexbox name="preview-content" container="column" grow={1} style={{marginBottom: '15px'}}>
-                    <Scrollable className={this.isInFullItemMode() && classes.blur}>
-                        {previewItems}
-                    </Scrollable>
-                    {this.isInFullItemMode() ? children : null}
-                </Flexbox>
-                {!this.isInFullItemMode() ?
-                    <Flexbox container="column" alignSelf="center" className={classes.messagePanel}>
-                        <MessagePanel />
-                    </Flexbox> :
-                    null}
+            <Flexbox name="preview-content" container="column" grow={1} style={{marginBottom: '15px'}}>
+                <Scrollable className={this.isInFullItemMode() && classes.blur}>
+                    {previewItems}
+                </Scrollable>
             </Flexbox>
         )
     }
 
     render () {
-        const {previewItems, invalidationStatus} = this.props
+        const {children, previewItems, invalidationStatus, sheet: {classes}} = this.props
 
         if (invalidationStatus === InvalidationStatus.FETCHING)
             return this.getFetching()
 
-        if (!previewItems || (isArray(previewItems) && !previewItems.length))
-            return this.getNoPreviews()
+        const content = !previewItems || (isArray(previewItems) && !previewItems.length) ? this.getNoPreviews() :
+                        this.getPreviews()
 
-        return this.getPreviews()
+        return (
+            <Flexbox name="preview-container" grow={1} container="column" justifyContent="flex-end">
+                {this.isInFullItemMode() ? children : null}
+                {content}
+                {!this.isInFullItemMode() ?
+                 <Flexbox container="column" alignSelf="center" className={classes.messagePanel}>
+                     <MessagePanel />
+                 </Flexbox> :
+                 null}
+            </Flexbox>
+        )
     }
 }
 
