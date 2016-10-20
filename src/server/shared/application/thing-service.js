@@ -163,6 +163,9 @@ export async function close(user, thingId, messageText) {
         // saving the thing
         await thing.save()
 
+        // Discard all user events
+        await Event.discardUserEvents(thingId, user.id)
+
         // Discard all existing user events from the Whatsnew page
         if ([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(previousStatus))
             await Event.discardThingEvents(thingId)
