@@ -25,8 +25,8 @@ export function getAllThings(user) {
 }
 
 export function getWhatsNew(user) {
-    return Event.getWhatsNew(user.id)
-        .then(events => events.map(event => eventToDto(event, user)))
+    return Event.getWhatsNew(user.id, true)
+        .then(events => events.map(event => eventToDto(event, user, {includeFullThing: true})))
         .catch(error => {
             logger.error(`error while fetching whats new for user ${user.email}`, error)
             throw error

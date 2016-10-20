@@ -1,5 +1,5 @@
 import isUndefined from 'lodash/isUndefined'
-import head from 'lodash/head'
+import find from 'lodash/find'
 
 import EventActionTypes from '../actions/types/event-action-types'
 import ThingPageActionTypes from '../actions/types/thing-page-action-types'
@@ -35,12 +35,14 @@ function getInitialReadBy(event) {
 }
 
 function getUpdatedReadBy(event, thing) {
-    const existingThing = head(thing.events.filter(e => e.id === event.id))
+    const existingEvent = find(thing.events, {id: event.id})
 
-    if (existingThing) {
-        return {payload: {
-            initialIsRead: existingThing.payload.initialIsRead
-        }}
+    if (existingEvent) {
+        return {
+            payload: {
+                initialIsRead: existingEvent.payload.initialIsRead
+            }
+        }
     }
 
     return getInitialReadBy(event)
@@ -89,11 +91,24 @@ function get(state, action) {
     }
 }
 
-function hide(state, action) {
-    switch (action.status) {
-        default:
-            return initialState
-    }
+function show(state, action) {
+    const {thing} = state
+
+    return immutable(state)
+        .set('thing', action.thing)
+        .touch('thing')
+        .arrayMergeItem('thing.events', event => SharedConstants.MESSAGE_TYPED_EVENTS.includes(event.eventType.key), event => {
+            if (state.invalidationStatus === InvalidationStatus.UPDATING)
+                return getUpdatedReadBy(event, thing)
+
+            return getInitialReadBy(event)
+        })
+        .set('invalidationStatus', InvalidationStatus.FETCHED)
+        .value()
+}
+
+function hide() {
+    return initialState
 }
 
 function comment(state, action) {
@@ -243,6 +258,8 @@ export default (state = initialState, action) => {
             return reconnected(state, action)
         case ThingPageActionTypes.GET_THING:
             return get(state, action)
+        case ThingPageActionTypes.SHOW:
+            return show(state, action)
         case ThingPageActionTypes.HIDE:
             return hide(state, action)
         case ThingCommandActionTypes.COMMENT:

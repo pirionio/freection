@@ -36,9 +36,9 @@ Event.defineStatic('getAllChanges', function() {
     return this.getJoin({thing: true}).changes()
 })
 
-Event.defineStatic('getWhatsNew', function(userId) {
+Event.defineStatic('getWhatsNew', function(userId, includeFullThing = false) {
     return this.getAll(userId, {index: 'whatsnew'})
-        .getJoin({thing: true})
+        .getJoin({thing: includeFullThing ? {events: true} : true})
         .run()
 })
 
