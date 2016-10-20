@@ -42,8 +42,6 @@ export default (state, action) => {
         case EventActionTypes.CLOSED:
         case EventActionTypes.DISMISSED:
         case EventActionTypes.SENT_BACK:
-        case EventActionTypes.JOINED_MENTION:
-        case EventActionTypes.LEFT_MENTION:
         case EventActionTypes.UNMUTED:
         case EventActionTypes.MUTED:
         case EventActionTypes.FOLLOW_UP:

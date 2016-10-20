@@ -159,7 +159,6 @@ function updateThing(state, action) {
 export default (state = initialState, action) => {
 
     const updatedState = updateThing(state, action)
-    // const updatedState = state
 
     switch (action.type) {
         case WhatsNewActionTypes.SET_STATE:
