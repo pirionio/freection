@@ -427,3 +427,26 @@ export function unfollow(thing) {
             }))
     }
 }
+
+export function closedUnfollow(thing) {
+    return dispatch => {
+        analytics.unfollow()
+
+        dispatch({
+            type: ThingCommandActionsTypes.CLOSED_UNFOLLOW, 
+            status: ActionStatus.START,
+            thing
+        })
+        return ResourceUtil.post(`/api/things/${thing.id}/unfollow`)
+            .then(result => dispatch({
+                type: ThingCommandActionsTypes.CLOSED_UNFOLLOW, 
+                status: ActionStatus.COMPLETE,
+                thing
+            }))
+            .catch(() => dispatch({
+                type: ThingCommandActionsTypes.CLOSED_UNFOLLOW, 
+                status: ActionStatus.ERROR,
+                thing
+            }))
+    }
+}

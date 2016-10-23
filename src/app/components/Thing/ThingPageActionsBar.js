@@ -2,12 +2,11 @@ import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
 
-import ActionsBar from '../Actions/ActionsBar'
-import {DoAction, DoneAction, DismissAction, CloseAction, SendBackAction, Unmute, Mute, FollowUpAction,
-    UnfollowAction} from '../Actions/Actions'
+import CommandsBar from '../Commands/CommandsBar'
 import * as MessageBoxActions from '../../actions/message-box-actions'
-import ThingStatus from '../../../common/enums/thing-status'
 import MessageTypes from '../../../common/enums/message-types'
+import {getThingAllowedCommands} from '../../services/thing-service.js'
+import ThingCommandActionTypes from '../../actions/types/thing-command-action-types.js'
 
 class ThingPageActionsBar extends Component {
     constructor(props) {
@@ -19,34 +18,37 @@ class ThingPageActionsBar extends Component {
         return this.props.ongoingAction
     }
 
-    generatePreDoFunc(messageBoxTitle) {
+    requireText(command, sendAction) {
         const {dispatch, thing} = this.props
-        return action => {
-            dispatch(MessageBoxActions.newMessageBox(MessageTypes.THING_ACTION, thing, action, messageBoxTitle))
-        }
+
+        const messageBoxTitle =
+            command === ThingCommandActionTypes.MARK_AS_DONE ? 'Done' :
+            command === ThingCommandActionTypes.DISMISS ? 'Dismiss' :
+            command === ThingCommandActionTypes.SEND_BACK ? 'Send Back' :
+            command === ThingCommandActionTypes.CLOSE ? 'Close' : ''
+
+        dispatch(MessageBoxActions.newMessageBox(MessageTypes.THING_ACTION, thing, sendAction, messageBoxTitle))
     }
 
     render() {
-        const {thing, currentUser} = this.props
+        const {thing} = this.props
 
-        const actions = [
-            DoAction(thing, currentUser, this.isDisabled()),
-            DoneAction(thing, currentUser, {disabled: this.isDisabled(), preDoFunc: !thing.isSelf ? this.generatePreDoFunc('Done') : undefined}),
-            DismissAction(thing, currentUser, {disabled: this.isDisabled(), preDoFunc: this.generatePreDoFunc('Dismiss')}),
-            SendBackAction(thing, currentUser, {disabled: this.isDisabled(), preDoFunc: this.generatePreDoFunc('Send Back')}),
-            CloseAction(thing, currentUser, {
-                disabled: this.isDisabled(),
-                preDoFunc: [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status) ?
-                    this.generatePreDoFunc('Close') : undefined}),
-            FollowUpAction(thing),
-            Unmute(thing),
-            UnfollowAction(thing),
-            Mute(thing)
-        ]
+        const commands = getThingAllowedCommands(thing, [
+            ThingCommandActionTypes.DO_THING,
+            ThingCommandActionTypes.MARK_AS_DONE,
+            ThingCommandActionTypes.DISMISS,
+            ThingCommandActionTypes.SEND_BACK,
+            ThingCommandActionTypes.CLOSE,
+            ThingCommandActionTypes.FOLLOW_UP,
+            ThingCommandActionTypes.UNFOLLOW,
+            ThingCommandActionTypes.CLOSED_UNFOLLOW,
+            ThingCommandActionTypes.MUTE,
+            ThingCommandActionTypes.UNMUTE
+        ])
 
         return (
             <div name="thing-page-actions-bar">
-                <ActionsBar actions={actions} supportRollover={false} />
+                <CommandsBar thing={thing} commands={commands} requireTextFunc={this.requireText} supportRollover={false} />
             </div>
         )
     }

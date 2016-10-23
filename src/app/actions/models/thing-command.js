@@ -185,6 +185,13 @@ module.exports = {
             type: 'post',
             path: '/api/things/${thing.id}/unfollow',
             track: 'unfollow'
+        },
+        {
+            name: 'closed_unfollow',
+            params: ['thing'],
+            type: 'post',
+            path: '/api/things/${thing.id}/unfollow',
+            track: 'unfollow'
         }
     ]
 }
