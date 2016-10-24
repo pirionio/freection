@@ -75,7 +75,7 @@ export async function newThing(user, to, subject, body) {
     const creator = userToAddress(user)
 
     try {
-        const toAddress = await getToAddress(to)
+        const toAddress = await getToAddress(user, to)
         const mentionedUserIds = await getMentionsFromText(body)
 
         const thing = await saveNewThing(body, subject, creator, toAddress, mentionedUserIds)
@@ -468,17 +468,24 @@ export function addCommentFromEmail(thingId, messageId, from, date, text, html) 
         })
 }
 
-function getToAddress(to) {
+async function getToAddress(user, to) {
     const email = AddressParser.parseOneAddress(to).address
 
-    return User.getUserByEmail(email)
-        .then(toUser => userToAddress(toUser))
-        .catch(error => {
-            if (error !== 'NotFound')
-                throw error
-            else
-                return emailToAddress(to)
-        })
+    try {
+        const toUser = await User.getUserByEmail(email)
+
+        // Only when users are in same organization you can send a thing in freection
+        if (toUser.organization !== user.organization) {
+            return emailToAddress(to)
+        }
+
+        return userToAddress(toUser)
+    } catch (error) {
+        if (error !== 'NotFound')
+            throw error
+        else
+            return emailToAddress(to)
+    }
 }
 
 function getReplyAddress(thingId) {
