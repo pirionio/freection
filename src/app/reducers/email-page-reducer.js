@@ -2,6 +2,7 @@ import isUndefined from 'lodash/isUndefined'
 import head from 'lodash/head'
 
 import EventActionTypes from '../actions/types/event-action-types'
+import SystemEventActionTypes from '../actions/types/system-event-action-types'
 import EmailPageActionTypes from '../actions/types/email-page-action-types'
 import EmailCommandActionTypes from '../actions/types/email-command-action-types'
 import {ActionStatus, InvalidationStatus} from '../constants'
@@ -111,7 +112,7 @@ function getUpdatedReadBy(event, thread) {
 export default (state = initialState, action) => {
     switch (action.type) {
         case EmailPageActionTypes.REQUIRE_UPDATE:
-        case EventActionTypes.RECONNECTED:
+        case SystemEventActionTypes.RECONNECTED:
             return requireUpdate(state, action)
         case EmailPageActionTypes.GET_EMAIL:
             return get(state, action)

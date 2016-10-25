@@ -18,5 +18,6 @@ module.exports = [
     require('./glass-pane'),
     require('./inline-message'),
     require('./slack'),
-    require('./chrome-extension')
+    require('./chrome-extension'),
+    require('./system-event')
 ]

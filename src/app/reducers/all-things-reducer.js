@@ -2,6 +2,7 @@ import some from 'lodash/some'
 
 import AllThingsActionTypes from '../actions/types/all-things-action-types'
 import EventActionTypes from '../actions/types/event-action-types'
+import SystemEventActionTypes from '../actions/types/system-event-action-types'
 import {ActionStatus, InvalidationStatus} from '../constants'
 import thingReducer from './thing-reducer'
 import immutable from '../util/immutable'
@@ -70,7 +71,7 @@ export default (state = initialState, action) => {
     switch (action.type) {
         case AllThingsActionTypes.SET_STATE:
             return setState(state, action)
-        case EventActionTypes.RECONNECTED:
+        case SystemEventActionTypes.RECONNECTED:
             return reconnected(state)
         case AllThingsActionTypes.FETCH_ALL_THINGS:
             return allThings(state, action)

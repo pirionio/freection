@@ -60,9 +60,6 @@ module.exports = {
         {
             name: 'comment read by',
             params: ['event']
-        },
-        {
-            name: 'reconnected'
         }
     ]
 }

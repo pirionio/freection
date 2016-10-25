@@ -13,8 +13,7 @@ const EventActionsTypes = {
     FOLLOW_UP: 'EVENT_FOLLOW_UP',
     UNFOLLOW: 'EVENT_UNFOLLOW',
     COMMENT_CREATED: 'EVENT_COMMENT_CREATED',
-    COMMENT_READ_BY: 'EVENT_COMMENT_READ_BY',
-    RECONNECTED: 'EVENT_RECONNECTED'
+    COMMENT_READ_BY: 'EVENT_COMMENT_READ_BY'
 }
 
 export default EventActionsTypes
@@ -36,7 +35,6 @@ export function isOfTypeEvent(type) {
         case EventActionsTypes.UNFOLLOW:
         case EventActionsTypes.COMMENT_CREATED:
         case EventActionsTypes.COMMENT_READ_BY:
-        case EventActionsTypes.RECONNECTED:
             return true
         default:
             return false

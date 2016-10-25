@@ -106,9 +106,3 @@ export function commentReadBy(event) {
         event
     }
 }
-
-export function reconnected() {
-    return {
-        type: EventActionsTypes.RECONNECTED        
-    }
-}

@@ -4,6 +4,7 @@ import merge from 'lodash/merge'
 import ToDoActionTypes from '../actions/types/to-do-action-types'
 import ThingCommandActionTypes from '../actions/types/thing-command-action-types'
 import EventActionTypes from '../actions/types/event-action-types'
+import SystemEventActionTypes from '../actions/types/system-event-action-types'
 import {ActionStatus, InvalidationStatus} from '../constants'
 import EventTypes from '../../common/enums/event-types'
 import thingReducer from './thing-reducer'
@@ -112,7 +113,7 @@ export default (state = initialState, action) => {
     switch (action.type) {
         case ToDoActionTypes.SET_STATE:
             return setState(state, action)
-        case EventActionTypes.RECONNECTED:
+        case SystemEventActionTypes.RECONNECTED:
             return reconnected(state)
         case ToDoActionTypes.FETCH_TO_DO:
             return toDo(state, action)

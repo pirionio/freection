@@ -3,6 +3,7 @@ import some from 'lodash/some'
 import WhatsNewActionTypes from '../actions/types/whats-new-action-types'
 import ThingCommandActionTypes from '../actions/types/thing-command-action-types'
 import EventActionTypes from '../actions/types/event-action-types'
+import SystemEventActionTypes from '../actions/types/system-event-action-types'
 import {ActionStatus, InvalidationStatus} from '../constants'
 import EventTypes from '../../common/enums/event-types'
 import thingReducer from './thing-reducer'
@@ -160,7 +161,7 @@ export default (state = initialState, action) => {
     switch (action.type) {
         case WhatsNewActionTypes.SET_STATE:
             return setState(updatedState, action)
-        case EventActionTypes.RECONNECTED:
+        case SystemEventActionTypes.RECONNECTED:
             return reconnected(updatedState, action)
         case WhatsNewActionTypes.FETCH_WHATS_NEW:
             return fetchWhatsNew(updatedState, action)

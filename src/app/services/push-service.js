@@ -3,6 +3,7 @@ import * as WhatsNewActions from '../actions/whats-new-actions'
 import * as ToDoActions from '../actions/to-do-actions'
 import * as  FollowUpActions from '../actions/follow-up-actions'
 import * as EventActions from '../actions/event-actions'
+import * as SystemEventActions from '../actions/system-event-actions.js'
 import EventTypes from '../../common/enums/event-types'
 // import EmailLifecycleService from './email-lifecycle-service'
 // import * as EmailPageActions from '../actions/email-page-actions'
@@ -74,7 +75,7 @@ export function listenToUpdates(email, pushToken, dispatch) {
         // EmailLifecycleService.reconnected()
 
         // This will make the invalidation status of all pages to be REQUIRE_UPDATE
-        dispatch(EventActions.reconnected())
+        dispatch(SystemEventActions.reconnected())
 
         // Only active page will actually get updated, let's manually call all fetch methods
         dispatch(WhatsNewActions.fetchWhatsNew())

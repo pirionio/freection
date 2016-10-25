@@ -3,6 +3,7 @@ import merge from 'lodash/merge'
 
 import FollowUpsActionTypes from '../actions/types/follow-up-action-types'
 import EventActionTypes from '../actions/types/event-action-types'
+import SystemEventActionTypes from '../actions/types/system-event-action-types'
 import ThingCommandActionTypes from '../actions/types/thing-command-action-types'
 import {ActionStatus, InvalidationStatus} from '../constants'
 import thingReducer from './thing-reducer'
@@ -107,7 +108,7 @@ export default (state = initialState, action) => {
     switch (action.type) {
         case FollowUpsActionTypes.SET_STATE:
             return setState(state, action)
-        case EventActionTypes.RECONNECTED:
+        case SystemEventActionTypes.RECONNECTED:
             return reconnected(state)
         case FollowUpsActionTypes.FETCH_FOLLOW_UPS:
             return fetchFollowUps(state, action)

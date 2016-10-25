@@ -2,6 +2,7 @@ import isUndefined from 'lodash/isUndefined'
 import find from 'lodash/find'
 
 import EventActionTypes from '../actions/types/event-action-types'
+import SystemEventActionTypes from '../actions/types/system-event-action-types'
 import ThingPageActionTypes from '../actions/types/thing-page-action-types'
 import ThingStatus from '../../common/enums/thing-status.js'
 import  ThingCommandActionTypes from '../actions/types/thing-command-action-types'
@@ -259,7 +260,7 @@ function updateStatus(currentStatus, newStatus) {
 
 export default (state = initialState, action) => {
     switch (action.type) {
-        case EventActionTypes.RECONNECTED:
+        case SystemEventActionTypes.RECONNECTED:
             return reconnected(state, action)
         case ThingPageActionTypes.GET_THING:
             return get(state, action)
