@@ -25,6 +25,8 @@ describe('Thing Service', function() {
 
     function initMocks() {
         ThingMock.save.returnsArg(0)
+        ThingMock.saveAll.returnsArg(0)
+        ThingMock.getFullThing.resolves({})
         EventMock.save.returnsArg(0)
         UserMock.getUserByEmail.resolves(generateDoer())
         UserMock.getUserByUsername.resolves(generateMentionedUser())
@@ -33,7 +35,9 @@ describe('Thing Service', function() {
 
     function setupMocks() {
         ThingMock = {
-            save: sinon.stub()
+            save: sinon.stub(),
+            saveAll: sinon.stub(),
+            getFullThing: sinon.stub()
         }
         EventMock = {
             save: sinon.stub()
@@ -65,6 +69,8 @@ describe('Thing Service', function() {
 
     function cleanMocks() {
         ThingMock.save.reset()
+        ThingMock.saveAll.reset()
+        ThingMock.getFullThing.reset()
         EventMock.save.reset()
         UserMock.getUserByEmail.reset()
         UserMock.getUserByUsername.reset()
@@ -101,15 +107,49 @@ describe('Thing Service', function() {
         }
     }
 
-    function runNewThing(body, to = 'marsellus.wallace@freection.com') {
-        const creator = generateCreator()
-        return ThingService.newThing(creator, to, 'The Subject', body)
+    function generateThing(creator, status, events) {
+        const thing = {
+            id: 'Thing-1',
+            type: 'THING',
+            subject: 'The Subject',
+            body: 'The Body',
+            creator,
+            payload: {
+                status
+            },
+            doers: [],
+            followUpers: [],
+            mentioned: [],
+            subscribers: [],
+            all: [],
+            events,
+            save: sinon.stub()
+        }
+
+        thing.save.resolves({})
+
+        return thing
+    }
+
+    function generateCreatedEvent(creator, thingId, showNewList) {
+        return {
+            id: 'Event-Created-1',
+            thingId,
+            eventType: 'CREATED',
+            creator,
+            showNewList
+        }
     }
 
     before(setup)
     after(clean)
 
     describe('New Thing', function() {
+        function newThing(body, to = 'marsellus.wallace@freection.com') {
+            const creator = generateCreator()
+            return ThingService.newThing(creator, to, 'The Subject', body)
+        }
+
         describe('sent to a single recipient within the organization', function() {
             afterEach(cleanMocks)
 
@@ -117,7 +157,7 @@ describe('Thing Service', function() {
                 initMocks()
             })
             When('thing', function() {
-                return runNewThing('Hello World')
+                return newThing('Hello World')
             })
             Then('is in status NEW', function() {
                 expect(this.thing.payload).to.exist
@@ -157,7 +197,7 @@ describe('Thing Service', function() {
                 initMocks()
             })
             When('thing', function() {
-                return runNewThing('@mia.wallace FYI')
+                return newThing('@mia.wallace FYI')
             })
             Then('mentioned user appears as mentioned', function() {
                 expect(this.thing.mentioned).to.exist
@@ -187,7 +227,7 @@ describe('Thing Service', function() {
                 UserMock.getUserByEmail.returns(Promise.reject('NotFound'))
             })
             When('thing', function() {
-                return runNewThing('Hello World', 'john.doe@othercompany.com')
+                return newThing('Hello World', 'john.doe@othercompany.com')
             })
             Then('is in status NEW', function() {
                 expect(this.thing.payload).to.exist
@@ -201,6 +241,47 @@ describe('Thing Service', function() {
             })
             And('email is sent', function() {
                 expect(EmailMock.sendMessage.calledOnce).to.be.true
+            })
+        })
+    })
+
+    describe.only('Do thing', function() {
+        function doThing() {
+            const user = generateDoer()
+            return ThingService.doThing(user, '111')
+        }
+
+        describe('doing a regular Freection-generated thing', function() {
+            afterEach(cleanMocks)
+
+            Given(function() {
+                initMocks()
+            })
+            And(function() {
+                ThingMock.getFullThing.resolves(generateThing(generateCreator(), 'NEW', [
+                    generateCreatedEvent(generateCreator(), 'Thing-1', ['ID-marsellus'])
+                ]))
+            })
+            When('thing', function() {
+                return doThing()
+            })
+            Then('is in status IN PROGRESS', function() {
+                expect(this.thing.payload).to.exist
+                expect(this.thing.payload.status).to.equal('INPROGRESS')
+            })
+            And('recipient is a doer', function() {
+                expect(this.thing.doers).to.have.lengthOf(1)
+                expect(this.thing.doers).to.have.include('ID-marsellus')
+            })
+            And('event ACCEPTED is created', function() {
+                expect(this.thing.events).to.have.lengthOf(2)
+                expect(this.thing.events[1].eventType).to.equal('ACCEPTED')
+            })
+            And('no one receives the ACCEPTED event', function() {
+                expect(this.thing.events[1].showNewList).to.have.lengthOf(0)
+            })
+            And('the CREATED event is discarded for the doer', function() {
+                expect(this.thing.events[0].showNewList).to.not.include('ID-marsellus')
             })
         })
     })

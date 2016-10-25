@@ -21,15 +21,15 @@ export function createCreated(creator, thing, getShowNewList, mentionedUserIds, 
     })
 }
 
-export function createAccepted(creator, thing, getShowNewList) {
-    return Event.save({
+export function createAccepted(creator, thing, showNewList) {
+    return {
         thingId: thing.id,
         eventType: EventTypes.ACCEPTED.key,
         createdAt: new Date(),
         creator,
         payload: {},
-        showNewList: getShowNewList(creator, thing, EventTypes.ACCEPTED.key)
-    })
+        showNewList: showNewList
+    }
 }
 
 export function createDismissed(creator, thing, getShowNewList, messageText) {

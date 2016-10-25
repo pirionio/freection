@@ -15,20 +15,29 @@ export function newThing(creator, toUser, subject, body, id, number, url) {
         })
 }
 
-export function doThing(user, thingId) {
+export async function doThing(user, thingId) {
     const creator = userToAddress(user)
 
-    return Thing.get(thingId).run()
-        .then(validateType)
-        .then(thing => validateStatus(thing, ThingStatus.NEW.key))
-        .then(thing => performDoThing(thing, user))
-        .then(thing => EventCreator.createAccepted(creator, thing, getShowNewList))
-        .then(() => Event.discardUserEvents(thingId, user.id))
-        .catch(error => {
-            logger.error(`error while setting user ${user.email} as doer of github thing ${thingId}:`, error)
-            throw error
-        }
-        )
+    try {
+        const thing = await Thing.getFullThing(thingId)
+
+        if (thing.type !== EntityTypes.GITHUB.key)
+            throw 'InvalidEntityType'
+
+        validateStatus(thing, [ThingStatus.NEW.key])
+
+        thing.doers.push(user.id)
+        thing.payload.status = ThingStatus.INPROGRESS.key
+        thing.events.push(EventCreator.createAccepted(creator, thing, []))
+        discardUserFromThingEvents(user, thing)
+
+        await thing.saveAll()
+
+        return thing
+    } catch(error) {
+        logger.error(`error while setting user ${user.email} as doer of github thing ${thingId}:`, error)
+        throw error
+    }
 }
 
 export function markAsDone(creator, thing) {
@@ -158,4 +167,11 @@ function validateType(thing) {
         throw 'InvalidEntityType'
 
     return thing
+}
+
+function discardUserFromThingEvents(user, thing) {
+    thing.events = thing.events.map(event => {
+        event.showNewList = event.showNewList.filter(userId => userId !== user.id)
+        return event
+    })
 }
