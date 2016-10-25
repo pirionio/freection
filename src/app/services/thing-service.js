@@ -51,7 +51,9 @@ function getAllAllowedCommandsArray(thing) {
                     requireText(ThingCommandActionTypes.MARK_AS_DONE),
                     requireText(ThingCommandActionTypes.DISMISS)]
             case ThingStatus.INPROGRESS.key:
-                return [ThingCommandActionTypes.MARK_AS_DONE, ThingCommandActionTypes.DISMISS]
+                return [
+                    requireText(ThingCommandActionTypes.MARK_AS_DONE),
+                    requireText(ThingCommandActionTypes.DISMISS)]
             default:
                 return []
         }

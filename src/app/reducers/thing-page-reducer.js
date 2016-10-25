@@ -1,7 +1,7 @@
 import isUndefined from 'lodash/isUndefined'
 import find from 'lodash/find'
 
-import EventActionTypes, {isOfTypeEvent} from '../actions/types/event-action-types'
+import {isOfTypeEvent} from '../actions/types/event-action-types'
 import SystemEventActionTypes from '../actions/types/system-event-action-types'
 import ThingPageActionTypes from '../actions/types/thing-page-action-types'
 import ThingStatus from '../../common/enums/thing-status.js'
@@ -9,7 +9,21 @@ import  ThingCommandActionTypes from '../actions/types/thing-command-action-type
 import SharedConstants from '../../common/shared-constants'
 import {ActionStatus, InvalidationStatus} from '../constants'
 import thingReducer from './thing-reducer'
+import {getThingAllowedCommands} from '../services/thing-service.js'
 import immutable from '../util/immutable'
+
+const getCommands = thing => getThingAllowedCommands(thing, [
+    ThingCommandActionTypes.DO_THING,
+    ThingCommandActionTypes.MARK_AS_DONE,
+    ThingCommandActionTypes.DISMISS,
+    ThingCommandActionTypes.SEND_BACK,
+    ThingCommandActionTypes.CLOSE,
+    ThingCommandActionTypes.FOLLOW_UP,
+    ThingCommandActionTypes.UNFOLLOW,
+    ThingCommandActionTypes.CLOSED_UNFOLLOW,
+    ThingCommandActionTypes.MUTE,
+    ThingCommandActionTypes.UNMUTE
+])
 
 // TODO Problems with the ongoingAction mechanism:
 // 1) If navigating out of this state, the ongoingAction status is gone.
@@ -19,6 +33,7 @@ import immutable from '../util/immutable'
 
 const initialState = {
     thing: {},
+    commands: [],
     invalidationStatus: InvalidationStatus.INVALIDATED,
     ongoingAction: false
 }
@@ -81,6 +96,7 @@ function get(state, action) {
 
                     return getInitialReadBy(event)
                 })
+                .set('commands', getCommands(action.thing))
                 .set('invalidationStatus', InvalidationStatus.FETCHED)
                 .value()
         case ActionStatus.ERROR:
@@ -105,6 +121,7 @@ function show(state, action) {
             return getInitialReadBy(event)
         })
         .set('invalidationStatus', InvalidationStatus.FETCHED)
+        .set('commands', getCommands(action.thing))
         .value()
 }
 
@@ -182,10 +199,13 @@ function updateThing(state, action) {
     if (!state.thing || !action.event.thing || state.thing.id !== action.event.thing.id)
         return state
 
+    const thing = thingReducer(state.thing, action)
+
     return immutable(state)
-        .set('thing', thingReducer(state.thing, action))
+        .set('thing', thing)
         .touch('thing')
         .arrayMergeItem('thing.events', {id: action.event.id}, getInitialReadBy)
+        .set('commands', getCommands(thing))
         .value()
 }
 
@@ -219,12 +239,36 @@ function asyncStatusOperation(state, action, status) {
                 .set('ongoingAction', true)
                 .value()
         case ActionStatus.COMPLETE:
+            const thing = immutable(state.thing)
+                .touch('payload')
+                .set('payload.status', currentStatus => updateStatus(currentStatus, status))
+                .arrayMergeItem('events', {id: action.event.id}, getInitialReadBy)
+                .value()
+
             return immutable(state)
-                .touch('thing')
-                .touch('thing.payload')
-                .set('thing.payload.status', currentStatus => updateStatus(currentStatus, status))
                 .set('ongoingAction', false)
-                .arrayMergeItem('thing.events', {id: action.event.id}, getInitialReadBy)
+                .set('thing', thing)
+                .set('commands', getCommands(thing))
+                .value()
+
+        case ActionStatus.ERROR:
+        default:
+            return state
+    }
+}
+
+function asyncOperation(state, action) {
+    if (!state.thing || !action.thing || state.thing.id !== action.thing.id)
+        return state
+
+    switch (action.status) {
+        case ActionStatus.START:
+            return immutable(state)
+                .set('ongoingAction', true)
+                .value()
+        case ActionStatus.COMPLETE:
+            return immutable(state)
+                .set('ongoingAction', false)
                 .value()
         case ActionStatus.ERROR:
         default:
@@ -274,6 +318,11 @@ export default (state = initialState, action) => {
             return sendBack(state, action)
         case ThingCommandActionTypes.MARK_COMMENT_AS_READ:
             return markCommentAsRead(state, action)
+        case ThingCommandActionTypes.MUTE:
+        case ThingCommandActionTypes.UNMUTE:
+        case ThingCommandActionTypes.FOLLOW_UP:
+        case ThingCommandActionTypes.UNFOLLOW:
+            return asyncOperation(state, action)
         default:
             if (isOfTypeEvent(action.type)) {
                 return updateThing(state, action)

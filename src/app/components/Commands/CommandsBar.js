@@ -18,7 +18,7 @@ class CommandsBar extends Component {
     }
 
     getCommandComponent(command) {
-        const {requireTextFunc} = this.props
+        const {requireTextFunc, disabled} = this.props
 
         const {commandType, requireText} = command
 
@@ -30,7 +30,8 @@ class CommandsBar extends Component {
                         commandType={commandType}
                         commandFunc={props.commandFunc}
                         requireTextFunc={requireTextFunc}
-                        requireText={requireText} />
+                        requireText={requireText}
+                        disabled={disabled} />
     }
 
     getComponentProps(commandType) {
@@ -192,11 +193,13 @@ CommandsBar.propTypes = {
     thing: PropTypes.object.isRequired,
     notification: PropTypes.object,
     requireTextFunc: PropTypes.func,
-    supportRollover: PropTypes.bool
+    supportRollover: PropTypes.bool,
+    disabled: PropTypes.bool
 }
 
 CommandsBar.defaultProps = {
-    supportRollover: true
+    supportRollover: true,
+    disabled: false
 }
 
 export default useSheet(CommandsBar, style)

@@ -6,7 +6,7 @@ import {goBack} from 'react-router-redux'
 import isEmpty from 'lodash/isEmpty'
 import reject from 'lodash/reject'
 
-import ThingPageActionsBar from './ThingPageActionsBar'
+import CommandsBar from '../Commands/CommandsBar'
 import MessagePanel from '../MessageBox/MessagePanel'
 import FullItem, {FullItemSubject, FullItemUser, FullItemStatus, FullItemActions, FullItemBox} from '../Full/FullItem'
 import styleVars from '../style-vars'
@@ -15,6 +15,9 @@ import * as ThingHelper from '../../../common/helpers/thing-helper'
 import EventTypes from '../../../common/enums/event-types'
 import ThingStatus from '../../../common/enums/thing-status'
 import {InvalidationStatus} from '../../constants'
+import ThingCommandActionTypes from '../../actions/types/thing-command-action-types.js'
+import * as MessageBoxActions from '../../actions/message-box-actions'
+import MessageTypes from '../../../common/enums/message-types'
 
 class FullThing extends Component {
     constructor(props) {
@@ -101,8 +104,20 @@ class FullThing extends Component {
         return isEmpty(this.props.thing)
     }
 
+    requireText(command, sendAction) {
+        const {dispatch, thing} = this.props
+
+        const messageBoxTitle =
+            command === ThingCommandActionTypes.MARK_AS_DONE ? 'Done' :
+            command === ThingCommandActionTypes.DISMISS ? 'Dismiss' :
+            command === ThingCommandActionTypes.SEND_BACK ? 'Send Back' :
+            command === ThingCommandActionTypes.CLOSE ? 'Close' : ''
+
+        dispatch(MessageBoxActions.newMessageBox(MessageTypes.THING_ACTION, thing, sendAction, messageBoxTitle))
+    }
+
     render() {
-        const {thing} = this.props
+        const {thing, commands, ongoingAction} = this.props
         return (
             <DocumentTitle title={this.getDocumentTitle()}>
                 <FullItem messages={this.getAllComments()} close={this.close} isFetching={this.isFetching} isEmpty={this.isEmpty} 
@@ -117,7 +132,11 @@ class FullThing extends Component {
                         <span>by {thing.creator ? thing.creator.displayName : ''}</span>
                     </FullItemUser>
                     <FullItemActions>
-                        <ThingPageActionsBar thing={thing} />
+                        <CommandsBar thing={thing}
+                                     commands={commands}
+                                     requireTextFunc={this.requireText}
+                                     supportRollover={false}
+                                     disabled={ongoingAction} />
                     </FullItemActions>
                     <FullItemBox>
                         <MessagePanel />
@@ -130,6 +149,8 @@ class FullThing extends Component {
 
 FullThing.propTypes = {
     thing: PropTypes.object.isRequired,
+    commands: PropTypes.array.isRequired,
+    ongoingAction: PropTypes.array.isRequired,
     invalidationStatus: PropTypes.string.isRequired,
     currentUser: PropTypes.object.isRequired
 }
@@ -137,7 +158,9 @@ FullThing.propTypes = {
 function mapStateToProps(state) {
     return {
         thing: state.thingPage.thing,
+        commands: state.thingPage.commands,
         invalidationStatus: state.thingPage.invalidationStatus,
+        ongoingAction: state.thingPage.ongoingAction,
         currentUser: state.auth
     }
 }
