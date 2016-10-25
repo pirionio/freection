@@ -117,8 +117,8 @@ module.exports = {
                 messageText: 'messageText'
             },
             completeParams: {
-                thing: 'thing',
-                event: 'result'
+                thing: 'result',
+                messageText: 'messageText'
             },
             track: 'dismiss',
             private: true

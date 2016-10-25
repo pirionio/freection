@@ -106,23 +106,21 @@ describe.only('Thing Service', function() {
         }
     }
 
-    function generateThing(creator, status, events) {
-        return {
+    function generateThing(thing) {
+        return Object.assign({}, {
             id: 'Thing-1',
             type: 'THING',
             subject: 'The Subject',
             body: 'The Body',
-            creator,
-            payload: {
-                status
-            },
+            creator: generateCreator(),
+            payload: {},
             doers: [],
             followUpers: [],
             mentioned: [],
             subscribers: [],
             all: [],
-            events
-        }
+            events: []
+        }, thing)
     }
 
     function generateCreatedEvent(creator, thingId, showNewList) {
@@ -130,6 +128,16 @@ describe.only('Thing Service', function() {
             id: 'Event-Created-1',
             thingId,
             eventType: 'CREATED',
+            creator,
+            showNewList
+        }
+    }
+
+    function generateAcceptedEvent(creator, thingId, showNewList) {
+        return {
+            id: 'Event-Accepted-1',
+            thingId,
+            eventType: 'ACCEPTED',
             creator,
             showNewList
         }
@@ -269,9 +277,14 @@ describe.only('Thing Service', function() {
                 initMocks()
             })
             And(function() {
-                ThingDomainMock.getFullThing.resolves(generateThing(generateCreator(), 'NEW', [
-                    generateCreatedEvent(generateCreator(), 'Thing-1', ['ID-marsellus'])
-                ]))
+                ThingDomainMock.getFullThing.resolves(generateThing({
+                    payload: {
+                        status: 'NEW'
+                    },
+                    events: [
+                        generateCreatedEvent(generateCreator(), 'Thing-1', ['ID-marsellus'])
+                    ]
+                }))
             })
             When('thing', function() {
                 return doThing()
@@ -293,6 +306,142 @@ describe.only('Thing Service', function() {
             })
             And('the CREATED event is discarded for the doer', function() {
                 expect(this.thing.events[0].showNewList).to.not.include('ID-marsellus')
+            })
+        })
+    })
+
+    describe.only('Dismiss thing', function() {
+        function dismissThing() {
+            const user = generateDoer()
+            return ThingService.dismiss(user, '111', 'Dismiss message')
+        }
+
+        describe('when it is in the to do list', function() {
+            afterEach(cleanMocks)
+
+            Given(function() {
+                initMocks()
+            })
+            And(function() {
+                ThingDomainMock.getFullThing.resolves(generateThing({
+                    payload: {
+                        status: 'INPROGRESS'
+                    },
+                    followUpers: ['ID-vincent'],
+                    doers: ['ID-marsellus'],
+                    events: [
+                        generateCreatedEvent(generateCreator(), 'Thing-1', []),
+                        generateAcceptedEvent(generateDoer(), 'Thing-1', [])
+                    ]
+                }))
+            })
+            When('thing', function() {
+                return dismissThing()
+            })
+            Then('is in status DISMISS', function() {
+                expect(this.thing.payload).to.exist
+                expect(this.thing.payload.status).to.equal('DISMISS')
+            })
+            And('doer is not a doer anymore', function() {
+                expect(this.thing.doers).to.have.lengthOf(0)
+            })
+            And('creator is still a follow upper', function() {
+                expect(this.thing.followUpers).to.have.lengthOf(1)
+                expect(this.thing.followUpers).to.include('ID-vincent')
+            })
+            And('event DISMISSED is created', function() {
+                expect(this.thing.events).to.have.lengthOf(3)
+                expect(this.thing.events[2].eventType).to.equal('DISMISSED')
+            })
+            And('creator receives the DISMISSED event', function() {
+                expect(this.thing.events[2].showNewList).to.have.lengthOf(1)
+                expect(this.thing.events[2].showNewList).to.include('ID-vincent')
+            })
+            And('event carries the messate text', function() {
+                expect(this.thing.events[2].payload.text).to.equal('Dismiss message')
+
+            })
+        })
+
+        describe('when it is still in the whats new list', function() {
+            afterEach(cleanMocks)
+
+            Given(function() {
+                initMocks()
+            })
+            And(function() {
+                ThingDomainMock.getFullThing.resolves(generateThing({
+                    payload: {
+                        status: 'NEW'
+                    },
+                    followUpers: ['ID-vincent'],
+                    events: [
+                        generateCreatedEvent(generateCreator(), 'Thing-1', [])
+                    ]
+                }))
+            })
+            When('thing', function() {
+                return dismissThing()
+            })
+            Then('is in status DISMISS', function() {
+                expect(this.thing.payload).to.exist
+                expect(this.thing.payload.status).to.equal('DISMISS')
+            })
+            And('creator is still a follow upper', function() {
+                expect(this.thing.followUpers).to.have.lengthOf(1)
+                expect(this.thing.followUpers).to.include('ID-vincent')
+            })
+            And('event DISMISSED is created', function() {
+                expect(this.thing.events).to.have.lengthOf(2)
+                expect(this.thing.events[1].eventType).to.equal('DISMISSED')
+            })
+            And('creator receives the DISMISSED event', function() {
+                expect(this.thing.events[1].showNewList).to.have.lengthOf(1)
+                expect(this.thing.events[1].showNewList).to.include('ID-vincent')
+            })
+            And('events of recipient are discarded', function() {
+                expect(this.thing.events[0].showNewList).to.have.lengthOf(0)
+            })
+        })
+
+        describe('when it is still in the whats new list', function() {
+            afterEach(cleanMocks)
+
+            Given(function() {
+                initMocks()
+            })
+            And(function() {
+                ThingDomainMock.getFullThing.resolves(generateThing({
+                    payload: {
+                        status: 'NEW'
+                    },
+                    followUpers: ['ID-vincent'],
+                    events: [
+                        generateCreatedEvent(generateCreator(), 'Thing-1', [])
+                    ]
+                }))
+            })
+            When('thing', function() {
+                return dismissThing()
+            })
+            Then('is in status DISMISS', function() {
+                expect(this.thing.payload).to.exist
+                expect(this.thing.payload.status).to.equal('DISMISS')
+            })
+            And('creator is still a follow upper', function() {
+                expect(this.thing.followUpers).to.have.lengthOf(1)
+                expect(this.thing.followUpers).to.include('ID-vincent')
+            })
+            And('event DISMISSED is created', function() {
+                expect(this.thing.events).to.have.lengthOf(2)
+                expect(this.thing.events[1].eventType).to.equal('DISMISSED')
+            })
+            And('creator receives the DISMISSED event', function() {
+                expect(this.thing.events[1].showNewList).to.have.lengthOf(1)
+                expect(this.thing.events[1].showNewList).to.include('ID-vincent')
+            })
+            And('events of recipient are discarded', function() {
+                expect(this.thing.events[0].showNewList).to.have.lengthOf(0)
             })
         })
     })

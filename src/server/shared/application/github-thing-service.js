@@ -64,22 +64,31 @@ export function closeByGithub(creator, thing) {
         })
 }
 
-export function dismiss(user, thingId) {
+export async function dismiss(user, thingId) {
     const creator = userToAddress(user)
 
-    return ThingDomain.getThing(thingId)
-        .then(validateType)
-        .then(thing => validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key]))
-        .then(thing => {
-            return performDismiss(thing)
-                .then(() => Event.discardUserEvents(thingId, user.id))
-                .then(() => EventCreator.createDismissed(creator, thing, getShowNewList))
-                .then(() => EventCreator.createClosed(creator, thing, getShowNewList))
-        })
-        .catch(error => {
-            logger.error(`error while dismissing github thing ${thingId} by user ${user.email}`, error)
-            throw error
-        })
+    try {
+        const thing = await ThingDomain.getFullThing(thingId)
+
+        if (thing.type !== EntityTypes.GITHUB.key)
+            throw 'InvalidEntityType'
+
+        // Validate that the status of the thing matched the action
+        validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key])
+
+        thing.doers = []
+        thing.payload.status = ThingStatus.DISMISS.key
+        thing.events.push(EventCreator.createDismissed(creator, thing, []))
+        thing.events.push(EventCreator.createClosedSync(creator, thing, []))
+        discardUserFromThingEvents(user, thing)
+
+        await ThingDomain.updateThing(thing)
+
+        return thing
+    } catch(error) {
+        logger.error(`error while dismissing github thing ${thingId} by user ${user.email}`, error)
+        throw error
+    }
 }
 
 export function close(user, thingId) {
@@ -116,18 +125,6 @@ function saveNewThing(creator, to, subject, body, id, number, url) {
         },
         events: []
     })
-}
-
-function performDoThing(thing, user) {
-    thing.doers.push(user.id)
-    thing.payload.status = ThingStatus.INPROGRESS.key
-    return thing.save()
-}
-
-function performDismiss(thing) {
-    thing.doers = []
-    thing.payload.status = ThingStatus.DISMISS.key
-    return thing.save()
 }
 
 function performClose(thing) {

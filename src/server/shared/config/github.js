@@ -11,8 +11,8 @@ if (process.env.NODE_ENV === 'production') {
     callbackURL = process.env.GITHUB_CALLBACK_URL
     webhookURL = process.env.GITHUB_WEBHOOK_URL
 } else {
-    clientID = 'fe93a66bc0e3c42ba053'
-    clientSecret = 'ce239add720ddbfbf5d7505e1035ba85e06e4f5a'
+    clientID = '670e9152744b7c09ad10'
+    clientSecret = '8b205abce1b65d869020c0c0aeb878f6faa35f85'
     callbackURL = `${process.env.FREECTION_HOST}/api/github/callback`
     webhookURL = `${process.env.FREECTION_HOST}/webhook/github`
 }

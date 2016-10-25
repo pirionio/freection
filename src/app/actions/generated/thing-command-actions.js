@@ -250,8 +250,8 @@ export function _dismiss(thing, messageText) {
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.DISMISS, 
                 status: ActionStatus.COMPLETE,
-                thing: thing,
-                event: result
+                thing: result,
+                messageText: messageText
             }))
             .catch(() => dispatch({
                 type: ThingCommandActionsTypes.DISMISS, 

@@ -32,10 +32,10 @@ export function createAccepted(creator, thing, showNewList) {
     }
 }
 
-export function createDismissed(creator, thing, getShowNewList, messageText) {
+export function createDismissed(creator, thing, showNewList, messageText) {
     analytics.thingDismissed(creator, thing)
 
-    return Event.save({
+    return {
         thingId: thing.id,
         eventType: EventTypes.DISMISSED.key,
         createdAt: new Date(),
@@ -44,8 +44,8 @@ export function createDismissed(creator, thing, getShowNewList, messageText) {
             text: messageText,
             readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
         } : {},
-        showNewList: getShowNewList(creator, thing, EventTypes.DISMISSED.key)
-    })
+        showNewList
+    }
 }
 
 export function createDone(creator, thing, getShowNewList, messageText) {
@@ -83,6 +83,22 @@ export function createComment(creator, createdAt, thing, getShowNewList, mention
         },
         showNewList
     })
+}
+
+export function createClosedSync(creator, thing, showNewList, messageText) {
+    analytics.closed(creator, thing)
+    
+    return {
+        thingId: thing.id,
+        eventType: EventTypes.CLOSED.key,
+        createdAt: new Date(),
+        creator,
+        payload: messageText ? {
+            text: messageText,
+            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
+        } : {},
+        showNewList
+    }
 }
 
 export function createClosed(creator, thing, getShowNewList, messageText) {

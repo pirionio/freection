@@ -130,7 +130,7 @@ export async function dismiss(user, thingId, messageText) {
     const creator = userToAddress(user)
 
     try {
-        const thing = await ThingDomain.getThing(thingId)
+        const thing = await ThingDomain.getFullThing(thingId)
 
         if (![EntityTypes.THING.key, EntityTypes.EMAIL_THING.key].includes(thing.type))
             throw 'InvalidEntityType'
@@ -140,15 +140,14 @@ export async function dismiss(user, thingId, messageText) {
 
         remove(thing.doers, doerId => doerId === user.id)
         thing.payload.status = ThingStatus.DISMISS.key
-        await thing.save()
+        thing.events.push(EventCreator.createDismissed(creator, thing, union(thing.followUpers, thing.subscribers), messageText))
+        discardUserFromThingEvents(user, thing)
 
-        await Event.discardUserEvents(thingId, user.id)
+        await ThingDomain.updateThing(thing)
 
-        const event = await EventCreator.createDismissed(creator, thing, getShowNewList, messageText)
-        await sendEmailForEvent(user, thing, event)
+        await sendEmailForEvent(user, thing, last(thing.events))
         
-        return event
-
+        return thing
     } catch(error) {
         logger.error(`error while dismissing thing ${thingId} by user ${user.email}`, error)
         throw error
