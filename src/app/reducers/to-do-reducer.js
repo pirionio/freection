@@ -3,7 +3,7 @@ import merge from 'lodash/merge'
 
 import ToDoActionTypes from '../actions/types/to-do-action-types'
 import ThingCommandActionTypes from '../actions/types/thing-command-action-types'
-import EventActionTypes from '../actions/types/event-action-types'
+import EventActionTypes, {isOfTypeEvent} from '../actions/types/event-action-types'
 import SystemEventActionTypes from '../actions/types/system-event-action-types'
 import {ActionStatus, InvalidationStatus} from '../constants'
 import EventTypes from '../../common/enums/event-types'
@@ -73,26 +73,7 @@ function actionDoneOnThing(state, action) {
     }
 }
 
-function messageReceived(state, action) {
-    // TODO Handle FETCHING state by queuing incoming events
-    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
-        return state
-
-    return immutable(state)
-        .arraySetItem('things', {id: action.event.thing.id}, item => thingReducer(item, action))
-        .value()
-}
-
-function created(state, action) {
-    // let's add the event to the thing
-    const thing = immutable(action.event.thing)
-        .set('events', [action.event])
-        .value()
-
-    return statusChangedReceived(state, merge({}, action, {event: {thing}}))
-}
-
-function statusChangedReceived(state, action) {
+function updateThing(state, action) {
     if (state.invalidationStatus !== InvalidationStatus.FETCHED)
         return state
 
@@ -121,21 +102,11 @@ export default (state = initialState, action) => {
         case ThingCommandActionTypes.DISMISS:
         case ThingCommandActionTypes.CLOSE_ACK:
             return actionDoneOnThing(state, action)
-        case EventActionTypes.COMMENT_CREATED:
-        case EventActionTypes.COMMENT_READ_BY:
-        case EventActionTypes.PINGED:
-        case EventActionTypes.PONGED:
-            return messageReceived(state, action)
-        case EventActionTypes.CREATED:
-            return created(state, action)
-        case EventActionTypes.ACCEPTED:
-        case EventActionTypes.MARKED_AS_DONE:
-        case EventActionTypes.DISMISSED:
-        case EventActionTypes.CLOSED:
-        case EventActionTypes.CLOSE_ACKED:
-        case EventActionTypes.SENT_BACK:
-            return statusChangedReceived(state, action)
         default:
+            if (isOfTypeEvent(action.type)) {
+                return updateThing(state, action)
+            }
+
             return state
     }
 }

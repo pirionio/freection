@@ -1,7 +1,7 @@
 import isUndefined from 'lodash/isUndefined'
 import find from 'lodash/find'
 
-import EventActionTypes from '../actions/types/event-action-types'
+import EventActionTypes, {isOfTypeEvent} from '../actions/types/event-action-types'
 import SystemEventActionTypes from '../actions/types/system-event-action-types'
 import ThingPageActionTypes from '../actions/types/thing-page-action-types'
 import ThingStatus from '../../common/enums/thing-status.js'
@@ -178,24 +178,14 @@ function markCommentAsRead(state, action) {
     }
 }
 
-function messageReceived(state, action) {
-    // If no thing is shown right now, or if the action does not carry an event at all, or if the event does not belong to the shown thing...
-    if (!state.thing || !action.event || !action.event.thing || state.thing.id !== action.event.thing.id)
+function updateThing(state, action) {
+    if (!state.thing || !action.event.thing || state.thing.id !== action.event.thing.id)
         return state
 
     return immutable(state)
         .set('thing', thingReducer(state.thing, action))
         .touch('thing')
         .arrayMergeItem('thing.events', {id: action.event.id}, getInitialReadBy)
-        .value()
-}
-
-function statusChanged(state, action) {
-    if (!state.thing || !action.event.thing || state.thing.id !== action.event.thing.id)
-        return state
-
-    return immutable(state)
-        .set('thing', thingReducer(state.thing, action))
         .value()
 }
 
@@ -284,22 +274,11 @@ export default (state = initialState, action) => {
             return sendBack(state, action)
         case ThingCommandActionTypes.MARK_COMMENT_AS_READ:
             return markCommentAsRead(state, action)
-        case EventActionTypes.COMMENT_CREATED:
-        case EventActionTypes.COMMENT_READ_BY:
-        case EventActionTypes.PINGED:
-        case EventActionTypes.PONGED:
-            return messageReceived(state, action)
-        case EventActionTypes.ACCEPTED:
-        case EventActionTypes.MARKED_AS_DONE:
-        case EventActionTypes.CLOSED:
-        case EventActionTypes.DISMISSED:
-        case EventActionTypes.SENT_BACK:
-        case EventActionTypes.UNMUTED:
-        case EventActionTypes.MUTED:
-        case EventActionTypes.FOLLOW_UP:
-        case EventActionTypes.UNFOLLOW:
-            return statusChanged(state, action)
         default:
+            if (isOfTypeEvent(action.type)) {
+                return updateThing(state, action)
+            }
+
             return state
     }
 }

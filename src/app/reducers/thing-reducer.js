@@ -1,6 +1,7 @@
 import EventActionTypes from '../actions/types/event-action-types'
 import ThingCommandActionTypes from '../actions/types/thing-command-action-types'
 import immutable from '../util/immutable'
+import {ActionStatus} from '../constants'
 
 function commentReadByReceived(state, action) {
     return immutable(state)
@@ -48,8 +49,12 @@ export default (state, action) => {
         case EventActionTypes.UNFOLLOW:
             return eventReceived(state, action)
         case EventActionTypes.PINGED:
-        case ThingCommandActionTypes.PING:
             return eventReceived(state, action, true)
+        case ThingCommandActionTypes.PING:
+            if (action.status === ActionStatus.COMPLETE)
+                return eventReceived(state, action, true)
+
+            return state
         case EventActionTypes.COMMENT_READ_BY:
             return commentReadByReceived(state, action)
         default:

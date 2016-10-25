@@ -1,7 +1,7 @@
 import some from 'lodash/some'
 
 import AllThingsActionTypes from '../actions/types/all-things-action-types'
-import EventActionTypes from '../actions/types/event-action-types'
+import {isOfTypeEvent} from '../actions/types/event-action-types'
 import SystemEventActionTypes from '../actions/types/system-event-action-types'
 import {ActionStatus, InvalidationStatus} from '../constants'
 import thingReducer from './thing-reducer'
@@ -75,20 +75,10 @@ export default (state = initialState, action) => {
             return reconnected(state)
         case AllThingsActionTypes.FETCH_ALL_THINGS:
             return allThings(state, action)
-        case EventActionTypes.CREATED:
-        case EventActionTypes.COMMENT_CREATED:
-        case EventActionTypes.COMMENT_READ_BY:
-        case EventActionTypes.PINGED:
-        case EventActionTypes.PONGED:
-        case EventActionTypes.MARKED_AS_DONE:
-        case EventActionTypes.DISMISSED:
-        case EventActionTypes.CLOSED:
-        case EventActionTypes.CLOSE_ACKED:
-        case EventActionTypes.SENT_BACK:
-        case EventActionTypes.UNMUTED:
-        case EventActionTypes.MUTED:
-            return updateThing(state, action)
         default:
+            if (isOfTypeEvent(action.type))
+                return updateThing(state, action)
+
             return state
     }
 }

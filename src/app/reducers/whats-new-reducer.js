@@ -1,8 +1,6 @@
-import some from 'lodash/some'
-
 import WhatsNewActionTypes from '../actions/types/whats-new-action-types'
 import ThingCommandActionTypes from '../actions/types/thing-command-action-types'
-import EventActionTypes from '../actions/types/event-action-types'
+import {isOfTypeEvent} from '../actions/types/event-action-types'
 import SystemEventActionTypes from '../actions/types/system-event-action-types'
 import {ActionStatus, InvalidationStatus} from '../constants'
 import EventTypes from '../../common/enums/event-types'
@@ -139,10 +137,6 @@ function notificationDeleted(state, action) {
 }
 
 function updateThing(state, action) {
-
-    if (!action.event || !action.event.thing)
-        return state
-
     return immutable(state)
         .arraySetItem('notifications', notification => notification.thing.id === action.event.thing.id,
             notification => {
@@ -155,34 +149,34 @@ function updateThing(state, action) {
 }
 
 export default (state = initialState, action) => {
-
-    const updatedState = updateThing(state, action)
-
     switch (action.type) {
         case WhatsNewActionTypes.SET_STATE:
-            return setState(updatedState, action)
+            return setState(state, action)
         case SystemEventActionTypes.RECONNECTED:
-            return reconnected(updatedState, action)
+            return reconnected(state, action)
         case WhatsNewActionTypes.FETCH_WHATS_NEW:
-            return fetchWhatsNew(updatedState, action)
+            return fetchWhatsNew(state, action)
         case ThingCommandActionTypes.DO_THING:
-            return doThing(updatedState, action)
+            return doThing(state, action)
         case ThingCommandActionTypes.DISMISS:
         case ThingCommandActionTypes.MARK_AS_DONE:
         case ThingCommandActionTypes.CLOSE:
         case ThingCommandActionTypes.SEND_BACK:
         case ThingCommandActionTypes.CLOSE_ACK:
         case ThingCommandActionTypes.PONG:
-            return removeNotificationsOfThing(updatedState, action)
+            return removeNotificationsOfThing(state, action)
         case ThingCommandActionTypes.DISCARD_COMMENTS:
-            return discardComments(updatedState, action)
+            return discardComments(state, action)
         case ThingCommandActionTypes.DISCARD_SINGLE_NOTIFICATION:
-            return discardSingleNotification(updatedState, action)
+            return discardSingleNotification(state, action)
         case WhatsNewActionTypes.NOTIFICATION_RECEIVED:
-            return notificationReceived(updatedState, action)
+            return notificationReceived(state, action)
         case WhatsNewActionTypes.NOTIFICATION_DELETED:
-            return notificationDeleted(updatedState, action)
+            return notificationDeleted(state, action)
         default:
-            return updatedState
+            if (isOfTypeEvent(action.type))
+                updateThing(state, action)
+
+            return state
     }
 }

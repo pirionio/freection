@@ -1,8 +1,7 @@
 import some from 'lodash/some'
-import merge from 'lodash/merge'
 
 import FollowUpsActionTypes from '../actions/types/follow-up-action-types'
-import EventActionTypes from '../actions/types/event-action-types'
+import {isOfTypeEvent} from '../actions/types/event-action-types'
 import SystemEventActionTypes from '../actions/types/system-event-action-types'
 import ThingCommandActionTypes from '../actions/types/thing-command-action-types'
 import {ActionStatus, InvalidationStatus} from '../constants'
@@ -69,14 +68,6 @@ function pingThing(state, action) {
     }
 }
 
-function commentChangedOrAdded(state, action) {
-    return messageReceived(state, action)
-}
-
-function pongReceived(state, action) {
-    return messageReceived(state, action)
-}
-
 function messageReceived(state, action) {
     // TODO Handle FETCHING state by queuing incoming events
     if (state.invalidationStatus !== InvalidationStatus.FETCHED)
@@ -87,7 +78,7 @@ function messageReceived(state, action) {
         .value()
 }
 
-function statusChangedReceived(state, action) {
+function updateThing(state, action) {
     if (state.invalidationStatus !== InvalidationStatus.FETCHED)
         return state
  
@@ -112,24 +103,12 @@ export default (state = initialState, action) => {
             return reconnected(state)
         case FollowUpsActionTypes.FETCH_FOLLOW_UPS:
             return fetchFollowUps(state, action)
-        case EventActionTypes.COMMENT_CREATED:
-        case EventActionTypes.COMMENT_READ_BY:
-            return commentChangedOrAdded(state, action)
         case ThingCommandActionTypes.PING:
             return pingThing(state, action)
-        case EventActionTypes.PONGED:
-            return pongReceived(state, action)
-        case EventActionTypes.CREATED:
-        case EventActionTypes.ACCEPTED:
-        case EventActionTypes.MARKED_AS_DONE:
-        case EventActionTypes.DISMISSED:
-        case EventActionTypes.CLOSED:
-        case EventActionTypes.CLOSE_ACKED:
-        case EventActionTypes.SENT_BACK:
-        case EventActionTypes.FOLLOW_UP:
-        case EventActionTypes.UNFOLLOW:
-            return statusChangedReceived(state, action)
         default:
+            if (isOfTypeEvent(action.type))
+                return updateThing(state, action)
+
             return state
     }
 }
