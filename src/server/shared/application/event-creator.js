@@ -3,10 +3,10 @@ import EventTypes from '../../../common/enums/event-types'
 import UserTypes from '../../../common/enums/user-types'
 import * as analytics from '../utils/analytics.js'
 
-export function createCreated(creator, thing, getShowNewList, mentionedUserIds, body, emailId) {
+export function createCreated(creator, thing, showNewList, mentionedUserIds, body, emailId) {
     analytics.thingCreated(thing)
 
-    return Event.save({
+    return {
         thingId: thing.id,
         eventType: EventTypes.CREATED.key,
         createdAt: thing.createdAt,
@@ -17,8 +17,8 @@ export function createCreated(creator, thing, getShowNewList, mentionedUserIds, 
             mentioned: mentionedUserIds,
             emailId
         },
-        showNewList: getShowNewList(creator, thing, EventTypes.CREATED.key)
-    })
+        showNewList
+    }
 }
 
 export function createAccepted(creator, thing, showNewList) {
@@ -28,7 +28,7 @@ export function createAccepted(creator, thing, showNewList) {
         createdAt: new Date(),
         creator,
         payload: {},
-        showNewList: showNewList
+        showNewList
     }
 }
 

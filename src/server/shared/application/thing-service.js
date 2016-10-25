@@ -1,9 +1,10 @@
 import {remove, castArray, union, chain, omitBy, isNil, last, map, clone, uniq, reject} from 'lodash'
 import AddressParser from 'email-addresses'
 
-import {Event, Thing, User} from '../models'
+import {Event, User} from '../models'
 import * as EventCreator from './event-creator'
 import {eventToDto, thingToDto} from '../application/transformers'
+import * as ThingDomain from '../domain/thing-domain'
 import ThingStatus from '../../../common/enums/thing-status'
 import EntityTypes from '../../../common/enums/entity-types'
 import EventTypes from '../../../common/enums/event-types'
@@ -17,7 +18,7 @@ import textToHtml from '../../../common/util/textToHtml'
 import * as ThingHelper from '../../../common/helpers/thing-helper'
 
 export function getAllThings(user) {
-    return Thing.getAllUserThings(user.id)
+    return ThingDomain.getAllUserThings(user.id)
         .then(things => things.map(thing => thingToDto(thing, user)))
         .catch(error => {
             logger.error(`error while fetching all things of user ${user.email}`, error)
@@ -35,7 +36,7 @@ export function getWhatsNew(user) {
 }
 
 export function getToDo(user) {
-    return Thing.getUserToDos(user.id)
+    return ThingDomain.getUserToDos(user.id)
         .then(things => things.map(thing => thingToDto(thing, user)))
         .catch(error => {
             logger.error(`error while fetching to do list for user ${user.email}`, error)
@@ -44,7 +45,7 @@ export function getToDo(user) {
 }
 
 export function getFollowUps(user) {
-    return Thing.getUserFollowUps(user.id)
+    return ThingDomain.getUserFollowUps(user.id)
         .then(followUps => followUps.map(thing => thingToDto(thing, user)))
         .catch(error => {
             logger.error(`error while fetching follow ups for user ${user.email}`, error)
@@ -53,7 +54,7 @@ export function getFollowUps(user) {
 }
 
 export function getEmailThings(user) {
-    return Thing.getUserToDos(user.id)
+    return ThingDomain.getUserToDos(user.id)
         .then(emailThings => emailThings
             .filter(thing => thing.type === EntityTypes.EMAIL_THING.key)
             .map(thing => thingToDto(thing, user)))
@@ -64,7 +65,7 @@ export function getEmailThings(user) {
 }
 
 export function getThing(user, thingId) {
-    return Thing.getFullThing(thingId)
+    return ThingDomain.getFullThing(thingId)
         .then(thing => thingToDto(thing, user))
         .catch(error => {
             logger.error(`error while fetching thing ${thingId} for user ${user.email}`, error)
@@ -80,11 +81,16 @@ export async function newThing(user, to, subject, body) {
         const mentionedUserIds = await getMentionsFromText(body)
 
         const thing = await saveNewThing(body, subject, creator, toAddress, mentionedUserIds)
-        await EventCreator.createCreated(creator, thing, getShowNewList, mentionedUserIds, body, ThingHelper.getEmailId(thing))
+
+        thing.events.push(
+            EventCreator.createCreated(creator, thing, [toAddress.id, ...mentionedUserIds], mentionedUserIds, body, ThingHelper.getEmailId(thing))
+        )
 
         if (ThingHelper.isSelf(thing)) {
-            await EventCreator.createAccepted(creator, thing, getShowNewList, mentionedUserIds)
+            thing.events.push(EventCreator.createAccepted(creator, thing, [], mentionedUserIds))
         }
+
+        await ThingDomain.updateThing(thing)
 
         await sendEmailForThing(thing, user, toAddress, subject, body)
 
@@ -99,7 +105,7 @@ export async function doThing(user, thingId) {
     const creator = userToAddress(user)
 
     try {
-        const thing = await Thing.getFullThing(thingId)
+        const thing = await ThingDomain.getFullThing(thingId)
 
         if (thing.type !== EntityTypes.THING.key)
             throw 'InvalidEntityType'
@@ -111,7 +117,7 @@ export async function doThing(user, thingId) {
         thing.events.push(EventCreator.createAccepted(creator, thing, []))
         discardUserFromThingEvents(user, thing)
 
-        await thing.saveAll()
+        await ThingDomain.updateThing(thing)
 
         return thing
     } catch(error) {
@@ -124,7 +130,7 @@ export async function dismiss(user, thingId, messageText) {
     const creator = userToAddress(user)
 
     try {
-        const thing = await Thing.get(thingId).run()
+        const thing = await ThingDomain.getThing(thingId)
 
         if (![EntityTypes.THING.key, EntityTypes.EMAIL_THING.key].includes(thing.type))
             throw 'InvalidEntityType'
@@ -155,7 +161,7 @@ export async function close(user, thingId, messageText) {
     try {
         // TODO: only creator can close a thing
 
-        const thing = await Thing.get(thingId).run()
+        const thing = await ThingDomain.getThing(thingId)
 
         if (![EntityTypes.THING.key, EntityTypes.EMAIL_THING.key].includes(thing.type))
             throw 'InvalidEntityType'
@@ -200,7 +206,7 @@ export async function closeAck(user, thingId) {
     const creator = userToAddress(user)
 
     try {
-        const thing = await Thing.get(thingId).run()
+        const thing = await ThingDomain.getThing(thingId)
 
         remove(thing.doers, doerUserId => doerUserId === user.id)
         remove(thing.followUpers, followUpperUserId => followUpperUserId === user.id)
@@ -220,7 +226,7 @@ export async function markAsDone(user, thingId, messageText) {
     const creator = userToAddress(user)
 
     try {
-        const thing = await Thing.get(thingId).run()
+        const thing = await ThingDomain.getThing(thingId)
 
         // Validate that the status of the thing matched the action
         validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key])
@@ -250,7 +256,7 @@ export async function sendBack(user, thingId, messageText) {
     const creator = userToAddress(user)
 
     try {
-        const thing = await Thing.get(thingId).run()
+        const thing = await ThingDomain.getThing(thingId)
 
         validateStatus(thing, [ThingStatus.DONE.key, ThingStatus.DISMISS.key])
 
@@ -274,7 +280,7 @@ export async function ping(user, thingId) {
     const creator = userToAddress(user)
 
     try {
-        const thing = await Thing.get(thingId).run()
+        const thing = await ThingDomain.getThing(thingId)
 
         validateStatus(thing, ThingStatus.INPROGRESS.key)
 
@@ -293,7 +299,7 @@ export async function pong(user, thingId, messageText) {
     const creator = userToAddress(user)
 
     try {
-        const thing = await Thing.get(thingId).run()
+        const thing = await ThingDomain.getThing(thingId)
         
         validateStatus(thing, ThingStatus.INPROGRESS.key)
 
@@ -315,7 +321,7 @@ export async function comment(user, thingId, commentText) {
     try {
         const creator = userToAddress(user)
 
-        const thing = await Thing.get(thingId).run()
+        const thing = await ThingDomain.getThing(thingId)
 
         const mentionedUserIds = await getMentionsFromText(commentText)
         const comment = await EventCreator.createComment(creator, new Date(), thing,
@@ -338,7 +344,7 @@ export async function followUp(user, thingId) {
     try {
         const creator = userToAddress(user)
 
-        const thing = await Thing.get(thingId).run()
+        const thing = await ThingDomain.getThing(thingId)
 
         if (!isCreatorOrMentioned(thing, user)) {
             throw 'UserNotMentioned'
@@ -370,7 +376,7 @@ export async function followUp(user, thingId) {
 export async function unfollow(user, thingId) {
     const creator = userToAddress(user)
 
-    const thing = await Thing.get(thingId).run()
+    const thing = await ThingDomain.getThing(thingId)
 
     if (thing.followUpers.includes(user.id)) {
         remove(thing.followUpers, userId => userId === user.id)
@@ -388,7 +394,7 @@ export async function unfollow(user, thingId) {
 }
 
 export async function unmute(user, thingId) {
-    const thing = await Thing.get(thingId).run()
+    const thing = await ThingDomain.getThing(thingId)
 
     if (!isCreatorOrMentioned(thing, user)) {
         throw 'UserNotMentioned'
@@ -410,7 +416,7 @@ export async function unmute(user, thingId) {
 }
 
 export async function mute(user, thingId) {
-    const thing = await Thing.get(thingId).run()
+    const thing = await ThingDomain.getThing(thingId)
 
     if (thing.creator.id === user.id) {
         throw 'CreatorCannotMute'
@@ -440,7 +446,7 @@ export function discardEventsByType(user, thingId, eventType) {
 }
 
 export function syncThingWithMessage(thingId, message) {
-    return Thing.getFullThing(thingId)
+    return ThingDomain.getFullThing(thingId)
         .then(thing => {
             const emailIds =
                 thing.events.filter(event => event.payload && event.payload.emailId)
@@ -461,7 +467,7 @@ export function syncThingWithMessage(thingId, message) {
 export function addCommentFromEmail(thingId, messageId, from, date, text, html) {
     const creator = emailToAddress(from)
 
-    return Thing.getFullThing(thingId)
+    return ThingDomain.getFullThing(thingId)
         .then(thing => {
             const emailIds =
                 thing.events.filter(event => event.payload && event.payload.emailId)
@@ -582,7 +588,7 @@ function saveNewThing(body, subject, creator, to, mentionedUserIds) {
     const mentioned = mentionedUserIds
     const subscribers = mentionedUserIds
 
-    return Thing.save({
+    return ThingDomain.createThing({
         createdAt: new Date(),
         creator,
         to,
@@ -596,7 +602,8 @@ function saveNewThing(body, subject, creator, to, mentionedUserIds) {
         type: EntityTypes.THING.key,
         payload: omitBy({
             status
-        }, isNil)
+        }, isNil),
+        events: []
     })
 }
 

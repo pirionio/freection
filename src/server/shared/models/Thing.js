@@ -54,37 +54,4 @@ Thing.ensureIndex('threadId', doc => {
     return doc('payload')('threadId')
 })
 
-Thing.defineStatic('getFullThing', function(thingId) {
-    return this.get(thingId).getJoin({events: true}).run()
-})
-
-Thing.defineStatic('getAllUserThings', function(userId) {
-    return this.getAll(userId, {index: 'all'}).getJoin({events: true}).run()
-})
-
-Thing.defineStatic('getUserFollowUps', function(userId) {
-    return this.getAll(userId, {index: 'followUpers'}).getJoin({events: true}).run()
-})
-
-Thing.defineStatic('getUserToDos', function(userId) {
-    return this.getAll(userId, {index: 'doers'}).getJoin({events: true}).run()
-})
-
-Thing.defineStatic('getUserMentions', function(userId) {
-    return this.getAll(userId, {index: 'mentioned'}).getJoin({events: true}).run()
-})
-
-Thing.defineStatic('getThingsByGithubIssueId', function(githubIssueId) {
-    return this.getAll(githubIssueId, {index: 'githubIssueId'}).run()
-})
-
-Thing.defineStatic('getThingByThreadId', function(threadId) {
-    return this.getAll(threadId, {index: 'threadId'}).run().then(things => {
-        if (things.length === 0)
-            return null
-
-        return things[0]
-    })
-})
-
 export default Thing

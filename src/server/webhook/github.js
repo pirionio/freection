@@ -1,7 +1,8 @@
 import {Router} from 'express'
 import {toString} from 'lodash'
 
-import {User, Thing} from './../shared/models'
+import {User} from './../shared/models'
+import * as ThingDomain from '../shared/domain/thing-domain'
 import * as GithubThingService from '../shared/application/github-thing-service'
 import ThingStatus from '../../common/enums/thing-status'
 import logger from '../shared/utils/logger'
@@ -39,7 +40,7 @@ function handleClosed(payload) {
     const { id, number} = payload.issue
     const fullName = payload.repository.full_name
 
-    Thing.getThingsByGithubIssueId(id)
+    ThingDomain.getThingsByGithubIssueId(id)
         .then(things => {
 
             const creator = {
@@ -76,7 +77,7 @@ function handleAssigned(payload) {
     User.getUserByGithubId(githubUserId)
         .then(user => isRepositoryEnabled(user, fullName))
         .then(user => {
-            return Thing.getThingsByGithubIssueId(id)
+            return ThingDomain.getThingsByGithubIssueId(id)
                 .then(things => isNewThing(user, things))
                 .then(() => {
                     logger.info(`creating new thing for issue ${fullName}/${number}`)

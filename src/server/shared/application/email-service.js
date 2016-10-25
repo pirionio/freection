@@ -5,7 +5,8 @@ import * as GoogleImapConnectionPool from '../utils/imap/google-imap-connection-
 import * as GoogleSmtpConnectionPool from '../utils/smtp/google-smtp-connection-pool'
 import EntityTypes from '../../../common/enums/entity-types'
 import ThingStatus from '../../../common/enums/thing-status'
-import {Thing, User} from '../models'
+import {User} from '../models'
+import * as ThingDomain from '../domain/thing-domain'
 import * as EventsCreator from './event-creator'
 import {userToAddress} from './address-creator'
 import {imapEmailToDto} from '../application/transformers'
@@ -135,7 +136,7 @@ export async function newEmailThing(user, emailData, isHex) {
         }
     }
 
-    const existingThing = await Thing.getThingByThreadId(thread.id)
+    const existingThing = await ThingDomain.getThingByThreadId(thread.id)
     if (existingThing && existingThing.payload && existingThing.payload.status !== ThingStatus.CLOSE.key)
         return
 
@@ -143,8 +144,10 @@ export async function newEmailThing(user, emailData, isHex) {
     const doer = userToAddress(user)
 
     const thing = await saveNewThing(thread, creator, doer)
-    await EventsCreator.createCreated(creator, thing, getShowNewList)
-    await EventsCreator.createAccepted(creator, thing, getShowNewList)
+    thing.events.push(EventsCreator.createCreated(creator, thing, []))
+    thing.events.push(EventsCreator.createAccepted(creator, thing, []))
+
+    return await ThingDomain.updateThing(thing)
 }
 
 export async function doEmail(user, emailThreadId, isHex) {
@@ -154,9 +157,11 @@ export async function doEmail(user, emailThreadId, isHex) {
     const thread = await fetchFullThread(user, emailThreadIdDec)
     const creator = thread.creator
 
-    const thing = await saveNewThing(thread, creator, userToAddress(user))
-    await EventsCreator.createCreated(creator, thing, getShowNewList)
-    await EventsCreator.createAccepted(userToAddress(user), thing, getShowNewList)
+    const thing = await saveNewThing(thread, creator, doer)
+    thing.events.push(EventsCreator.createCreated(creator, thing, []))
+    thing.events.push(EventsCreator.createAccepted(creator, thing, []))
+
+    return await ThingDomain.updateThing(thing)
 }
 
 export async function replyToAll(user, to, inReplyTo, references, subject, messageText, messageHtml) {
@@ -181,7 +186,7 @@ function prepareThread(emails, user) {
 }
 
 function saveNewThing(thread, creator, to) {
-    return Thing.save({
+    return ThingDomain.createThing({
         createdAt: new Date(),
         creator,
         to,
@@ -197,7 +202,8 @@ function saveNewThing(thread, creator, to) {
             threadIdHex: thread.payload.threadIdHex,
             status: ThingStatus.INPROGRESS.key,
             recipients: thread.payload.recipients
-        }
+        },
+        events: []
     })
 }
 

@@ -1,6 +1,7 @@
 import {remove, uniq} from 'lodash'
 
-import { Thing } from '../models'
+import {} from '../models'
+import * as ThingDomain from '../domain/thing-domain'
 import * as EventCreator from './event-creator'
 import {userToAddress} from './address-creator'
 import EventTypes from '../../../common/enums/event-types'
@@ -12,14 +13,14 @@ export async function newThing(creator, to, subject) {
     const creatorAddresss = userToAddress(creator)
 
     const thing = await saveNewThing(creatorAddresss, to, subject)
-    await EventCreator.createCreated(creatorAddresss, thing, getShowNewList)
+    thing.events.push(EventCreator.createCreated(creatorAddresss, thing, []))
 }
 
 export async function close(user, thingId) {
     const creator = userToAddress(user)
 
     try {
-        const thing = await Thing.get(thingId).run()
+        const thing = await ThingDomain.getThing(thingId)
 
         // Removing the user from the doers and follow upers
         remove(thing.followUpers, followUperId => followUperId === user.id)
@@ -36,7 +37,7 @@ export async function close(user, thingId) {
 }
 
 function saveNewThing(creator, to, subject, body, id, number, url) {
-    return Thing.save({
+    return ThingDomain.createThing({
         createdAt: new Date(),
         creator,
         to,
@@ -51,7 +52,8 @@ function saveNewThing(creator, to, subject, body, id, number, url) {
             id,
             number,
             url
-        }
+        },
+        events: []
     })
 }
 

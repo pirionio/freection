@@ -1,6 +1,7 @@
 import {castArray, uniq} from 'lodash'
 
-import { Event, Thing } from '../models'
+import {Event} from '../models'
+import * as ThingDomain from '../domain/thing-domain'
 import * as EventCreator from './event-creator'
 import ThingStatus from '../../../common/enums/thing-status'
 import EntityTypes from '../../../common/enums/entity-types'
@@ -8,18 +9,18 @@ import EventTypes from '../../../common/enums/event-types'
 import logger from '../utils/logger'
 import {userToAddress} from './address-creator'
 
-export function newThing(creator, toUser, subject, body, id, number, url) {
-    saveNewThing(creator, userToAddress(toUser), subject, body, id, number, url)
-        .then(thing => {
-            return EventCreator.createCreated(creator, thing, getShowNewList)
-        })
+export async function newThing(creator, toUser, subject, body, id, number, url) {
+    const thing = await saveNewThing(creator, userToAddress(toUser), subject, body, id, number, url)
+    thing.events.push(EventCreator.createCreated(creator, thing, [thing.to.id]))
+    await ThingDomain.updateThing(thing)
+    return thing.events[0]
 }
 
 export async function doThing(user, thingId) {
     const creator = userToAddress(user)
 
     try {
-        const thing = await Thing.getFullThing(thingId)
+        const thing = await ThingDomain.getFullThing(thingId)
 
         if (thing.type !== EntityTypes.GITHUB.key)
             throw 'InvalidEntityType'
@@ -66,7 +67,7 @@ export function closeByGithub(creator, thing) {
 export function dismiss(user, thingId) {
     const creator = userToAddress(user)
 
-    return Thing.get(thingId).run()
+    return ThingDomain.getThing(thingId)
         .then(validateType)
         .then(thing => validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key]))
         .then(thing => {
@@ -84,7 +85,7 @@ export function dismiss(user, thingId) {
 export function close(user, thingId) {
     const creator = userToAddress(user)
 
-    return Thing.get(thingId).run()
+    return ThingDomain.getThing(thingId)
         .then(validateType)
         .then(thing => validateStatus(thing, ThingStatus.DONE.key))
         .then(thing => performClose(thing))
@@ -97,8 +98,7 @@ export function close(user, thingId) {
 }
 
 function saveNewThing(creator, to, subject, body, id, number, url) {
-
-    return Thing.save({
+    return ThingDomain.createThing({
         createdAt: new Date(),
         creator,
         to,
@@ -113,7 +113,8 @@ function saveNewThing(creator, to, subject, body, id, number, url) {
             id,
             number,
             url
-        }
+        },
+        events: []
     })
 }
 

@@ -7,8 +7,8 @@ import 'sinon-as-promised'
 chai.use(chaiAsPromised)
 const expect = chai.expect
 
-describe('Thing Service', function() {
-    let ThingService, ThingMock, UserMock, EventMock, EmailMock
+describe.only('Thing Service', function() {
+    let ThingService, ThingDomainMock, UserMock, EventMock, EmailMock
 
     function setup() {
         mockery.enable({
@@ -24,24 +24,22 @@ describe('Thing Service', function() {
     }
 
     function initMocks() {
-        ThingMock.save.returnsArg(0)
-        ThingMock.saveAll.returnsArg(0)
-        ThingMock.getFullThing.resolves({})
-        EventMock.save.returnsArg(0)
+        ThingDomainMock.createThing.returnsArg(0)
+        ThingDomainMock.updateThing.returnsArg(0)
+        ThingDomainMock.getFullThing.resolves({})
         UserMock.getUserByEmail.resolves(generateDoer())
         UserMock.getUserByUsername.resolves(generateMentionedUser())
         EmailMock.sendMessage.resolves({})
     }
 
     function setupMocks() {
-        ThingMock = {
-            save: sinon.stub(),
-            saveAll: sinon.stub(),
+        ThingDomainMock = {
+            createThing: sinon.stub(),
+            updateThing: sinon.stub(),
             getFullThing: sinon.stub()
         }
-        EventMock = {
-            save: sinon.stub()
-        }
+
+        EventMock = {}
         UserMock = {
             getUserByEmail: sinon.stub(),
             getUserByUsername: sinon.stub()
@@ -50,8 +48,9 @@ describe('Thing Service', function() {
             sendMessage: sinon.stub()
         }
 
+        mockery.registerMock('../domain/thing-domain', ThingDomainMock)
+
         mockery.registerMock('../models', {
-            Thing: ThingMock,
             User: UserMock,
             Event: EventMock
         })
@@ -60,6 +59,7 @@ describe('Thing Service', function() {
     }
 
     function clean() {
+        mockery.deregisterMock('../domain/thing-domain')
         mockery.deregisterMock('../models')
         mockery.deregisterMock('../technical/email-send-service')
         mockery.deregisterAllowable('./thing-service')
@@ -68,10 +68,9 @@ describe('Thing Service', function() {
     }
 
     function cleanMocks() {
-        ThingMock.save.reset()
-        ThingMock.saveAll.reset()
-        ThingMock.getFullThing.reset()
-        EventMock.save.reset()
+        ThingDomainMock.createThing.reset()
+        ThingDomainMock.updateThing.reset()
+        ThingDomainMock.getFullThing.reset()
         UserMock.getUserByEmail.reset()
         UserMock.getUserByUsername.reset()
         EmailMock.sendMessage.reset()
@@ -108,7 +107,7 @@ describe('Thing Service', function() {
     }
 
     function generateThing(creator, status, events) {
-        const thing = {
+        return {
             id: 'Thing-1',
             type: 'THING',
             subject: 'The Subject',
@@ -122,13 +121,8 @@ describe('Thing Service', function() {
             mentioned: [],
             subscribers: [],
             all: [],
-            events,
-            save: sinon.stub()
+            events
         }
-
-        thing.save.resolves({})
-
-        return thing
     }
 
     function generateCreatedEvent(creator, thingId, showNewList) {
@@ -173,20 +167,18 @@ describe('Thing Service', function() {
                 expect(this.thing.subscribers.length).to.equal(0)
             })
             And('event CREATED is created', function() {
-                const event = EventMock.save.getCall(0).returnValue
-                expect(event.eventType).to.equal('CREATED')
-                expect(event.payload).to.exist
-                expect(event.payload.text).to.equal('Hello World')
+                expect(this.thing.events).to.have.lengthOf(1)
+                expect(this.thing.events[0].eventType).to.equal('CREATED')
+                expect(this.thing.events[0].payload).to.exist
+                expect(this.thing.events[0].payload.text).to.equal('Hello World')
             })
             And('recipient receives a notification', function() {
-                const event = EventMock.save.getCall(0).returnValue
-                expect(event.showNewList).to.have.lengthOf(1)
-                expect(event.showNewList).to.include('ID-marsellus')
+                expect(this.thing.events[0].showNewList).to.have.lengthOf(1)
+                expect(this.thing.events[0].showNewList).to.include('ID-marsellus')
             })
             And('text is marked as read for the creator', function() {
-                const event = EventMock.save.getCall(0).returnValue
-                expect(event.payload.readByList).to.have.lengthOf(1)
-                expect(event.payload.readByList).to.include('ID-vincent')
+                expect(this.thing.events[0].payload.readByList).to.have.lengthOf(1)
+                expect(this.thing.events[0].payload.readByList).to.include('ID-vincent')
             })
         })
 
@@ -210,10 +202,9 @@ describe('Thing Service', function() {
                 expect(this.thing.subscribers[0]).to.equal('ID-mia')
             })
             And('mentioned user receives a notification', function() {
-                const event = EventMock.save.getCall(0).returnValue
-                expect(event.payload).to.exist
-                expect(event.payload.mentioned).to.have.lengthOf(1)
-                expect(event.payload.mentioned).to.include('ID-mia')
+                expect(this.thing.events[0].payload).to.exist
+                expect(this.thing.events[0].payload.mentioned).to.have.lengthOf(1)
+                expect(this.thing.events[0].payload.mentioned).to.include('ID-mia')
             })
         })
 
@@ -232,7 +223,6 @@ describe('Thing Service', function() {
             Then('is in status NEW', function() {
                 expect(this.thing.payload).to.exist
                 expect(this.thing.payload.status).to.equal('NEW')
-
             })
             And('creator is a follow upper', function() {
                 expect(this.thing.followUpers).to.exist
@@ -243,9 +233,30 @@ describe('Thing Service', function() {
                 expect(EmailMock.sendMessage.calledOnce).to.be.true
             })
         })
+
+        describe('sent to myself', function() {
+            afterEach(cleanMocks)
+
+            Given(function() {
+                initMocks()
+            })
+            And(function() {
+                UserMock.getUserByEmail.resolves(generateCreator())
+            })
+            When('thing', function() {
+                return newThing('Hello World', 'vincent.vega@othercompany.com')
+            })
+            Then('creator is a doer', function() {
+                expect(this.thing.doers).to.have.lengthOf(1)
+                expect(this.thing.doers).to.include('ID-vincent')
+            })
+            Then('creator is not a follow upper', function() {
+                expect(this.thing.followUpers).to.have.lengthOf(0)
+            })
+        })
     })
 
-    describe.only('Do thing', function() {
+    describe('Do thing', function() {
         function doThing() {
             const user = generateDoer()
             return ThingService.doThing(user, '111')
@@ -258,7 +269,7 @@ describe('Thing Service', function() {
                 initMocks()
             })
             And(function() {
-                ThingMock.getFullThing.resolves(generateThing(generateCreator(), 'NEW', [
+                ThingDomainMock.getFullThing.resolves(generateThing(generateCreator(), 'NEW', [
                     generateCreatedEvent(generateCreator(), 'Thing-1', ['ID-marsellus'])
                 ]))
             })

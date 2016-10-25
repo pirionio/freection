@@ -7,7 +7,7 @@
     "node": "6.3.0"
   },
   "scripts": {
-    "test": "babel-node ./node_modules/mocha/bin/_mocha --presets es2015,babel-async-preset --require babel-polyfill --compilers js:babel-register --ui mocha-when-then \"src/**/*.test.js\"",
+    "test": "babel-node ./node_modules/mocha/bin/_mocha --presets es2015,babel-async-preset --require babel-polyfill --compilers js:babel-register --ui mocha-when-then --timeout 5000 \"src/**/*.test.js\"",
     "start": "babel-node src/server/index.js --presets babel-async-preset",
     "prod": "node dist/server/index.js",
     "init-demo": "babel-node scripts/init-demo-db.js --presets babel-async-preset",
