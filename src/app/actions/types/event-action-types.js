@@ -1,4 +1,4 @@
-export default {
+const EventActionsTypes = {
     CREATED: 'EVENT_CREATED',
     ACCEPTED: 'EVENT_ACCEPTED',
     MARKED_AS_DONE: 'EVENT_MARKED_AS_DONE',
@@ -15,4 +15,30 @@ export default {
     COMMENT_CREATED: 'EVENT_COMMENT_CREATED',
     COMMENT_READ_BY: 'EVENT_COMMENT_READ_BY',
     RECONNECTED: 'EVENT_RECONNECTED'
+}
+
+export default EventActionsTypes
+
+export function isOfTypeEvent(type) {
+    switch(type) {
+        case EventActionsTypes.CREATED:
+        case EventActionsTypes.ACCEPTED:
+        case EventActionsTypes.MARKED_AS_DONE:
+        case EventActionsTypes.CLOSED:
+        case EventActionsTypes.CLOSE_ACKED:
+        case EventActionsTypes.DISMISSED:
+        case EventActionsTypes.SENT_BACK:
+        case EventActionsTypes.PINGED:
+        case EventActionsTypes.PONGED:
+        case EventActionsTypes.UNMUTED:
+        case EventActionsTypes.MUTED:
+        case EventActionsTypes.FOLLOW_UP:
+        case EventActionsTypes.UNFOLLOW:
+        case EventActionsTypes.COMMENT_CREATED:
+        case EventActionsTypes.COMMENT_READ_BY:
+        case EventActionsTypes.RECONNECTED:
+            return true
+        default:
+            return false
+    }
 }

@@ -124,6 +124,10 @@ function getTypesVariable(modelName) {
     return `${upperFirst(camelCase(modelName))}ActionsTypes`
 }
 
+function pascalCase(modelName) {
+    return upperFirst(camelCase(modelName))
+}
+
 function getTypesFilename(modelName) {
     return `${kebabCase(modelName)}-action-types`
 }
@@ -136,15 +140,26 @@ function generateTypesCode(model) {
     const modelName = getTypeName(model.name)
     const typesFileName = getTypesFilename(model.name)
     const typesPath =  `./src/app/actions/types/${typesFileName}.js`
+    const typesConst = getTypesVariable(model.name)
 
-    const code = `export default {${EOL}` +
+    const typesCode = `const ${typesConst} = {${EOL}` +
         `    ${model.actions.map(action => {
             const typeName = getTypeName(action.name)
             return `${typeName}: '${modelName}_${typeName}'`
         }).join(`,${EOL}    `)}${EOL}` +
-        '}'
+        `}${EOL}${EOL}` +
+        `export default ${typesConst}${EOL}${EOL}`
 
-    fs.writeFileSync(typesPath, code)
+    const isActionOfType = `export function isOfType${pascalCase(model.name)}(type) {${EOL}` +
+            `    switch(type) {${EOL}` +
+            model.actions.map(action => `        case ${typesConst}.${getTypeName(action.name)}:${EOL}`).join('') +
+            `            return true${EOL}` +
+            `        default:${EOL}` +
+            `            return false${EOL}` +
+            `    }${EOL}` +
+            `}`
+
+    fs.writeFileSync(typesPath, typesCode + isActionOfType)
 }
 
 function generateDefaultFile(model) {

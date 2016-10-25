@@ -1,4 +1,4 @@
-export default {
+const ThingCommandActionsTypes = {
     COMMENT: 'THING_COMMAND_COMMENT',
     NEW_THING: 'THING_COMMAND_NEW_THING',
     PING: 'THING_COMMAND_PING',
@@ -17,4 +17,32 @@ export default {
     FOLLOW_UP: 'THING_COMMAND_FOLLOW_UP',
     UNFOLLOW: 'THING_COMMAND_UNFOLLOW',
     CLOSED_UNFOLLOW: 'THING_COMMAND_CLOSED_UNFOLLOW'
+}
+
+export default ThingCommandActionsTypes
+
+export function isOfTypeThingCommand(type) {
+    switch(type) {
+        case ThingCommandActionsTypes.COMMENT:
+        case ThingCommandActionsTypes.NEW_THING:
+        case ThingCommandActionsTypes.PING:
+        case ThingCommandActionsTypes.PONG:
+        case ThingCommandActionsTypes.MARK_COMMENT_AS_READ:
+        case ThingCommandActionsTypes.DO_THING:
+        case ThingCommandActionsTypes.CLOSE_ACK:
+        case ThingCommandActionsTypes.CLOSE:
+        case ThingCommandActionsTypes.DISMISS:
+        case ThingCommandActionsTypes.MARK_AS_DONE:
+        case ThingCommandActionsTypes.DISCARD_COMMENTS:
+        case ThingCommandActionsTypes.DISCARD_SINGLE_NOTIFICATION:
+        case ThingCommandActionsTypes.UNMUTE:
+        case ThingCommandActionsTypes.MUTE:
+        case ThingCommandActionsTypes.SEND_BACK:
+        case ThingCommandActionsTypes.FOLLOW_UP:
+        case ThingCommandActionsTypes.UNFOLLOW:
+        case ThingCommandActionsTypes.CLOSED_UNFOLLOW:
+            return true
+        default:
+            return false
+    }
 }
