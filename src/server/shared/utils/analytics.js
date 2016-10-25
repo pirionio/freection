@@ -3,6 +3,7 @@ import {now, toInteger} from 'lodash'
 
 import {isAnalyticsEnabled, intercomToken} from '../config/analytics.js'
 import userTypes from '../../../common/enums/user-types.js'
+import * as ThingHelper from '../../../common/helpers/thing-helper'
 import logger from './logger'
 
 const client = isAnalyticsEnabled ? new Client({token: intercomToken}) : null
@@ -26,13 +27,13 @@ export function thingCreated(thing) {
 
         trackIntercomEvent('created_thing', thing.creator.id, {
             type: thing.type,
-            is_self: thing.isSelf(),
+            is_self: ThingHelper.isSelf(thing),
             to_type: thing.to.type,
             to
         })
     }
 
-    if (thing.to.type === userTypes.FREECTION.key && !thing.isSelf()) {
+    if (thing.to.type === userTypes.FREECTION.key && !ThingHelper.isSelf(thing)) {
         const creator = thing.creator.payload && thing.creator.payload.email ? thing.creator.payload.email : thing.creator.displayName
 
         trackIntercomEvent('received_thing', thing.to.id, {

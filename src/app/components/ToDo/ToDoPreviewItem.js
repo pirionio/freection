@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 
 import ThingStatus from '../../../common/enums/thing-status'
 import * as ThingPageActions from '../../actions/thing-page-actions'
-import * as ThingHelper from '../../helpers/thing-helper'
+import * as ThingHelper from '../../../common/helpers/thing-helper'
 import PreviewItem, {PreviewItemStatus, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
 import {ThingPreviewText} from '../Preview/Thing'
 import ToDoActionsBar from './ToDoActionsBar'

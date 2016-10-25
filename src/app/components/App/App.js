@@ -4,7 +4,7 @@ import useSheet from 'react-jss'
 import classAutobind from 'class-autobind'
 import Favicon from 'react-favicon'
 
-import * as ThingHelper from '../../helpers/thing-helper'
+import * as ThingHelper from '../../../common/helpers/thing-helper'
 import Flexbox from '../UI/Flexbox'
 import SideBar from '../SideBar/SideBar'
 import Login from '../Login/Login'

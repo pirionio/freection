@@ -5,7 +5,7 @@ import useSheet from 'react-jss'
 import keys from 'lodash/keys'
 import groupBy from 'lodash/groupBy'
 
-import * as ThingHelper from '../../helpers/thing-helper'
+import * as ThingHelper from '../../../common/helpers/thing-helper'
 import Link from '../UI/Link'
 import Flexbox from '../UI/Flexbox'
 import Ellipse from '../UI/Ellipse'

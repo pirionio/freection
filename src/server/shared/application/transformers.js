@@ -1,5 +1,4 @@
 import parseReply from 'parse-reply'
-import pick from 'lodash/pick'
 import trimStart from 'lodash/trimStart'
 import trimEnd from 'lodash/trimEnd'
 import {chain} from 'lodash/core'
@@ -8,6 +7,7 @@ import {emailToAddress} from '../application/address-creator'
 import EntityTypes from '../../../common/enums/entity-types'
 import EventTypes from '../../../common/enums/event-types'
 import SharedConstants from '../../../common/shared-constants'
+import * as ThingHelper from '../../../common/helpers/thing-helper'
 
 export function thingToDto(thing, user, {includeEvents = true} = {}) {
     return {
@@ -27,7 +27,7 @@ export function thingToDto(thing, user, {includeEvents = true} = {}) {
         isMentioned: thing.mentioned ? thing.mentioned.includes(user.id) : false,
         isSubscriber: thing.subscribers ? thing.subscribers.includes(user.id) : false,
         isInAll: thing.all && thing.all.includes(user.id),
-        isSelf: thing.isSelf()
+        isSelf: ThingHelper.isSelf(thing)
     }
 }
 

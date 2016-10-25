@@ -7,7 +7,7 @@ import isEmpty from 'lodash/isEmpty'
 import toPairs from 'lodash/toPairs'
 import {chain} from 'lodash/core'
 
-import * as ThingHelper from '../../helpers/thing-helper'
+import * as ThingHelper from '../../../common/helpers/thing-helper'
 import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
 import PreviewsContainer from '../Preview/PreviewsContainer'

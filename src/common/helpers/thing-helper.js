@@ -7,8 +7,18 @@ import reject from 'lodash/reject'
 import forOwn from 'lodash/forOwn'
 import clone from 'lodash/clone'
 
-import SharedConstants from '../../common/shared-constants'
-import EventTypes from '../../common/enums/event-types'
+import SharedConstants from '../shared-constants'
+import EventTypes from '../enums/event-types'
+
+export function isSelf(thing) {
+    return thing.creator.id === thing.to.id && thing.creator.type === thing.to.type
+}
+
+export function getEmailId(thing) {
+    const email = thing.creator.payload.email
+    const domain = email.substr(email.indexOf('@'))
+    return `thing/${this.id}${domain}`
+}
 
 export function getAllMessages(thing) {
     return chain(thing.events)

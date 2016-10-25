@@ -14,6 +14,7 @@ import {sendMessage} from '../technical/email-send-service'
 import logger from '../utils/logger'
 import replyToAddress from '../config/reply-email'
 import textToHtml from '../../../common/util/textToHtml'
+import * as ThingHelper from '../../../common/helpers/thing-helper'
 
 export function getAllThings(user) {
     return Thing.getAllUserThings(user.id)
@@ -79,15 +80,15 @@ export async function newThing(user, to, subject, body) {
         const mentionedUserIds = await getMentionsFromText(body)
 
         const thing = await saveNewThing(body, subject, creator, toAddress, mentionedUserIds)
-        await EventCreator.createCreated(creator, thing, getShowNewList, mentionedUserIds, body, thing.getEmailId())
+        await EventCreator.createCreated(creator, thing, getShowNewList, mentionedUserIds, body, ThingHelper.getEmailId(thing))
 
-        if (thing.isSelf()) {
+        if (ThingHelper.isSelf(thing)) {
             await EventCreator.createAccepted(creator, thing, getShowNewList, mentionedUserIds)
         }
 
         await sendEmailForThing(thing, user, toAddress, subject, body)
 
-        return thing.id
+        return thing
     } catch(error) {
         logger.error(`error while creating new thing for user ${user.email}`, error)
         throw error
@@ -216,7 +217,7 @@ export async function markAsDone(user, thingId, messageText) {
         validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key])
 
         remove(thing.doers, doerId => doerId === user.id)
-        thing.payload.status = thing.isSelf() ? ThingStatus.CLOSE.key : ThingStatus.DONE.key
+        thing.payload.status = ThingHelper.isSelf(thing) ? ThingStatus.CLOSE.key : ThingStatus.DONE.key
         await thing.save()
         
         await Event.discardUserEvents(thingId, user.id)
@@ -224,7 +225,7 @@ export async function markAsDone(user, thingId, messageText) {
         let event = await EventCreator.createDone(creator, thing, getShowNewList, messageText)
         await sendEmailForEvent(user, thing, event)
 
-        if (thing.isSelf()) {
+        if (ThingHelper.isSelf(thing)) {
             event = await EventCreator.createClosed(creator, thing, getShowNewList)
         }
         
@@ -496,7 +497,7 @@ function getReplyAddress(thingId) {
 
 function sendEmailForThing(thing, user, toAddress, subject, body) {
     if (toAddress.type === UserTypes.EMAIL.key) {
-        const messageId = thing.getEmailId()
+        const messageId = ThingHelper.getEmailId(thing)
 
         const htmlBody =
             `<div>

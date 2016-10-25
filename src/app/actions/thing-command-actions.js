@@ -1,5 +1,5 @@
 import {_comment, _markAsDone, _dismiss, _close, _sendBack, markCommentAsRead} from './generated/thing-command-actions'
-import * as ThingsHelper from '../helpers/thing-helper'
+import * as ThingsHelper from '../../common/helpers/thing-helper'
 
 export function comment(thingId, commentText) {
     return (dispatch, getState) => {
