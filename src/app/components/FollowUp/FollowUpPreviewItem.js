@@ -6,8 +6,8 @@ import ThingStatus from '../../../common/enums/thing-status'
 import * as ThingHelper from '../../../common/helpers/thing-helper'
 import PreviewItem, { PreviewItemStatus, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
 import {ThingPreviewText} from '../Preview/Thing'
-import FollowUpActionsBar from './FollowUpActionsBar'
 import styleVars from '../style-vars'
+import CommandBar from '../Commands/CommandsBar.js'
 
 class FollowUpPreviewItem extends Component {
     getCircleColor() {
@@ -52,7 +52,7 @@ class FollowUpPreviewItem extends Component {
     }
 
     render() {
-        const {thing, dispatch} = this.props
+        const {thing, commands, dispatch} = this.props
 
         return (
             <PreviewItem circleColor={this.getCircleColor()}
@@ -67,7 +67,7 @@ class FollowUpPreviewItem extends Component {
                     <ThingPreviewText thing={thing}/>
                 </PreviewItemText>
                 <PreviewItemActions>
-                    <FollowUpActionsBar thing={thing}/>
+                    <CommandBar thing={thing} commands={commands} />
                 </PreviewItemActions>
             </PreviewItem>
         )
@@ -75,7 +75,8 @@ class FollowUpPreviewItem extends Component {
 }
 
 FollowUpPreviewItem.propTypes = {
-    thing: PropTypes.object.isRequired
+    thing: PropTypes.object.isRequired,
+    commands: PropTypes.array.isRequired
 }
 
 export default connect()(FollowUpPreviewItem)

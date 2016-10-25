@@ -178,6 +178,34 @@ export function closeAck(thing) {
     }
 }
 
+export function _cancel(thing, messageText) {
+    return dispatch => {
+        analytics.close()
+
+        dispatch({
+            type: ThingCommandActionsTypes.CANCEL, 
+            status: ActionStatus.START,
+            thing,
+            messageText
+        })
+        return ResourceUtil.post(`/api/things/${thing.type.key}/${thing.id}/close`, {
+                messageText: messageText
+            })
+            .then(result => dispatch({
+                type: ThingCommandActionsTypes.CANCEL, 
+                status: ActionStatus.COMPLETE,
+                thing: thing,
+                event: result
+            }))
+            .catch(() => dispatch({
+                type: ThingCommandActionsTypes.CANCEL, 
+                status: ActionStatus.ERROR,
+                thing,
+                messageText
+            }))
+    }
+}
+
 export function _close(thing, messageText) {
     return dispatch => {
         analytics.close()

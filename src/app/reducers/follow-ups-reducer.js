@@ -8,6 +8,18 @@ import {ActionStatus, InvalidationStatus} from '../constants'
 import thingReducer from './thing-reducer'
 import EventTypes from '../../common/enums/event-types'
 import immutable from '../util/immutable'
+import {getThingAllowedCommands} from '../services/thing-service.js'
+import EntityTypes from '../../common/enums/entity-types.js'
+
+function getCommands (thing) {
+    const commands = thing.type.key === EntityTypes.SLACK.key ? [ThingCommandActionTypes.CLOSE] : [
+        ThingCommandActionTypes.CLOSE,
+        ThingCommandActionTypes.CLOSED_UNFOLLOW,
+        ThingCommandActionTypes.SEND_BACK,
+        ThingCommandActionTypes.PING]
+
+    getThingAllowedCommands(thing, commands)
+}
 
 const initialState = {
     followUps: [],
@@ -15,14 +27,12 @@ const initialState = {
 }
 
 function setState(state, action) {
-    return immutable(action)
-        .arraySetAll('followUps', thing => {
-            return immutable(thing)
-                .arrayMergeItem('events', {eventType: {key: EventTypes.PING.key}}, {payload: {text: 'Ping!'}})
-                .value()
+    return {
+        invalidationStatus: InvalidationStatus.FETCHED,
+        followUps: action.followUps.map(thing => {
+            return createNewFollowup(thing)
         })
-        .set('invalidationStatus', InvalidationStatus.FETCHED)
-        .value()
+    }
 }
 
 function reconnected(state) {
@@ -59,23 +69,14 @@ function pingThing(state, action) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
             return immutable(state)
-                .arraySetItem('followUps', {id: action.event.thing.id}, thing => thingReducer(thing, action))
+                .arraySetItem('followUps', {id: action.event.thing.id}, followUp =>
+                    createFollowup(thingReducer(followUp.thing, action)))
                 .value()
         case ActionStatus.START:
         case ActionStatus.ERROR:
         default:
             return state
     }
-}
-
-function messageReceived(state, action) {
-    // TODO Handle FETCHING state by queuing incoming events
-    if (state.invalidationStatus !== InvalidationStatus.FETCHED)
-        return state
-
-    return immutable(state)
-        .arraySetItem('followUps', {id: action.event.thing.id}, item => thingReducer(item, action))
-        .value()
 }
 
 function updateThing(state, action) {
@@ -85,14 +86,28 @@ function updateThing(state, action) {
     // If followup and not exist, lets add it
     if (action.event.thing.isFollowUper && !some(state.followUps, {id: action.event.thing.id})) {
         return immutable(state)
-            .arrayPushItem('followUps', action.event.thing)
+            .arrayPushItem('followUps', createNewFollowup(action.event.thing))
             .value()
     }
 
     return immutable(state)
-        .arraySetItem('followUps', {id: action.event.thing.id}, item => thingReducer(item, action))
-        .arrayReject('followUps', {isFollowUper: false})
+        .arraySetItem('followUps', {id: action.event.thing.id}, item => createFollowup(thingReducer(item.thing, action)))
+        .arrayReject('followUps', followup => !followup.thing.isFollowUper)
         .value()
+}
+
+function createNewFollowup(thing) {
+    return createFollowup(immutable(thing)
+        .arrayMergeItem('events', {eventType: {key: EventTypes.PING.key}}, {payload: {text: 'Ping!'}})
+        .value())
+}
+
+function createFollowup(thing) {
+    return {
+        id: thing.id,
+        thing,
+        commands: getCommands(thing)
+    }
 }
 
 export default (state = initialState, action) => {

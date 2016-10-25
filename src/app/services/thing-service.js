@@ -4,6 +4,7 @@ import get from 'lodash/get'
 import fromPairs from 'lodash/fromPairs'
 import {chain} from 'lodash'
 
+import EntityTypes from '../../common/enums/entity-types.js'
 import ThingStatus from '../../common/enums/thing-status.js'
 import ThingCommandActionTypes from '../actions/types/thing-command-action-types.js'
 
@@ -30,7 +31,21 @@ function getAllAllowedCommands(thing) {
     }))
 }
 
+function getSlackAllowedCommands(thing) {
+    if (thing.isCreator) {
+        switch (thing.payload.status) {
+            case ThingStatus.NEW:
+            case ThingStatus.INPROGRESS:
+                return [ThingCommandActionTypes.CLOSE]
+        }
+    }
+}
+
 function getAllAllowedCommandsArray(thing) {
+    if (thing.type.key === EntityTypes.SLACK.key) {
+        return getSlackAllowedCommands(thing)
+    }
+
     if (thing.isTo && thing.isCreator) {
         switch (thing.payload.status) {
             case ThingStatus.NEW.key:
@@ -65,9 +80,9 @@ function getAllAllowedCommandsArray(thing) {
         switch (thing.payload.status) {
             case ThingStatus.NEW.key:
             case ThingStatus.REOPENED.key:
-                return [requireText(ThingCommandActionTypes.CLOSE), followUpAction]
+                return [requireText(ThingCommandActionTypes.CANCEL), followUpAction]
             case ThingStatus.INPROGRESS.key:
-                return [requireText(ThingCommandActionTypes.CLOSE), ThingCommandActionTypes.PING, followUpAction]
+                return [requireText(ThingCommandActionTypes.CANCEL), ThingCommandActionTypes.PING, followUpAction]
             case ThingStatus.DONE.key:
             case ThingStatus.DISMISS.key:
                 return [ThingCommandActionTypes.CLOSE,

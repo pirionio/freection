@@ -6,6 +6,7 @@ const ThingCommandActionsTypes = {
     MARK_COMMENT_AS_READ: 'THING_COMMAND_MARK_COMMENT_AS_READ',
     DO_THING: 'THING_COMMAND_DO_THING',
     CLOSE_ACK: 'THING_COMMAND_CLOSE_ACK',
+    CANCEL: 'THING_COMMAND_CANCEL',
     CLOSE: 'THING_COMMAND_CLOSE',
     DISMISS: 'THING_COMMAND_DISMISS',
     MARK_AS_DONE: 'THING_COMMAND_MARK_AS_DONE',
@@ -30,6 +31,7 @@ export function isOfTypeThingCommand(type) {
         case ThingCommandActionsTypes.MARK_COMMENT_AS_READ:
         case ThingCommandActionsTypes.DO_THING:
         case ThingCommandActionsTypes.CLOSE_ACK:
+        case ThingCommandActionsTypes.CANCEL:
         case ThingCommandActionsTypes.CLOSE:
         case ThingCommandActionsTypes.DISMISS:
         case ThingCommandActionsTypes.MARK_AS_DONE:

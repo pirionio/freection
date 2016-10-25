@@ -66,6 +66,13 @@ class CommandsBar extends Component {
                     commandFunc: ThingCommandActions.close,
                     item: thing
                 }
+            case ThingCommandActionTypes.CANCEL:
+                return {
+                    key: 'command-cancel',
+                    label: 'Close',
+                    commandFunc: ThingCommandActions.cancel(),
+                    item: thing
+                }
             case ThingCommandActionTypes.SEND_BACK:
                 return {
                     key: 'command-send-back',

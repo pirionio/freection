@@ -161,6 +161,7 @@ export default (state = initialState, action) => {
         case ThingCommandActionTypes.DISMISS:
         case ThingCommandActionTypes.MARK_AS_DONE:
         case ThingCommandActionTypes.CLOSE:
+        case ThingCommandActionTypes.CANCEL:
         case ThingCommandActionTypes.SEND_BACK:
         case ThingCommandActionTypes.CLOSE_ACK:
         case ThingCommandActionTypes.PONG:

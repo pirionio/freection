@@ -1,9 +1,9 @@
 import React, {PropTypes, Component} from 'react'
 
 import PreviewItem, { PreviewItemStatus, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
-import SlackActionsBar from './SlackActionsBar'
 import ThingStatus from '../../../common/enums/thing-status'
 import styleVars from '../style-vars'
+import CommandBar from '../Commands/CommandsBar.js'
 
 class SlackPreviewItem extends Component {
     getCircleColor() {
@@ -23,7 +23,7 @@ class SlackPreviewItem extends Component {
     }
 
     render() {
-        const {thing} = this.props
+        const {thing, commands} = this.props
 
         return (
             <PreviewItem circleColor={this.getCircleColor()}
@@ -34,7 +34,7 @@ class SlackPreviewItem extends Component {
                 </PreviewItemStatus>
                 <PreviewItemText />
                 <PreviewItemActions>
-                    <SlackActionsBar thing={thing}/>
+                    <CommandBar thing={thing} commands={commands} />
                 </PreviewItemActions>
             </PreviewItem>
         )
@@ -42,7 +42,8 @@ class SlackPreviewItem extends Component {
 }
 
 SlackPreviewItem.propTypes = {
-    thing: PropTypes.object.isRequired
+    thing: PropTypes.object.isRequired,
+    commands: PropTypes.array.isRequired
 }
 
 export default SlackPreviewItem

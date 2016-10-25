@@ -79,6 +79,21 @@ module.exports = {
             path: '/api/things/${thing.id}/closeack'
         },
         {
+            name: 'cancel',
+            params: ['thing', 'messageText'],
+            type: 'post',
+            path: '/api/things/${thing.type.key}/${thing.id}/close',
+            body: {
+                messageText: 'messageText'
+            },
+            completeParams: {
+                thing: 'thing',
+                event: 'result'
+            },
+            track: 'close',
+            private: true
+        },
+        {
             name: 'close',
             params: ['thing', 'messageText'],
             type: 'post',

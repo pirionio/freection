@@ -24,12 +24,13 @@ class FollowUp extends Component {
     }
 
     getThingsToFollowUp() {
-        return orderBy(this.props.things, 'createdAt', 'desc').map(thing => {
+        return orderBy(this.props.followUps, 'createdAt', 'desc').map(followUp => {
+            const {thing, commands} = followUp
 
             if (thing.type.key === EntityTypes.SLACK.key)
-                return (<SlackPreviewItem thing={thing} key={thing.id} />)
+                return (<SlackPreviewItem thing={thing} key={thing.id} commands={commands} />)
 
-            return (<FollowUpPreviewItem thing={thing} key={thing.id} />)
+            return (<FollowUpPreviewItem thing={thing} key={thing.id} commands={commands} />)
         })
     }
 
@@ -67,14 +68,14 @@ const style = {
 }
 
 FollowUp.propTypes = {
-    things: PropTypes.array.isRequired,
+    followUps: PropTypes.array.isRequired,
     invalidationStatus: PropTypes.string.isRequired
 }
 
 
 function mapStateToProps (state) {
     return {
-        things: state.followUps.followUps,
+        followUps: state.followUps.followUps,
         invalidationStatus: state.followUps.invalidationStatus
     }
 }

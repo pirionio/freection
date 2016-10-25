@@ -1,4 +1,4 @@
-import {_comment, _markAsDone, _dismiss, _close, _sendBack, markCommentAsRead} from './generated/thing-command-actions'
+import {_comment, _markAsDone, _dismiss, _close, _cancel, _sendBack, markCommentAsRead} from './generated/thing-command-actions'
 import * as ThingsHelper from '../../common/helpers/thing-helper'
 
 export function comment(thingId, commentText) {
@@ -28,6 +28,14 @@ export function close(thing, messageText) {
         return dispatch(_close(thing, messageText))
     }
 }
+
+export function cancel(thing, messageText) {
+    return (dispatch, getState) => {
+        markAsRead(dispatch, getState, thing.id)
+        return dispatch(_cancel(thing, messageText))
+    }
+}
+
 
 export function sendBack(thing, messageText) {
     return (dispatch, getState) => {

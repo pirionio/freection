@@ -18,6 +18,7 @@ const getCommands = thing => getThingAllowedCommands(thing, [
     ThingCommandActionTypes.DISMISS,
     ThingCommandActionTypes.SEND_BACK,
     ThingCommandActionTypes.CLOSE,
+    ThingCommandActionTypes.CANCEL,
     ThingCommandActionTypes.FOLLOW_UP,
     ThingCommandActionTypes.UNFOLLOW,
     ThingCommandActionTypes.CLOSED_UNFOLLOW,
@@ -313,6 +314,7 @@ export default (state = initialState, action) => {
         case ThingCommandActionTypes.MARK_AS_DONE:
             return markThingAsDone(state, action)
         case ThingCommandActionTypes.CLOSE:
+        case ThingCommandActionTypes.CANCEL:
             return closeThing(state, action)
         case ThingCommandActionTypes.DISMISS:
             return dismissThing(state, action)

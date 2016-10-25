@@ -45,13 +45,20 @@ class PreviewItem extends Component {
 
     getActions() {
         const original = getChildOfType(this.props.children, PreviewItemActions)
-        return React.cloneElement(original, {preDoFunc: this.openInlineMessage})
+        return React.cloneElement(original, {
+            preDoFunc: this.openInlineMessage,
+            requireTextFunc: this.openInlineMessageFromCommandsBar
+        })
     }
 
     openInlineMessage(action) {
         const {dispatch} = this.props
         this.setState({showInlineMessage: true})
         dispatch(InlineMessageActions.show(action))
+    }
+
+    openInlineMessageFromCommandsBar(commandType, action) {
+        this.openInlineMessage(action)
     }
 
     getInlineMessage() {
@@ -153,6 +160,9 @@ const style = {
                 marginLeft: -2
             },
             '& .restOfActions': {
+                display: 'block'
+            },
+            '& .restOfCommands': {
                 display: 'block'
             }
         }
