@@ -98,6 +98,7 @@ function get(state, action) {
                 })
                 .set('commands', getCommands(action.thing))
                 .set('invalidationStatus', InvalidationStatus.FETCHED)
+                .set('ongoingAction', false)
                 .value()
         case ActionStatus.ERROR:
             return immutable(state)
@@ -122,6 +123,7 @@ function show(state, action) {
         })
         .set('invalidationStatus', InvalidationStatus.FETCHED)
         .set('commands', getCommands(action.thing))
+        .set('ongoingAction', false)
         .value()
 }
 

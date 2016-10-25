@@ -150,7 +150,7 @@ class FullThing extends Component {
 FullThing.propTypes = {
     thing: PropTypes.object.isRequired,
     commands: PropTypes.array.isRequired,
-    ongoingAction: PropTypes.array.isRequired,
+    ongoingAction: PropTypes.bool.isRequired,
     invalidationStatus: PropTypes.string.isRequired,
     currentUser: PropTypes.object.isRequired
 }
