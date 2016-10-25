@@ -18,7 +18,7 @@ function getCommands (thing) {
         ThingCommandActionTypes.SEND_BACK,
         ThingCommandActionTypes.PING]
 
-    getThingAllowedCommands(thing, commands)
+    return getThingAllowedCommands(thing, commands)
 }
 
 const initialState = {

@@ -39,6 +39,8 @@ function getSlackAllowedCommands(thing) {
                 return [ThingCommandActionTypes.CLOSE]
         }
     }
+
+    return []
 }
 
 function getAllAllowedCommandsArray(thing) {
