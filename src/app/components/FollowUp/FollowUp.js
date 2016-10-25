@@ -24,7 +24,7 @@ class FollowUp extends Component {
     }
 
     getThingsToFollowUp() {
-        return orderBy(this.props.followUps, 'createdAt', 'desc').map(followUp => {
+        return orderBy(this.props.followUps, 'thing.createdAt', 'desc').map(followUp => {
             const {thing, commands} = followUp
 
             if (thing.type.key === EntityTypes.SLACK.key)
