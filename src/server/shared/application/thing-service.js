@@ -116,7 +116,7 @@ export async function doThing(user, thingId) {
         thing.doers.push(user.id)
         thing.payload.status = ThingStatus.INPROGRESS.key
         thing.events.push(EventCreator.createAccepted(creator, thing, []))
-        ThingHelper.discardUserFromThingEvents(user, thing)
+        ThingHelper.discardUserEvents(user, thing)
 
         await ThingDomain.updateThing(thing)
 
@@ -142,7 +142,7 @@ export async function dismiss(user, thingId, messageText) {
         remove(thing.doers, doerId => doerId === user.id)
         thing.payload.status = ThingStatus.DISMISS.key
         thing.events.push(EventCreator.createDismissed(creator, thing, union(thing.followUpers, thing.subscribers), messageText))
-        ThingHelper.discardUserFromThingEvents(user, thing)
+        ThingHelper.discardUserEvents(user, thing)
 
         await ThingDomain.updateThing(thing)
 
@@ -174,7 +174,7 @@ export async function close(user, thingId, messageText) {
         remove(thing.followUpers, followUperId => followUperId === user.id)
         remove(thing.doers, doerUserId => doerUserId === user.id)
 
-        ThingHelper.discardUserFromThingEvents(user, thing)
+        ThingHelper.discardUserEvents(user, thing)
 
         // Discard all existing user events from the What's New page
         if ([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status))
@@ -233,7 +233,7 @@ export async function markAsDone(user, thingId, messageText) {
         const doneEvent = EventCreator.createDone(creator, thing, getShowNewList(user, thing, EventTypes.DONE.key), messageText)
         thing.events.push(doneEvent)
 
-        ThingHelper.discardUserFromThingEvents(user, thing)
+        ThingHelper.discardUserEvents(user, thing)
         if (ThingHelper.isSelf(thing)) {
             thing.events.push(EventCreator.createClosed(creator, thing, getShowNewList(user, thing, EventTypes.CLOSED.key)))
         }
@@ -260,7 +260,7 @@ export async function sendBack(user, thingId, messageText) {
 
         thing.payload.status = ThingStatus.REOPENED.key
 
-        ThingHelper.discardUserFromThingEvents(user, thing)
+        ThingHelper.discardUserEvents(user, thing)
         
         const sentBackEvent = EventCreator.createSentBack(creator, thing, getShowNewList(creator, thing, EventTypes.SENT_BACK.key), messageText)
         thing.events.push(sentBackEvent)
@@ -303,16 +303,17 @@ export async function pong(user, thingId, messageText) {
     const creator = userToAddress(user)
 
     try {
-        const thing = await ThingDomain.getThing(thingId)
+        const thing = await ThingDomain.getFullThing(thingId)
         
         validateStatus(thing, ThingStatus.INPROGRESS.key)
 
-        const event = await EventCreator.createPong(creator, thing, getShowNewList, messageText)
-        await sendEmailForEvent(user, thing, event)
-
         await Event.discardUserEventsByType(thing.id, EventTypes.PING.key, user.id)
+        
+        const pongEvent = await EventCreator.createPong(creator, thing, getShowNewList, messageText)
+        await sendEmailForEvent(user, thing, pongEvent)
 
-        const fullEvent = await Event.getFullEvent(event.id)
+
+        const fullEvent = await Event.getFullEvent(pongEvent.id)
         return eventToDto(fullEvent, user, {includeThing: false})
 
     } catch(error) {

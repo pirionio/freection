@@ -30,7 +30,7 @@ export async function doThing(user, thingId) {
         thing.doers.push(user.id)
         thing.payload.status = ThingStatus.INPROGRESS.key
         thing.events.push(EventCreator.createAccepted(creator, thing, []))
-        ThingHelper.discardUserFromThingEvents(user, thing)
+        ThingHelper.discardUserEvents(user, thing)
 
         await ThingDomain.updateThing(thing)
 
@@ -92,7 +92,7 @@ export async function dismiss(user, thingId) {
         thing.payload.status = ThingStatus.DISMISS.key
         thing.events.push(EventCreator.createDismissed(creator, thing, []))
         thing.events.push(EventCreator.createClosedSync(creator, thing, []))
-        ThingHelper.discardUserFromThingEvents(user, thing)
+        ThingHelper.discardUserEvents(user, thing)
 
         await ThingDomain.updateThing(thing)
 
@@ -118,7 +118,7 @@ export async function close(user, thingId) {
         thing.payload.status = ThingStatus.CLOSE.key
 
         thing.events.push(EventCreator.createClosed(creator, thing, []))
-        ThingHelper.discardUserFromThingEvents(user, thing)
+        ThingHelper.discardUserEvents(user, thing)
 
         await ThingDomain.updateThing(thing)
 
