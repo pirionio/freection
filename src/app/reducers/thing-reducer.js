@@ -35,7 +35,7 @@ function eventReceived(state, action, isPing) {
 }
 
 function ping(state, action) {
-    switch(action.type) {
+    switch(action.status) {
         case ActionStatus.COMPLETE:
             return immutable(state)
                 .touch('payload')

@@ -72,8 +72,7 @@ export function ping(thing) {
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.PING, 
                 status: ActionStatus.COMPLETE,
-                thing: thing,
-                event: result
+                thing: result
             }))
             .catch(() => dispatch({
                 type: ThingCommandActionsTypes.PING, 

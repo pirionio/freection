@@ -5,6 +5,7 @@ import * as GithubThingService from '../../shared/application/github-thing-servi
 import * as SlackThingService from '../../shared/application/slack-thing-service'
 import * as EndpointUtil from '../../shared/utils/endpoint-util'
 import EntityTypes from '../../../common/enums/entity-types'
+import {thingToDto} from '../../shared/application/transformers'
 
 const router = Router()
 
@@ -130,6 +131,7 @@ router.post('/:thingId/ping', (request, response) => {
     EndpointUtil.handlePost(request, response, ThingService.ping, {
         params: ['thingId'],
         result: true,
+        transform: thingToDto,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
             illegalOperation: getIllegalOperationErrorTemplate(),

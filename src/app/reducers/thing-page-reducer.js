@@ -155,27 +155,6 @@ function comment(state, action) {
     }
 }
 
-function pingThing(state, action) {
-    switch (action.status) {
-        case ActionStatus.COMPLETE:
-            return immutable(state)
-                .touch('thing')
-                .arraySetOrPushItem('thing.events', {id: action.event.id}, {
-                    id: action.event.id,
-                    payload: action.event.payload,
-                    creator: action.event.creator,
-                    createdAt: action.event.createdAt,
-                    eventType: action.event.eventType
-                })
-                .arrayMergeItem('thing.events', {id: action.event.id}, getInitialReadBy)
-                .value()
-        case ActionStatus.START:
-        case ActionStatus.ERROR:
-        default:
-            return state
-    }
-}
-
 function markCommentAsRead(state, action) {
     switch(action.status) {
         case ActionStatus.COMPLETE:

@@ -37,8 +37,7 @@ module.exports = {
             type: 'post',
             path: '/api/things/${thing.id}/ping',
             completeParams: {
-                thing: 'thing',
-                event: 'result'
+                thing: 'result'
             },
             track: 'ping'
         },

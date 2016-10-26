@@ -1,4 +1,4 @@
-import {template, zipObject, merge} from 'lodash'
+import {template, zipObject, merge, isFunction} from 'lodash'
 
 import logger from '../../shared/utils/logger'
 
@@ -24,7 +24,13 @@ export function handlePost(request, response, action, options) {
     const generalError = getGeneralErrorMessage(options, user, params)
 
     action(user, ...params)
-        .then(result => response.json(options.result ? result : {}))
+        .then(result => {
+            response.json(
+                options.result && options.transform && isFunction(options.transform) ? options.transform(result, user) :
+                options.result && !options.transform ? result :
+                {}
+            )
+        })
         .catch(error => {
             if (error && error.name === 'DocumentNotFoundError' && notFoundError) {
                 logger.error(notFoundError, error)
