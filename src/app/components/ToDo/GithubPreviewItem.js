@@ -2,7 +2,7 @@ import React, {PropTypes, Component} from 'react'
 import useSheet from 'react-jss'
 
 import PreviewItem, {PreviewItemStatus, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
-import GithubActionsBar from './GithubActionsBar'
+import CommandsBar from '../Commands/CommandsBar.js'
 import TextTruncate from '../UI/TextTruncate'
 import ThingStatus from '../../../common/enums/thing-status'
 import styleVars from '../style-vars'
@@ -45,7 +45,7 @@ class GithubTodoPreviewItem extends Component {
     }
 
     render() {
-        const {thing} = this.props
+        const {thing, commands} = this.props
 
         return (
             <PreviewItem circleColor={this.getCircleColor()}
@@ -59,7 +59,7 @@ class GithubTodoPreviewItem extends Component {
                     {this.getTextElement()}
                 </PreviewItemText>
                 <PreviewItemActions>
-                    <GithubActionsBar thing={thing}/>
+                    <CommandsBar thing={thing} commands={commands} />
                 </PreviewItemActions>
             </PreviewItem>
         )
@@ -73,7 +73,8 @@ const style = {
 }
 
 GithubTodoPreviewItem.propTypes = {
-    thing: PropTypes.object.isRequired
+    thing: PropTypes.object.isRequired,
+    commands: PropTypes.array.isRequired
 }
 
 export default useSheet(GithubTodoPreviewItem, style)

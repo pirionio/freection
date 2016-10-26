@@ -34,8 +34,35 @@ function getAllAllowedCommands(thing) {
 function getSlackAllowedCommands(thing) {
     if (thing.isCreator) {
         switch (thing.payload.status) {
-            case ThingStatus.NEW:
-            case ThingStatus.INPROGRESS:
+            case ThingStatus.NEW.key:
+            case ThingStatus.INPROGRESS.key:
+                return [ThingCommandActionTypes.CLOSE]
+        }
+    }
+
+    return []
+}
+
+function getEmailThingAllowedCommands(thing) {
+    if (thing.isDoer) {
+        switch (thing.payload.status) {
+            case ThingStatus.NEW.key:
+            case ThingStatus.INPROGRESS.key:
+                return [ThingCommandActionTypes.CLOSE]
+        }
+    }
+
+    return []
+}
+
+function getGithubAllowedCommands(thing) {
+    if (thing.isDoer) {
+        switch (thing.payload.status) {
+            case ThingStatus.NEW.key:
+                return [ThingCommandActionTypes.DO_THING, ThingCommandActionTypes.DISMISS]
+            case ThingStatus.INPROGRESS.key:
+                return [ThingCommandActionTypes.DISMISS]
+            case ThingStatus.DONE.key:
                 return [ThingCommandActionTypes.CLOSE]
         }
     }
@@ -46,6 +73,14 @@ function getSlackAllowedCommands(thing) {
 function getAllAllowedCommandsArray(thing) {
     if (thing.type.key === EntityTypes.SLACK.key) {
         return getSlackAllowedCommands(thing)
+    }
+
+    if (thing.type.key === EntityTypes.EMAIL_THING.key) {
+        return getEmailThingAllowedCommands(thing)
+    }
+
+    if (thing.type.key === EntityTypes.GITHUB.key) {
+        return getGithubAllowedCommands(thing)
     }
 
     if (thing.isTo && thing.isCreator) {

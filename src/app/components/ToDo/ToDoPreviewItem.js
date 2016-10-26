@@ -6,8 +6,8 @@ import * as ThingPageActions from '../../actions/thing-page-actions'
 import * as ThingHelper from '../../../common/helpers/thing-helper'
 import PreviewItem, {PreviewItemStatus, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
 import {ThingPreviewText} from '../Preview/Thing'
-import ToDoActionsBar from './ToDoActionsBar'
 import styleVars from '../style-vars'
+import CommandsBar from '../Commands/CommandsBar.js'
 
 class TodoPreviewItem extends Component {
     getCircleColor() {
@@ -33,7 +33,7 @@ class TodoPreviewItem extends Component {
     }
 
     render() {
-        const {thing, dispatch} = this.props
+        const {thing, commands, dispatch} = this.props
 
         const textPreview = <ThingPreviewText thing={thing}/>
 
@@ -48,7 +48,7 @@ class TodoPreviewItem extends Component {
                 </PreviewItemStatus>
                 <PreviewItemText>{textPreview}</PreviewItemText>
                 <PreviewItemActions>
-                    <ToDoActionsBar thing={thing}/>
+                    <CommandsBar thing={thing} commands={commands} />
                 </PreviewItemActions>
             </PreviewItem>
         )
@@ -56,7 +56,8 @@ class TodoPreviewItem extends Component {
 }
 
 TodoPreviewItem.propTypes = {
-    thing: PropTypes.object.isRequired
+    thing: PropTypes.object.isRequired,
+    commands: PropTypes.array.isRequired
 }
 
 export default connect()(TodoPreviewItem)

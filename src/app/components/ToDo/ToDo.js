@@ -25,14 +25,16 @@ class ToDo extends Component {
     }
 
     getThingsToDo() {
-        return orderBy(this.props.things, 'createdAt', 'desc').map(thing => {
+        return orderBy(this.props.todos, 'thing.createdAt', 'desc').map(todo => {
+            const {thing, commands} = todo
+
             if (thing.type.key === EntityTypes.GITHUB.key) {
-                return <GithubPreviewItem thing={thing} key={thing.id} />
+                return <GithubPreviewItem thing={thing} commands={commands} key={thing.id} />
             } else if (thing.type.key === EntityTypes.EMAIL_THING.key) {
-                return <EmailThingPreviewItem thing={thing} key={thing.id} />
+                return <EmailThingPreviewItem thing={thing} commands={commands} key={thing.id} />
             }
 
-            return <ToDoPreviewItem thing={thing} key={thing.id} />
+            return <ToDoPreviewItem thing={thing} commands={commands} key={thing.id} />
         })
     }
 
@@ -69,13 +71,13 @@ const style = {
 }
 
 ToDo.propTypes = {
-    things: PropTypes.array.isRequired,
+    todos: PropTypes.array.isRequired,
     invalidationStatus: PropTypes.string.isRequired
 }
 
 function mapStateToProps (state) {
     return {
-        things: state.toDo.things,
+        todos: state.toDo.todos,
         invalidationStatus: state.toDo.invalidationStatus
     }
 }

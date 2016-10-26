@@ -5,7 +5,7 @@ import classAutobind from 'class-autobind'
 import trimEnd from 'lodash/trimEnd'
 
 import PreviewItem, {PreviewItemStatus, PreviewItemActions} from '../Preview/PreviewItem'
-import EmailThingActionsBar from './EmailThingActionsBar'
+import CommandsBar from '../Commands/CommandsBar.js'
 import ThingStatus from '../../../common/enums/thing-status'
 import styleVars from '../style-vars'
 
@@ -46,7 +46,7 @@ class EmailThingPreviewItem extends Component {
     }
 
     render() {
-        const {thing} = this.props
+        const {thing, commands} = this.props
 
         return (
             <PreviewItem circleColor={this.getCircleColor()}
@@ -57,7 +57,7 @@ class EmailThingPreviewItem extends Component {
                     <span>Email from <strong>{this.getRecipients()}</strong></span>
                 </PreviewItemStatus>
                 <PreviewItemActions>
-                    <EmailThingActionsBar thing={thing}/>
+                    <CommandsBar thing={thing} commands={commands} />
                 </PreviewItemActions>
             </PreviewItem>
         )
@@ -72,6 +72,7 @@ const style = {
 
 EmailThingPreviewItem.propTypes = {
     thing: PropTypes.object.isRequired,
+    commands: PropTypes.array.isRequired,
     currentUser: PropTypes.object.isRequired
 }
 

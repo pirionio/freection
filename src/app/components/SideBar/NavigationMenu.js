@@ -150,7 +150,7 @@ function mapStateToProps(state) {
     return {
         routing: state.routing,
         newNotifications: state.whatsNew.notifications,
-        todoThings: state.toDo.things,
+        todoThings: state.toDo.todos,
         followUpThings: state.followUps.followUps,
         newEmails: state.unreadEmails.emails,
         config: state.config
