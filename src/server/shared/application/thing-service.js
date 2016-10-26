@@ -83,7 +83,8 @@ export async function newThing(user, to, subject, body) {
         const thing = await saveNewThing(body, subject, creator, toAddress, mentionedUserIds)
 
         thing.events.push(
-            EventCreator.createCreated(creator, thing, [toAddress.id, ...mentionedUserIds], mentionedUserIds, body, ThingHelper.getEmailId(thing))
+            EventCreator.createCreated(creator, thing, getShowNewList(user, thing, EventTypes.CREATED.key),
+                mentionedUserIds, body, ThingHelper.getEmailId(thing))
         )
 
         if (ThingHelper.isSelf(thing)) {

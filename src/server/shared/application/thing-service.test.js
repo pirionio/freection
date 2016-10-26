@@ -61,6 +61,7 @@ describe.only('Thing Service', function() {
             
             thingTestUtil.then.creatorIsDoer()
             thingTestUtil.then.creatorIsNotFollowUpper()
+            thingTestUtil.then.notificationDiscardedForCreator(EventTypes.CREATED.key, 0)
         })
     })
 

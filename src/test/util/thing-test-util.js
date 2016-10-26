@@ -135,6 +135,11 @@ export default class ThingTestUtil {
                     expect(nth(this.thing.events, notificationIndex).payload.readByList).to.include(dataStore.creator.id)
                 })
             },
+            notificationDiscardedForCreator: (eventType, notificationIndex = -1) => {
+                Then(`the ${eventType} notification is discarded for the creator`, function () {
+                    expect(nth(this.thing.events, notificationIndex).showNewList).to.not.include(dataStore.creator.id)
+                })
+            },
             notificationDiscardedForDoer: (eventType, notificationIndex = -1) => {
                 Then(`the ${eventType} notification is discarded for the doer`, function () {
                     expect(nth(this.thing.events, notificationIndex).showNewList).to.not.include(dataStore.doer.id)
