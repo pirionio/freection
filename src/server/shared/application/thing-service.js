@@ -711,7 +711,7 @@ async function getMentionsFromText(text) {
         .value()
     )
 
-    return mentionedUsers.map(user => user.id)
+    return mentionedUsers.filter(user => !!user).map(user => user.id)
 }
 
 function discardUserFromThingEvents(user, thing) {

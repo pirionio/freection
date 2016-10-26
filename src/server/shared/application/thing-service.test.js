@@ -1,136 +1,116 @@
-import mockery from 'mockery'
-
-import {given, when, then, setupThingMocks, setupThingService, cleanThingMocks} from '../../../../test/util/thing-given-util'
+import ThingTestUtil from '../../../test/util/thing-test-util'
+import DummyDataStore from '../../../test/util/dummy-data-store'
+import ThingServiceMock from '../../../test/mocks/thing-service-mock'
+import TestConstants from '../../../test/test-constants'
 import ThingStatus from '../../../common/enums/thing-status'
 import EventTypes from '../../../common/enums/event-types'
 
 describe.only('Thing Service', function() {
-    let ThingDomainMock, UserMock, EventMock, EmailMock
+    const dataStore = new DummyDataStore()
+    const thingServiceMock = new ThingServiceMock(dataStore)
+    const thingTestUtil = new ThingTestUtil(thingServiceMock, dataStore)
 
-    function setup() {
-        mockery.enable({
-            warnOnReplace: false,
-            warnOnUnregistered: false
-        })
-
-        mockery.registerAllowable('./thing-service')
-
-        setupMocks()
-        setupThingService()
-    }
-
-    function setupMocks() {
-        [ThingDomainMock, EventMock, UserMock, EmailMock] = setupThingMocks()
-
-        mockery.registerMock('../domain/thing-domain', ThingDomainMock)
-
-        mockery.registerMock('../models', {
-            User: UserMock,
-            Event: EventMock
-        })
-
-        mockery.registerMock('../technical/email-send-service', EmailMock)
-    }
-
-    function clean() {
-        mockery.deregisterMock('../domain/thing-domain')
-        mockery.deregisterMock('../models')
-        mockery.deregisterMock('../technical/email-send-service')
-        mockery.deregisterAllowable('./thing-service')
-
-        mockery.disable()
-    }
-
-    before(setup)
-    after(clean)
+    after(thingServiceMock.clean)
 
     describe('New Thing', function() {
         describe('sent to a single recipient within the organization', function() {
-            afterEach(cleanThingMocks)
+            afterEach(thingServiceMock.resetMocks)
 
-            given.basic()
-            when.newThing('marsellus.wallace@freection.com', 'Hello World')
-            then.statusIs(ThingStatus.NEW.key)
-            then.creatorIsFollowUpper()
-            then.noSubscribers()
-            then.eventCreated(1, EventTypes.CREATED.key, 'Hello World')
-            then.doerReceivedNotification(EventTypes.CREATED.key, 0)
-            then.creatorReadNotification(0)
+            thingTestUtil.given.basic()
+            
+            thingTestUtil.when.newThing(TestConstants.DOER_EMAIL, 'Hello World')
+            
+            thingTestUtil.then.statusIs(ThingStatus.NEW.key)
+            thingTestUtil.then.creatorIsFollowUpper()
+            thingTestUtil.then.noSubscribers()
+            thingTestUtil.then.eventCreated(1, EventTypes.CREATED.key, 'Hello World')
+            thingTestUtil.then.doerReceivedNotification(EventTypes.CREATED.key, 0)
+            thingTestUtil.then.creatorReadNotification(0)
         })
 
         describe('mentioning a user', function() {
-            afterEach(cleanThingMocks)
+            afterEach(thingServiceMock.resetMocks)
 
-            given.basic()
-            when.newThing('marsellus.wallace@freection.com', '@mia.wallace FYI')
-            then.userIsMentioned()
-            then.mentionedUserIsSubscribed()
-            then.mentionedUserReceivedNotification(0)
+            thingTestUtil.given.basic()
+            
+            thingTestUtil.when.newThing(TestConstants.DOER_EMAIL, `@${TestConstants.MENTIONED_USER_USERNAME} FYI`)
+            
+            thingTestUtil.then.userIsMentioned()
+            thingTestUtil.then.mentionedUserIsSubscribed()
+            thingTestUtil.then.mentionedUserReceivedNotification(0)
         })
-        
+
         describe('sent to a user outside of the organization', function() {
-            afterEach(cleanThingMocks)
+            afterEach(thingServiceMock.resetMocks)
 
-            given.basic()
-            given.notFreectionUser()
-            when.newThing('john.doe@othercompany.com', 'Hello World')
-            then.statusIs(ThingStatus.NEW.key)
-            then.creatorIsFollowUpper()
-            then.emailIsSent()
+            thingTestUtil.given.basic()
+            
+            thingTestUtil.when.newThing(TestConstants.EXTERNAL_USER_EMAIL, 'Hello World')
+            
+            thingTestUtil.then.statusIs(ThingStatus.NEW.key)
+            thingTestUtil.then.creatorIsFollowUpper()
+            thingTestUtil.then.emailIsSent()
         })
-        
-        describe('sent to myself', function() {
-            afterEach(cleanThingMocks)
 
-            given.basic()
-            given.userIsCreator()
-            when.newThing('vincent.vega@freection.com', 'Hello World')
-            then.creatorIsDoer()
-            then.creatorIsNotFollowUpper()
+        describe('sent to myself', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            
+            thingTestUtil.when.newThing(TestConstants.CREATOR_EMAIL, 'Hello World')
+            
+            thingTestUtil.then.creatorIsDoer()
+            thingTestUtil.then.creatorIsNotFollowUpper()
         })
     })
 
     describe('Do thing', function() {
         describe('doing a regular Freection-generated thing', function() {
-            afterEach(cleanThingMocks)
+            afterEach(thingServiceMock.resetMocks)
 
-            given.basic()
-            given.thingInNew()
-            when.doThing()
-            then.statusIs(ThingStatus.INPROGRESS.key)
-            then.recipientIsDoer()
-            then.eventCreated(2, EventTypes.ACCEPTED.key)
-            then.noOneReceivedNotification(EventTypes.ACCEPTED.key)
-            then.notificationDiscardedForDoer(EventTypes.CREATED.key, 0)
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInNew()
+            
+            thingTestUtil.when.doThing()
+            
+            thingTestUtil.then.statusIs(ThingStatus.INPROGRESS.key)
+            thingTestUtil.then.recipientIsDoer()
+            thingTestUtil.then.eventCreated(2, EventTypes.ACCEPTED.key)
+            thingTestUtil.then.noOneReceivedNotification(EventTypes.ACCEPTED.key)
+            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CREATED.key, 0)
         })
     })
 
     describe('Dismiss thing', function() {
         describe('when it is in the to do list', function() {
-            afterEach(cleanThingMocks)
+            afterEach(thingServiceMock.resetMocks)
 
-            given.basic()
-            given.thingInDo()
-            when.dismissThing()
-            then.statusIs(ThingStatus.DISMISS.key)
-            then.recipientIsNotDoer()
-            then.creatorIsFollowUpper()
-            then.eventCreated(3, EventTypes.DISMISSED.key, 'Dismiss message')
-            then.creatorReceivedNotification(EventTypes.DISMISSED.key)
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDo()
+            
+            thingTestUtil.when.dismissThing()
+            
+            thingTestUtil.then.statusIs(ThingStatus.DISMISS.key)
+            thingTestUtil.then.recipientIsNotDoer()
+            thingTestUtil.then.creatorIsFollowUpper()
+            thingTestUtil.then.eventCreated(3, EventTypes.DISMISSED.key, 'Dismiss message')
+            thingTestUtil.then.creatorReceivedNotification(EventTypes.DISMISSED.key)
         })
 
         describe('when it is still in the whats new list', function() {
-            afterEach(cleanThingMocks)
+            afterEach(thingServiceMock.resetMocks)
 
-            given.basic()
-            given.thingInNew()
-            when.dismissThing()
-            then.statusIs(ThingStatus.DISMISS.key)
-            then.recipientIsNotDoer()
-            then.creatorIsFollowUpper()
-            then.eventCreated(2, EventTypes.DISMISSED.key, 'Dismiss message')
-            then.creatorReceivedNotification(EventTypes.DISMISSED.key)
-            then.notificationDiscardedForDoer(EventTypes.CREATED.key, 0)
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInNew()
+            
+            thingTestUtil.when.dismissThing()
+            
+            thingTestUtil.then.statusIs(ThingStatus.DISMISS.key)
+            thingTestUtil.then.recipientIsNotDoer()
+            thingTestUtil.then.creatorIsFollowUpper()
+            thingTestUtil.then.eventCreated(2, EventTypes.DISMISSED.key, 'Dismiss message')
+            thingTestUtil.then.creatorReceivedNotification(EventTypes.DISMISSED.key)
+            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CREATED.key, 0)
         })
     })
 })
