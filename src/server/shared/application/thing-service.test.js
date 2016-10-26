@@ -278,6 +278,22 @@ describe('Thing Service', function() {
             afterEach(thingServiceMock.resetMocks)
 
             thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDo()
+
+            thingTestUtil.when.pingThing()
+
+            thingTestUtil.then.statusIs(ThingStatus.INPROGRESS)
+            thingTestUtil.then.eventCreated(3, EventTypes.PING)
+            thingTestUtil.then.doerReceivedNotification(EventTypes.PING)
+            thingTestUtil.then.creatorReadNotification(EventTypes.PING)
+        })
+    })
+
+    describe('Pong thing', function() {
+        describe('when it is in progress', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
             thingTestUtil.given.thingPinged()
 
             thingTestUtil.when.pongThing('Pong text')
