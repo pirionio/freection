@@ -98,6 +98,11 @@ export default class ThingTestUtil {
                     return mock.ThingService.doThing(dataStore.doer, TestConstants.THING_1_ID)
                 })
             },
+            markThingAsDone: () => {
+                When('thing', function () {
+                    return mock.ThingService.markAsDone(dataStore.doer, TestConstants.THING_1_ID, 'Done message')
+                })
+            },
             dismissThing: () => {
                 When('thing', function () {
                     return mock.ThingService.dismiss(dataStore.doer, TestConstants.THING_1_ID, 'Dismiss message')

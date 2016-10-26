@@ -82,6 +82,52 @@ describe('Thing Service', function() {
         })
     })
 
+    describe('Mark thing as done', function() {
+        describe('when it is in the to do list', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDo()
+
+            thingTestUtil.when.markThingAsDone()
+
+            thingTestUtil.then.statusIs(ThingStatus.DONE.key)
+            thingTestUtil.then.recipientIsNotDoer()
+            thingTestUtil.then.eventCreated(3, EventTypes.DONE.key, 'Done message')
+            thingTestUtil.then.creatorReceivedNotification(EventTypes.DONE.key)
+        })
+
+        describe('when it is in the whats new list', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInNew()
+
+            thingTestUtil.when.markThingAsDone()
+
+            thingTestUtil.then.statusIs(ThingStatus.DONE.key)
+            thingTestUtil.then.recipientIsNotDoer()
+            thingTestUtil.then.eventCreated(2, EventTypes.DONE.key, 'Done message')
+            thingTestUtil.then.creatorReceivedNotification(EventTypes.DONE.key)
+            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CREATED.key, 0)
+        })
+
+        describe('after it is reopened', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInReopened()
+
+            thingTestUtil.when.markThingAsDone()
+
+            thingTestUtil.then.statusIs(ThingStatus.DONE.key)
+            thingTestUtil.then.recipientIsNotDoer()
+            thingTestUtil.then.eventCreated(4, EventTypes.DONE.key, 'Done message')
+            thingTestUtil.then.creatorReceivedNotification(EventTypes.DONE.key)
+            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.SENT_BACK.key, 2)
+        })
+    })
+    
     describe('Dismiss thing', function() {
         describe('when it is in the to do list', function() {
             afterEach(thingServiceMock.resetMocks)
