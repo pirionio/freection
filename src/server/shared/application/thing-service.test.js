@@ -278,14 +278,14 @@ describe('Thing Service', function() {
             afterEach(thingServiceMock.resetMocks)
 
             thingTestUtil.given.basic()
-            thingTestUtil.given.thingInDo()
+            thingTestUtil.given.thingPinged()
 
-            thingTestUtil.when.pingThing()
+            thingTestUtil.when.pongThing('Pong text')
 
             thingTestUtil.then.statusIs(ThingStatus.INPROGRESS)
-            thingTestUtil.then.eventCreated(3, EventTypes.PING)
-            thingTestUtil.then.doerReceivedNotification(EventTypes.PING)
-            thingTestUtil.then.creatorReadNotification(EventTypes.PING)
+            thingTestUtil.then.eventCreated(4, EventTypes.PONG)
+            thingTestUtil.then.creatorReceivedNotification(EventTypes.PONG)
+            thingTestUtil.then.doerReadNotification(EventTypes.PONG)
         })
     })
 })

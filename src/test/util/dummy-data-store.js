@@ -108,4 +108,15 @@ export default class DummyDataStore {
             payload: {}
         }
     }
+
+    generatePingEvent(creator, thingId, showNewList) {
+        return {
+            id: TestConstants.EVENT_PING_ID,
+            thingId,
+            eventType: EventTypes.PING.key,
+            creator,
+            showNewList,
+            payload: {}
+        }
+    }
 }

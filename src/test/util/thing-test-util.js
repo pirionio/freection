@@ -55,6 +55,22 @@ export default class ThingTestUtil {
                     }))
                 })
             },
+            thingPinged: () => {
+                Given(function () {
+                    mock.ThingDomainMock.getFullThing.resolves(dataStore.generateThing({
+                        payload: {
+                            status: ThingStatus.INPROGRESS.key
+                        },
+                        followUpers: [dataStore.creator.id],
+                        doers: [dataStore.doer.id],
+                        events: [
+                            dataStore.generateCreatedEvent(dataStore.creator, TestConstants.THING_1_ID, []),
+                            dataStore.generateAcceptedEvent(dataStore.doer, TestConstants.THING_1_ID, []),
+                            dataStore.generatePingEvent(dataStore.creator, TestConstants.THING_1_ID, [dataStore.doer.id])
+                        ]
+                    }))
+                })
+            },
             thingInDone: () => {
                 Given(function () {
                     mock.ThingDomainMock.getFullThing.resolves(dataStore.generateThing({
@@ -121,6 +137,11 @@ export default class ThingTestUtil {
             pingThing: () => {
                 When('thing', function () {
                     return mock.ThingService.ping(dataStore.creator, TestConstants.THING_1_ID)
+                })
+            },
+            pongThing: messageText => {
+                When('thing', function () {
+                    return mock.ThingService.pong(dataStore.doer, TestConstants.THING_1_ID, messageText)
                 })
             }
         }
@@ -198,6 +219,12 @@ export default class ThingTestUtil {
                 Then(`event ${eventType.key} is marked as read for the creator`, function () {
                     expect(nth(this.thing.events, notificationIndex).payload.readByList).to.have.lengthOf(1)
                     expect(nth(this.thing.events, notificationIndex).payload.readByList).to.include(dataStore.creator.id)
+                })
+            },
+            doerReadNotification: (eventType, notificationIndex = -1) => {
+                Then(`event ${eventType.key} is marked as read for the doer`, function () {
+                    expect(nth(this.thing.events, notificationIndex).payload.readByList).to.have.lengthOf(1)
+                    expect(nth(this.thing.events, notificationIndex).payload.readByList).to.include(dataStore.doer.id)
                 })
             },
             notificationDiscardedForCreator: (eventType, notificationIndex = -1) => {

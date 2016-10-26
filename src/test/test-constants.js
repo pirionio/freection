@@ -18,5 +18,6 @@ export default {
     EVENT_ACCEPTED_ID: 'Event-Accepted-1',
     EVENT_DONE_ID: 'Event-Done-1',
     EVENT_DISMISSED_ID: 'Event-Dismissed-1',
-    EVENT_REOPENED_ID: 'Event-Reopened-1'
+    EVENT_REOPENED_ID: 'Event-Reopened-1',
+    EVENT_PING_ID: 'Event-Ping-1'
 }

@@ -92,14 +92,21 @@ function filterEventsByRead(thing, isRead, isReadField='isRead') {
 
 
 export function discardUserEvents(user, thing) {
-    thing.events = thing.events.map(event => {
+    thing.events.forEach(event => {
         event.showNewList = event.showNewList.filter(userId => userId !== user.id)
-        return event
     })
 }
 
+export function discardUserEventsByType(user, thing, eventType) {
+    thing.events
+        .filter(event => event.eventType === eventType.key)
+        .forEach(event => {
+            event.showNewList = event.showNewList.filter(userId => userId !== user.id)
+        })
+}
+
 export function discardAllThingEvents(thing) {
-    thing.events = thing.events.map(event => {
+    thing.events.forEach(event => {
         event.showNewList = []
     })
 }

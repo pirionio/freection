@@ -307,15 +307,16 @@ export async function pong(user, thingId, messageText) {
         
         validateStatus(thing, ThingStatus.INPROGRESS.key)
 
-        await Event.discardUserEventsByType(thing.id, EventTypes.PING.key, user.id)
-        
-        const pongEvent = await EventCreator.createPong(creator, thing, getShowNewList, messageText)
+        ThingHelper.discardUserEventsByType(user, thing, EventTypes.PING)
+
+        const pongEvent = EventCreator.createPong(creator, thing, getShowNewList(creator, thing, EventTypes.PONG.key), messageText)
+        thing.events.push(pongEvent)
+
+        const persistedThing = await ThingDomain.updateThing(thing)
+
         await sendEmailForEvent(user, thing, pongEvent)
 
-
-        const fullEvent = await Event.getFullEvent(pongEvent.id)
-        return eventToDto(fullEvent, user, {includeThing: false})
-
+        return persistedThing
     } catch(error) {
         logger.error(`Error while ponging thing ${thingId} by user ${user.email}`, error)
         throw error
