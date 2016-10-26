@@ -245,7 +245,7 @@ function asyncStatusOperation(state, action, status) {
             const thing = immutable(state.thing)
                 .touch('payload')
                 .set('payload.status', currentStatus => updateStatus(currentStatus, status))
-                .arrayMergeItem('events', {id: action.event.id}, getInitialReadBy)
+                .arrayMergeItem('events', () => true, getInitialReadBy)
                 .value()
 
             return immutable(state)
