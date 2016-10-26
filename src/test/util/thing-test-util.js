@@ -25,6 +25,21 @@ export default class ThingTestUtil {
                     }))
                 })
             },
+            thingInReopened: () => {
+                Given(function () {
+                    mock.ThingDomainMock.getFullThing.resolves(dataStore.generateThing({
+                        payload: {
+                            status: ThingStatus.REOPENED.key
+                        },
+                        followUpers: [dataStore.creator.id],
+                        events: [
+                            dataStore.generateCreatedEvent(dataStore.creator, TestConstants.THING_1_ID, []),
+                            dataStore.generateDismissedEvent(dataStore.creator, TestConstants.THING_1_ID, []),
+                            dataStore.generateReopenedEvent(dataStore.creator, TestConstants.THING_1_ID, [dataStore.doer.id])
+                        ]
+                    }))
+                })
+            },
             thingInDo: () => {
                 Given(function () {
                     mock.ThingDomainMock.getFullThing.resolves(dataStore.generateThing({
@@ -36,6 +51,36 @@ export default class ThingTestUtil {
                         events: [
                             dataStore.generateCreatedEvent(dataStore.creator, TestConstants.THING_1_ID, []),
                             dataStore.generateAcceptedEvent(dataStore.doer, TestConstants.THING_1_ID, [])
+                        ]
+                    }))
+                })
+            },
+            thingInDone: () => {
+                Given(function () {
+                    mock.ThingDomainMock.getFullThing.resolves(dataStore.generateThing({
+                        payload: {
+                            status: ThingStatus.DONE.key
+                        },
+                        followUpers: [dataStore.creator.id],
+                        events: [
+                            dataStore.generateCreatedEvent(dataStore.creator, TestConstants.THING_1_ID, []),
+                            dataStore.generateAcceptedEvent(dataStore.doer, TestConstants.THING_1_ID, []),
+                            dataStore.generateDoneEvent(dataStore.doer, TestConstants.THING_1_ID, [dataStore.creator.id])
+                        ]
+                    }))
+                })
+            },
+            thingInDismissed: () => {
+                Given(function () {
+                    mock.ThingDomainMock.getFullThing.resolves(dataStore.generateThing({
+                        payload: {
+                            status: ThingStatus.DISMISS.key
+                        },
+                        followUpers: [dataStore.creator.id],
+                        events: [
+                            dataStore.generateCreatedEvent(dataStore.creator, TestConstants.THING_1_ID, []),
+                            dataStore.generateAcceptedEvent(dataStore.doer, TestConstants.THING_1_ID, []),
+                            dataStore.generateDismissedEvent(dataStore.doer, TestConstants.THING_1_ID, [dataStore.creator.id])
                         ]
                     }))
                 })
@@ -56,6 +101,11 @@ export default class ThingTestUtil {
             dismissThing: () => {
                 When('thing', function () {
                     return mock.ThingService.dismiss(dataStore.doer, TestConstants.THING_1_ID, 'Dismiss message')
+                })
+            },
+            closeThing: () => {
+                When('thing', function () {
+                    return mock.ThingService.close(dataStore.creator, TestConstants.THING_1_ID, 'Close message')
                 })
             }
         }
@@ -129,8 +179,8 @@ export default class ThingTestUtil {
                     expect(nth(this.thing.events, notificationIndex).showNewList).to.have.lengthOf(0)
                 })
             },
-            creatorReadNotification: (notificationIndex = -1) => {
-                Then('text is marked as read for the creator', function () {
+            creatorReadNotification: (eventType, notificationIndex = -1) => {
+                Then(`event ${eventType} is marked as read for the creator`, function () {
                     expect(nth(this.thing.events, notificationIndex).payload.readByList).to.have.lengthOf(1)
                     expect(nth(this.thing.events, notificationIndex).payload.readByList).to.include(dataStore.creator.id)
                 })

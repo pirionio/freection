@@ -89,3 +89,18 @@ function filterEventsByRead(thing, isRead, isReadField='isRead') {
         .sortBy('createdAt')
         .value()
 }
+
+
+export function discardUserFromThingEvents(user, thing) {
+    thing.events = thing.events.map(event => {
+        event.showNewList = event.showNewList.filter(userId => userId !== user.id)
+        return event
+    })
+}
+
+export function discardAllThingEvents(thing) {
+    thing.events = thing.events.map(event => {
+        event.showNewList = []
+        return event
+    })
+}

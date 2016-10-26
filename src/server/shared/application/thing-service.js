@@ -116,7 +116,7 @@ export async function doThing(user, thingId) {
         thing.doers.push(user.id)
         thing.payload.status = ThingStatus.INPROGRESS.key
         thing.events.push(EventCreator.createAccepted(creator, thing, []))
-        discardUserFromThingEvents(user, thing)
+        ThingHelper.discardUserFromThingEvents(user, thing)
 
         await ThingDomain.updateThing(thing)
 
@@ -142,7 +142,7 @@ export async function dismiss(user, thingId, messageText) {
         remove(thing.doers, doerId => doerId === user.id)
         thing.payload.status = ThingStatus.DISMISS.key
         thing.events.push(EventCreator.createDismissed(creator, thing, union(thing.followUpers, thing.subscribers), messageText))
-        discardUserFromThingEvents(user, thing)
+        ThingHelper.discardUserFromThingEvents(user, thing)
 
         await ThingDomain.updateThing(thing)
 
@@ -161,7 +161,7 @@ export async function close(user, thingId, messageText) {
     try {
         // TODO: only creator can close a thing
 
-        const thing = await ThingDomain.getThing(thingId)
+        const thing = await ThingDomain.getFullThing(thingId)
 
         if (![EntityTypes.THING.key, EntityTypes.EMAIL_THING.key].includes(thing.type))
             throw 'InvalidEntityType'
@@ -174,28 +174,24 @@ export async function close(user, thingId, messageText) {
         remove(thing.followUpers, followUperId => followUperId === user.id)
         remove(thing.doers, doerUserId => doerUserId === user.id)
 
+        ThingHelper.discardUserFromThingEvents(user, thing)
+
+        // Discard all existing user events from the What's New page
+        if ([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status))
+            ThingHelper.discardAllThingEvents(thing)
+
+        const closedEvent = EventCreator.createClosed(creator, thing, getShowNewList(creator, thing, EventTypes.CLOSED.key), messageText)
+        thing.events.push(closedEvent)
+
         // Update the status
-        const previousStatus = thing.payload.status
         thing.payload.status = ThingStatus.CLOSE.key
 
         // saving the thing
-        await thing.save()
+        await ThingDomain.updateThing(thing)
 
-        // Discard all user events
-        await Event.discardUserEvents(thingId, user.id)
-
-        // Discard all existing user events from the Whatsnew page
-        if ([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(previousStatus))
-            await Event.discardThingEvents(thingId)
-
-        // Creating the close event and saving to DB
-        const event = await EventCreator.createClosed(creator, thing,
-            (user, thing, eventType) => getShowNewList(user, thing, eventType, previousStatus),
-            messageText)
-
-        await sendEmailForEvent(user, thing, event)
+        await sendEmailForEvent(user, thing, closedEvent)
         
-        return event
+        return thing
     } catch(error) {
         logger.error(`error while closing thing ${thingId} by user ${user.email}:`, error)
         throw error
@@ -226,25 +222,27 @@ export async function markAsDone(user, thingId, messageText) {
     const creator = userToAddress(user)
 
     try {
-        const thing = await ThingDomain.getThing(thingId)
+        const thing = await ThingDomain.getFullThing(thingId)
 
         // Validate that the status of the thing matched the action
         validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key])
 
         remove(thing.doers, doerId => doerId === user.id)
         thing.payload.status = ThingHelper.isSelf(thing) ? ThingStatus.CLOSE.key : ThingStatus.DONE.key
-        await thing.save()
-        
-        await Event.discardUserEvents(thingId, user.id)
 
-        let event = await EventCreator.createDone(creator, thing, getShowNewList, messageText)
-        await sendEmailForEvent(user, thing, event)
+        const doneEvent = EventCreator.createDone(creator, thing, getShowNewList(user, thing, EventTypes.DONE.key), messageText)
+        thing.events.push(doneEvent)
 
+        ThingHelper.discardUserFromThingEvents(user, thing)
         if (ThingHelper.isSelf(thing)) {
-            event = await EventCreator.createClosed(creator, thing, getShowNewList)
+            thing.events.push(EventCreator.createClosed(creator, thing, getShowNewList(user, thing, EventTypes.CLOSED.key)))
         }
-        
-        return event
+
+        await ThingDomain.updateThing(thing)
+
+        await sendEmailForEvent(user, thing, doneEvent)
+
+        return thing
 
     } catch (error) {
         logger.error(`Error while marking thing ${thingId} as done by user ${user.email}:`, error)
@@ -621,7 +619,7 @@ async function updateThingMentions(thing, mentionedUserIds) {
     await thing.save()
 }
 
-function getShowNewList(user, thing, eventType, previousStatus, mentionedUserIdsInEvent) {
+function getShowNewList(user, thing, eventType, mentionedUserIdsInEvent) {
     let showNewList
 
     switch (eventType) {
@@ -633,7 +631,7 @@ function getShowNewList(user, thing, eventType, previousStatus, mentionedUserIds
             showNewList = union(thing.followUpers, thing.subscribers)
             break
         case EventTypes.CLOSED.key:
-            if ([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(previousStatus))
+            if ([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status))
                 showNewList = union(thing.doers, thing.followUpers, thing.subscribers, getToList(thing))
             else
                 showNewList = []
@@ -668,12 +666,6 @@ function getShowNewList(user, thing, eventType, previousStatus, mentionedUserIds
 
 function getToList(thing) {
     return thing.to.type === UserTypes.FREECTION.key ? [thing.to.id] : []
-}
-
-function performDoThing(thing, user) {
-    thing.doers.push(user.id)
-    thing.payload.status = ThingStatus.INPROGRESS.key
-    return thing.save()
 }
 
 function validateStatus(thing, allowedStatuses) {
@@ -713,11 +705,4 @@ async function getMentionsFromText(text) {
     )
 
     return mentionedUsers.filter(user => !!user).map(user => user.id)
-}
-
-function discardUserFromThingEvents(user, thing) {
-    thing.events = thing.events.map(event => {
-        event.showNewList = event.showNewList.filter(userId => userId !== user.id)
-        return event
-    })
 }

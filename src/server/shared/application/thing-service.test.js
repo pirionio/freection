@@ -5,7 +5,7 @@ import TestConstants from '../../../test/test-constants'
 import ThingStatus from '../../../common/enums/thing-status'
 import EventTypes from '../../../common/enums/event-types'
 
-describe.only('Thing Service', function() {
+describe('Thing Service', function() {
     const dataStore = new DummyDataStore()
     const thingServiceMock = new ThingServiceMock(dataStore)
     const thingTestUtil = new ThingTestUtil(thingServiceMock, dataStore)
@@ -112,6 +112,86 @@ describe.only('Thing Service', function() {
             thingTestUtil.then.eventCreated(2, EventTypes.DISMISSED.key, 'Dismiss message')
             thingTestUtil.then.creatorReceivedNotification(EventTypes.DISMISSED.key)
             thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CREATED.key, 0)
+        })
+    })
+    
+    describe('Close thing', function() {
+        describe('when it is in the to do list', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDo()
+
+            thingTestUtil.when.closeThing()
+
+            thingTestUtil.then.statusIs(ThingStatus.CLOSE.key)
+            thingTestUtil.then.creatorIsNotFollowUpper()
+            thingTestUtil.then.recipientIsDoer()
+            thingTestUtil.then.eventCreated(3, EventTypes.CLOSED.key, 'Close message')
+            thingTestUtil.then.doerReceivedNotification(EventTypes.CLOSED.key)
+            thingTestUtil.then.creatorReadNotification(EventTypes.CLOSED.key)
+        })
+
+        describe('when it is in the whats new list', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInNew()
+
+            thingTestUtil.when.closeThing()
+
+            thingTestUtil.then.statusIs(ThingStatus.CLOSE.key)
+            thingTestUtil.then.creatorIsNotFollowUpper()
+            thingTestUtil.then.eventCreated(2, EventTypes.CLOSED.key, 'Close message')
+            thingTestUtil.then.doerReceivedNotification(EventTypes.CLOSED.key)
+            thingTestUtil.then.creatorReadNotification(EventTypes.CLOSED.key)
+            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CREATED.key, 0)
+        })
+
+        describe('after it is reopened', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInReopened()
+
+            thingTestUtil.when.closeThing()
+
+            thingTestUtil.then.statusIs(ThingStatus.CLOSE.key)
+            thingTestUtil.then.creatorIsNotFollowUpper()
+            thingTestUtil.then.eventCreated(4, EventTypes.CLOSED.key, 'Close message')
+            thingTestUtil.then.doerReceivedNotification(EventTypes.CLOSED.key)
+            thingTestUtil.then.creatorReadNotification(EventTypes.CLOSED.key)
+            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.SENT_BACK.key, 2)
+        })
+
+        describe('when it is in done', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDone()
+
+            thingTestUtil.when.closeThing()
+
+            thingTestUtil.then.statusIs(ThingStatus.CLOSE.key)
+            thingTestUtil.then.creatorIsNotFollowUpper()
+            thingTestUtil.then.eventCreated(4, EventTypes.CLOSED.key, 'Close message')
+            thingTestUtil.then.notificationDiscardedForCreator(EventTypes.DONE.key, 2)
+            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CLOSED.key)
+        })
+
+        describe('when it is in dismiss', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDismissed()
+
+            thingTestUtil.when.closeThing()
+
+            thingTestUtil.then.statusIs(ThingStatus.CLOSE.key)
+            thingTestUtil.then.creatorIsNotFollowUpper()
+            thingTestUtil.then.eventCreated(4, EventTypes.CLOSED.key, 'Close message')
+            thingTestUtil.then.notificationDiscardedForCreator(EventTypes.DISMISSED.key, 2)
+            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CLOSED.key)
         })
     })
 })

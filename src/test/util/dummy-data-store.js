@@ -2,6 +2,7 @@ import classAutobind from 'class-autobind'
 
 import TestConstants from '../test-constants'
 import EventTypes from '../../common/enums/event-types'
+import UserTypes from '../../common/enums/user-types'
 
 export default class DummyDataStore {
     constructor() {
@@ -12,7 +13,8 @@ export default class DummyDataStore {
             username: TestConstants.CREATOR_USERNAME,
             email: TestConstants.CREATOR_EMAIL,
             firstName: 'John',
-            lastName: 'Creator'
+            lastName: 'Creator',
+            type: UserTypes.FREECTION.key
         }
 
         this.doer = {
@@ -20,7 +22,8 @@ export default class DummyDataStore {
             username: TestConstants.DOER_USERNAME,
             email: TestConstants.DOER_EMAIL,
             firstName: 'John',
-            lastName: 'Doer'
+            lastName: 'Doer',
+            type: UserTypes.FREECTION.key
         }
 
         this.mentionedUser = {
@@ -28,7 +31,8 @@ export default class DummyDataStore {
             username: TestConstants.MENTIONED_USER_USERNAME,
             email: TestConstants.MENTIONED_USER_EMAIL,
             firstName: 'Jane',
-            lastName: 'Mentioned'
+            lastName: 'Mentioned',
+            type: UserTypes.FREECTION.key
         }
     }
 
@@ -39,6 +43,7 @@ export default class DummyDataStore {
             subject: 'The Subject',
             body: 'The Body',
             creator: this.creator,
+            to: this.doer,
             payload: {},
             doers: [],
             followUpers: [],
@@ -64,6 +69,36 @@ export default class DummyDataStore {
             id: TestConstants.EVENT_ACCEPTED_ID,
             thingId,
             eventType: EventTypes.ACCEPTED.key,
+            creator,
+            showNewList
+        }
+    }
+
+    generateDoneEvent(creator, thingId, showNewList) {
+        return {
+            id: TestConstants.EVENT_ACCEPTED_ID,
+            thingId,
+            eventType: EventTypes.DONE.key,
+            creator,
+            showNewList
+        }
+    }
+
+    generateDismissedEvent(creator, thingId, showNewList) {
+        return {
+            id: TestConstants.EVENT_DISMISSED_ID,
+            thingId,
+            eventType: EventTypes.DISMISSED.key,
+            creator,
+            showNewList
+        }
+    }
+
+    generateReopenedEvent(creator, thingId, showNewList) {
+        return {
+            id: TestConstants.EVENT_REOPENED_ID,
+            thingId,
+            eventType: EventTypes.SENT_BACK.key,
             creator,
             showNewList
         }

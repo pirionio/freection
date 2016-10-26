@@ -14,6 +14,8 @@ export async function newThing(creator, to, subject) {
 
     const thing = await saveNewThing(creatorAddresss, to, subject)
     thing.events.push(EventCreator.createCreated(creatorAddresss, thing, []))
+
+    await ThingDomain.updateThing(thing)
 }
 
 export async function close(user, thingId) {
@@ -25,11 +27,11 @@ export async function close(user, thingId) {
         // Removing the user from the doers and follow upers
         remove(thing.followUpers, followUperId => followUperId === user.id)
 
-        // saving the thing
-        await thing.save()
-
         // Creating the close event and saving to DB
-        await EventCreator.createClosed(creator, thing, getShowNewList)
+        thing.events.push(EventCreator.createClosed(creator, thing, []))
+
+        // saving the thing
+        await ThingDomain.updateThing(thing)
     } catch(error) {
         logger.error(`error while closing slack-thing ${thingId} by user ${user.email}:`, error)
         throw error
@@ -55,14 +57,4 @@ function saveNewThing(creator, to, subject, body, id, number, url) {
         },
         events: []
     })
-}
-
-function getShowNewList(user, thing, eventType) {
-    switch (eventType) {
-        case EventTypes.CREATED.key:
-        case EventTypes.CLOSED.key:
-            return []
-        default:
-            throw 'UnknownEventType'
-    }
 }
