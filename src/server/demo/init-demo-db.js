@@ -35,7 +35,7 @@ async function ping(firstName, thingId) {
 async function discardComments(firstName, thingId) {
     const user = (await User.filter({firstName: firstName}).run())[0]
 
-    await ThingService.discardEventsByType(user, thingId, EventTypes.COMMENT.key)
+    await ThingService.discardComments(user, thingId)
 }
 
 async function readAllComments(firstName, thingId) {

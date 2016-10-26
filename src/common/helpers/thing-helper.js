@@ -51,7 +51,7 @@ export function groupNotificationsByThing(notifications) {
     // We want to aggregate notifications that belong to the very same thing. That's why we grouped them according to Thing.
     forOwn(notificationsByThing, thingNotifications => {
         const commentNotifications = chain(thingNotifications)
-            .filter(notification => SharedConstants.EVENTS_TO_GROUP.includes(notification.eventType.key))
+            .filter(notification => SharedConstants.EVENTS_TO_GROUP.includes(notification.eventType.key) && !notification.payload.isMentioned)
             .sortBy('createdAt')
             .value()
 
@@ -72,7 +72,7 @@ export function groupNotificationsByThing(notifications) {
 
         // Here we add the rest of the notifications.
         aggregatedNotifications.push(...reject(thingNotifications, notification =>
-            SharedConstants.EVENTS_TO_GROUP.includes(notification.eventType.key)
+            SharedConstants.EVENTS_TO_GROUP.includes(notification.eventType.key) && !notification.payload.isMentioned
         ))
     })
 

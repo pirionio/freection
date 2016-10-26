@@ -163,13 +163,13 @@ router.post('/:thingId/comment', (request, response) => {
     })
 })
 
-router.post('/:thingId/discard/:eventType', (request, response) => {
-    EndpointUtil.handlePost(request, response, ThingService.discardEventsByType, {
-        params: ['thingId', 'eventType'],
+router.post('/:thingId/discardComments', (request, response) => {
+    EndpointUtil.handlePost(request, response, ThingService.discardComments, {
+        params: ['thingId'],
         result: false,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
-            general: 'Could not discard events of type ${eventType} unread by user ${user} for thing ${thingId}'
+            general: 'Could not discard comments unread by user ${user} for thing ${thingId}'
         }
     })
 })

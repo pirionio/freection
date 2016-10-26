@@ -6,6 +6,7 @@ import {ActionStatus, InvalidationStatus} from '../constants'
 import EventTypes from '../../common/enums/event-types'
 import thingReducer from './thing-reducer'
 import immutable from '../util/immutable'
+import {getCommands} from '../services/notification-service.js'
 
 const initialState = {
     notifications: [],
@@ -14,7 +15,7 @@ const initialState = {
 
 function setState(state, action) {
     return {
-        notifications: action.notifications,
+        notifications: action.notifications.map(createNotification),
         invalidationStatus: InvalidationStatus.FETCHED
     }
 }
@@ -92,7 +93,8 @@ function discardComments(state, action) {
             return immutable(state)
                 .arrayReject('notifications', notification =>
                     notification.eventType.key === EventTypes.COMMENT.key &&
-                    notification.thing.id === action.notification.thing.id)
+                    notification.thing.id === action.notification.thing.id &&
+                    !notification.payload.isMentioned)
                 .value()
         case ActionStatus.COMPLETE:
         default:
@@ -108,7 +110,7 @@ function discardSingleNotification(state, action) {
                 .value()
         case ActionStatus.ERROR:
             return immutable(state)
-                .arraySetOrPushItem('notifications', {id: action.notification.id}, action.notification)
+                .arraySetOrPushItem('notifications', {id: action.notification.id}, createNotification(action.notification))
                 .value()
         case ActionStatus.COMPLETE:
         default:
@@ -122,7 +124,7 @@ function notificationReceived(state, action) {
         return state
 
     return immutable(state)
-        .arrayPushItem('notifications', action.notification)
+        .arrayPushItem('notifications', createNotification(action.notification))
         .value()
 }
 
@@ -140,11 +142,22 @@ function updateThing(state, action) {
     return immutable(state)
         .arraySetItem('notifications', notification => notification.thing.id === action.event.thing.id,
             notification => {
-                return notification === action.event ? notification :
-                    immutable(notification)
-                        .set('thing', thingReducer(notification.thing, action))
+                if (notification === action.event || notification.thing === action.event.thing)
+                    return notification
+
+                const thing = thingReducer(notification.thing, action)
+
+                return immutable(notification)
+                        .set('thing', thing)
+                        .set('commands', getCommands(notification))
                         .value()
             })
+        .value()
+}
+
+function createNotification(notification) {
+    return immutable(notification)
+        .set('commands', getCommands(notification))
         .value()
 }
 

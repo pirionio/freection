@@ -435,10 +435,10 @@ export async function mute(user, thingId) {
     return thingToDto(thing, user)
 }
 
-export function discardEventsByType(user, thingId, eventType) {
-    return Event.discardUserEventsByType(thingId, eventType, user.id)
+export function discardComments(user, thingId) {
+    return Event.discardUserUnmentionedComments(thingId, user.id)
         .catch(error => {
-            logger.error(`Could not discard events of type ${eventType} unread by user ${user.email} for thing ${thingId}`, error)
+            logger.error(`Could not discard comments unread by user ${user.email} for thing ${thingId}`, error)
             throw error
         })
 }

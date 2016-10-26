@@ -17,6 +17,8 @@ export function getThingAllowedCommands(thing, commands) {
         .value()
 }
 
+
+
 function getAllAllowedCommands(thing) {
     const allowedCommandArray = getAllAllowedCommandsArray(thing)
 

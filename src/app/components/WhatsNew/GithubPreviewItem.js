@@ -3,11 +3,11 @@ import useSheet from 'react-jss'
 
 import EventTypes from '../../../common/enums/event-types'
 import PreviewItem, { PreviewItemStatus, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
-import GithubActionsBar from './GithubActionsBar'
 import TextTruncate from '../UI/TextTruncate'
 import TextSeparator from '../UI/TextSeparator'
 import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
+import CommandsBar from '../Commands/CommandsBar.js'
 
 class GithubPreviewItem extends Component {
     getTextElement() {
@@ -52,7 +52,7 @@ class GithubPreviewItem extends Component {
                     {this.getTextElement()}
                 </PreviewItemText>
                 <PreviewItemActions>
-                    <GithubActionsBar notification={notification}/>
+                    <CommandsBar thing={notification.thing} commands={notification.commands} notification={notification} />
                 </PreviewItemActions>
             </PreviewItem>
         )

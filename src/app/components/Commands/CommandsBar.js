@@ -70,7 +70,7 @@ class CommandsBar extends Component {
                 return {
                     key: 'command-cancel',
                     label: 'Close',
-                    commandFunc: ThingCommandActions.cancel(),
+                    commandFunc: ThingCommandActions.cancel,
                     item: thing
                 }
             case ThingCommandActionTypes.SEND_BACK:

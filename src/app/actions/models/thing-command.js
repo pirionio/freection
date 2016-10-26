@@ -142,7 +142,7 @@ module.exports = {
             name: 'discard comments',
             params: ['notification'],
             type: 'post',
-            path: '/api/things/${notification.thing.id}/discard/${EventTypes.COMMENT.key}',
+            path: '/api/things/${notification.thing.id}/discardComments',
             track: 'discard'
         },
         {

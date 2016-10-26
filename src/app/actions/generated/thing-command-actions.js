@@ -299,7 +299,7 @@ export function discardComments(notification) {
             status: ActionStatus.START,
             notification
         })
-        return ResourceUtil.post(`/api/things/${notification.thing.id}/discard/${EventTypes.COMMENT.key}`)
+        return ResourceUtil.post(`/api/things/${notification.thing.id}/discardComments`)
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.DISCARD_COMMENTS, 
                 status: ActionStatus.COMPLETE,

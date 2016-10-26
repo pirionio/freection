@@ -11,6 +11,7 @@ import NotificationActionsBar from './NotificationActionsBar'
 import TextSeparator from '../UI/TextSeparator'
 import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
+import CommandsBar from '../Commands/CommandsBar.js'
 
 class NotificationPreviewItem extends Component {
 
@@ -114,7 +115,7 @@ class NotificationPreviewItem extends Component {
                 </PreviewItemStatus>
                 {textPreview ? <PreviewItemText>{textPreview}</PreviewItemText> : null}
                 <PreviewItemActions>
-                    <NotificationActionsBar notification={notification} />
+                    <CommandsBar commands={notification.commands} thing={notification.thing} notification={notification} />
                 </PreviewItemActions>
             </PreviewItem>
         )

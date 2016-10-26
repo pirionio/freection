@@ -1,4 +1,5 @@
 import thinky from './thinky'
+import EventTypes from '../../../common/enums/event-types.js'
 
 const type = thinky.type
 
@@ -72,6 +73,16 @@ Event.defineStatic('discardThingEventsByType', function(thingId, eventType) {
 
 Event.defineStatic('discardUserEventsByType', function(thingId, eventType, userId) {
     return this.getAll([thingId, eventType], {index: 'thingIdEventType'})
+        .update(event => {
+            return {
+                showNewList: event('showNewList').filter(readerUserId => readerUserId.ne(userId))
+            }
+        }).run()
+})
+
+Event.defineStatic('discardUserUnmentionedComments', function(thingId, userId) {
+    return this.getAll([thingId, EventTypes.COMMENT.key], {index: 'thingIdEventType'})
+        .filter(event => event('payload')('mentioned').contains(userId).not())
         .update(event => {
             return {
                 showNewList: event('showNewList').filter(readerUserId => readerUserId.ne(userId))
