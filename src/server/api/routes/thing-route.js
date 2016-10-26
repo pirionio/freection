@@ -69,6 +69,7 @@ router.post('/:type/:thingId/dismiss', (request, response) => {
         params: ['thingId'],
         body: ['messageText'],
         result: true,
+        transform: thingToDto,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
             illegalOperation: getIllegalOperationErrorTemplate(),
@@ -82,6 +83,7 @@ router.post('/:thingId/done', (request, response) => {
         params: ['thingId'],
         body: ['messageText'],
         result: true,
+        transform: thingToDto,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
             illegalOperation: getIllegalOperationErrorTemplate(),
@@ -95,6 +97,7 @@ router.post('/:type/:thingId/close', (request, response) => {
         params: ['thingId'],
         body: ['messageText'],
         result: true,
+        transform: thingToDto,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
             illegalOperation: getIllegalOperationErrorTemplate(),
@@ -119,6 +122,7 @@ router.post('/:thingId/sendback', (request, response) => {
         params: ['thingId'],
         body: ['messageText'],
         result: true,
+        transform: thingToDto,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
             illegalOperation: getIllegalOperationErrorTemplate(),
@@ -145,6 +149,7 @@ router.post('/:thingId/pong', (request, response) => {
         params: ['thingId'],
         body: ['messageText'],
         result: false,
+        transform: thingToDto,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
             illegalOperation: getIllegalOperationErrorTemplate(),

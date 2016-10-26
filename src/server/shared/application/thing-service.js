@@ -91,11 +91,11 @@ export async function newThing(user, to, subject, body) {
             thing.events.push(EventCreator.createAccepted(creator, thing, [], mentionedUserIds))
         }
 
-        await ThingDomain.updateThing(thing)
+        const persistedThing = await ThingDomain.updateThing(thing)
 
         await sendEmailForThing(thing, user, toAddress, subject, body)
 
-        return thing
+        return persistedThing
     } catch(error) {
         logger.error(`error while creating new thing for user ${user.email}`, error)
         throw error
@@ -118,9 +118,7 @@ export async function doThing(user, thingId) {
         thing.events.push(EventCreator.createAccepted(creator, thing, []))
         ThingHelper.discardUserEvents(user, thing)
 
-        await ThingDomain.updateThing(thing)
-
-        return thing
+        return await ThingDomain.updateThing(thing)
     } catch(error) {
         logger.error(`error while setting user ${user.email} as doer of thing ${thingId}:`, error)
         throw error
@@ -144,11 +142,11 @@ export async function dismiss(user, thingId, messageText) {
         thing.events.push(EventCreator.createDismissed(creator, thing, union(thing.followUpers, thing.subscribers), messageText))
         ThingHelper.discardUserEvents(user, thing)
 
-        await ThingDomain.updateThing(thing)
+        const persistedThing = await ThingDomain.updateThing(thing)
 
         await sendEmailForEvent(user, thing, last(thing.events))
         
-        return thing
+        return persistedThing
     } catch(error) {
         logger.error(`error while dismissing thing ${thingId} by user ${user.email}`, error)
         throw error
@@ -187,11 +185,11 @@ export async function close(user, thingId, messageText) {
         thing.payload.status = ThingStatus.CLOSE.key
 
         // saving the thing
-        await ThingDomain.updateThing(thing)
+        const persistedThing = await ThingDomain.updateThing(thing)
 
         await sendEmailForEvent(user, thing, closedEvent)
         
-        return thing
+        return persistedThing
     } catch(error) {
         logger.error(`error while closing thing ${thingId} by user ${user.email}:`, error)
         throw error
@@ -238,11 +236,11 @@ export async function markAsDone(user, thingId, messageText) {
             thing.events.push(EventCreator.createClosed(creator, thing, getShowNewList(user, thing, EventTypes.CLOSED.key)))
         }
 
-        await ThingDomain.updateThing(thing)
+        const persistedThing = await ThingDomain.updateThing(thing)
 
         await sendEmailForEvent(user, thing, doneEvent)
 
-        return thing
+        return persistedThing
 
     } catch (error) {
         logger.error(`Error while marking thing ${thingId} as done by user ${user.email}:`, error)
@@ -265,11 +263,11 @@ export async function sendBack(user, thingId, messageText) {
         const sentBackEvent = EventCreator.createSentBack(creator, thing, getShowNewList(creator, thing, EventTypes.SENT_BACK.key), messageText)
         thing.events.push(sentBackEvent)
 
-        await ThingDomain.updateThing(thing)
+        const persistedThing = await ThingDomain.updateThing(thing)
         
         await sendEmailForEvent(user, thing, sentBackEvent)
         
-        return thing
+        return persistedThing
 
     } catch (error) {
         logger.error(`Error while sending thing ${thingId} back by user ${user.email}:`, error)
@@ -624,7 +622,6 @@ async function updateThingMentions(thing, mentionedUserIds) {
     thing.mentioned = uniq([...thing.mentioned, ...mentionedUserIds])
     thing.subscribers = uniq([...thing.subscribers, ...mentionedUserIds])
     thing.all = uniq([...thing.all, ...mentionedUserIds])
-    await thing.save()
 }
 
 function getShowNewList(user, thing, eventType, mentionedUserIdsInEvent) {
