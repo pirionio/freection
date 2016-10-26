@@ -20,11 +20,11 @@ describe('Thing Service', function() {
             
             thingTestUtil.when.newThing(TestConstants.DOER_EMAIL, 'Hello World')
             
-            thingTestUtil.then.statusIs(ThingStatus.NEW.key)
+            thingTestUtil.then.statusIs(ThingStatus.NEW)
             thingTestUtil.then.creatorIsFollowUpper()
             thingTestUtil.then.noSubscribers()
-            thingTestUtil.then.eventCreated(1, EventTypes.CREATED.key, 'Hello World')
-            thingTestUtil.then.doerReceivedNotification(EventTypes.CREATED.key, 0)
+            thingTestUtil.then.eventCreated(1, EventTypes.CREATED, 'Hello World')
+            thingTestUtil.then.doerReceivedNotification(EventTypes.CREATED, 0)
             thingTestUtil.then.creatorReadNotification(0)
         })
 
@@ -47,7 +47,7 @@ describe('Thing Service', function() {
             
             thingTestUtil.when.newThing(TestConstants.EXTERNAL_USER_EMAIL, 'Hello World')
             
-            thingTestUtil.then.statusIs(ThingStatus.NEW.key)
+            thingTestUtil.then.statusIs(ThingStatus.NEW)
             thingTestUtil.then.creatorIsFollowUpper()
             thingTestUtil.then.emailIsSent()
         })
@@ -61,7 +61,7 @@ describe('Thing Service', function() {
             
             thingTestUtil.then.creatorIsDoer()
             thingTestUtil.then.creatorIsNotFollowUpper()
-            thingTestUtil.then.notificationDiscardedForCreator(EventTypes.CREATED.key, 0)
+            thingTestUtil.then.notificationDiscardedForCreator(EventTypes.CREATED, 0)
         })
     })
 
@@ -74,11 +74,11 @@ describe('Thing Service', function() {
             
             thingTestUtil.when.doThing()
             
-            thingTestUtil.then.statusIs(ThingStatus.INPROGRESS.key)
+            thingTestUtil.then.statusIs(ThingStatus.INPROGRESS)
             thingTestUtil.then.recipientIsDoer()
-            thingTestUtil.then.eventCreated(2, EventTypes.ACCEPTED.key)
-            thingTestUtil.then.noOneReceivedNotification(EventTypes.ACCEPTED.key)
-            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CREATED.key, 0)
+            thingTestUtil.then.eventCreated(2, EventTypes.ACCEPTED)
+            thingTestUtil.then.noOneReceivedNotification(EventTypes.ACCEPTED)
+            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CREATED, 0)
         })
     })
 
@@ -91,10 +91,10 @@ describe('Thing Service', function() {
 
             thingTestUtil.when.markThingAsDone()
 
-            thingTestUtil.then.statusIs(ThingStatus.DONE.key)
+            thingTestUtil.then.statusIs(ThingStatus.DONE)
             thingTestUtil.then.recipientIsNotDoer()
-            thingTestUtil.then.eventCreated(3, EventTypes.DONE.key, 'Done message')
-            thingTestUtil.then.creatorReceivedNotification(EventTypes.DONE.key)
+            thingTestUtil.then.eventCreated(3, EventTypes.DONE, 'Done message')
+            thingTestUtil.then.creatorReceivedNotification(EventTypes.DONE)
         })
 
         describe('when it is in the whats new list', function() {
@@ -105,11 +105,11 @@ describe('Thing Service', function() {
 
             thingTestUtil.when.markThingAsDone()
 
-            thingTestUtil.then.statusIs(ThingStatus.DONE.key)
+            thingTestUtil.then.statusIs(ThingStatus.DONE)
             thingTestUtil.then.recipientIsNotDoer()
-            thingTestUtil.then.eventCreated(2, EventTypes.DONE.key, 'Done message')
-            thingTestUtil.then.creatorReceivedNotification(EventTypes.DONE.key)
-            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CREATED.key, 0)
+            thingTestUtil.then.eventCreated(2, EventTypes.DONE, 'Done message')
+            thingTestUtil.then.creatorReceivedNotification(EventTypes.DONE)
+            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CREATED, 0)
         })
 
         describe('after it is reopened', function() {
@@ -120,11 +120,11 @@ describe('Thing Service', function() {
 
             thingTestUtil.when.markThingAsDone()
 
-            thingTestUtil.then.statusIs(ThingStatus.DONE.key)
+            thingTestUtil.then.statusIs(ThingStatus.DONE)
             thingTestUtil.then.recipientIsNotDoer()
-            thingTestUtil.then.eventCreated(4, EventTypes.DONE.key, 'Done message')
-            thingTestUtil.then.creatorReceivedNotification(EventTypes.DONE.key)
-            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.SENT_BACK.key, 2)
+            thingTestUtil.then.eventCreated(4, EventTypes.DONE, 'Done message')
+            thingTestUtil.then.creatorReceivedNotification(EventTypes.DONE)
+            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.SENT_BACK, 2)
         })
     })
     
@@ -137,11 +137,11 @@ describe('Thing Service', function() {
             
             thingTestUtil.when.dismissThing()
             
-            thingTestUtil.then.statusIs(ThingStatus.DISMISS.key)
+            thingTestUtil.then.statusIs(ThingStatus.DISMISS)
             thingTestUtil.then.recipientIsNotDoer()
             thingTestUtil.then.creatorIsFollowUpper()
-            thingTestUtil.then.eventCreated(3, EventTypes.DISMISSED.key, 'Dismiss message')
-            thingTestUtil.then.creatorReceivedNotification(EventTypes.DISMISSED.key)
+            thingTestUtil.then.eventCreated(3, EventTypes.DISMISSED, 'Dismiss message')
+            thingTestUtil.then.creatorReceivedNotification(EventTypes.DISMISSED)
         })
 
         describe('when it is still in the whats new list', function() {
@@ -152,12 +152,12 @@ describe('Thing Service', function() {
             
             thingTestUtil.when.dismissThing()
             
-            thingTestUtil.then.statusIs(ThingStatus.DISMISS.key)
+            thingTestUtil.then.statusIs(ThingStatus.DISMISS)
             thingTestUtil.then.recipientIsNotDoer()
             thingTestUtil.then.creatorIsFollowUpper()
-            thingTestUtil.then.eventCreated(2, EventTypes.DISMISSED.key, 'Dismiss message')
-            thingTestUtil.then.creatorReceivedNotification(EventTypes.DISMISSED.key)
-            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CREATED.key, 0)
+            thingTestUtil.then.eventCreated(2, EventTypes.DISMISSED, 'Dismiss message')
+            thingTestUtil.then.creatorReceivedNotification(EventTypes.DISMISSED)
+            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CREATED, 0)
         })
     })
     
@@ -170,12 +170,12 @@ describe('Thing Service', function() {
 
             thingTestUtil.when.closeThing()
 
-            thingTestUtil.then.statusIs(ThingStatus.CLOSE.key)
+            thingTestUtil.then.statusIs(ThingStatus.CLOSE)
             thingTestUtil.then.creatorIsNotFollowUpper()
             thingTestUtil.then.recipientIsDoer()
-            thingTestUtil.then.eventCreated(3, EventTypes.CLOSED.key, 'Close message')
-            thingTestUtil.then.doerReceivedNotification(EventTypes.CLOSED.key)
-            thingTestUtil.then.creatorReadNotification(EventTypes.CLOSED.key)
+            thingTestUtil.then.eventCreated(3, EventTypes.CLOSED, 'Close message')
+            thingTestUtil.then.doerReceivedNotification(EventTypes.CLOSED)
+            thingTestUtil.then.creatorReadNotification(EventTypes.CLOSED)
         })
 
         describe('when it is in the whats new list', function() {
@@ -186,12 +186,12 @@ describe('Thing Service', function() {
 
             thingTestUtil.when.closeThing()
 
-            thingTestUtil.then.statusIs(ThingStatus.CLOSE.key)
+            thingTestUtil.then.statusIs(ThingStatus.CLOSE)
             thingTestUtil.then.creatorIsNotFollowUpper()
-            thingTestUtil.then.eventCreated(2, EventTypes.CLOSED.key, 'Close message')
-            thingTestUtil.then.doerReceivedNotification(EventTypes.CLOSED.key)
-            thingTestUtil.then.creatorReadNotification(EventTypes.CLOSED.key)
-            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CREATED.key, 0)
+            thingTestUtil.then.eventCreated(2, EventTypes.CLOSED, 'Close message')
+            thingTestUtil.then.doerReceivedNotification(EventTypes.CLOSED)
+            thingTestUtil.then.creatorReadNotification(EventTypes.CLOSED)
+            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CREATED, 0)
         })
 
         describe('after it is reopened', function() {
@@ -202,12 +202,12 @@ describe('Thing Service', function() {
 
             thingTestUtil.when.closeThing()
 
-            thingTestUtil.then.statusIs(ThingStatus.CLOSE.key)
+            thingTestUtil.then.statusIs(ThingStatus.CLOSE)
             thingTestUtil.then.creatorIsNotFollowUpper()
-            thingTestUtil.then.eventCreated(4, EventTypes.CLOSED.key, 'Close message')
-            thingTestUtil.then.doerReceivedNotification(EventTypes.CLOSED.key)
-            thingTestUtil.then.creatorReadNotification(EventTypes.CLOSED.key)
-            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.SENT_BACK.key, 2)
+            thingTestUtil.then.eventCreated(4, EventTypes.CLOSED, 'Close message')
+            thingTestUtil.then.doerReceivedNotification(EventTypes.CLOSED)
+            thingTestUtil.then.creatorReadNotification(EventTypes.CLOSED)
+            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.SENT_BACK, 2)
         })
 
         describe('when it is in done', function() {
@@ -218,11 +218,11 @@ describe('Thing Service', function() {
 
             thingTestUtil.when.closeThing()
 
-            thingTestUtil.then.statusIs(ThingStatus.CLOSE.key)
+            thingTestUtil.then.statusIs(ThingStatus.CLOSE)
             thingTestUtil.then.creatorIsNotFollowUpper()
-            thingTestUtil.then.eventCreated(4, EventTypes.CLOSED.key, 'Close message')
-            thingTestUtil.then.notificationDiscardedForCreator(EventTypes.DONE.key, 2)
-            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CLOSED.key)
+            thingTestUtil.then.eventCreated(4, EventTypes.CLOSED, 'Close message')
+            thingTestUtil.then.notificationDiscardedForCreator(EventTypes.DONE, 2)
+            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CLOSED)
         })
 
         describe('when it is in dismiss', function() {
@@ -233,11 +233,11 @@ describe('Thing Service', function() {
 
             thingTestUtil.when.closeThing()
 
-            thingTestUtil.then.statusIs(ThingStatus.CLOSE.key)
+            thingTestUtil.then.statusIs(ThingStatus.CLOSE)
             thingTestUtil.then.creatorIsNotFollowUpper()
-            thingTestUtil.then.eventCreated(4, EventTypes.CLOSED.key, 'Close message')
-            thingTestUtil.then.notificationDiscardedForCreator(EventTypes.DISMISSED.key, 2)
-            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CLOSED.key)
+            thingTestUtil.then.eventCreated(4, EventTypes.CLOSED, 'Close message')
+            thingTestUtil.then.notificationDiscardedForCreator(EventTypes.DISMISSED, 2)
+            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CLOSED)
         })
     })
     
@@ -250,11 +250,11 @@ describe('Thing Service', function() {
 
             thingTestUtil.when.sendThingBack()
 
-            thingTestUtil.then.statusIs(ThingStatus.REOPENED.key)
+            thingTestUtil.then.statusIs(ThingStatus.REOPENED)
             thingTestUtil.then.creatorIsFollowUpper()
-            thingTestUtil.then.eventCreated(4, EventTypes.SENT_BACK.key, 'Send back message')
-            thingTestUtil.then.doerReceivedNotification(EventTypes.SENT_BACK.key)
-            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.DONE.key, 2)
+            thingTestUtil.then.eventCreated(4, EventTypes.SENT_BACK, 'Send back message')
+            thingTestUtil.then.doerReceivedNotification(EventTypes.SENT_BACK)
+            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.DONE, 2)
         })
 
         describe('when it is in dismiss', function() {
@@ -265,11 +265,27 @@ describe('Thing Service', function() {
 
             thingTestUtil.when.sendThingBack()
 
-            thingTestUtil.then.statusIs(ThingStatus.REOPENED.key)
+            thingTestUtil.then.statusIs(ThingStatus.REOPENED)
             thingTestUtil.then.creatorIsFollowUpper()
-            thingTestUtil.then.eventCreated(4, EventTypes.SENT_BACK.key, 'Send back message')
-            thingTestUtil.then.doerReceivedNotification(EventTypes.SENT_BACK.key)
-            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.DISMISSED.key, 2)
+            thingTestUtil.then.eventCreated(4, EventTypes.SENT_BACK, 'Send back message')
+            thingTestUtil.then.doerReceivedNotification(EventTypes.SENT_BACK)
+            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.DISMISSED, 2)
+        })
+    })
+
+    describe('Ping thing', function() {
+        describe('when it is in progress', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDo()
+
+            thingTestUtil.when.pingThing()
+
+            thingTestUtil.then.statusIs(ThingStatus.INPROGRESS)
+            thingTestUtil.then.eventCreated(3, EventTypes.PING)
+            thingTestUtil.then.doerReceivedNotification(EventTypes.PING)
+            thingTestUtil.then.creatorReadNotification(EventTypes.PING)
         })
     })
 })

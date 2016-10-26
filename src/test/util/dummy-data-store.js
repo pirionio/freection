@@ -60,7 +60,8 @@ export default class DummyDataStore {
             thingId,
             eventType: EventTypes.CREATED.key,
             creator,
-            showNewList
+            showNewList,
+            payload: {}
         }
     }
 
@@ -70,7 +71,8 @@ export default class DummyDataStore {
             thingId,
             eventType: EventTypes.ACCEPTED.key,
             creator,
-            showNewList
+            showNewList,
+            payload: {}
         }
     }
 
@@ -80,7 +82,8 @@ export default class DummyDataStore {
             thingId,
             eventType: EventTypes.DONE.key,
             creator,
-            showNewList
+            showNewList,
+            payload: {}
         }
     }
 
@@ -90,7 +93,8 @@ export default class DummyDataStore {
             thingId,
             eventType: EventTypes.DISMISSED.key,
             creator,
-            showNewList
+            showNewList,
+            payload: {}
         }
     }
 
@@ -100,7 +104,8 @@ export default class DummyDataStore {
             thingId,
             eventType: EventTypes.SENT_BACK.key,
             creator,
-            showNewList
+            showNewList,
+            payload: {}
         }
     }
 }

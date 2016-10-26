@@ -281,15 +281,18 @@ export async function ping(user, thingId) {
     const creator = userToAddress(user)
 
     try {
-        const thing = await ThingDomain.getThing(thingId)
+        const thing = await ThingDomain.getFullThing(thingId)
 
         validateStatus(thing, ThingStatus.INPROGRESS.key)
 
-        const event = await EventCreator.createPing(creator, thing, getShowNewList)
-        await sendEmailForEvent(user, thing, event)
+        const pingEvent = EventCreator.createPing(creator, thing, getShowNewList(creator, thing, EventTypes.PING.key))
+        thing.events.push(pingEvent)
 
-        const fullEvent = await Event.getFullEvent(event.id)
-        return eventToDto(fullEvent, user, {includeThing: true})
+        const persistedThing = await ThingDomain.updateThing(thing)
+
+        await sendEmailForEvent(user, thing, pingEvent)
+
+        return persistedThing
     } catch (error) {
         logger.error(`Error while pinging thing ${thingId} by user ${user.email}`, error)
         throw error

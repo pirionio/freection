@@ -69,8 +69,7 @@ function pingThing(state, action) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
             return immutable(state)
-                .arraySetItem('followUps', {id: action.event.thing.id}, followUp =>
-                    createFollowup(thingReducer(followUp.thing, action)))
+                .arraySetItem('followUps', {id: action.thing.id}, followUp => createFollowup(thingReducer(followUp.thing, action)))
                 .value()
         case ActionStatus.START:
         case ActionStatus.ERROR:

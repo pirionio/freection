@@ -117,6 +117,11 @@ export default class ThingTestUtil {
                 When('thing', function () {
                     return mock.ThingService.sendBack(dataStore.creator, TestConstants.THING_1_ID, 'Send back message')
                 })
+            },
+            pingThing: () => {
+                When('thing', function () {
+                    return mock.ThingService.ping(dataStore.creator, TestConstants.THING_1_ID)
+                })
             }
         }
 
@@ -124,7 +129,7 @@ export default class ThingTestUtil {
             statusIs: status => {
                 Then('is in status NEW', function () {
                     expect(this.thing.payload).to.exist
-                    expect(this.thing.payload.status).to.equal(status)
+                    expect(this.thing.payload.status).to.equal(status.key)
                 })
             },
             creatorIsFollowUpper: () => {
@@ -163,9 +168,9 @@ export default class ThingTestUtil {
                 })
             },
             eventCreated: (numOfEvents, eventType, messageText, notificationIndex = -1) => {
-                Then(`event ${eventType} is created`, function () {
+                Then(`event ${eventType.key} is created`, function () {
                     expect(this.thing.events).to.have.lengthOf(numOfEvents)
-                    expect(nth(this.thing.events, notificationIndex).eventType).to.equal(eventType)
+                    expect(nth(this.thing.events, notificationIndex).eventType).to.equal(eventType.key)
                     expect(nth(this.thing.events, notificationIndex).payload).to.exist
 
                     if (!isUndefined(messageText))
@@ -173,35 +178,35 @@ export default class ThingTestUtil {
                 })
             },
             creatorReceivedNotification: (eventType, notificationIndex = -1) => {
-                Then(`creator receives a ${eventType} notification`, function () {
+                Then(`creator receives a ${eventType.key} notification`, function () {
                     expect(nth(this.thing.events, notificationIndex).showNewList).to.have.lengthOf(1)
                     expect(nth(this.thing.events, notificationIndex).showNewList).to.include(dataStore.creator.id)
                 })
             },
             doerReceivedNotification: (eventType, notificationIndex = -1) => {
-                Then(`recipient receives a ${eventType} notification`, function () {
+                Then(`recipient receives a ${eventType.key} notification`, function () {
                     expect(nth(this.thing.events, notificationIndex).showNewList).to.have.lengthOf(1)
                     expect(nth(this.thing.events, notificationIndex).showNewList).to.include(dataStore.doer.id)
                 })
             },
             noOneReceivedNotification: (eventType, notificationIndex = -1) => {
-                Then(`no one receives the ${eventType} notification`, function () {
+                Then(`no one receives the ${eventType.key} notification`, function () {
                     expect(nth(this.thing.events, notificationIndex).showNewList).to.have.lengthOf(0)
                 })
             },
             creatorReadNotification: (eventType, notificationIndex = -1) => {
-                Then(`event ${eventType} is marked as read for the creator`, function () {
+                Then(`event ${eventType.key} is marked as read for the creator`, function () {
                     expect(nth(this.thing.events, notificationIndex).payload.readByList).to.have.lengthOf(1)
                     expect(nth(this.thing.events, notificationIndex).payload.readByList).to.include(dataStore.creator.id)
                 })
             },
             notificationDiscardedForCreator: (eventType, notificationIndex = -1) => {
-                Then(`the ${eventType} notification is discarded for the creator`, function () {
+                Then(`the ${eventType.key} notification is discarded for the creator`, function () {
                     expect(nth(this.thing.events, notificationIndex).showNewList).to.not.include(dataStore.creator.id)
                 })
             },
             notificationDiscardedForDoer: (eventType, notificationIndex = -1) => {
-                Then(`the ${eventType} notification is discarded for the doer`, function () {
+                Then(`the ${eventType.key} notification is discarded for the doer`, function () {
                     expect(nth(this.thing.events, notificationIndex).showNewList).to.not.include(dataStore.doer.id)
                 })
             },

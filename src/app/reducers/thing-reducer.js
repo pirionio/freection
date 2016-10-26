@@ -34,6 +34,23 @@ function eventReceived(state, action, isPing) {
     return newState.value()
 }
 
+function ping(state, action) {
+    switch(action.type) {
+        case ActionStatus.COMPLETE:
+            return immutable(state)
+                .touch('payload')
+                .set('payload.status', action.thing.payload.status)
+                .set('isDoer', action.thing.isDoer)
+                .set('isFollowUper', action.thing.isFollowUper)
+                .set('isMentioned', action.thing.isMentioned)
+                .set('isSubscriber', action.thing.isSubscriber)
+                .set('events', action.thing.events)
+                .value()
+        default:
+            return state
+    }
+}
+
 export default (state, action) => {
     switch (action.type) {
         case EventActionTypes.COMMENT_CREATED:
@@ -51,10 +68,7 @@ export default (state, action) => {
         case EventActionTypes.PINGED:
             return eventReceived(state, action, true)
         case ThingCommandActionTypes.PING:
-            if (action.status === ActionStatus.COMPLETE)
-                return eventReceived(state, action, true)
-
-            return state
+            return ping(state, action)
         case EventActionTypes.COMMENT_READ_BY:
             return commentReadByReceived(state, action)
         default:

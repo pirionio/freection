@@ -117,10 +117,10 @@ export function createClosed(creator, thing, showNewList, messageText) {
     }
 }
 
-export function createPing(creator, thing, getShowNewList) {
+export function createPing(creator, thing, showNewList) {
     analytics.pingCreated(creator, thing)
 
-    return Event.save({
+    return {
         thingId: thing.id,
         eventType: EventTypes.PING.key,
         createdAt: new Date(),
@@ -128,8 +128,8 @@ export function createPing(creator, thing, getShowNewList) {
         payload: {
             readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
         },
-        showNewList: getShowNewList(creator, thing, EventTypes.PING.key)
-    })
+        showNewList
+    }
 }
 
 export function createPong(creator, thing, getShowNewList, messageText) {

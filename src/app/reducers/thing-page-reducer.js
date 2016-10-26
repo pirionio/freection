@@ -307,8 +307,6 @@ export default (state = initialState, action) => {
             return hide(state, action)
         case ThingCommandActionTypes.COMMENT:
             return comment(state, action)
-        case ThingCommandActionTypes.PING:
-            return pingThing(state, action)
         case ThingCommandActionTypes.DO_THING:
             return doThing(state, action)
         case ThingCommandActionTypes.MARK_AS_DONE:
