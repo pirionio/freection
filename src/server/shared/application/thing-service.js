@@ -254,19 +254,22 @@ export async function sendBack(user, thingId, messageText) {
     const creator = userToAddress(user)
 
     try {
-        const thing = await ThingDomain.getThing(thingId)
+        const thing = await ThingDomain.getFullThing(thingId)
 
         validateStatus(thing, [ThingStatus.DONE.key, ThingStatus.DISMISS.key])
 
         thing.payload.status = ThingStatus.REOPENED.key
-        await thing.save()
 
-        await Event.discardUserEvents(thingId, user.id)
+        ThingHelper.discardUserFromThingEvents(user, thing)
+        
+        const sentBackEvent = EventCreator.createSentBack(creator, thing, getShowNewList(creator, thing, EventTypes.SENT_BACK.key), messageText)
+        thing.events.push(sentBackEvent)
 
-        const event = await EventCreator.createSentBack(creator, thing, getShowNewList, messageText)
-
-        await sendEmailForEvent(user, thing, event)
-        return event
+        await ThingDomain.updateThing(thing)
+        
+        await sendEmailForEvent(user, thing, sentBackEvent)
+        
+        return thing
 
     } catch (error) {
         logger.error(`Error while sending thing ${thingId} back by user ${user.email}:`, error)

@@ -112,6 +112,11 @@ export default class ThingTestUtil {
                 When('thing', function () {
                     return mock.ThingService.close(dataStore.creator, TestConstants.THING_1_ID, 'Close message')
                 })
+            },
+            sendThingBack: () => {
+                When('thing', function () {
+                    return mock.ThingService.sendBack(dataStore.creator, TestConstants.THING_1_ID, 'Send back message')
+                })
             }
         }
 

@@ -240,4 +240,36 @@ describe('Thing Service', function() {
             thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CLOSED.key)
         })
     })
+    
+    describe('Send thing back', function() {
+        describe('when it is in done', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDone()
+
+            thingTestUtil.when.sendThingBack()
+
+            thingTestUtil.then.statusIs(ThingStatus.REOPENED.key)
+            thingTestUtil.then.creatorIsFollowUpper()
+            thingTestUtil.then.eventCreated(4, EventTypes.SENT_BACK.key, 'Send back message')
+            thingTestUtil.then.doerReceivedNotification(EventTypes.SENT_BACK.key)
+            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.DONE.key, 2)
+        })
+
+        describe('when it is in dismiss', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDismissed()
+
+            thingTestUtil.when.sendThingBack()
+
+            thingTestUtil.then.statusIs(ThingStatus.REOPENED.key)
+            thingTestUtil.then.creatorIsFollowUpper()
+            thingTestUtil.then.eventCreated(4, EventTypes.SENT_BACK.key, 'Send back message')
+            thingTestUtil.then.doerReceivedNotification(EventTypes.SENT_BACK.key)
+            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.DISMISSED.key, 2)
+        })
+    })
 })

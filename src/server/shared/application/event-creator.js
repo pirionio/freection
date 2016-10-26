@@ -148,10 +148,10 @@ export function createPong(creator, thing, getShowNewList, messageText) {
     })
 }
 
-export function createSentBack(creator, thing, getShowNewList, messageText) {
+export function createSentBack(creator, thing, showNewList, messageText) {
     analytics.sentBack(creator, thing)
 
-    return Event.save({
+    return {
         thingId: thing.id,
         eventType: EventTypes.SENT_BACK.key,
         createdAt: new Date(),
@@ -160,8 +160,8 @@ export function createSentBack(creator, thing, getShowNewList, messageText) {
             text: messageText,
             readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
         } : {},
-        showNewList: getShowNewList(creator, thing, EventTypes.SENT_BACK.key)
-    })
+        showNewList
+    }
 }
 
 export function createCloseAck(creator, thing, getShowNewList) {
