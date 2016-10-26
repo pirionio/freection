@@ -36,7 +36,8 @@ const initialState = {
     thing: {},
     commands: [],
     invalidationStatus: InvalidationStatus.INVALIDATED,
-    ongoingAction: false
+    ongoingAction: false,
+    open: false
 }
 
 function getInitialReadBy(event) {
@@ -125,6 +126,7 @@ function show(state, action) {
         .set('invalidationStatus', InvalidationStatus.FETCHED)
         .set('commands', getCommands(action.thing))
         .set('ongoingAction', false)
+        .set('open', true)
         .value()
 }
 

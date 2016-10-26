@@ -16,6 +16,8 @@ import * as AuthService from '../../services/auth-service.js'
 import FaviconLogo from '../../static/freection-favicon.png'
 import {initialize, clean} from '../../util/analytics'
 import * as ChromeExtensionActions from '../../actions/chrome-extension-actions'
+import { closeExpanded } from '../../actions/message-box-actions'
+import {goBack} from 'react-router-redux'
 
 // import EmailLifecycleService from '../../services/email-lifecycle-service'
 
@@ -25,8 +27,21 @@ class App extends Component {
         classAutobind(this, App.prototype)
     }
 
+    onKeyDown(event) {
+        if (event.key === 'Escape') {
+            const {isExpandedOpen, isFullThingOpen, dispatch} = this.props
+            if (isExpandedOpen) {
+                dispatch(closeExpanded())
+            } else if (isFullThingOpen) {
+                dispatch(goBack())
+            }
+        }
+    }
+
     componentDidMount() {
         const {currentUser, dispatch} = this.props
+
+        document.addEventListener('keydown', this.onKeyDown)
 
         if (currentUser.isAuthenticated) {
             PushService.listenToUpdates(currentUser.email, currentUser.pushToken, dispatch)
@@ -36,6 +51,10 @@ class App extends Component {
         } else {
             clean()
         }
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.onKeyDown)
     }
 
     componentWillMount() {
@@ -96,14 +115,18 @@ const style = {
 App.propTypes = {
     currentUser: PropTypes.object.isRequired,
     config: PropTypes.object.isRequired,
-    newNotifications: PropTypes.array.isRequired
+    newNotifications: PropTypes.array.isRequired,
+    isExpandedOpen: PropTypes.bool.isRequired,
+    isFullThingOpen: PropTypes.bool.isRequired
 }
 
 const mapStateToProps = state => {
     return {
         currentUser: state.auth,
         config: state.config,
-        newNotifications: state.whatsNew.notifications
+        newNotifications: state.whatsNew.notifications,
+        isExpandedOpen: state.expandedMessageBox.opened,
+        isFullThingOpen: state.thingPage.open,
     }
 }
 
