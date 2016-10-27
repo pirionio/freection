@@ -13,10 +13,6 @@ export async function createNewUser({googleId, firstName, lastName, email, acces
     let organization = EmailParsingUtility.getOrganization(email)
     const username = EmailParsingUtility.getUsername(email)
 
-    if (organization === 'gmail.com' && username.endsWith('.freection')) {
-        organization = 'freection.com'
-    }
-
     const user = await User.save({
         createdAt: new Date(),
         googleId,
