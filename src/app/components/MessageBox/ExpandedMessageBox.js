@@ -152,21 +152,20 @@ class ExpandedMessageBox extends Component {
     send() {
         const {dispatch, messageBox, activeMessageBox} = this.props
 
-        let promise, shouldClose = true
+        let promise
         switch (activeMessageBox.type.key) {
             case MessageTypes.NEW_THING.key:
                 promise = dispatch(ThingCommandActions.newThing(messageBox.message))
                 break
             case MessageTypes.COMMENT_THING.key:
                 promise = dispatch(ThingCommandActions.comment(activeMessageBox.context.id, messageBox.message.body))
-                shouldClose = false
                 break
             case MessageTypes.THING_ACTION.key:
                 promise = messageBox.action(messageBox.message.body)
                 break
         }
 
-        dispatch(MessageBoxActions.messageSent(activeMessageBox.id, shouldClose, promise))
+        dispatch(MessageBoxActions.messageSent(activeMessageBox.id, promise))
     }
 
     render() {
