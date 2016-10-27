@@ -196,7 +196,7 @@ export default class ThingTestUtil {
                     expect(this.thing.subscribers).to.have.lengthOf(0)
                 })
             },
-            eventCreated: (numOfEvents, eventType, messageText, notificationIndex = -1) => {
+            eventCreated: (numOfEvents, eventType, messageText, {notificationIndex = -1} = {}) => {
                 Then(`event ${eventType.key} is created`, function () {
                     expect(this.thing.events).to.have.lengthOf(numOfEvents)
                     expect(nth(this.thing.events, notificationIndex).eventType).to.equal(eventType.key)
@@ -206,56 +206,29 @@ export default class ThingTestUtil {
                         expect(nth(this.thing.events, notificationIndex).payload.text).to.equal(messageText)
                 })
             },
-            notificationReceived: (eventType, userIds, {notificationIndex} = {notificationIndex: -1}) => {
+            notificationReceived: (eventType, userIds, {notificationIndex = -1} = {}) => {
                 Then(`notification ${eventType.key} received by users`, function () {
                     const showNewList = nth(this.thing.events, notificationIndex).showNewList
                     expect(showNewList).to.have.lengthOf(userIds.length)
                     userIds.forEach(userId => expect(showNewList).to.include(userId))
                 })
             },
-            creatorReceivedNotification: (eventType, notificationIndex = -1) => {
-                Then(`creator receives a ${eventType.key} notification`, function () {
-                    expect(nth(this.thing.events, notificationIndex).showNewList).to.have.lengthOf(1)
-                    expect(nth(this.thing.events, notificationIndex).showNewList).to.include(dataStore.creator.id)
-                })
-            },
-            doerReceivedNotification: (eventType, notificationIndex = -1) => {
-                Then(`recipient receives a ${eventType.key} notification`, function () {
-                    expect(nth(this.thing.events, notificationIndex).showNewList).to.have.lengthOf(1)
-                    expect(nth(this.thing.events, notificationIndex).showNewList).to.include(dataStore.doer.id)
-                })
-            },
-            noOneReceivedNotification: (eventType, notificationIndex = -1) => {
+            noOneReceivedNotification: (eventType, {notificationIndex = -1} = {}) => {
                 Then(`no one receives the ${eventType.key} notification`, function () {
                     expect(nth(this.thing.events, notificationIndex).showNewList).to.have.lengthOf(0)
                 })
             },
-            creatorReadNotification: (eventType, notificationIndex = -1) => {
-                Then(`event ${eventType.key} is marked as read for the creator`, function () {
-                    expect(nth(this.thing.events, notificationIndex).payload.readByList).to.have.lengthOf(1)
-                    expect(nth(this.thing.events, notificationIndex).payload.readByList).to.include(dataStore.creator.id)
+            notificationRead: (eventType, userIds, {notificationIndex = -1} = {}) => {
+                Then(`event ${eventType.key} is marked as read for users`, function () {
+                    const readByList = nth(this.thing.events, notificationIndex).payload.readByList
+                    expect(readByList).to.have.lengthOf(userIds.length)
+                    userIds.forEach(userId => expect(readByList).to.include(userId))
                 })
             },
-            doerReadNotification: (eventType, notificationIndex = -1) => {
-                Then(`event ${eventType.key} is marked as read for the doer`, function () {
-                    expect(nth(this.thing.events, notificationIndex).payload.readByList).to.have.lengthOf(1)
-                    expect(nth(this.thing.events, notificationIndex).payload.readByList).to.include(dataStore.doer.id)
-                })
-            },
-            notificationDiscarded: (eventType, userIds, {notificationIndex} = {notificationIndex: -1}) => {
+            notificationDiscarded: (eventType, userIds, {notificationIndex = -1} = {}) => {
                 Then(`notification ${eventType.key} discarded for users`, function () {
                     const showNewList = nth(this.thing.events, notificationIndex).showNewList
                     userIds.forEach(userId => expect(showNewList).to.not.include(userId))
-                })
-            },
-            notificationDiscardedForCreator: (eventType, notificationIndex = -1) => {
-                Then(`the ${eventType.key} notification is discarded for the creator`, function () {
-                    expect(nth(this.thing.events, notificationIndex).showNewList).to.not.include(dataStore.creator.id)
-                })
-            },
-            notificationDiscardedForDoer: (eventType, notificationIndex = -1) => {
-                Then(`the ${eventType.key} notification is discarded for the doer`, function () {
-                    expect(nth(this.thing.events, notificationIndex).showNewList).to.not.include(dataStore.doer.id)
                 })
             },
             userIsMentioned: () => {
@@ -272,11 +245,11 @@ export default class ThingTestUtil {
                     expect(this.thing.subscribers[0]).to.equal(dataStore.mentionedUser.id)
                 })
             },
-            mentionedUserReceivedNotification: notificationIndex => {
-                Then('mentioned user receives a notification', function () {
-                    expect(this.thing.events[notificationIndex].payload).to.exist
-                    expect(this.thing.events[notificationIndex].payload.mentioned).to.have.lengthOf(1)
-                    expect(this.thing.events[notificationIndex].payload.mentioned).to.include(dataStore.mentionedUser.id)
+            notificationHasMentions: ({notificationIndex = -1} = {}) => {
+                Then('notifications references mentioned users', function () {
+                    expect(nth(this.thing.events, notificationIndex).payload).to.exist
+                    expect(nth(this.thing.events, notificationIndex).payload.mentioned).to.have.lengthOf(1)
+                    expect(nth(this.thing.events, notificationIndex).payload.mentioned).to.include(dataStore.mentionedUser.id)
                 })
             },
             emailIsSent: () => {

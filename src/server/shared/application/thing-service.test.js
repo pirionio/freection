@@ -24,8 +24,8 @@ describe('Thing Service', function() {
             thingTestUtil.then.creatorIsFollowUpper()
             thingTestUtil.then.noSubscribers()
             thingTestUtil.then.eventCreated(1, EventTypes.CREATED, 'Hello World')
-            thingTestUtil.then.doerReceivedNotification(EventTypes.CREATED, 0)
-            thingTestUtil.then.creatorReadNotification(0)
+            thingTestUtil.then.notificationReceived(EventTypes.CREATED, [TestConstants.DOER_ID])
+            thingTestUtil.then.notificationRead(EventTypes.CREATED, [TestConstants.CREATOR_ID])
         })
 
         describe('mentioning a user', function() {
@@ -37,7 +37,7 @@ describe('Thing Service', function() {
             
             thingTestUtil.then.userIsMentioned()
             thingTestUtil.then.mentionedUserIsSubscribed()
-            thingTestUtil.then.mentionedUserReceivedNotification(0)
+            thingTestUtil.then.notificationHasMentions()
         })
 
         describe('sent to a user outside of the organization', function() {
@@ -61,7 +61,7 @@ describe('Thing Service', function() {
             
             thingTestUtil.then.creatorIsDoer()
             thingTestUtil.then.creatorIsNotFollowUpper()
-            thingTestUtil.then.notificationDiscardedForCreator(EventTypes.CREATED, 0)
+            thingTestUtil.then.notificationDiscarded(EventTypes.CREATED, [TestConstants.CREATOR_ID], {notificationIndex: 0})
         })
     })
 
@@ -78,7 +78,7 @@ describe('Thing Service', function() {
             thingTestUtil.then.recipientIsDoer()
             thingTestUtil.then.eventCreated(2, EventTypes.ACCEPTED)
             thingTestUtil.then.noOneReceivedNotification(EventTypes.ACCEPTED)
-            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CREATED, 0)
+            thingTestUtil.then.notificationDiscarded(EventTypes.CREATED, [TestConstants.DOER_ID], {notificationIndex: 0})
         })
     })
 
@@ -94,7 +94,7 @@ describe('Thing Service', function() {
             thingTestUtil.then.statusIs(ThingStatus.DONE)
             thingTestUtil.then.recipientIsNotDoer()
             thingTestUtil.then.eventCreated(3, EventTypes.DONE, 'Done message')
-            thingTestUtil.then.creatorReceivedNotification(EventTypes.DONE)
+            thingTestUtil.then.notificationReceived(EventTypes.DONE, [TestConstants.CREATOR_ID])
         })
 
         describe('when it is in the whats new list', function() {
@@ -108,8 +108,8 @@ describe('Thing Service', function() {
             thingTestUtil.then.statusIs(ThingStatus.DONE)
             thingTestUtil.then.recipientIsNotDoer()
             thingTestUtil.then.eventCreated(2, EventTypes.DONE, 'Done message')
-            thingTestUtil.then.creatorReceivedNotification(EventTypes.DONE)
-            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CREATED, 0)
+            thingTestUtil.then.notificationReceived(EventTypes.DONE, [TestConstants.CREATOR_ID])
+            thingTestUtil.then.notificationDiscarded(EventTypes.CREATED, [TestConstants.DOER_ID], {notificationIndex: 0})
         })
 
         describe('after it is reopened', function() {
@@ -123,8 +123,8 @@ describe('Thing Service', function() {
             thingTestUtil.then.statusIs(ThingStatus.DONE)
             thingTestUtil.then.recipientIsNotDoer()
             thingTestUtil.then.eventCreated(4, EventTypes.DONE, 'Done message')
-            thingTestUtil.then.creatorReceivedNotification(EventTypes.DONE)
-            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.SENT_BACK, 2)
+            thingTestUtil.then.notificationReceived(EventTypes.DONE, [TestConstants.CREATOR_ID])
+            thingTestUtil.then.notificationDiscarded(EventTypes.SENT_BACK, [TestConstants.DOER_ID], {notificationIndex: 2})
         })
         
         describe('with mentioned users as follow uppers', function() {
@@ -174,7 +174,7 @@ describe('Thing Service', function() {
             thingTestUtil.then.recipientIsNotDoer()
             thingTestUtil.then.creatorIsFollowUpper()
             thingTestUtil.then.eventCreated(3, EventTypes.DISMISSED, 'Dismiss message')
-            thingTestUtil.then.creatorReceivedNotification(EventTypes.DISMISSED)
+            thingTestUtil.then.notificationReceived(EventTypes.DISMISSED, [TestConstants.CREATOR_ID])
         })
 
         describe('when it is still in the whats new list', function() {
@@ -189,8 +189,8 @@ describe('Thing Service', function() {
             thingTestUtil.then.recipientIsNotDoer()
             thingTestUtil.then.creatorIsFollowUpper()
             thingTestUtil.then.eventCreated(2, EventTypes.DISMISSED, 'Dismiss message')
-            thingTestUtil.then.creatorReceivedNotification(EventTypes.DISMISSED)
-            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CREATED, 0)
+            thingTestUtil.then.notificationReceived(EventTypes.DISMISSED, [TestConstants.CREATOR_ID])
+            thingTestUtil.then.notificationDiscarded(EventTypes.CREATED, [TestConstants.DOER_ID], {notificationIndex: 0})
         })
 
         describe('with mentioned users as follow uppers', function() {
@@ -240,8 +240,8 @@ describe('Thing Service', function() {
             thingTestUtil.then.creatorIsNotFollowUpper()
             thingTestUtil.then.recipientIsDoer()
             thingTestUtil.then.eventCreated(3, EventTypes.CLOSED, 'Close message')
-            thingTestUtil.then.doerReceivedNotification(EventTypes.CLOSED)
-            thingTestUtil.then.creatorReadNotification(EventTypes.CLOSED)
+            thingTestUtil.then.notificationReceived(EventTypes.CLOSED, [TestConstants.DOER_ID])
+            thingTestUtil.then.notificationRead(EventTypes.CLOSED, [TestConstants.CREATOR_ID])
         })
 
         describe('when it is in the whats new list', function() {
@@ -255,9 +255,9 @@ describe('Thing Service', function() {
             thingTestUtil.then.statusIs(ThingStatus.CLOSE)
             thingTestUtil.then.creatorIsNotFollowUpper()
             thingTestUtil.then.eventCreated(2, EventTypes.CLOSED, 'Close message')
-            thingTestUtil.then.doerReceivedNotification(EventTypes.CLOSED)
-            thingTestUtil.then.creatorReadNotification(EventTypes.CLOSED)
-            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CREATED, 0)
+            thingTestUtil.then.notificationReceived(EventTypes.CLOSED, [TestConstants.DOER_ID])
+            thingTestUtil.then.notificationRead(EventTypes.CLOSED, [TestConstants.CREATOR_ID])
+            thingTestUtil.then.notificationDiscarded(EventTypes.CREATED, [TestConstants.DOER_ID], {notificationIndex: 0})
         })
 
         describe('after it is reopened', function() {
@@ -271,9 +271,9 @@ describe('Thing Service', function() {
             thingTestUtil.then.statusIs(ThingStatus.CLOSE)
             thingTestUtil.then.creatorIsNotFollowUpper()
             thingTestUtil.then.eventCreated(4, EventTypes.CLOSED, 'Close message')
-            thingTestUtil.then.doerReceivedNotification(EventTypes.CLOSED)
-            thingTestUtil.then.creatorReadNotification(EventTypes.CLOSED)
-            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.SENT_BACK, 2)
+            thingTestUtil.then.notificationReceived(EventTypes.CLOSED, [TestConstants.DOER_ID])
+            thingTestUtil.then.notificationRead(EventTypes.CLOSED, [TestConstants.CREATOR_ID])
+            thingTestUtil.then.notificationDiscarded(EventTypes.SENT_BACK, [TestConstants.DOER_ID], {notificationIndex: 2})
         })
 
         describe('when it is in done', function() {
@@ -287,8 +287,8 @@ describe('Thing Service', function() {
             thingTestUtil.then.statusIs(ThingStatus.CLOSE)
             thingTestUtil.then.creatorIsNotFollowUpper()
             thingTestUtil.then.eventCreated(4, EventTypes.CLOSED, 'Close message')
-            thingTestUtil.then.notificationDiscardedForCreator(EventTypes.DONE, 2)
-            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CLOSED)
+            thingTestUtil.then.notificationDiscarded(EventTypes.DONE, [TestConstants.CREATOR_ID], {notificationIndex: 2})
+            thingTestUtil.then.notificationDiscarded(EventTypes.CLOSED, [TestConstants.DOER_ID])
         })
 
         describe('when it is in dismiss', function() {
@@ -302,8 +302,8 @@ describe('Thing Service', function() {
             thingTestUtil.then.statusIs(ThingStatus.CLOSE)
             thingTestUtil.then.creatorIsNotFollowUpper()
             thingTestUtil.then.eventCreated(4, EventTypes.CLOSED, 'Close message')
-            thingTestUtil.then.notificationDiscardedForCreator(EventTypes.DISMISSED, 2)
-            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CLOSED)
+            thingTestUtil.then.notificationDiscarded(EventTypes.DISMISSED, [TestConstants.CREATOR_ID], {notificationIndex: 2})
+            thingTestUtil.then.notificationDiscarded(EventTypes.CLOSED, [TestConstants.DOER_ID])
         })
 
         describe('when it is new, with mentioned users as follow uppers', function() {
@@ -350,7 +350,7 @@ describe('Thing Service', function() {
 
             thingTestUtil.when.closeThing()
 
-            thingTestUtil.then.notificationDiscarded(EventTypes.CLOSED, [TestConstants.DOER_ID, TestConstants.MENTIONED_USER_ID])
+            thingTestUtil.then.noOneReceivedNotification(EventTypes.CLOSED)
         })
 
         describe('when it is done, with mentioned users as subscribers', function() {
@@ -361,7 +361,7 @@ describe('Thing Service', function() {
 
             thingTestUtil.when.closeThing()
 
-            thingTestUtil.then.notificationDiscarded(EventTypes.CLOSED, [TestConstants.DOER_ID, TestConstants.MENTIONED_USER_ID])
+            thingTestUtil.then.noOneReceivedNotification(EventTypes.CLOSED)
         })
 
         describe('when it is done, with mentioned users in mute', function() {
@@ -372,7 +372,7 @@ describe('Thing Service', function() {
 
             thingTestUtil.when.closeThing()
 
-            thingTestUtil.then.notificationDiscarded(EventTypes.CLOSED, [TestConstants.DOER_ID])
+            thingTestUtil.then.noOneReceivedNotification(EventTypes.CLOSED)
         })
     })
     
@@ -388,8 +388,8 @@ describe('Thing Service', function() {
             thingTestUtil.then.statusIs(ThingStatus.REOPENED)
             thingTestUtil.then.creatorIsFollowUpper()
             thingTestUtil.then.eventCreated(4, EventTypes.SENT_BACK, 'Send back message')
-            thingTestUtil.then.doerReceivedNotification(EventTypes.SENT_BACK)
-            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.DONE, 2)
+            thingTestUtil.then.notificationReceived(EventTypes.SENT_BACK, [TestConstants.DOER_ID])
+            thingTestUtil.then.notificationDiscarded(EventTypes.DONE, [TestConstants.DOER_ID], {notificationIndex: 2})
         })
 
         describe('when it is in dismiss', function() {
@@ -403,8 +403,8 @@ describe('Thing Service', function() {
             thingTestUtil.then.statusIs(ThingStatus.REOPENED)
             thingTestUtil.then.creatorIsFollowUpper()
             thingTestUtil.then.eventCreated(4, EventTypes.SENT_BACK, 'Send back message')
-            thingTestUtil.then.doerReceivedNotification(EventTypes.SENT_BACK)
-            thingTestUtil.then.notificationDiscardedForDoer(EventTypes.DISMISSED, 2)
+            thingTestUtil.then.notificationReceived(EventTypes.SENT_BACK, [TestConstants.DOER_ID])
+            thingTestUtil.then.notificationDiscarded(EventTypes.DISMISSED, [TestConstants.DOER_ID], {notificationIndex: 2})
         })
 
         describe('with mentioned users as follow uppers', function() {
@@ -452,8 +452,8 @@ describe('Thing Service', function() {
 
             thingTestUtil.then.statusIs(ThingStatus.INPROGRESS)
             thingTestUtil.then.eventCreated(3, EventTypes.PING)
-            thingTestUtil.then.doerReceivedNotification(EventTypes.PING)
-            thingTestUtil.then.creatorReadNotification(EventTypes.PING)
+            thingTestUtil.then.notificationReceived(EventTypes.PING, [TestConstants.DOER_ID])
+            thingTestUtil.then.notificationRead(EventTypes.PING, [TestConstants.CREATOR_ID])
         })
 
         describe('with mentioned users as follow uppers', function() {
@@ -501,8 +501,8 @@ describe('Thing Service', function() {
 
             thingTestUtil.then.statusIs(ThingStatus.INPROGRESS)
             thingTestUtil.then.eventCreated(4, EventTypes.PONG)
-            thingTestUtil.then.creatorReceivedNotification(EventTypes.PONG)
-            thingTestUtil.then.doerReadNotification(EventTypes.PONG)
+            thingTestUtil.then.notificationReceived(EventTypes.PONG, [TestConstants.CREATOR_ID])
+            thingTestUtil.then.notificationRead(EventTypes.PONG, [TestConstants.DOER_ID])
         })
 
         describe('with mentioned users as follow uppers', function() {
