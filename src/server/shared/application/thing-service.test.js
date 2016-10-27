@@ -126,6 +126,39 @@ describe('Thing Service', function() {
             thingTestUtil.then.creatorReceivedNotification(EventTypes.DONE)
             thingTestUtil.then.notificationDiscardedForDoer(EventTypes.SENT_BACK, 2)
         })
+        
+        describe('with mentioned users as follow uppers', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInNew({mentionedAsFollowUppers: true})
+
+            thingTestUtil.when.markThingAsDone()
+
+            thingTestUtil.then.notificationReceived(EventTypes.DONE, [TestConstants.CREATOR_ID, TestConstants.MENTIONED_USER_ID])
+        })
+
+        describe('with mentioned users as subscribers', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInNew({mentionedAsSubscribers: true})
+
+            thingTestUtil.when.markThingAsDone()
+
+            thingTestUtil.then.notificationReceived(EventTypes.DONE, [TestConstants.CREATOR_ID, TestConstants.MENTIONED_USER_ID])
+        })
+
+        describe('with mentioned users in mute', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInNew({mentionedWithMute: true})
+
+            thingTestUtil.when.markThingAsDone()
+
+            thingTestUtil.then.notificationReceived(EventTypes.DONE, [TestConstants.CREATOR_ID])
+        })
     })
     
     describe('Dismiss thing', function() {
@@ -158,6 +191,39 @@ describe('Thing Service', function() {
             thingTestUtil.then.eventCreated(2, EventTypes.DISMISSED, 'Dismiss message')
             thingTestUtil.then.creatorReceivedNotification(EventTypes.DISMISSED)
             thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CREATED, 0)
+        })
+
+        describe('with mentioned users as follow uppers', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInNew({mentionedAsFollowUppers: true})
+
+            thingTestUtil.when.dismissThing()
+
+            thingTestUtil.then.notificationReceived(EventTypes.DISMISSED, [TestConstants.CREATOR_ID, TestConstants.MENTIONED_USER_ID])
+        })
+
+        describe('with mentioned users as subscribers', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInNew({mentionedAsSubscribers: true})
+
+            thingTestUtil.when.dismissThing()
+
+            thingTestUtil.then.notificationReceived(EventTypes.DISMISSED, [TestConstants.CREATOR_ID, TestConstants.MENTIONED_USER_ID])
+        })
+
+        describe('with mentioned users in mute', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInNew({mentionedWithMute: true})
+
+            thingTestUtil.when.dismissThing()
+
+            thingTestUtil.then.notificationReceived(EventTypes.DISMISSED, [TestConstants.CREATOR_ID])
         })
     })
     
@@ -239,6 +305,75 @@ describe('Thing Service', function() {
             thingTestUtil.then.notificationDiscardedForCreator(EventTypes.DISMISSED, 2)
             thingTestUtil.then.notificationDiscardedForDoer(EventTypes.CLOSED)
         })
+
+        describe('when it is new, with mentioned users as follow uppers', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInNew({mentionedAsFollowUppers: true})
+
+            thingTestUtil.when.closeThing()
+
+            thingTestUtil.then.notificationReceived(EventTypes.CLOSED, [TestConstants.DOER_ID, TestConstants.MENTIONED_USER_ID])
+            thingTestUtil.then.notificationDiscarded(EventTypes.CREATED, [TestConstants.MENTIONED_USER_ID], {notificationIndex: 0})
+        })
+
+        describe('when it is new, with mentioned users as subscribers', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInNew({mentionedAsSubscribers: true})
+
+            thingTestUtil.when.closeThing()
+
+            thingTestUtil.then.notificationReceived(EventTypes.CLOSED, [TestConstants.DOER_ID, TestConstants.MENTIONED_USER_ID])
+            thingTestUtil.then.notificationDiscarded(EventTypes.CREATED, [TestConstants.MENTIONED_USER_ID], {notificationIndex: 0})
+        })
+
+        describe('when it is new, with mentioned users in mute', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInNew({mentionedWithMute: true})
+
+            thingTestUtil.when.closeThing()
+
+            thingTestUtil.then.notificationReceived(EventTypes.CLOSED, [TestConstants.DOER_ID])
+            thingTestUtil.then.notificationDiscarded(EventTypes.CREATED, [TestConstants.MENTIONED_USER_ID], {notificationIndex: 0})
+        })
+
+        describe('when it is done, with mentioned users as follow uppers', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDone({mentionedAsFollowUppers: true})
+
+            thingTestUtil.when.closeThing()
+
+            thingTestUtil.then.notificationDiscarded(EventTypes.CLOSED, [TestConstants.DOER_ID, TestConstants.MENTIONED_USER_ID])
+        })
+
+        describe('when it is done, with mentioned users as subscribers', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDone({mentionedAsSubscribers: true})
+
+            thingTestUtil.when.closeThing()
+
+            thingTestUtil.then.notificationDiscarded(EventTypes.CLOSED, [TestConstants.DOER_ID, TestConstants.MENTIONED_USER_ID])
+        })
+
+        describe('when it is done, with mentioned users in mute', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDone({mentionedWithMute: true})
+
+            thingTestUtil.when.closeThing()
+
+            thingTestUtil.then.notificationDiscarded(EventTypes.CLOSED, [TestConstants.DOER_ID])
+        })
     })
     
     describe('Send thing back', function() {
@@ -271,6 +406,39 @@ describe('Thing Service', function() {
             thingTestUtil.then.doerReceivedNotification(EventTypes.SENT_BACK)
             thingTestUtil.then.notificationDiscardedForDoer(EventTypes.DISMISSED, 2)
         })
+
+        describe('with mentioned users as follow uppers', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDone({mentionedAsFollowUppers: true})
+
+            thingTestUtil.when.sendThingBack()
+
+            thingTestUtil.then.notificationReceived(EventTypes.SENT_BACK, [TestConstants.DOER_ID, TestConstants.MENTIONED_USER_ID])
+        })
+
+        describe('with mentioned users as subscribers', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDone({mentionedAsSubscribers: true})
+
+            thingTestUtil.when.sendThingBack()
+
+            thingTestUtil.then.notificationReceived(EventTypes.SENT_BACK, [TestConstants.DOER_ID, TestConstants.MENTIONED_USER_ID])
+        })
+
+        describe('with mentioned users in mute', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDone({mentionedWithMute: true})
+
+            thingTestUtil.when.sendThingBack()
+
+            thingTestUtil.then.notificationReceived(EventTypes.SENT_BACK, [TestConstants.DOER_ID])
+        })
     })
 
     describe('Ping thing', function() {
@@ -287,6 +455,39 @@ describe('Thing Service', function() {
             thingTestUtil.then.doerReceivedNotification(EventTypes.PING)
             thingTestUtil.then.creatorReadNotification(EventTypes.PING)
         })
+
+        describe('with mentioned users as follow uppers', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDo({mentionedAsFollowUppers: true})
+
+            thingTestUtil.when.pingThing()
+
+            thingTestUtil.then.notificationReceived(EventTypes.PING, [TestConstants.DOER_ID])
+        })
+
+        describe('with mentioned users as subscribers', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDo({mentionedAsSubscribers: true})
+
+            thingTestUtil.when.pingThing()
+
+            thingTestUtil.then.notificationReceived(EventTypes.PING, [TestConstants.DOER_ID])
+        })
+
+        describe('with mentioned users in mute', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDo({mentionedWithMute: true})
+
+            thingTestUtil.when.pingThing()
+
+            thingTestUtil.then.notificationReceived(EventTypes.PING, [TestConstants.DOER_ID])
+        })
     })
 
     describe('Pong thing', function() {
@@ -302,6 +503,39 @@ describe('Thing Service', function() {
             thingTestUtil.then.eventCreated(4, EventTypes.PONG)
             thingTestUtil.then.creatorReceivedNotification(EventTypes.PONG)
             thingTestUtil.then.doerReadNotification(EventTypes.PONG)
+        })
+
+        describe('with mentioned users as follow uppers', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDo({mentionedAsFollowUppers: true})
+
+            thingTestUtil.when.pongThing()
+
+            thingTestUtil.then.notificationReceived(EventTypes.PONG, [TestConstants.CREATOR_ID, TestConstants.MENTIONED_USER_ID])
+        })
+
+        describe('with mentioned users as subscribers', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDo({mentionedAsSubscribers: true})
+
+            thingTestUtil.when.pongThing()
+
+            thingTestUtil.then.notificationReceived(EventTypes.PONG, [TestConstants.CREATOR_ID, TestConstants.MENTIONED_USER_ID])
+        })
+
+        describe('with mentioned users in mute', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDo({mentionedWithMute: true})
+
+            thingTestUtil.when.pongThing()
+
+            thingTestUtil.then.notificationReceived(EventTypes.PONG, [TestConstants.CREATOR_ID])
         })
     })
 })

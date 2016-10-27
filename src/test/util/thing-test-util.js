@@ -12,15 +12,19 @@ export default class ThingTestUtil {
                     mock.initMocks()
                 })
             },
-            thingInNew: () => {
+            thingInNew: ({mentionedAsFollowUppers, mentionedAsSubscribers, mentionedWithMute} = {}) => {
                 Given(function () {
                     mock.ThingDomainMock.getFullThing.resolves(dataStore.generateThing({
                         payload: {
                             status: ThingStatus.NEW.key
                         },
-                        followUpers: [dataStore.creator.id],
+                        followUpers: mentionedAsFollowUppers ? [dataStore.creator.id, dataStore.mentionedUser.id] : [dataStore.creator.id],
+                        mentioned: mentionedAsFollowUppers || mentionedAsSubscribers || mentionedWithMute ? [dataStore.mentionedUser.id] : [],
+                        subscribers: mentionedAsSubscribers ? [dataStore.mentionedUser.id] : [],
                         events: [
-                            dataStore.generateCreatedEvent(dataStore.creator, TestConstants.THING_1_ID, [dataStore.doer.id])
+                            dataStore.generateCreatedEvent(dataStore.creator, TestConstants.THING_1_ID,
+                                mentionedAsFollowUppers || mentionedAsSubscribers || mentionedWithMute ? 
+                                    [dataStore.doer.id, dataStore.mentionedUser.id] : [dataStore.doer.id])
                         ]
                     }))
                 })
@@ -40,13 +44,15 @@ export default class ThingTestUtil {
                     }))
                 })
             },
-            thingInDo: () => {
+            thingInDo: ({mentionedAsFollowUppers, mentionedAsSubscribers, mentionedWithMute} = {}) => {
                 Given(function () {
                     mock.ThingDomainMock.getFullThing.resolves(dataStore.generateThing({
                         payload: {
                             status: ThingStatus.INPROGRESS.key
                         },
-                        followUpers: [dataStore.creator.id],
+                        followUpers: mentionedAsFollowUppers ? [dataStore.creator.id, dataStore.mentionedUser.id] : [dataStore.creator.id],
+                        mentioned: mentionedAsFollowUppers || mentionedAsSubscribers || mentionedWithMute ? [dataStore.mentionedUser.id] : [],
+                        subscribers: mentionedAsSubscribers ? [dataStore.mentionedUser.id] : [],
                         doers: [dataStore.doer.id],
                         events: [
                             dataStore.generateCreatedEvent(dataStore.creator, TestConstants.THING_1_ID, []),
@@ -71,17 +77,19 @@ export default class ThingTestUtil {
                     }))
                 })
             },
-            thingInDone: () => {
+            thingInDone: ({mentionedAsFollowUppers, mentionedAsSubscribers, mentionedWithMute} = {}) => {
                 Given(function () {
                     mock.ThingDomainMock.getFullThing.resolves(dataStore.generateThing({
                         payload: {
                             status: ThingStatus.DONE.key
                         },
-                        followUpers: [dataStore.creator.id],
+                        followUpers: mentionedAsFollowUppers ? [dataStore.creator.id, dataStore.mentionedUser.id] : [dataStore.creator.id],
+                        mentioned: mentionedAsFollowUppers || mentionedAsSubscribers || mentionedWithMute ? [dataStore.mentionedUser.id] : [],
+                        subscribers: mentionedAsSubscribers ? [dataStore.mentionedUser.id] : [],
                         events: [
                             dataStore.generateCreatedEvent(dataStore.creator, TestConstants.THING_1_ID, []),
                             dataStore.generateAcceptedEvent(dataStore.doer, TestConstants.THING_1_ID, []),
-                            dataStore.generateDoneEvent(dataStore.doer, TestConstants.THING_1_ID, [dataStore.creator.id])
+                            dataStore.generateDoneEvent(dataStore.doer, TestConstants.THING_1_ID, [dataStore.creator.id, dataStore.mentionedUser.id])
                         ]
                     }))
                 })
@@ -198,6 +206,13 @@ export default class ThingTestUtil {
                         expect(nth(this.thing.events, notificationIndex).payload.text).to.equal(messageText)
                 })
             },
+            notificationReceived: (eventType, userIds, {notificationIndex} = {notificationIndex: -1}) => {
+                Then(`notification ${eventType.key} received by users`, function () {
+                    const showNewList = nth(this.thing.events, notificationIndex).showNewList
+                    expect(showNewList).to.have.lengthOf(userIds.length)
+                    userIds.forEach(userId => expect(showNewList).to.include(userId))
+                })
+            },
             creatorReceivedNotification: (eventType, notificationIndex = -1) => {
                 Then(`creator receives a ${eventType.key} notification`, function () {
                     expect(nth(this.thing.events, notificationIndex).showNewList).to.have.lengthOf(1)
@@ -225,6 +240,12 @@ export default class ThingTestUtil {
                 Then(`event ${eventType.key} is marked as read for the doer`, function () {
                     expect(nth(this.thing.events, notificationIndex).payload.readByList).to.have.lengthOf(1)
                     expect(nth(this.thing.events, notificationIndex).payload.readByList).to.include(dataStore.doer.id)
+                })
+            },
+            notificationDiscarded: (eventType, userIds, {notificationIndex} = {notificationIndex: -1}) => {
+                Then(`notification ${eventType.key} discarded for users`, function () {
+                    const showNewList = nth(this.thing.events, notificationIndex).showNewList
+                    userIds.forEach(userId => expect(showNewList).to.not.include(userId))
                 })
             },
             notificationDiscardedForCreator: (eventType, notificationIndex = -1) => {
