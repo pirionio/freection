@@ -47,11 +47,12 @@ class UserSettings extends Component {
         const settingsMenu = this.getSettingMenu()
 
         return (
-            <Flexbox name="settings" container="row" justifyContent="space-between" alignItems="center" className={classes.container}>
+            <Flexbox name="settings" container="row" justifyContent="space-between" alignItems="center" className={classes.container}
+                     onClick={this.toggleSettingsMenu} >
                 <span className={classes.user}>
                     <TextTruncate tooltip={true}><span>{currentUser.firstName}</span></TextTruncate>
                 </span>
-                <Icon name={this.isOpen() ? 'chevron-down' : 'chevron-up'} onClick={this.toggleSettingsMenu} className={classes.menuButton} />
+                <Icon name={this.isOpen() ? 'chevron-down' : 'chevron-up'} className={classes.menuButton} />
                 {settingsMenu}
             </Flexbox>
         )
@@ -65,7 +66,8 @@ const style = {
         width: '100%',
         padding: [0, 27],
         backgroundColor: '#242f35',
-        color: 'white'
+        color: 'white',
+        cursor: 'pointer'
     },
     user: {
         letterSpacing: '0.1em',
@@ -75,8 +77,7 @@ const style = {
     },
     menuButton: {
         marginRight: 10,
-        fontSize: '0.9em',
-        cursor: 'pointer'
+        fontSize: '0.9em'
     },
     menu: {
         position: 'absolute',
