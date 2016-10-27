@@ -13,12 +13,13 @@ class Login extends Component {
         return (
             <Flexbox name="login-container" grow={1} container="column">
                 <Flexbox name="top" grow={1} container="column" justifyContent="flex-start" alignItems="center" className={classes.top}>
-                    <Flexbox name="title" className={classes.logo}>
+                    <Flexbox name="logo" className={classes.logo}>
                         <img src={Logo} className={classes.image} />
                     </Flexbox>
                     <Flexbox name="title" className={classes.title}>
                         <span>freection</span>
                     </Flexbox>
+                    <Flexbox name="filler" grow={1} className={classes.filler} />
                     <Flexbox name="sub-title" container="column" alignItems="center" className={classes.subTitle}>
                         <span>Keep track of your work</span>
                         <span>And teammates work</span>
@@ -41,6 +42,7 @@ class Login extends Component {
 
 const style = {
     top: {
+        minHeight: 375,
         backgroundColor: styleVars.basePurpleColor,
         boxShadow: '0px 3px 21.6px 2.4px rgba(0, 0, 0, 0.15)',
         zIndex: 0
@@ -59,7 +61,6 @@ const style = {
         letterSpacing: '0.1em'
     },
     subTitle: {
-        marginTop: 200,
         color: 'white',
         fontSize: '2.357em',
         letterSpacing: '0.05em',
@@ -72,6 +73,7 @@ const style = {
     },
     bottom: {
         height: 125,
+        minHeight: 125,
         width: '100%',
         backgroundColor: styleVars.secondaryBackgroundColor
     },
@@ -93,6 +95,9 @@ const style = {
             color: 'white',
             cursor: 'pointer'
         }
+    },
+    filler: {
+        maxHeight: 200
     }
 }
 
