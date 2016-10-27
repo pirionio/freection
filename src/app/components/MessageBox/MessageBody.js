@@ -15,6 +15,7 @@ import trimEnd from 'lodash/trimEnd'
 
 import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
+import {GeneralConstants} from '../../constants'
 
 class MessageBody extends Component {
     constructor(props) {
@@ -120,7 +121,8 @@ class MessageBody extends Component {
         const {sheet: {classes}, onFocus, tabIndex, className} = this.props
         const {MentionSuggestions} = this._mentionPlugin
 
-        const containerClasses = classNames(classes.containerBase, className ? className : classes.containerDefault)
+        const containerClasses = classNames(classes.containerBase, className ? className : classes.containerDefault,
+            GeneralConstants.INSPECTLET_SENSITIVE_CLASS)
 
         return (
             <Flexbox name="message-body" container="row" className={containerClasses}>

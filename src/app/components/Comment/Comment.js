@@ -3,6 +3,7 @@ import dateFns from 'date-fns'
 import VisibilitySensor from 'react-visibility-sensor'
 import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
+import classNames from 'classnames'
 import useSheet from 'react-jss'
 
 import * as HtmlUtil from '../../util/html-util'
@@ -12,6 +13,7 @@ import Flexbox from '../UI/Flexbox'
 import TextTruncate from '../UI/TextTruncate'
 import styleVars from '../style-vars'
 import textToHtml from '../../../common/util/textToHtml'
+import {GeneralConstants} from '../../constants'
 
 class Comment extends Component {
     constructor(props) {
@@ -58,6 +60,8 @@ class Comment extends Component {
             </Flexbox> :
             null
 
+        const textClass = classNames(classes.text, GeneralConstants.INSPECTLET_SENSITIVE_CLASS)
+
         return (
             <VisibilitySensor onChange={this.onVisibilityChange} partialVisibility={true}>
                 <Flexbox name="comment-container" container="column" alignItems="flex-start" className={classes.comment}>
@@ -70,7 +74,7 @@ class Comment extends Component {
                             {createdAt}
                         </Flexbox>
                     </Flexbox>
-                    <Flexbox name="comment-message" grow={1} className={classes.text}>
+                    <Flexbox name="comment-message" grow={1} className={textClass}>
                         {this.getCommentText()}
                     </Flexbox>
                 </Flexbox>

@@ -7,7 +7,8 @@ export const ActionStatus = {
 export const GeneralConstants = {
     FETCHING_DELAY_MILLIS: 1000,
     ONGOING_ACTION_DELAY_MILLIS: 500,
-    TOOLTIP_DELAY: 400
+    TOOLTIP_DELAY: 400,
+    INSPECTLET_SENSITIVE_CLASS: 'inspectlet-sensitive'
 }
 
 export const InvalidationStatus = {

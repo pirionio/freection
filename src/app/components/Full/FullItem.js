@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
+import classNames from 'classnames'
 import clickOutside from 'react-click-outside'
 import Delay from 'react-delay'
 import Icon from 'react-fontawesome'
@@ -120,10 +121,12 @@ class FullItem extends  Component {
         const user = this.getUser()
         const actions = this.getActions()
 
+        const subjectClass = classNames(classes.subject, GeneralConstants.INSPECTLET_SENSITIVE_CLASS)
+
         return (
             <Flexbox name="full-item-content" grow={1} container="column" className={classes.item}>
                 <Flexbox name="full-item-header" shrink={0} container="column" className={classes.header}>
-                    <Flexbox name="first-header-row" className={classes.subject}>
+                    <Flexbox name="first-header-row" className={subjectClass}>
                         <TextTruncate tooltip={true}>{this.getSubject()}</TextTruncate>
                     </Flexbox>
                     <Flexbox name="second-header-row" container="row" justifyContent="flex-end" alignItems="center">

@@ -12,6 +12,7 @@ import Ellipse from '../UI/Ellipse'
 import TextTruncate from '../UI/TextTruncate'
 import styleVars from '../style-vars'
 import PreviewItemText from './PreviewItemText'
+import {GeneralConstants} from '../../constants'
 
 const {PreviewItemActions, PreviewItemUser} = createSlots('PreviewItemActions', 'PreviewItemUser')
 
@@ -38,8 +39,9 @@ class PreviewItem extends Component {
     getPreviewText() {
         const {sheet: {classes}} = this.props
         const textPreview = getChildOfType(this.props.children, PreviewItemText)
+        const textClass = classNames(classes.text, GeneralConstants.INSPECTLET_SENSITIVE_CLASS)
         return textPreview ?
-            <Flexbox name="text" grow={1} className={classes.text}>{textPreview}</Flexbox> :
+            <Flexbox name="text" grow={1} className={textClass}>{textPreview}</Flexbox> :
             null
     }
 
@@ -108,6 +110,7 @@ class PreviewItem extends Component {
         const leftBoxClass = classNames(classes.leftBox, {
             'withStatus': !!this.getStatus()
         })
+        const subjectClass = classNames(classes.subject, GeneralConstants.INSPECTLET_SENSITIVE_CLASS)
 
         return (
             <div name="preview-item-container" className={containerClass}>
@@ -117,7 +120,7 @@ class PreviewItem extends Component {
                         {statusOrUser}
                     </Flexbox>
                     <Flexbox name="center-box" container="row" justifyContent="flex-start" alignItems="center" grow={1} className={classes.centerBox}>
-                        <Flexbox name="subject" shrink={0} className={classes.subject}>
+                        <Flexbox name="subject" shrink={0} className={subjectClass}>
                             <TextTruncate><strong>{title}</strong></TextTruncate>
                         </Flexbox>
                         {textPreview}
