@@ -14,7 +14,7 @@ module.exports = {
         {
             name: 'message sent',
             private: true,
-            params: ['messageBoxId', 'shouldCloseMessageBox'],
+            params: ['messageBoxId'],
             type: 'custom'
         },
         {

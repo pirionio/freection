@@ -64,11 +64,6 @@ function messageSent(state, action) {
                 .arrayMergeItem('messageBoxes', {id: action.messageBoxId}, {ongoingAction: true})
                 .value()
         case ActionStatus.COMPLETE:
-            if (!action.shouldCloseMessageBox)
-                return immutable(state)
-                    .arrayMergeItem('messageBoxes', {id: action.messageBoxId}, {ongoingAction: false, message: {}})
-                    .value()
-
             return immutable(state)
                 .arrayReject('messageBoxes', {id: action.messageBoxId})
                 .set('activeMessageBoxId', determineActive(state, action.messageBoxId))

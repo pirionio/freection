@@ -3,7 +3,7 @@ import find from 'lodash/find'
 import last from 'lodash/last'
 
 import MessageBoxActionsTypes from'./types/message-box-action-types'
-import {_newMessageBox, _selectMessageBox, _closeMessageBox, _setFocus } from './generated/message-box-actions'
+import {_newMessageBox, _selectMessageBox, _closeMessageBox, _setFocus} from './generated/message-box-actions'
 import {GeneralConstants, ActionStatus} from'../constants'
 
 export function newMessageBox(messageType, context, sendAction, title) {
@@ -38,7 +38,7 @@ export function closeMessageBox(messageBoxId) {
     }
 }
 
-export function messageSent(messageBoxId, shouldCloseMessageBox, messagePromise) {
+export function messageSent(messageBoxId, messagePromise) {
     return (dispatch, getState) => {
         // Use a timeout to create a delay in the consequences of the message send action.
         // We don't want to anything to happen if the result of the message returns very quickly (resulting in a COMPLETE event).
@@ -47,14 +47,12 @@ export function messageSent(messageBoxId, shouldCloseMessageBox, messagePromise)
         }, GeneralConstants.ONGOING_ACTION_DELAY_MILLIS)
 
         messagePromise && messagePromise.then && messagePromise.then(() => {
-            clearTimeout(ongoingActionTimeout)
-            dispatch(actions.reset('messageBox'))
-            dispatch(messageSentComplete(messageBoxId, shouldCloseMessageBox))
+            const {messagePanel} = getState()
 
-            if (shouldCloseMessageBox) {
-                const {messagePanel} = getState()
-                dispatch(actions.change('messageBox', getActiveMessageBox(messagePanel)))
-            }
+            clearTimeout(ongoingActionTimeout)
+
+            dispatch(messageSentComplete(messageBoxId))
+            dispatch(actions.change('messageBox', getActiveMessageBox(messagePanel)))
         })
     }
 }
@@ -67,12 +65,11 @@ function messageSentRequest(messageBoxId) {
     }
 }
 
-function messageSentComplete(messageBoxId, shouldCloseMessageBox) {
+function messageSentComplete(messageBoxId) {
     return {
         type: MessageBoxActionsTypes.MESSAGE_SENT,
         status: ActionStatus.COMPLETE,
-        messageBoxId,
-        shouldCloseMessageBox
+        messageBoxId
     }
 }
 

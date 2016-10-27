@@ -33,7 +33,7 @@ class MessagePanel extends Component {
     send() {
         const {dispatch, messageBox, activeMessageBox} = this.props
 
-        let promise, shouldClose = true
+        let promise
         switch (activeMessageBox.type.key) {
             case MessageTypes.NEW_THING.key:
                 promise = dispatch(ThingCommandActions.newThing(messageBox.message))
@@ -43,7 +43,6 @@ class MessagePanel extends Component {
                 break
             case MessageTypes.COMMENT_THING.key:
                 promise = dispatch(ThingCommandActions.comment(activeMessageBox.context.id, messageBox.message.body))
-                shouldClose = false
                 break
             case MessageTypes.REPLY_EMAIL.key:
                 const toEmails = this.getToEmails()
@@ -52,14 +51,13 @@ class MessagePanel extends Component {
 
                 promise = dispatch(EmailCommandActions.replyToAll(activeMessageBox.context.id, messageBox.message.body,
                     activeMessageBox.context.subject, toEmails, lastMessage.id, references))
-                shouldClose = false
                 break
             case MessageTypes.THING_ACTION.key:
                 promise = messageBox.action(messageBox.message.body)
                 break
         }
 
-        dispatch(MessageBoxActions.messageSent(activeMessageBox.id, shouldClose, promise))
+        dispatch(MessageBoxActions.messageSent(activeMessageBox.id, promise))
     }
 
     getToEmails() {

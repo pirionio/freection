@@ -22,11 +22,10 @@ export function _selectMessageBox(currentMessageBoxId,selectedMessageBoxId,curre
     }
 }
 
-export function _messageSent(messageBoxId,shouldCloseMessageBox) {
+export function messageSent(messageBoxId) {
     return {
         type: MessageBoxActionsTypes.MESSAGE_SENT,
-        messageBoxId,
-        shouldCloseMessageBox
+        messageBoxId
     }
 }
 
