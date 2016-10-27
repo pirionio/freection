@@ -22,7 +22,7 @@ export function _selectMessageBox(currentMessageBoxId,selectedMessageBoxId,curre
     }
 }
 
-export function messageSent(messageBoxId) {
+export function _messageSent(messageBoxId) {
     return {
         type: MessageBoxActionsTypes.MESSAGE_SENT,
         messageBoxId
