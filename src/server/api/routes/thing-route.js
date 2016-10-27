@@ -163,6 +163,7 @@ router.post('/:thingId/comment', (request, response) => {
         params: ['thingId'],
         body: ['commentText'],
         result: true,
+        transform: thingToDto,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
             general: 'Could not comment on thing ${thingId} by user ${user}'

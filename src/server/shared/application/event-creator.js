@@ -64,12 +64,10 @@ export function createDone(creator, thing, showNewList, messageText) {
     }
 }
 
-export function createComment(creator, createdAt, thing, getShowNewList, mentionedUserIds, commentText, commentHtml, emailId) {
-    const showNewList = getShowNewList(creator, thing, EventTypes.COMMENT.key)
-
+export function createComment(creator, createdAt, thing, showNewList, mentionedUserIds, commentText, commentHtml, emailId) {
     analytics.commentCreated(creator, thing, showNewList)
 
-    return Event.save({
+    return {
         thingId: thing.id,
         eventType: EventTypes.COMMENT.key,
         createdAt,
@@ -82,7 +80,7 @@ export function createComment(creator, createdAt, thing, getShowNewList, mention
             mentioned: mentionedUserIds
         },
         showNewList
-    })
+    }
 }
 
 export function createClosedSync(creator, thing, showNewList, messageText) {

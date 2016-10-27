@@ -538,4 +538,52 @@ describe('Thing Service', function() {
             thingTestUtil.then.notificationReceived(EventTypes.PONG, [TestConstants.CREATOR_ID])
         })
     })
+
+    describe('Comment thing', function() {
+        describe('when it is in progress', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDo()
+
+            thingTestUtil.when.commentThing('Comment message')
+
+            thingTestUtil.then.eventCreated(3, EventTypes.COMMENT)
+            thingTestUtil.then.notificationReceived(EventTypes.COMMENT, [TestConstants.CREATOR_ID])
+            thingTestUtil.then.notificationRead(EventTypes.COMMENT, [TestConstants.DOER_ID])
+        })
+
+        describe('with mentioned users as follow uppers', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDo({mentionedAsFollowUppers: true})
+
+            thingTestUtil.when.commentThing('Comment message')
+
+            thingTestUtil.then.notificationReceived(EventTypes.COMMENT, [TestConstants.CREATOR_ID, TestConstants.MENTIONED_USER_ID])
+        })
+
+        describe('with mentioned users as subscribers', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDo({mentionedAsSubscribers: true})
+
+            thingTestUtil.when.commentThing('Comment message')
+
+            thingTestUtil.then.notificationReceived(EventTypes.COMMENT, [TestConstants.CREATOR_ID, TestConstants.MENTIONED_USER_ID])
+        })
+
+        describe('with mentioned users in mute', function() {
+            afterEach(thingServiceMock.resetMocks)
+
+            thingTestUtil.given.basic()
+            thingTestUtil.given.thingInDo({mentionedWithMute: true})
+
+            thingTestUtil.when.commentThing('Comment message')
+
+            thingTestUtil.then.notificationReceived(EventTypes.COMMENT, [TestConstants.CREATOR_ID])
+        })
+    })
 })

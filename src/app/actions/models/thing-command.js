@@ -14,7 +14,7 @@ module.exports = {
             },
             completeParams: {
                 thingId: 'thingId',
-                event: 'result'
+                thing: 'result'
             },
             track: 'comment',
             private: true

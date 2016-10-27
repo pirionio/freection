@@ -21,7 +21,7 @@ export function _comment(thingId, commentText) {
                 type: ThingCommandActionsTypes.COMMENT, 
                 status: ActionStatus.COMPLETE,
                 thingId: thingId,
-                event: result
+                thing: result
             }))
             .catch(() => dispatch({
                 type: ThingCommandActionsTypes.COMMENT, 

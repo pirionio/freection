@@ -320,24 +320,27 @@ export async function pong(user, thingId, messageText) {
         throw error
     }
 }
-
+ 
 export async function comment(user, thingId, commentText) {
     try {
         const creator = userToAddress(user)
 
-        const thing = await ThingDomain.getThing(thingId)
+        const thing = await ThingDomain.getFullThing(thingId)
 
         const mentionedUserIds = await getMentionsFromText(commentText)
-        const comment = await EventCreator.createComment(creator, new Date(), thing,
-            (creator, thing, eventType) => getShowNewList(creator, thing, eventType, null, mentionedUserIds),
-            mentionedUserIds, commentText)
 
-        await updateThingMentions(thing, mentionedUserIds)
+        const comment = EventCreator.createComment(creator, new Date(), thing,
+            getShowNewList(creator, thing, EventTypes.COMMENT.key, mentionedUserIds),
+            mentionedUserIds, commentText)
+        thing.events.push(comment)
+
+        updateThingMentions(thing, mentionedUserIds)
+
+        const persistedThing = await ThingDomain.updateThing(thing)
 
         await sendEmailForEvent(user, thing, comment)
 
-        const fullEvent = await Event.getFullEvent(comment.id)
-        return eventToDto(fullEvent, user, {includeThing: false})
+        return persistedThing
     } catch (error) {
         logger.error(`Could not comment on thing ${thingId} for user ${user.email}`, error)
         throw error
@@ -468,24 +471,27 @@ export function syncThingWithMessage(thingId, message) {
         })
 }
 
-export function addCommentFromEmail(thingId, messageId, from, date, text, html) {
+export async function addCommentFromEmail(thingId, messageId, from, date, text, html) {
     const creator = emailToAddress(from)
 
-    return ThingDomain.getFullThing(thingId)
-        .then(thing => {
-            const emailIds =
-                thing.events.filter(event => event.payload && event.payload.emailId)
-                    .map(comment => comment.payload.emailId)
+    try {
+        const thing = ThingDomain.getFullThing(thingId)
 
-            if (!emailIds.includes(messageId)) {
-                return EventCreator.createComment(creator, date, thing, getShowNewList, [], text, html, messageId)
-            }
-        })
-        .catch(error => {
-            // If thing doesn't exist we just ignore the thing
-            if (error.name !== 'DocumentNotFoundError')
-                throw error
-        })
+        const emailIds = thing.events
+            .filter(event => event.payload && event.payload.emailId)
+            .map(comment => comment.payload.emailId)
+
+        if (!emailIds.includes(messageId)) {
+            thing.events.push(EventCreator.createComment(creator, date, thing,
+                getShowNewList(creator, thing, EventTypes.COMMENT.key),
+                [], text, html, messageId))
+            await ThingDomain.updateThing(thing)
+        }
+    } catch(error) {
+        // If thing doesn't exist we just ignore the thing
+        if (error.name !== 'DocumentNotFoundError')
+            throw error
+    }
 }
 
 async function getToAddress(user, to) {

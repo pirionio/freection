@@ -151,6 +151,11 @@ export default class ThingTestUtil {
                 When('thing', function () {
                     return mock.ThingService.pong(dataStore.doer, TestConstants.THING_1_ID, messageText)
                 })
+            },
+            commentThing: messageText => {
+                When('thing', function () {
+                    return mock.ThingService.comment(dataStore.doer, TestConstants.THING_1_ID, messageText)
+                })
             }
         }
 
