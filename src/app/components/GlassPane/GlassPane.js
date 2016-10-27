@@ -15,13 +15,14 @@ class GlassPane extends Component {
     }
 
     close() {
-        const backdropCallback = this.getGlassPane().backdropCallback
+        const glassPane = this.getGlassPane()
+        const backdropCallback = glassPane.backdropCallback
 
         if (backdropCallback) {
             backdropCallback()
 
             const {dispatch} = this.props
-            dispatch(GlassPaneActions.hide())
+            dispatch(GlassPaneActions.hide(glassPane.id))
         }
     }
 

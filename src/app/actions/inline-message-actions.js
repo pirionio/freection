@@ -23,6 +23,6 @@ export function messageSent(inlineMessage) {
     return dispatch => {
         inlineMessage.action(inlineMessage.text)
         dispatch(actions.reset('inlineMessage'))
-        dispatch(GlassPaneActions.hide())
+        dispatch(GlassPaneActions.hide(GlassPaneIds.MAIN_APP))
     }
 }
