@@ -1,5 +1,6 @@
-import {remove, castArray, union, chain, omitBy, isNil, last, map, clone, uniq, reject} from 'lodash'
+import {remove, castArray, union, chain, omitBy, isNil, last, map, clone, uniq, reject, template} from 'lodash'
 import AddressParser from 'email-addresses'
+import requireText from 'require-text'
 
 import {Event, User} from '../models'
 import * as EventCreator from './event-creator'
@@ -16,6 +17,10 @@ import logger from '../utils/logger'
 import replyToAddress from '../config/reply-email'
 import textToHtml from '../../../common/util/textToHtml'
 import * as ThingHelper from '../../../common/helpers/thing-helper'
+import * as EmailParsingUtility from '../utils/email-parsing-utility.js'
+
+const organizationEmailTemplate = requireText('./templates/email-template-organization.html', require)
+const externalEmailTemplate = requireText('./templates/email-template-external.html', require)
 
 export function getAllThings(user) {
     return ThingDomain.getAllUserThings(user.id)
@@ -520,33 +525,40 @@ function getReplyAddress(thingId) {
     return `${parts[0]}+${thingId}@${parts[1]}`
 }
 
-function sendEmailForThing(thing, user, toAddress, subject, body) {
-    if (toAddress.type === UserTypes.EMAIL.key) {
+function getThingEmailBody(body, user, toAddress) {
+    const toOrganization = EmailParsingUtility.getOrganization(toAddress.id)
+
+    const bodyTemplate = template(toOrganization === user.organization ? organizationEmailTemplate : externalEmailTemplate)
+
+    return bodyTemplate({
+        body: textToHtml(body),
+        firstName: user.firstName,
+        lastName: user.lastName
+    })
+}
+
+async function sendEmailForThing(thing, user, toAddress, subject, body) {
+    if (toAddress.type !== UserTypes.EMAIL.key)
+       return null
+
+    try {
         const messageId = ThingHelper.getEmailId(thing)
 
-        const htmlBody =
-            `<div>
-                <div>${textToHtml(body)}</div><br>
-                <span>
-                    ${user.firstName} ${user.lastName} is using Freection.
-                    If you want to let ${user.firstName} know that's going on with this thing, try Freection 
-                    <a href="https://freection.com" target="_blank">here!</a>
-                </span>
-            </div>`
+        const htmlBody = getThingEmailBody(body, user, toAddress)
 
         // we don't wait for the send email to complete, we want it to be async so creating a thing won't be delayed
-        sendMessage(user, {
+        await sendMessage(user, {
             to: toAddress.payload.email,
             subject,
             html: htmlBody,
             messageId,
             replyTo: getReplyAddress(thing.id)
         })
-            .then(() => logger.info(`Email send successfully from ${user.email} to ${toAddress.payload.email}`))
-            .catch(error => logger.error(`Error while sending email from ${user.email} to ${toAddress.payload.email}`, error))
-    }
 
-    return Promise.resolve(null)
+        logger.info(`Email send successfully from ${user.email} to ${toAddress.payload.email}`)
+    } catch(error) {
+        logger.error(`Error while sending email from ${user.email} to ${toAddress.payload.email}`, error)
+    }
 }
 
 async function sendEmailForEvent(user, thing, event) {
@@ -584,9 +596,12 @@ async function sendEmailForEvent(user, thing, event) {
     if (event.payload.html)
         message.html = event.payload.html
 
-    sendMessage(user, message)
-        .then(() => logger.info(`Email send successfully from ${user.email} to ${emailRecipients}`))
-        .catch(error => logger.error(`Error while sending email from ${user.email} to ${emailRecipients}`, error))
+    try {
+        await sendMessage(user, message)
+        logger.info(`Email send successfully from ${user.email} to ${emailRecipients}`)
+    } catch (error) {
+        logger.error(`Error while sending email from ${user.email} to ${emailRecipients}`, error)
+    }
 }
 
 function saveNewThing(body, subject, creator, to, mentionedUserIds) {
