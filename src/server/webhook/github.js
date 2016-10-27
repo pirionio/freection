@@ -40,7 +40,7 @@ function handleClosed(payload) {
     const { id, number} = payload.issue
     const fullName = payload.repository.full_name
 
-    ThingDomain.getThingsByGithubIssueId(id)
+    ThingDomain.getThingsByGithubIssueId(id, true)
         .then(things => {
 
             const creator = {

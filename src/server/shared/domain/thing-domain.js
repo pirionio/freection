@@ -28,7 +28,11 @@ export async function getUserToDos(userId) {
     return Thing.getAll(userId, {index: 'doers'}).getJoin({events: true}).run()
 }
 
-export async function getThingsByGithubIssueId(githubIssueId) {
+export async function getThingsByGithubIssueId(githubIssueId, full = false) {
+    if (full) {
+        return Thing.getAll(githubIssueId, {index: 'githubIssueId'}).getJoin({events: true}).run()
+    }
+
     return Thing.getAll(githubIssueId, {index: 'githubIssueId'}).run()
 }
 
