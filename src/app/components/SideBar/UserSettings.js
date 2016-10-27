@@ -47,12 +47,14 @@ class UserSettings extends Component {
         const settingsMenu = this.getSettingMenu()
 
         return (
-            <Flexbox name="settings" container="row" justifyContent="space-between" alignItems="center" className={classes.container}
-                     onClick={this.toggleSettingsMenu} >
-                <span className={classes.user}>
-                    <TextTruncate tooltip={true}><span>{currentUser.firstName}</span></TextTruncate>
-                </span>
-                <Icon name={this.isOpen() ? 'chevron-down' : 'chevron-up'} className={classes.menuButton} />
+            <Flexbox name="settings" container="row" justifyContent="space-between" alignItems="center" className={classes.container}>
+                <Flexbox name="menu-title" container="row" justifyContent="space-between" alignItems="center" className={classes.menuTitle}
+                         onClick={this.toggleSettingsMenu}>
+                    <span className={classes.user}>
+                        <TextTruncate tooltip={true}><span>{currentUser.firstName}</span></TextTruncate>
+                    </span>
+                    <Icon name={this.isOpen() ? 'chevron-down' : 'chevron-up'} className={classes.menuButton} />
+                </Flexbox>
                 {settingsMenu}
             </Flexbox>
         )
@@ -62,6 +64,9 @@ class UserSettings extends Component {
 const style = {
     container: {
         position: 'relative',
+        width: '100%'
+    },
+    menuTitle: {
         height: 60,
         width: '100%',
         padding: [0, 27],
