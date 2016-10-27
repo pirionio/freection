@@ -81,10 +81,19 @@ export function configure(app) {
 
     function auditChangedEvent(oldEvent, event) {
         const shownToUsers = difference(oldEvent.showNewList, event.showNewList)
+        const newUsers = difference(event.showNewList, oldEvent.showNewList)
 
         shownToUsers.forEach(userId => {
             io.to(userId).emit('notification-deleted', {id: event.id})
         })
+
+        if (newUsers && newUsers.length !== 0) {
+            Event.getFullEvent(event.id, true)
+                .then(fullEvent => {
+                    sendNewEvent(fullEvent, newUsers)
+                })
+                .catch(error => logger.error('error while fetching full event from db', error))
+        }
 
         if (SharedConstants.MESSAGE_TYPED_EVENTS.includes(event.eventType)) {
             const readByUsers = difference(event.payload.readByList, oldEvent.payload.readByList)
@@ -110,13 +119,17 @@ export function configure(app) {
                 const subscribers = union(fullEvent.showNewList, fullEvent.thing.doers,
                     fullEvent.thing.followUpers, fullEvent.thing.subscribers, fullEvent.thing.mentioned, [fullEvent.thing.to.id, fullEvent.thing.creator.id])
 
-                // TODO: we are not testing if the room even exist
-                subscribers.forEach(userId => {
-                    const user = {id: userId}
-                    const dto = eventToDto(fullEvent, user, {includeFullThing: true})
-                    io.to(userId).emit('new-event', dto)
-                })
+                sendNewEvent(fullEvent, subscribers)
             })
             .catch(error => logger.error('error while fetching new event from db', error))
+    }
+
+    function sendNewEvent(event, users) {
+        // TODO: we are not testing if the room even exist
+        users.forEach(userId => {
+            const user = {id: userId}
+            const dto = eventToDto(event, user, {includeFullThing: true})
+            io.to(userId).emit('new-event', dto)
+        })
     }
 }

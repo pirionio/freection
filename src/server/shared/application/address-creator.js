@@ -11,7 +11,8 @@ export function userToAddress(user) {
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
-            username: user.username
+            username: user.username,
+            organization: user.organization
         }
     }
 }

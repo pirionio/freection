@@ -6,30 +6,12 @@ import {Strategy as GoogleStrategy} from 'passport-google-oauth20'
 
 import {User} from '../shared/models'
 import config from '../shared/config/google-oauth'
-import * as EmailParsingUtility from '../shared/utils/email-parsing-utility'
 import token from '../shared/utils/token-strategy'
 import logger from '../shared/utils/logger'
 import {createUserToken} from '../shared/utils/token-creator'
+import {createNewUser} from '../shared/application/users-service.js'
 
 const router = Router()
-
-function saveNewUser(userData) {
-    const {email} = userData
-    const organization = EmailParsingUtility.getOrganization(email)
-    const username = EmailParsingUtility.getUsername(email)
-
-    return User.save({
-        createdAt: new Date(),
-        googleId: userData.googleId,
-        username,
-        organization,
-        email,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        accessToken: userData.accessToken,
-        refreshToken: userData.refreshToken
-    })
-}
 
 function generateOAuth2Url({prompt, hint} = {}) {
     const oauthUrl = 'https://accounts.google.com/o/oauth2/auth'
@@ -73,7 +55,7 @@ passport.use(new GoogleStrategy({
             if (!userData.refreshToken)
                 throw 'MissingRefreshToken'
 
-            return saveNewUser(userData)
+            return createNewUser(userData)
                 .then(user => {
                     logger.info(`new user ${user.firstName} ${user.lastName} ${user.email}`)
                     return user

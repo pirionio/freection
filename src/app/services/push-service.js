@@ -71,6 +71,11 @@ export function listenToUpdates(email, pushToken, dispatch) {
         // EmailLifecycleService.updateUnread()
     })
 
+    socket.on('connect', () => {
+        // This will make the invalidation status of all pages to be REQUIRE_UPDATE
+        dispatch(SystemEventActions.reconnected())
+    })
+
     socket.on('reconnect', () => {
         // EmailLifecycleService.reconnected()
 
