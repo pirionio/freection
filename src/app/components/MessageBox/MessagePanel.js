@@ -165,11 +165,12 @@ const style = defaultsDeep({
         boxShadow: '0px 0px 40px 0px rgba(0, 0, 0, 0.15)'
     },
     sendButtonContainer: {
-        width: 70
+        width: 82
     },
     sendButton: {
-        height: 30,
+        height: 33,
         backgroundColor: styleVars.highlightColor,
+        fontSize: '0.857em',
         color: 'white',
         border: 'none',
         '&:focus':{
@@ -180,12 +181,9 @@ const style = defaultsDeep({
         }
     },
     disabledSendButton: {
-        backgroundColor: styleVars.disabledColor,
-        color: 'darkgrey',
-        border: 'none',
-        '&:hover': {
-            color: 'darkgrey'
-        }
+        opacity: 0.5,
+        backgroundColor: styleVars.highlightColor,
+        border: 'none'
     }
 }, componentStyles)
 
