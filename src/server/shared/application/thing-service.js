@@ -597,6 +597,9 @@ function saveNewThing(body, subject, creator, to, mentionedUserIds) {
     const doers = isSelfThing ? [creator.id] : []
     const mentioned = mentionedUserIds
     const subscribers = mentionedUserIds
+    const all = uniq(to.type === UserTypes.FREECTION.key ?
+        [creator.id, to.id, ...mentioned] :
+        [creator.id, ...mentioned])
 
     return ThingDomain.createThing({
         createdAt: new Date(),
@@ -608,7 +611,7 @@ function saveNewThing(body, subject, creator, to, mentionedUserIds) {
         doers,
         mentioned,
         subscribers,
-        all: uniq([creator.id, to.id, ...mentioned]),
+        all,
         type: EntityTypes.THING.key,
         payload: omitBy({
             status
