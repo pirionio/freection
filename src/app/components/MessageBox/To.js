@@ -6,6 +6,7 @@ import useSheet from 'react-jss'
 import omit from 'lodash/omit'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
+import Flexbox from '../UI/Flexbox.js'
 
 import * as ToActions from '../../actions/to-actions.js'
 import styleVars from '../style-vars'
@@ -18,6 +19,7 @@ class To extends Component {
         this.onChange = this.onChange.bind(this)
         this.onSuggestionsFetchRequested = this.onSuggestionsFetchRequested.bind(this)
         this.onSuggestionsClearRequested = this.onSuggestionsClearRequested.bind(this)
+        this.renderSuggestion = this.renderSuggestion.bind(this)
 
         this._fetchContactsTimeoutActive = false
     }
@@ -35,8 +37,13 @@ class To extends Component {
     }
 
     renderSuggestion(suggestion) {
+        const {sheet: {classes}} = this.props
+
         return (
-            <span>{`${suggestion.displayName} <${suggestion.payload.email}>`}</span>
+            <Flexbox container justifyContent="space-between" >
+                <Flexbox container="column" justifyContent="center" className={classes.autoCompleteName}>{suggestion.displayName}</Flexbox>
+                <Flexbox container="column" justifyContent="center" className={classes.autoCompleteEmail}>{suggestion.payload.email}</Flexbox>
+            </Flexbox>
         )
     }
 
@@ -154,20 +161,39 @@ const style = {
         position: 'absolute',
         bottom: 25,
         left: 0,
-        border: '1px solid',
+        //border: '1px solid',
+        boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.15)',
+        width: '350px',
         backgroundColor: 'white',
         zIndex: styleVars.toAutosuggestZIndex
     },
     suggestionsList: {
         listStyleType: 'none',
-        padding: 0
+        padding: 0,
+        marginTop: 8,
+        marginBottom: 8,
+        marginLeft:0,
+        marginRight:0
     },
     suggestion: {
+        height: '32px',
         cursor: 'default',
-        padding: [10, 20]
+        paddingLeft: 20,
+        paddingRight: 20
     },
     suggestionFocused: {
-        backgroundColor: 'lightgray'
+        backgroundColor: 'rgb(236, 239, 242)'
+    },
+    autoCompleteName: {
+        height: '100%',
+        fontSize: '0.857em',
+        letterSpacing: '0.025em'
+    },
+    autoCompleteEmail: {
+        height: '100%',
+        fontSize: '0.857em',
+        fontWeight: 500,
+        letterSpacing: '0.025em'
     }
 }
 
