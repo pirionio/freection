@@ -6,6 +6,7 @@ import Icon from 'react-fontawesome'
 
 import * as SlackActions from '../../actions/slack-actions'
 import {InvalidationStatus} from '../../constants'
+import Loader from '../UI/Loader'
 import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
 
@@ -20,11 +21,7 @@ class Slack extends Component {
     }
 
     getFetching() {
-        return (
-            <div>
-                Fetching slack data
-            </div>
-        )
+        return <Loader />
     }
 
     getNotActive() {

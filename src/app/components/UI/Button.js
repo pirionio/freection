@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import useSheet from 'react-jss'
+import classNames from 'classnames'
 
 import styleVars from '../style-vars'
 
@@ -7,8 +8,11 @@ class Button extends Component {
     render() {
         const {label, onClick, disabled, type, tabIndex, sheet: {classes}} = this.props
 
+        // The 'js-button' class is provided in order to let parent components override styles of this button.
+        const buttonClasses = classNames(classes.button, 'js-button')
+
         return (
-            <button type={type} className={classes.button} onClick={onClick} disabled={disabled} tabIndex={tabIndex}>{label}</button>
+            <button type={type} className={buttonClasses} onClick={onClick} disabled={disabled} tabIndex={tabIndex}>{label}</button>
         )
     }
 }

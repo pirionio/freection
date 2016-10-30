@@ -9,7 +9,6 @@ import {chain} from 'lodash/core'
 
 import * as ThingHelper from '../../../common/helpers/thing-helper'
 import Flexbox from '../UI/Flexbox'
-import styleVars from '../style-vars'
 import PreviewsContainer from '../Preview/PreviewsContainer'
 import NotificationPreviewItem from './NotificationPreviewItem'
 import GithubPreviewItem from './GithubPreviewItem'
@@ -61,16 +60,6 @@ class WhatsNew extends Component {
             <NotificationPreviewItem notification={notification} key={notification.id} />
     }
 
-    getNoPreviews() {
-        return {
-            texts: [
-                'Nothing new under the sun.',
-                'Stop checking your Freection so often!'
-            ],
-            logoColor: styleVars.highlightColor
-        }
-    }
-
     render () {
         const {invalidationStatus} = this.props
 
@@ -78,7 +67,6 @@ class WhatsNew extends Component {
             <Flexbox name="unread-notifications-container" grow={1} container="column">
                 <PreviewsContainer previewItems={this.getNotificationRows()}
                                    fetchPreviews={this.fetchWhatsNew}
-                                   noPreviews={this.getNoPreviews()}
                                    invalidationStatus={invalidationStatus}>
                     {this.props.children}
                 </PreviewsContainer>

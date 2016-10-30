@@ -7,7 +7,6 @@ import {chain} from 'lodash/core'
 
 import Flexbox from '../../UI/Flexbox'
 import * as AllThingsActions from '../../../actions/all-things-actions'
-import styleVars from '../../style-vars'
 import PreviewsContainer from '../../Preview/PreviewsContainer'
 import AllThingsPreviewItem from './AllThingsPreviewItem'
 import EmailThingPreviewItem from './EmailThingPreviewItem'
@@ -41,16 +40,6 @@ class AllThings extends Component {
         return chain(thing.events).map('createdAt').max().value()
     }
 
-    getNoPreviews() {
-        return {
-            texts: [
-                'You have no Things at all.',
-                'Welcome to Freection, then!'
-            ],
-            logoColor: styleVars.baseGreenColor
-        }
-    }
-
     render() {
         const {invalidationStatus, sheet: {classes}} = this.props
 
@@ -58,7 +47,6 @@ class AllThings extends Component {
             <Flexbox name="all-things-container" grow={1} container="column" className={classes.container}>
                 <PreviewsContainer previewItems={this.getAllThings()}
                                    fetchPreviews={this.fetchAllThings}
-                                   noPreviews={this.getNoPreviews()}
                                    invalidationStatus={invalidationStatus}>
                     {this.props.children}
                 </PreviewsContainer>

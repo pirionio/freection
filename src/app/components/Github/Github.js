@@ -7,6 +7,7 @@ import Icon from 'react-fontawesome'
 import * as GithubActions from '../../actions/github-actions'
 import {InvalidationStatus} from '../../constants'
 import Repository from './Repository'
+import Loader from '../UI/Loader'
 import Flexbox from '../UI/Flexbox'
 import Scrollable from '../Scrollable/Scrollable'
 import styleVars from '../style-vars'
@@ -23,9 +24,7 @@ class Github extends Component {
 
     getFetching() {
         return (
-            <div>
-                Fetching github data
-            </div>
+            <Loader />
         )
     }
 

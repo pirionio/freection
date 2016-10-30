@@ -154,7 +154,7 @@ class CommandsBar extends Component {
     }
 
     render() {
-        const {supportRollover, sheet: {classes}, commands} = this.props
+        const {supportRollover, sheet: {classes}, commands, className} = this.props
 
         const components = commands.map(this.getCommandComponent)
 
@@ -163,7 +163,7 @@ class CommandsBar extends Component {
 
         if (!supportRollover) {
             return (
-                <Flexbox name="commands-bar" container='row-reverse'>
+                <Flexbox name="commands-bar" container='row-reverse' className={className}>
                     {[firstCommand, ...restOfCommands]}
                 </Flexbox>
             )
@@ -172,7 +172,7 @@ class CommandsBar extends Component {
         const restOfCommandsClass = classNames(classes.restOfCommands, 'restOfCommands')
 
         return (
-            <Flexbox name="commands-bar" container='row-reverse'>
+            <Flexbox name="commands-bar" container='row-reverse' className={className}>
                 {firstCommand}
                 <Transition component="div"
                             enter={{opacity: 1}}
@@ -201,7 +201,8 @@ CommandsBar.propTypes = {
     notification: PropTypes.object,
     requireTextFunc: PropTypes.func,
     supportRollover: PropTypes.bool,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
+    className: PropTypes.string
 }
 
 CommandsBar.defaultProps = {

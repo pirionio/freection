@@ -168,7 +168,6 @@ class To extends Component {
                              onSuggestionSelected={this.onSuggestionSelected}
                              renderSuggestion={this.renderSuggestion}
                              renderSuggestionsContainer={this.renderSuggestionContainer}
-                             //renderInputComponent={this.renderInputComponent}
                              focusFirstSuggestion={true}
                              theme={classes}
                              ref={ref => {
@@ -201,7 +200,6 @@ const style = {
         position: 'absolute',
         bottom: 25,
         left: 0,
-        //border: '1px solid',
         boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.15)',
         width: '350px',
         backgroundColor: 'white',
@@ -216,13 +214,13 @@ const style = {
         marginRight:0
     },
     suggestion: {
-        height: '32px',
+        height: 32,
         cursor: 'default',
         paddingLeft: 20,
         paddingRight: 20
     },
     suggestionFocused: {
-        backgroundColor: 'rgb(236, 239, 242)'
+        backgroundColor: styleVars.suggestionColor
     },
     autoCompleteName: {
         height: '100%',
