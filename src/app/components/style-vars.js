@@ -1,5 +1,6 @@
 export default {
     primaryColor: '#1e272c',
+    primaryColorHalfOpaque: 'rgba(30, 39, 44, 0.5)',
     secondaryColor: '#36474f',
     highlightColor: '#f6ab27',
     menuTextColor: '#838c91',

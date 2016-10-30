@@ -169,8 +169,8 @@ const style = {
     page: {
         position: 'absolute',
         top: -styleVars.mainAppPadding,
-        left: 40,
-        right: 40,
+        left: 39,
+        right: 39,
         bottom: 0,
         zIndex: styleVars.fullItemZIndex,
         backgroundColor: styleVars.secondaryBackgroundColor,

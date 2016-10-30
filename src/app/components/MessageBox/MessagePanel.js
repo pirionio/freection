@@ -130,14 +130,12 @@ class MessagePanel extends Component {
         const messageBox = this.getMessageBox()
         const sendButton = this.getSendButton()
 
-        const messageBoxClass = classNames(!this.isFullItemMode() && classes.notFullItemBox)
-
         return (
             <Form model="messageBox" className={classes.form}>
                 <Flexbox name="message-panel" container="row" className={classes.panel}>
                     <Flexbox name="message-box" grow={1} container="column">
                         {!this.isCollapsed() ? <MessageTabs /> : null}
-                        <Flexbox container="column" className={messageBoxClass}>
+                        <Flexbox container="column">
                             {messageBox}
                         </Flexbox>
                     </Flexbox>
@@ -160,9 +158,6 @@ const style = defaultsDeep({
         position: 'absolute',
         bottom: 20,
         right: 30
-    },
-    notFullItemBox: {
-        boxShadow: '0px 0px 40px 0px rgba(0, 0, 0, 0.15)'
     },
     sendButtonContainer: {
         width: 82
