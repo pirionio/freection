@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
 import DocumentTitle from 'react-document-title'
+import useSheet from 'react-jss'
 import {goBack} from 'react-router-redux'
 import isEmpty from 'lodash/isEmpty'
 import reject from 'lodash/reject'
@@ -117,7 +118,7 @@ class FullThing extends Component {
     }
 
     render() {
-        const {thing, commands, ongoingAction} = this.props
+        const {thing, commands, ongoingAction, sheet: {classes}} = this.props
         return (
             <DocumentTitle title={this.getDocumentTitle()}>
                 <FullItem messages={this.getAllComments()} close={this.close} isFetching={this.isFetching} isEmpty={this.isEmpty} 
@@ -136,7 +137,8 @@ class FullThing extends Component {
                                      commands={commands}
                                      requireTextFunc={this.requireText}
                                      supportRollover={false}
-                                     disabled={ongoingAction} />
+                                     disabled={ongoingAction}
+                                     className={classes.commandsBar} />
                     </FullItemActions>
                     <FullItemBox>
                         <MessagePanel />
@@ -144,6 +146,17 @@ class FullThing extends Component {
                 </FullItem>
             </DocumentTitle>
         )
+    }
+}
+
+const styles = {
+    commandsBar: {
+        '& .js-button': {
+            minWidth: 90,
+            height: 30,
+            fontSize: '0.857em',
+            letterSpacing: '0.05em'
+        }
     }
 }
 
@@ -165,4 +178,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps)(FullThing)
+export default useSheet(connect(mapStateToProps)(FullThing), styles)

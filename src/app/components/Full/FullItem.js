@@ -184,7 +184,6 @@ const style = {
         fontSize: '1.5em',
         fontWeight: 'bold',
         textTransform: 'uppercase',
-        color: styleVars.basePurpleColor,
         minWidth: 0
     },
     content: {
