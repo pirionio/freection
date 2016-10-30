@@ -3,10 +3,10 @@ import merge from 'lodash/merge'
 
 class Flexbox extends Component {
     render() {
-        const {children, className, style, id, name, onClick, container} = this.props
+        const {children, className, style, id, name, onClick, container, inline} = this.props
 
         const finalStyle = merge({}, {
-            display: container ? 'flex' : undefined,
+            display: container ?  (inline ? 'inline-flex' : 'flex') : undefined,
             flexDirection: container ? container : undefined,
             flexGrow: this.props.grow,
             flexShrink: this.props.shrink,
@@ -30,6 +30,7 @@ Flexbox.propTypes = {
     className: PropTypes.string,
     style: PropTypes.object,
     container: PropTypes.any,
+    inline: PropTypes.bool,
     grow: PropTypes.number,
     shrink: PropTypes.number,
     basis: PropTypes.string,
@@ -43,7 +44,8 @@ Flexbox.defaultProps = {
     container: false,
     grow: 0,
     shrink: 1,
-    basis: 'auto'
+    basis: 'auto',
+    inline: false
 }
 
 export default Flexbox

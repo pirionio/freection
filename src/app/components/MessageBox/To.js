@@ -5,11 +5,12 @@ import Autosuggest from 'react-autosuggest'
 import useSheet from 'react-jss'
 import omit from 'lodash/omit'
 import get from 'lodash/get'
-import isEmpty from 'lodash/isEmpty'
-import Flexbox from '../UI/Flexbox.js'
+import AddressParser from 'email-addresses'
 
+import Flexbox from '../UI/Flexbox.js'
 import * as ToActions from '../../actions/to-actions.js'
 import styleVars from '../style-vars'
+import Close from '../../static/close-selected-box.svg'
 
 class To extends Component {
 
@@ -20,6 +21,8 @@ class To extends Component {
         this.onSuggestionsFetchRequested = this.onSuggestionsFetchRequested.bind(this)
         this.onSuggestionsClearRequested = this.onSuggestionsClearRequested.bind(this)
         this.renderSuggestion = this.renderSuggestion.bind(this)
+        this.onSuggestionSelected = this.onSuggestionSelected.bind(this)
+        this.removeSelected = this.removeSelected.bind(this)
 
         this._fetchContactsTimeoutActive = false
     }
@@ -47,6 +50,24 @@ class To extends Component {
         )
     }
 
+    onSuggestionSelected() {
+        const {model, dispatch} = this.props
+
+        dispatch(actions.change(`${model}.selected`, true))
+    }
+
+    removeSelected() {
+        const {model, dispatch} = this.props
+
+        dispatch(actions.change(`${model}.selected`, false))
+        dispatch(actions.change(`${model}.to`, ''))
+    }
+
+    focus() {
+        if (this._inputRef)
+            this._inputRef.focus()
+    }
+
     renderSuggestionContainer(props) {
         const {style, children} = props
         const anyChildren = React.Children.count(children)
@@ -63,8 +84,7 @@ class To extends Component {
 
     onChange(event, {newValue, method}) {
         const {model, dispatch } = this.props
-
-        dispatch(actions.change(model, newValue))
+        dispatch(actions.change(`${model}.to`, newValue))
 
         if (method === 'enter' || method === 'down' || method === 'up') {
             event.preventDefault()
@@ -123,7 +143,21 @@ class To extends Component {
     }
 
     render() {
-        const {value,contacts, placeholder, containerClassName, inputClassName, tabIndex , onFocus, inputRef, sheet: {classes}} = this.props
+        const {value, selected, contacts, placeholder, containerClassName, inputClassName, tabIndex , onFocus, inputRef, sheet: {classes}} = this.props
+
+        if (selected) {
+            const address = AddressParser.parseOneAddress(value)
+            const name = address.name ? address.name : address.address
+
+            return (
+                <div name="message-to" className={containerClassName}>
+                    <Flexbox className={classes.selectedBox} inline={true} container="row" alignItems="center">
+                        <span>{name}</span>
+                        <img src={Close} className={classes.removeSelectedButton} onClick={this.removeSelected} />
+                    </Flexbox>
+                </div>
+            )
+        }
 
         return (
             <div name="message-to" className={containerClassName}>
@@ -131,13 +165,19 @@ class To extends Component {
                              onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
                              onSuggestionsClearRequested={this.onSuggestionsClearRequested}
                              getSuggestionValue={this.getSuggestionValue}
+                             onSuggestionSelected={this.onSuggestionSelected}
                              renderSuggestion={this.renderSuggestion}
                              renderSuggestionsContainer={this.renderSuggestionContainer}
+                             //renderInputComponent={this.renderInputComponent}
                              focusFirstSuggestion={true}
                              theme={classes}
                              ref={ref => {
-                                 if(inputRef && ref)
-                                     inputRef(ref.input)
+                                 inputRef(this)
+
+                                 if (ref)
+                                     this._inputRef = ref.input
+                                 else
+                                     this._inputRef = null
                              }}
                              inputProps={{
                                  type: 'text',
@@ -194,14 +234,34 @@ const style = {
         fontSize: '0.857em',
         fontWeight: 500,
         letterSpacing: '0.025em'
+    },
+    selectedBox: {
+        border: '1px solid black',
+        height: '26px',
+        marginTop: '2px',
+        marginBottom: '2px',
+        paddingLeft: '10px',
+        paddingRight: '10px',
+        fontSize: '0.857em',
+        fontWeight: 500,
+        marginRight: '10px'
+    },
+    removeSelectedButton: {
+        marginLeft: 18,
+        height: 7,
+        width: 7,
+        letterSpacing: '0.05em',
+        cursor: 'pointer'
     }
 }
+
 
 To.propTypes = {
     contacts: PropTypes.array.isRequired,
     cache: PropTypes.object.isRequired,
     pendingQueries: PropTypes.array.isRequired,
     value: PropTypes.string,
+    selected: PropTypes.bool,
     query: PropTypes.string,
     currentUser: PropTypes.object.isRequired,
     model: PropTypes.string.isRequired,
@@ -224,7 +284,8 @@ function mapStateToProps(state, {model}) {
         pendingQueries: state.to.pendingQueries,
         cache: state.to.cache,
         currentUser: state.auth,
-        value: get(state, model)
+        value: get(state, `${model}.to`),
+        selected: get(state, `${model}.selected`)
     }
 }
 

@@ -79,7 +79,7 @@ class MessageBox extends Component {
         if (!this.hasTo())
             return null
 
-        return <To model="messageBox.message.to"
+        return <To model="messageBox.message"
                    containerClassName={classes.messageTo}
                    inputClassName={classes.textField}
                    tabIndex={3}

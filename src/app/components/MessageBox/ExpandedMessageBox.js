@@ -98,7 +98,7 @@ class ExpandedMessageBox extends Component {
                          onClick={() => this.messageTo.focus() }>
                     To:
                 </Flexbox>
-                <To model="messageBox.message.to"
+                <To model="messageBox.message"
                     containerClassName={classes.inputGroup}
                     inputClassName={classes.textField}
                     tabIndex={3}
