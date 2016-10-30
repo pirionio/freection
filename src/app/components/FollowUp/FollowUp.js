@@ -6,7 +6,6 @@ import useSheet from 'react-jss'
 
 import Flexbox from '../UI/Flexbox'
 import PreviewsContainer from '../Preview/PreviewsContainer'
-import styleVars from '../style-vars'
 import * as  FollowUpsActions from '../../actions/follow-up-actions'
 import FollowUpPreviewItem from './FollowUpPreviewItem'
 import SlackPreviewItem from './SlackPreviewItem'
@@ -34,16 +33,6 @@ class FollowUp extends Component {
         })
     }
 
-    getNoPreviews() {
-        return {
-            texts: [
-                'Nothing to follow up.',
-                'Damn, You\'re good!'
-            ],
-            logoColor: styleVars.basePurpleColor
-        }
-    }
-
     render() {
         const {invalidationStatus, sheet: {classes}} = this.props
 
@@ -51,7 +40,6 @@ class FollowUp extends Component {
             <Flexbox name="follow-ups-container" grow={1} container="column" className={classes.container}>
                 <PreviewsContainer previewItems={this.getThingsToFollowUp()}
                                    fetchPreviews={this.fetchFollowUps}
-                                   noPreviews={this.getNoPreviews()}
                                    invalidationStatus={invalidationStatus}>
                     {this.props.children}
 

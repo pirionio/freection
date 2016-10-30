@@ -16,7 +16,6 @@ import * as EmailActions from '../../actions/email-actions'
 import Flexbox from '../UI/Flexbox'
 import PreviewsContainer from '../Preview/PreviewsContainer'
 import EmailPreviewItem from './EmailPreviewItem'
-import styleVars from '../style-vars'
 
 class UnreadEmails extends Component {
     constructor(props) {
@@ -82,16 +81,6 @@ class UnreadEmails extends Component {
         return <EmailPreviewItem email={email} currentUser={this.props.currentUser} key={email.id} />
     }
 
-    getNoPreviews() {
-        return {
-            texts: [
-                'No new emails.',
-                'Hmm, sorry, we don\'t have a good joke for this part.'
-            ],
-            logoColor: styleVars.basePinkColor
-        }
-    }
-
     render() {
         const {invalidationStatus} = this.props
 
@@ -99,7 +88,6 @@ class UnreadEmails extends Component {
             <Flexbox name="unread-emails-container" grow={1} container="column">
                 <PreviewsContainer previewItems={this.getEmailRows()}
                                    fetchPreviews={this.fetchUnreadEmails}
-                                   noPreviews={this.getNoPreviews()}
                                    invalidationStatus={invalidationStatus}>
                     {this.props.children}
                 </PreviewsContainer>

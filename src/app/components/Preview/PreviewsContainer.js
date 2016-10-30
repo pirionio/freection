@@ -6,6 +6,7 @@ import isArray from 'lodash/isArray'
 import {GeneralConstants, InvalidationStatus} from '../../constants'
 import Flexbox from '../UI/Flexbox'
 import MessagePanel from '../MessageBox/MessagePanel'
+import Placeholder from './Placeholder'
 import Scrollable from '../Scrollable/Scrollable'
 import styleVars from '../style-vars'
 
@@ -30,17 +31,9 @@ class PreviewsContainer extends Component {
     }
 
     getNoPreviews() {
-        const {noPreviews, sheet: {classes}} = this.props
-
-        const texts = noPreviews.texts.map((text, index) => <span key={`text-${index}`} className={classes.noPreviewsText}>{text}</span>)
-
         return (
             <Flexbox name="preview-content" grow={1} container="column" justifyContent="center" alignItems="center">
-                <Flexbox container="column">
-                    <span className={classes.noPreviewsLogo} style={{color: noPreviews.logoColor}}>***</span>
-                    {texts}
-                    <span className={classes.noPreviewsLogo} style={{color: noPreviews.logoColor}}>***</span>
-                </Flexbox>
+                <Placeholder />
             </Flexbox>
         )
     }
@@ -92,17 +85,6 @@ const style = {
     blur: {
         filter: 'blur(3px)'
     },
-    noPreviewsText: {
-        color: styleVars.watermarkColor,
-        fontSize: '3em',
-        marginBottom: 15,
-        textAlign: 'center'
-    },
-    noPreviewsLogo: {
-        fontSize: '1.4em',
-        marginBottom: 15,
-        textAlign: 'center'
-    },
     messagePanel: {
         width: '100%',
         padding: [0, 40]
@@ -112,7 +94,6 @@ const style = {
 PreviewsContainer.propTypes = {
     previewItems: PropTypes.any.isRequired,
     fetchPreviews: PropTypes.func.isRequired,
-    noPreviews: PropTypes.object.isRequired,
     invalidationStatus: PropTypes.string.isRequired
 }
 
