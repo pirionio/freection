@@ -1,14 +1,13 @@
 import React, {Component, PropTypes} from 'react'
-import Delay from 'react-delay'
 import useSheet from 'react-jss'
 import isArray from 'lodash/isArray'
 
-import {GeneralConstants, InvalidationStatus} from '../../constants'
+import {InvalidationStatus} from '../../constants'
 import Flexbox from '../UI/Flexbox'
 import MessagePanel from '../MessageBox/MessagePanel'
 import Placeholder from './Placeholder'
 import Scrollable from '../Scrollable/Scrollable'
-import styleVars from '../style-vars'
+import Loader from '../UI/Loader'
 
 class PreviewsContainer extends Component {
     componentDidMount () {
@@ -21,13 +20,7 @@ class PreviewsContainer extends Component {
     }
 
     getFetching() {
-        return (
-            <div>
-                <Delay wait={GeneralConstants.FETCHING_DELAY_MILLIS}>
-                    <div>Loading, please wait...</div>
-                </Delay>
-            </div>
-        )
+        return <Loader />
     }
 
     getNoPreviews() {
@@ -61,11 +54,13 @@ class PreviewsContainer extends Component {
     render () {
         const {children, previewItems, invalidationStatus, sheet: {classes}} = this.props
 
+        let content = null
         if (invalidationStatus === InvalidationStatus.FETCHING)
-            return this.getFetching()
-
-        const content = !previewItems || (isArray(previewItems) && !previewItems.length) ? this.getNoPreviews() :
-                        this.getPreviews()
+            content = this.getFetching()
+        else if (!previewItems || (isArray(previewItems) && !previewItems.length))
+            content = this.getNoPreviews()
+        else
+            content = this.getPreviews()
 
         return (
             <Flexbox name="preview-container" grow={1} container="column" justifyContent="flex-end">

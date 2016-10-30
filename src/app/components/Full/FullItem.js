@@ -3,14 +3,13 @@ import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
 import classNames from 'classnames'
 import clickOutside from 'react-click-outside'
-import Delay from 'react-delay'
-import Icon from 'react-fontawesome'
 import useSheet from 'react-jss'
 
 import {getChildOfType, createSlots} from '../../util/component-util'
 import Flexbox from '../UI/Flexbox'
 import CommentList from '../Comment/CommentList'
 import TextTruncate from '../UI/TextTruncate'
+import Loader from '../UI/Loader'
 import styleVars from '../style-vars'
 import {GeneralConstants} from '../../constants'
 import Close from '../../static/close-full-item.svg'
@@ -88,15 +87,10 @@ class FullItem extends  Component {
 
     renderFetching() {
         const {sheet: {classes}} = this.props
-
         return (
             <Flexbox name="full-item-content" grow={1} container="column" justifyContent="center" alignItems="center" classNames={classes.item}>
                 <Flexbox grow={1} container="row" alignItems="center">
-                    <Delay wait={GeneralConstants.FETCHING_DELAY_MILLIS}>
-                        <div className="full-item-loading">
-                            <Icon name="spinner" pulse size="4x" className={classes.loadingIcon} />
-                        </div>
-                    </Delay>
+                    <Loader />
                 </Flexbox>
             </Flexbox>
         )
@@ -229,9 +223,6 @@ const style = {
         width: 12,
         marginTop: 9,
         marginLeft: 9
-    },
-    loadingIcon: {
-        marginLeft: 10
     }
 }
 
