@@ -76,14 +76,15 @@ const style = {
         cursor: 'pointer'
     },
     user: {
-        letterSpacing: '0.1em',
+        fontSize: '0.857em',
+        letterSpacing: '0.05em',
         textTransform: 'uppercase',
         paddingRight: 8,
         minWidth: 0
     },
     menuButton: {
         marginRight: 10,
-        fontSize: '0.9em'
+        fontSize: '0.7em'
     },
     menu: {
         position: 'absolute',
