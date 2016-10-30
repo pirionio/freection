@@ -78,7 +78,7 @@ class MessagePanel extends Component {
 
         // In case of a new entity being created, disable only if there's no valid address.
         if ([MessageTypes.NEW_THING.key, MessageTypes.NEW_EMAIL.key].includes(activeMessageBox.type.key)) {
-            return !AddressParser.parseOneAddress(messageBox.message.to)
+            return isEmpty(messageBox.message.subject) || !AddressParser.parseOneAddress(messageBox.message.to)
         }
 
         // In case of a reply to an existing entity, disable if there's no body.
