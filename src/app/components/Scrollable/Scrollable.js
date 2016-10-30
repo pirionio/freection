@@ -2,9 +2,11 @@ import ReactDOM from 'react-dom'
 import React, {Component, PropTypes} from 'react'
 import classAutobind from 'class-autobind'
 import {Element, scroller} from 'react-scroll'
+import SizeMe from 'react-sizeme'
 import keys from 'lodash/keys'
 import last from 'lodash/last'
 import random from 'lodash/random'
+import isFunction from 'lodash/isFunction'
 
 import Flexbox from '../UI/Flexbox'
 
@@ -14,12 +16,21 @@ class Scrollable extends Component {
         classAutobind(this, Scrollable.prototype)
 
         this.state = {
-            containerId: `scrollable-conntent-${random(Number.MAX_SAFE_INTEGER)}`
+            containerId: `scrollable-conntent-${random(Number.MAX_SAFE_INTEGER)}`,
+            shouldScrollBottom: false
         }
+
+        // Since this component is wrapped by SizeMe, it should somehow expose the reference to the real 'this'.
+        if (props.scrollableRef && isFunction(props.scrollableRef))
+            props.scrollableRef(this)
     }
 
-    componentWillReceiveProps () {
-        this.shouldScrollBottom = this.scrollableContent ? this.isAtBottom() : false
+    componentWillReceiveProps (props) {
+        // If the component had already been at bottom, make sure it sticks to bottom when something changes.
+        // In addition, if the size had been changed, also stick to bottom.
+        this.setState({
+            shouldScrollBottom: (this.scrollableContent && this.isAtBottom()) || (props.size.height !== this.props.size.height)
+        })
     }
 
     componentDidMount() {
@@ -30,7 +41,7 @@ class Scrollable extends Component {
     }
 
     componentDidUpdate () {
-        if (this.shouldScrollBottom && this.props.stickToBottom) {
+        if (this.state.shouldScrollBottom && this.props.stickToBottom) {
             this.scrollToBottom()
         }
     }
@@ -93,11 +104,12 @@ Scrollable.propTypes = {
     children: PropTypes.node.isRequired,
     stickToBottom: PropTypes.bool,
     getScrollToElementId: PropTypes.func,
-    className: PropTypes.string
+    className: PropTypes.string,
+    scrollableRef: PropTypes.func
 }
 
 Scrollable.defaultProps = {
     stickToBottom: false
 }
 
-export default Scrollable
+export default SizeMe({monitorHeight: true, monitorWidth: false})(Scrollable)

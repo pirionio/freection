@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
 import useSheet from 'react-jss'
 import VisibilitySensor from 'react-visibility-sensor'
@@ -116,7 +117,7 @@ class CommentList extends Component {
 
         return (
             <Flexbox name="comments-list" grow={1} container="column" className={classes.container}>
-                <Scrollable stickToBottom={true} getScrollToElementId={this.getScrollToElementId} ref={ref => this.commentsList = ref}>
+                <Scrollable stickToBottom={true} getScrollToElementId={this.getScrollToElementId} scrollableRef={ref => this.commentsList = ref}>
                     {readComments}
                     {unreadMessagesTitle}
                     {unreadComments}
@@ -167,4 +168,6 @@ CommentList.propTypes = {
     comments: PropTypes.array.isRequired
 }
 
-export default useSheet(CommentList, style)
+// It's important to connect to redux here, in order to make sure that the child component of Scrollable is re-rendered when there is a change
+// in state, this way resizing itself accordingly.
+export default useSheet(connect()(CommentList), style)
