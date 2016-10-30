@@ -7,6 +7,7 @@ import Icon from 'react-fontawesome'
 import Flexbox from '../UI/Flexbox'
 import Link from '../UI/Link'
 import TextTruncate from '../UI/TextTruncate'
+import styleVars from '../style-vars.js'
 
 class UserSettings extends Component {
     constructor(props) {
@@ -34,9 +35,9 @@ class UserSettings extends Component {
         const {sheet: {classes}} = this.props
         return this.isOpen() ? (
             <Flexbox name="settings-menu" grow={1} container="column" justifyContent="space-between" className={classes.menu}>
-                <Link to="/all/things" className={classes.menuOption} onClick={this.closeSettingsMenu}>All Things</Link>
-                <Link to="/integrations" className={classes.menuOption} onClick={this.closeSettingsMenu}>Integrations</Link>
-                <a href="/login/logout" className={classes.menuOption}>Logout</a>
+                <Link to="/all/things" className={classes.menuOption} activeClassName={classes.menuOptionActive}>All Things</Link>
+                <Link to="/integrations" className={classes.menuOption} activeClassName={classes.menuOptionActive}>Integrations</Link>
+                <a href="/login/logout" className={classes.menuOption}>Log Out</a>
             </Flexbox>
         ) : null
     }
@@ -87,31 +88,39 @@ const style = {
     menu: {
         position: 'absolute',
         width: '100%',
-        height: 112,
-        top: -112,
+        height: 130,
+        top: -130,
         left: 0,
-        padding: [23, 27],
+        padding: [25, 27],
         backgroundColor: '#2a373f'
     },
     menuOption: {
         width: '100%',
+        fontSize: '0.857em',
+        fontWeight: '500',
         cursor: 'pointer',
         color: '#959a9d',
         textDecoration: 'none',
-        letterSpacing: '0.01em',
+        letterSpacing: '0.05em',
         '&:hover': {
             color: 'white'
-        }
+        },
+        marginBottom: '23px'
+    },
+    menuOptionActive: {
+        color: styleVars.highlightColor
     }
 }
 
 UserSettings.propTypes = {
-    currentUser: PropTypes.object.isRequired
+    currentUser: PropTypes.object.isRequired,
+    routing: PropTypes.object.isRequired
 }
 
 function mapStateToProps(state) {
     return {
-        currentUser: state.auth
+        currentUser: state.auth,
+        routing: state.routing
     }
 }
 
