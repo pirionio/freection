@@ -22,9 +22,19 @@ class MessageBody extends Component {
         super(props)
         classAutobind(this, MessageBody.prototype)
 
+        const {sheet: {classes}} = props
+
         this._mentionPlugin = createMentionPlugin({
             mentionPrefix: '@',
-            positionSuggestions: this.positionSuggestions
+            positionSuggestions: this.positionSuggestions,
+            theme: {
+                mention: classes.mention,
+                mentionSuggestions: classes.mentionSuggestions,
+                mentionSuggestionsEntry: classes.mentionSuggestionsEntry,
+                mentionSuggestionsEntryText: classes.mentionSuggestionsEntryText,
+                mentionSuggestionsEntryFocused: classes.mentionSuggestionsEntryFocused,
+                mentionSuggestionsEntryAvatar: classes.mentionSuggestionsEntryAvatar
+            }
         })
 
         this.state = {
@@ -144,21 +154,15 @@ class MessageBody extends Component {
     }
 }
 
-// Overriding the classes of draft-js mention plugin is kinda ugly in version 1.
-// There's no API to override the mention component itself, and passing in classes of our own must be done
-// with plain old CSS. In addition, the CSS we pass overrides the default one, and is not merged into it,
-// so we really have to provide the CSS for all the classes of the plugin.
-// Therefore, I'd rather just set a rule for the specific class of the mention component.
-// I have to use its generated name unfortunately, which is the ugly part :/
+// Overriding the classes of draft-js is kinda ugly.
+// For the draft-js editor, I have to override the classes I want to change.
+// For the mention plugin, I can give an object of classes, but the object I provide is not merged with the default styles, but rather overrides it.
+// Therefore, I have to set the styles for all of the components of the mention plugin, if I want to override only one of them.
 const style = {
     containerBase: {
         lineHeight: 2,
         letterSpacing: styleVars.messageLetterSpacing,
         position: 'relative',
-        '& .draftJsMentionPlugin__mention__29BEd': {
-            fontWeight: 'bold',
-            backgroundColor: 'transparent'
-        },
         '& .public-DraftEditor-content': {
             overflowY: 'auto',
             maxHeight: '100%'
@@ -169,6 +173,60 @@ const style = {
     },
     editor: {
         width: '100%'
+    },
+    mention: {
+        fontWeight: 'bold',
+        color: styleVars.mentionColor,
+        backgroundColor: 'transparent',
+        display: 'inline-block',
+        padding: [0, 2],
+        borderRadius: 2,
+        textDecoration: 'none'
+    },
+    mentionSuggestions: {
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'absolute',
+        minWidth: 220,
+        maxWidth: 440,
+        backgroundColor: 'white',
+        boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.15)',
+        padding: [8, 0],
+        zIndex: styleVars.mentionSuggestionsZIndex,
+        transform: 'scale(0)',
+        boxSizing: 'border-box'
+    },
+    mentionSuggestionsEntry: {
+        height: 32,
+        lineHeight: '32px',
+        padding: [0, 20],
+        cursor: 'pointer',
+        transition: 'background-color 0.4s cubic-bezier(.27,1.27,.48,.56)',
+        '&:active': {
+            backgroundColor: styleVars.suggestionColor
+        }
+    },
+    mentionSuggestionsEntryFocused: {
+        height: 32,
+        lineHeight: '32px',
+        padding: [0, 20],
+        cursor: 'pointer',
+        backgroundColor: styleVars.suggestionColor
+    },
+    mentionSuggestionsEntryText: {
+        maxWidth: 368,
+        display: 'inline-block',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        fontSize: '0.857em',
+        letterSpacing: '0.025em'
+    },
+    mentionSuggestionsEntryAvatar: {
+        height: 24,
+        width: 24,
+        display: 'inline-block',
+        borderRadius: 12
     }
 }
 

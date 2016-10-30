@@ -5,7 +5,6 @@ import Autosuggest from 'react-autosuggest'
 import useSheet from 'react-jss'
 import omit from 'lodash/omit'
 import get from 'lodash/get'
-import isEmpty from 'lodash/isEmpty'
 import Flexbox from '../UI/Flexbox.js'
 
 import * as ToActions from '../../actions/to-actions.js'
@@ -161,7 +160,6 @@ const style = {
         position: 'absolute',
         bottom: 25,
         left: 0,
-        //border: '1px solid',
         boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.15)',
         width: '350px',
         backgroundColor: 'white',
@@ -176,13 +174,13 @@ const style = {
         marginRight:0
     },
     suggestion: {
-        height: '32px',
+        height: 32,
         cursor: 'default',
         paddingLeft: 20,
         paddingRight: 20
     },
     suggestionFocused: {
-        backgroundColor: 'rgb(236, 239, 242)'
+        backgroundColor: styleVars.suggestionColor
     },
     autoCompleteName: {
         height: '100%',

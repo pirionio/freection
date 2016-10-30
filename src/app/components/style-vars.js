@@ -15,6 +15,8 @@ export default {
     basePinkColor: '#ff3a4e',
     baseGrayColor: '#565656',
     baseGreenColor: '#b7cbc0',
+    suggestionColor: '#eceff2',
+    mentionColor: '#575f67',
 
     redCircleColor: '#ff3a4e',
     blueCircleColor: '#448ccb',
@@ -29,6 +31,7 @@ export default {
     messageLetterSpacing: '0.025em',
 
     backZIndex: 10,
+    mentionSuggestionsZIndex: 14,
     toAutosuggestZIndex: 15,
     fullItemBlurZIndex: 40,
     fullItemZIndex: 50,
