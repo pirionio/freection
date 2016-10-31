@@ -88,7 +88,7 @@ class FullItem extends  Component {
     renderFetching() {
         const {sheet: {classes}} = this.props
         return (
-            <Flexbox name="full-item-content" grow={1} container="column" justifyContent="center" alignItems="center" classNames={classes.item}>
+            <Flexbox name="full-item-content" grow={1} container="column" justifyContent="center" alignItems="center" className={classes.item}>
                 <Flexbox grow={1} container="row" alignItems="center">
                     <Loader />
                 </Flexbox>
