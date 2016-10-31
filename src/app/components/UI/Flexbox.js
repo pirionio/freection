@@ -1,23 +1,37 @@
 import React, {PropTypes, Component} from 'react'
 import merge from 'lodash/merge'
+import omit from 'lodash/omit'
 
 class Flexbox extends Component {
+    focus() {
+        if (this._div)
+            this._div.focus()
+    }
+
     render() {
-        const {children, className, style, id, name, onClick, container, inline} = this.props
+        const {id, name, className, style, container, inline,
+            grow, shrink, basis, justifyContent, alignItems, alignSelf,
+            onClick, children} = this.props
+
+        const rest = omit(this.props, [
+            'id', 'name', 'className', 'style', 'container', 'inline',
+            'grow', 'shrink', 'basis', 'justifyContent', 'alignItems', 'alignSelf',
+            'onClick', 'children'
+        ])
 
         const finalStyle = merge({}, {
             display: container ?  (inline ? 'inline-flex' : 'flex') : undefined,
             flexDirection: container ? container : undefined,
-            flexGrow: this.props.grow,
-            flexShrink: this.props.shrink,
-            flexBasis: this.props.basis,
-            justifyContent: this.props.justifyContent,
-            alignItems: this.props.alignItems,
-            alignSelf: this.props.alignSelf
+            flexGrow: grow,
+            flexShrink: shrink,
+            flexBasis: basis,
+            justifyContent: justifyContent,
+            alignItems: alignItems,
+            alignSelf: alignSelf
         }, style)
 
         return (
-            <div id={id} name={name} style={finalStyle} className={className} onClick={onClick}>
+            <div id={id} name={name} style={finalStyle} className={className} onClick={onClick} {...rest} ref={ref => this._div = ref}>
                 {children}
             </div>
         )

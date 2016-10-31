@@ -11,18 +11,14 @@ import Flexbox from '../UI/Flexbox.js'
 import * as ToActions from '../../actions/to-actions.js'
 import styleVars from '../style-vars'
 import Close from '../../static/close-selected-box.svg'
+import Autobind from 'class-autobind'
 
 class To extends Component {
 
     constructor(props) {
         super(props)
 
-        this.onChange = this.onChange.bind(this)
-        this.onSuggestionsFetchRequested = this.onSuggestionsFetchRequested.bind(this)
-        this.onSuggestionsClearRequested = this.onSuggestionsClearRequested.bind(this)
-        this.renderSuggestion = this.renderSuggestion.bind(this)
-        this.onSuggestionSelected = this.onSuggestionSelected.bind(this)
-        this.removeSelected = this.removeSelected.bind(this)
+        Autobind(this, To.prototype)
 
         this._fetchContactsTimeoutActive = false
     }
@@ -64,8 +60,40 @@ class To extends Component {
     }
 
     focus() {
-        if (this._inputRef)
+        const {selected} = this.props
+
+        if (!selected && this._inputRef)
             this._inputRef.focus()
+        if (selected && this._selectedBox)
+            this._selectedBox.focus()
+    }
+
+    onSelectedBoxKeyDown(event) {
+        if (event.key === 'Delete' || event.key === 'Backspace') {
+            this.removeSelected()
+        }
+    }
+
+    onInputKeyDown(event) {
+        const {value} = this.props
+
+        if (event.key === 'Enter') {
+            const address = AddressParser.parseOneAddress(value)
+
+            if (address) {
+                this.onSuggestionSelected()
+            }
+        }
+    }
+
+    onInputBlur() {
+        const {value} = this.props
+
+        const address = AddressParser.parseOneAddress(value)
+
+        if (address) {
+            this.onSuggestionSelected()
+        }
     }
 
     renderSuggestionContainer(props) {
@@ -151,7 +179,10 @@ class To extends Component {
 
             return (
                 <div name="message-to" className={containerClassName}>
-                    <Flexbox className={classes.selectedBox} inline={true} container="row" alignItems="center">
+                    <Flexbox className={classes.selectedBox} inline={true} container="row" alignItems="center" tabIndex={tabIndex}
+                             onKeyDown={this.onSelectedBoxKeyDown}
+                             onFocus={onFocus}
+                             ref={ref => this._selectedBox = ref}>
                         <span>{name}</span>
                         <img src={Close} className={classes.removeSelectedButton} onClick={this.removeSelected} />
                     </Flexbox>
@@ -185,6 +216,8 @@ class To extends Component {
                                  placeholder: placeholder,
                                  value:  value,
                                  onChange: this.onChange,
+                                 onKeyDown: this.onInputKeyDown,
+                                 onBlur: this.onInputBlur,
                                  onFocus: onFocus
                              }} />
             </div>
@@ -242,7 +275,12 @@ const style = {
         paddingRight: '10px',
         fontSize: '0.857em',
         fontWeight: 500,
-        marginRight: '10px'
+        marginRight: '10px',
+        outline: 'none',
+        cursor: 'default',
+        '&:focus':{
+            border: `1px solid ${styleVars.baseBlueColor}`
+        }
     },
     removeSelectedButton: {
         marginLeft: 18,
