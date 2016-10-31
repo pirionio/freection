@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
-import DocumentTitle from 'react-document-title'
 import useSheet from 'react-jss'
 import {goBack} from 'react-router-redux'
 import isEmpty from 'lodash/isEmpty'
@@ -45,17 +44,6 @@ class FullThing extends Component {
     close() {
         const {dispatch} = this.props
         dispatch(goBack())
-    }
-
-    getDocumentTitle() {
-        const {thing} = this.props
-
-        const unreadComments = this.getUnreadComments()
-
-        if (unreadComments.length > 0)
-            return `Freection (${unreadComments.length}) - ${thing.subject}`
-
-        return `Freection - ${thing.subject}`
     }
 
     getAllComments() {
@@ -120,31 +108,29 @@ class FullThing extends Component {
     render() {
         const {thing, commands, ongoingAction, sheet: {classes}} = this.props
         return (
-            <DocumentTitle title={this.getDocumentTitle()}>
-                <FullItem messages={this.getAllComments()} close={this.close} isFetching={this.isFetching} isEmpty={this.isEmpty} 
-                          statusColor={this.getStatusColor()}>
-                    <FullItemSubject>
-                        <span>{thing.subject}</span>
-                    </FullItemSubject>
-                    <FullItemStatus>
-                        <span>{thing.payload ? ThingStatus[thing.payload.status].label : ''}</span>
-                    </FullItemStatus>
-                    <FullItemUser>
-                        <span>by {thing.creator ? thing.creator.displayName : ''}</span>
-                    </FullItemUser>
-                    <FullItemActions>
-                        <CommandsBar thing={thing}
-                                     commands={commands}
-                                     requireTextFunc={this.requireText}
-                                     supportRollover={false}
-                                     disabled={ongoingAction}
-                                     className={classes.commandsBar} />
-                    </FullItemActions>
-                    <FullItemBox>
-                        <MessagePanel />
-                    </FullItemBox>
-                </FullItem>
-            </DocumentTitle>
+            <FullItem messages={this.getAllComments()} close={this.close} isFetching={this.isFetching} isEmpty={this.isEmpty}
+                      statusColor={this.getStatusColor()}>
+                <FullItemSubject>
+                    <span>{thing.subject}</span>
+                </FullItemSubject>
+                <FullItemStatus>
+                    <span>{thing.payload ? ThingStatus[thing.payload.status].label : ''}</span>
+                </FullItemStatus>
+                <FullItemUser>
+                    <span>by {thing.creator ? thing.creator.displayName : ''}</span>
+                </FullItemUser>
+                <FullItemActions>
+                    <CommandsBar thing={thing}
+                                 commands={commands}
+                                 requireTextFunc={this.requireText}
+                                 supportRollover={false}
+                                 disabled={ongoingAction}
+                                 className={classes.commandsBar} />
+                </FullItemActions>
+                <FullItemBox>
+                    <MessagePanel />
+                </FullItemBox>
+            </FullItem>
         )
     }
 }
