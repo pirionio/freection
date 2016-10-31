@@ -5,15 +5,16 @@ import * as  FollowUpActions from '../actions/follow-up-actions'
 import * as EventActions from '../actions/event-actions'
 import * as SystemEventActions from '../actions/system-event-actions.js'
 import EventTypes from '../../common/enums/event-types'
-// import EmailLifecycleService from './email-lifecycle-service'
-// import * as EmailPageActions from '../actions/email-page-actions'
+import * as DesktopNotificationService from './desktop-notification-service.js'
 
 export function listenToUpdates(email, pushToken, dispatch) {
     const socket = createSocket(email, pushToken)
     
     socket.on('new-event', event => {
-        if (event.showNew)
+        if (event.showNew) {
             dispatch(WhatsNewActions.notificationReceived(event))
+            DesktopNotificationService.handleEvent(event)
+        }
 
         if (event.eventType.key === EventTypes.COMMENT.key)
             dispatch(EventActions.commentCreated(event))

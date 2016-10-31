@@ -15,6 +15,7 @@ import * as PushService from '../../services/push-service'
 import * as AuthService from '../../services/auth-service.js'
 import FaviconLogo from '../../static/freection-favicon.png'
 import {initialize, clean} from '../../util/analytics'
+import * as DesktopNotificationService from '../../services/desktop-notification-service.js'
 import * as ChromeExtensionActions from '../../actions/chrome-extension-actions'
 import { closeExpanded } from '../../actions/message-box-actions'
 import {goBack} from 'react-router-redux'
@@ -46,6 +47,7 @@ class App extends Component {
         if (currentUser.isAuthenticated) {
             PushService.listenToUpdates(currentUser.email, currentUser.pushToken, dispatch)
             AuthService.initialize(currentUser)
+            DesktopNotificationService.initialize()
             initialize(currentUser)
             //EmailLifecycleService.initialize(dispatch)
         } else {
