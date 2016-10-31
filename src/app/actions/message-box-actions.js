@@ -47,11 +47,11 @@ export function messageSent(messageBoxId, messagePromise) {
         }, GeneralConstants.ONGOING_ACTION_DELAY_MILLIS)
 
         messagePromise && messagePromise.then && messagePromise.then(() => {
-            const {messagePanel} = getState()
-
             clearTimeout(ongoingActionTimeout)
 
             dispatch(messageSentComplete(messageBoxId))
+
+            const {messagePanel} = getState()
             dispatch(actions.change('messageBox', getActiveMessageBox(messagePanel)))
         })
     }
