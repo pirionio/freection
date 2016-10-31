@@ -36,18 +36,13 @@ function restoreBaseUrl() {
     });
 }
 
-function createPopupPlaceholder() {
-    $(".save-div").remove();
-    $(".container").append("<span>Thank you for using the Freection Chrome Extension.</span>");
-    $("body").width('200px');
-}
-
 function main() {
     if (!isDevMode()) {
         $(".dev-only").remove();
 
         if (!$(".option").length) {
-            createPopupPlaceholder();
+            $(".properties").remove();
+            $(".save-div").remove();
         }
     }
 

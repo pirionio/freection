@@ -10,22 +10,56 @@
             background: white;
             font-family: Roboto, Arial;
             font-size: 0.875em;
+            width: 290px;
         }
 
         .container {
             height: 100%;
-            width: 100%;
-            padding: 5px;
+            padding: 10px;
+        }
+
+        .header {
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .header img {
+            display: block;
+            height: 13px;
+            width: 44px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 10px;
+        }
+
+        .sub-header {
+            text-align: center;
+            color: #888888;
+        }
+
+        .properties {
+            font-size: 16px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            padding-top: 15px;
+            border-top: 1px solid lightgray;
+            text-align: center;
+        }
+
+        .option {
+            padding-bottom: 20px;
+            border-bottom: 1px solid lightgray;
         }
 
         .option-label {
             display: block;
             font-size: 14px;
-            margin-bottom: 15px;
+            margin-bottom: 5px;
         }
 
         .save-div {
-            margin-top: 15px;
+            margin-top: 20px;
         }
 
         .save-button {
@@ -49,6 +83,35 @@
 </head>
 <body>
     <div class="container">
+        <div class="header">
+            <img src="images/extension-logo-black.png">
+            <span>
+                Thank you for using the
+                <br>
+                Freection Chrome Extension
+            </span>
+        </div>
+
+        <div class="sub-header">
+            <div>
+                A little recommendation from us:
+            </div>
+            <div>
+                Try to use the
+                <a href="https://chrome.google.com/webstore/detail/actions-for-gmail-beta/mclmmkhldnfokbgnhoibcgblghkmncem" target="_blank">
+                    Actions for Gmail
+                </a>
+                 extension.
+            </div>
+            <div>
+                It plays nicely with Freection!
+            </div>
+        </div>
+
+        <div class="properties">
+            Customization:
+        </div>
+
         <div class="option dev-only">
             <span class="option-label">Base URL:</span>
             <input name="baseUrl" type="text" class="option-value" />
