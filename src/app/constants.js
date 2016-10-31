@@ -9,7 +9,8 @@ export const GeneralConstants = {
     ONGOING_ACTION_DELAY_MILLIS: 500,
     TOOLTIP_DELAY: 400,
     INSPECTLET_SENSITIVE_CLASS: 'inspectlet-sensitive',
-    MAX_MESSAGE_PANEL_TABS: 4
+    MAX_MESSAGE_PANEL_TABS: 4,
+    CHROME_EXTENSION_MESSAGE: 'FreectionChromeExtension'
 }
 
 export const InvalidationStatus = {

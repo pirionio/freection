@@ -10,7 +10,7 @@ import SideBar from '../SideBar/SideBar'
 import Login from '../Login/Login'
 import Page from '../UI/Page'
 import GlassPane from '../GlassPane/GlassPane'
-import {GlassPaneIds} from '../../constants'
+import {GeneralConstants, GlassPaneIds} from '../../constants'
 import * as PushService from '../../services/push-service'
 import * as AuthService from '../../services/auth-service.js'
 import FaviconLogo from '../../static/freection-favicon.png'
@@ -66,7 +66,7 @@ class App extends Component {
 
     listenToChromeExtension(event) {
         const {dispatch, config} = this.props
-        if (event.origin === config.baseUrl) {
+        if (event.data === GeneralConstants.CHROME_EXTENSION_MESSAGE && event.origin === config.baseUrl) {
             dispatch(ChromeExtensionActions.setIsInstalled(true))
         }
     }
