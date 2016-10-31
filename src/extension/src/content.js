@@ -83,7 +83,7 @@ function addDoButtonToEmailPage(sdk, options) {
 		section: sdk.Toolbars.SectionNames.METADATA_STATE,
 		onClick: function(event) {
 			sdk.Router.goto(sdk.Router.NativeRouteIDs.INBOX)
-			FreectionApi.doEmail(options, threadViewToDto(event.threadView)).then(() => syncEmailThings(options))
+			FreectionApi.doEmail(options, threadViewToDto(event.threadView, {sdk})).then(() => syncEmailThings(options))
 		}
 	})
 }
