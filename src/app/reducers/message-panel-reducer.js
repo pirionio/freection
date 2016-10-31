@@ -3,8 +3,7 @@ import findIndex from 'lodash/findIndex'
 
 import MessageBoxActionTypes from '../actions/types/message-box-action-types'
 import immutable from '../util/immutable'
-import {ActionStatus} from '../constants'
-import MessageTypes from '../../common/enums/message-types'
+import {GeneralConstants, ActionStatus} from '../constants'
 
 const initialState = {
     messageBoxes: [],
@@ -12,10 +11,7 @@ const initialState = {
 }
 
 function newMessageBox(state, action) {
-    // This is sad, but when there's a new message box for reply to email, we don't have the full object of the email's thread,
-    // so we can't really add the new message box, with the right context.
-    // We'd have to wait for a GET on the whole thread to occur, and only then create the message box.
-    if (action.messageType.key === MessageTypes.REPLY_EMAIL.key)
+    if (state.messageBoxes.length >= GeneralConstants.MAX_MESSAGE_PANEL_TABS)
         return state
     
     const messageBox = {

@@ -133,7 +133,7 @@ class MessagePanel extends Component {
         return (
             <Form model="messageBox" className={classes.form}>
                 <Flexbox name="message-panel" container="row" className={classes.panel}>
-                    <Flexbox name="message-box" grow={1} container="column">
+                    <Flexbox name="message-box" grow={1} container="column" className={classes.box}>
                         {!this.isCollapsed() ? <MessageTabs /> : null}
                         <Flexbox container="column">
                             {messageBox}
@@ -153,6 +153,9 @@ const style = defaultsDeep({
     },
     panel: {
         position: 'relative'
+    },
+    box: {
+        width: '100%'
     },
     send: {
         position: 'absolute',

@@ -14,6 +14,7 @@ import TextTruncate from '../UI/TextTruncate'
 import styleVars from '../style-vars'
 import Close from '../../static/close-message-box.svg'
 import Expand from '../../static/expand-message-box.svg'
+import {GeneralConstants} from '../../constants'
 
 class MessageTabs extends Component {
     constructor(props) {
@@ -66,16 +67,23 @@ class MessageTabs extends Component {
         dispatch(MessageBoxActions.closeMessageBox(messageBox.id))
     }
 
+    allowMoreTabs() {
+        const {messageBoxes} = this.props
+        return messageBoxes.length < GeneralConstants.MAX_MESSAGE_PANEL_TABS
+    }
+
     render () {
         const {sheet: {classes}} = this.props
 
         const messageTabs = this.getMessageTabs()
 
+        const newTabClass = classNames(classes.newSection, !this.allowMoreTabs() && classes.newDisabled)
+
         return (
             <Flexbox name="message-box-top-bar" container="row" alignItems="center" className={classes.topBar}>
                 {messageTabs}
                 <Flexbox name="message-new" container="row" justifyContent="center" alignItems="center"
-                         className={classes.newSection} onClick={this.newThingMessageBox}>
+                         className={newTabClass} onClick={this.newThingMessageBox}>
                     <Icon name="plus" className={classes.newIcon} />
                 </Flexbox>
             </Flexbox>
@@ -132,6 +140,12 @@ const style = {
     },
     newIcon: {
         fontSize: '0.7em'
+    },
+    newDisabled: {
+        cursor: 'not-allowed',
+        '&:hover': {
+            opacity: 0.2
+        }
     }
 }
 
