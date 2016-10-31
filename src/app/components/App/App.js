@@ -55,18 +55,20 @@ class App extends Component {
 
     componentWillUnmount() {
         document.removeEventListener('keydown', this.onKeyDown)
+        document.removeEventListener('message', this.listenToChromeExtension)
     }
 
     componentWillMount() {
-        const {dispatch, config} = this.props
-
         // This is the way to communicate with the Chrome Extension.
         // It is risky, since we accept messages from outside, so we accept only messages from our same origin.
-        window.addEventListener('message', event => {
-            if (event.origin === config.baseUrl) {
-                dispatch(ChromeExtensionActions.setIsInstalled(true))
-            }
-        }, false)
+        window.addEventListener('message', this.listenToChromeExtension, false)
+    }
+
+    listenToChromeExtension(event) {
+        const {dispatch, config} = this.props
+        if (event.origin === config.baseUrl) {
+            dispatch(ChromeExtensionActions.setIsInstalled(true))
+        }
     }
 
     getTitle() {
