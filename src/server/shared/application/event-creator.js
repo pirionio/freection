@@ -2,6 +2,7 @@ import {Event} from '../models'
 import EventTypes from '../../../common/enums/event-types'
 import UserTypes from '../../../common/enums/user-types'
 import * as analytics from '../utils/analytics.js'
+import ThingStatus from '../../../common/enums/thing-status.js'
 
 export function createCreated(creator, thing, showNewList, mentionedUserIds, body, emailId) {
     analytics.thingCreated(thing)
@@ -102,7 +103,9 @@ export function createClosedSync(creator, thing, showNewList, messageText) {
 }
 
 export function createClosed(creator, thing, showNewList, messageText) {
-    analytics.closed(creator, thing)
+
+    if ([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED].includes(thing.payload.status))
+        analytics.closed(creator, thing)
 
     return {
         thingId: thing.id,
@@ -176,7 +179,7 @@ export function createCloseAck(creator, thing, getShowNewList) {
 }
 
 export function createUnmute(creator, thing, getShowNewList) {
-    analytics.joined(creator, thing)
+    analytics.unmuted(creator, thing)
 
     return Event.save({
         thingId: thing.id,
@@ -215,7 +218,8 @@ export function createFollowedUp(creator, thing, getShowNewList) {
 }
 
 export function createUnfollowedUp(creator, thing, getShowNewList) {
-    analytics.unfollowed(creator, thing)
+    if ([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED].includes(thing.payload.status))
+        analytics.unfollowed(creator, thing)
 
     return Event.save({
         thingId: thing.id,
