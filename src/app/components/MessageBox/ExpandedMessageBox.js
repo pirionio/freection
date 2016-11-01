@@ -250,9 +250,13 @@ const style = {
         flexDirection: 'column',
     },
     container: {
-        height: '100%'
+        height: '100%',
+        position: 'relative'
     },
     title: {
+        position: 'absolute',
+        left: 0,
+        top: -34,
         backgroundColor: styleVars.highlightColor,
         height: 35,
         width: 130,
