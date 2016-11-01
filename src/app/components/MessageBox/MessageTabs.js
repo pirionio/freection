@@ -93,7 +93,7 @@ class MessageTabs extends Component {
 
 const style = {
     topBar: {
-        height: 37
+        height: 35
     },
     tab: {
         height: '100%',
@@ -116,17 +116,17 @@ const style = {
         minWidth: 0
     },
     tabClose: {
-        height: 7,
-        width: 7,
+        height: 9,
+        width: 9,
         cursor: 'pointer',
         color: 'inherit'
     },
     tabExpand: {
-        height: 7,
-        width: 7,
+        height: 9,
+        width: 9,
         cursor: 'pointer',
         color: 'inherit',
-        marginRight: 8
+        marginRight: 6
     },
     newSection: {
         width: 40,

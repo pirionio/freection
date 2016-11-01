@@ -254,7 +254,7 @@ const style = {
     },
     title: {
         backgroundColor: styleVars.highlightColor,
-        height: '30px',
+        height: 35,
         width: 130,
         padding: [0, 12, 0, 10],
         color: 'white'
@@ -267,18 +267,17 @@ const style = {
         marginRight: 8
     },
     titleClose: {
-        height: 7,
-        width: 7,
+        height: 9,
+        width: 9,
         cursor: 'pointer',
         color: 'inherit',
-        marginLeft: 8
+        marginLeft: 6
     },
     titleCollapse: {
-        height: 7,
-        width: 7,
+        height: 9,
+        width: 9,
         cursor: 'pointer',
-        color: 'inherit',
-        marginLeft: 8
+        color: 'inherit'
     },
     box: {
         backgroundColor: 'white',

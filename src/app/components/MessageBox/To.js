@@ -284,8 +284,9 @@ const style = {
     },
     removeSelectedButton: {
         marginLeft: 18,
-        height: 7,
-        width: 7,
+        marginTop: 2,
+        height: 8,
+        width: 8,
         letterSpacing: '0.05em',
         cursor: 'pointer'
     }
