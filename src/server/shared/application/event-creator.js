@@ -5,6 +5,7 @@ import * as analytics from '../utils/analytics.js'
 
 export function createCreated(creator, thing, showNewList, mentionedUserIds, body, emailId) {
     analytics.thingCreated(thing)
+    analytics.mentioned(creator, thing, mentionedUserIds)
 
     return {
         thingId: thing.id,
@@ -66,6 +67,7 @@ export function createDone(creator, thing, showNewList, messageText) {
 
 export function createComment(creator, createdAt, thing, showNewList, mentionedUserIds, commentText, commentHtml, emailId) {
     analytics.commentCreated(creator, thing, showNewList)
+    analytics.mentioned(creator, thing, mentionedUserIds)
 
     return {
         thingId: thing.id,

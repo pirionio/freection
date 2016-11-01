@@ -61,6 +61,30 @@ export function commentCreated(user, thing, showNewList) {
     })
 }
 
+
+export function mentioned(user, thing, mentioned) {
+
+    if (!mentioned)
+        return
+
+    mentioned.forEach(mentionedUserId => {
+        if (user.type === userTypes.FREECTION.key) {
+            trackIntercomEvent('mentioned', user.id, {
+                type: thing.type,
+                mentioned_user_id: mentionedUserId
+            })
+        }
+
+        const creator = user.payload && user.payload.email ? user.payload.email : user.displayName
+
+        trackIntercomEvent('been_mentioned', mentionedUserId, {
+            type: thing.type,
+            mentioned_by: creator
+        })
+    })
+}
+
+
 export function thingDismissed(user, thing) {
     if (user.type === userTypes.FREECTION.key) {
         trackIntercomEvent('dismissed', user.id, {
@@ -107,22 +131,6 @@ export function sentBack(user, thing) {
             type: thing.type,
         })
     }
-}
-
-export function mentioned(user, thing, mentionedUserId) {
-    if (user.type === userTypes.FREECTION.key) {
-        trackIntercomEvent('mentioned', user.id, {
-            type: thing.type,
-            mentioned_user_id: mentionedUserId
-        })
-    }
-
-    const creator = user.payload && user.payload.email ? user.payload.email : user.displayName
-
-    trackIntercomEvent('been_mentioned', mentionedUserId, {
-        type: thing.type,
-        mentioned_by: creator
-    })
 }
 
 export function unmuted(user, thing) {
