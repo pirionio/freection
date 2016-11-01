@@ -50,7 +50,11 @@ export async function sendMessage(user, message) {
         text: htmlToText.fromString(message.html)
     })
 
-    const raw = await getRaw(withText)
+    const withFrom = withText.from ? withText : Object.assign({}, message, {
+        from: `"${user.firstName} ${user.lastName}" <${user.email}>`
+    })
+
+    const raw = await getRaw(withFrom)
     const fullUser = await getFullUser(user)
     const auth = await getAuth(fullUser)
     await gmailSend(auth, raw)
