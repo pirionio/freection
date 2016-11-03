@@ -480,7 +480,7 @@ export async function addCommentFromEmail(thingId, messageId, from, date, text, 
     const creator = emailToAddress(from)
 
     try {
-        const thing = ThingDomain.getFullThing(thingId)
+        const thing = await ThingDomain.getFullThing(thingId)
 
         const emailIds = thing.events
             .filter(event => event.payload && event.payload.emailId)
