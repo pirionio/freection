@@ -22,7 +22,7 @@ class NavigationMenu extends Component {
         const {router} = this.context
 
         const countCircle = count ?
-            <Ellipse color={router.isActive(pathname, false) ? styleVars.highlightColor : styleVars.menuTextColor }
+            <Ellipse color={router.isActive(pathname, false) ? styleVars.highlightColor : styleVars.menuTextColor}
                      text={count} oval={true} className={classes.circle} /> :
             null
 
@@ -30,13 +30,15 @@ class NavigationMenu extends Component {
 
         return (
             <div name="link-container" key={pathname}>
-                <Flexbox name="link-row" container="row" alignItems="center" className={classes.linkRow}>
-                    <Flexbox grow={1} className={classes.linkBlock}>
-                        <Link to={pathname} className={classes.link} activeClassName={classes.linkActive}>{title}</Link>
+                <Link to={pathname} className={classes.link} activeClassName={classes.linkActive}>
+                    <Flexbox name="link-row" container="row" alignItems="center" className={classes.linkRow}>
+                        <Flexbox grow={1} className={classes.linkBlock}>
+                            {title}
+                        </Flexbox>
+                        {countCircle}
+                        {arrow}
                     </Flexbox>
-                    {countCircle}
-                    {arrow}
-                </Flexbox>
+                </Link>
             </div>
         )
     }
@@ -92,14 +94,6 @@ const style = {
         paddingTop: 34,
         paddingLeft: 27
     },
-    linkRow: {
-        height: 25,
-        marginBottom: 28,
-        position: 'relative'
-    },
-    linkBlock: {
-        display: 'inline-block'
-    },
     link: {
         fontSize: '0.857em',
         fontWeight: 500,
@@ -111,6 +105,14 @@ const style = {
             color: 'white'
         }
     },
+    linkRow: {
+        height: 25,
+        marginBottom: 28,
+        position: 'relative'
+    },
+    linkBlock: {
+        display: 'inline-block'
+    },
     linkActive: {
         color: styleVars.highlightColor
     },
@@ -118,8 +120,9 @@ const style = {
         width: 33,
         height: 22,
         marginRight: 26,
-        paddingTop: 3,
-        textAlign: 'center'
+        paddingTop: 4,
+        textAlign: 'center',
+        color: 'black'
     },
     arrow: {
         position: 'absolute',
