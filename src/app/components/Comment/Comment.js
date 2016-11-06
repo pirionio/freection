@@ -47,7 +47,7 @@ class Comment extends Component {
 
     parseEmailHtml(html) {
         const parsedHtml = HtmlUtil.parse(html)
-        return <div dangerouslySetInnerHTML={{__html: parsedHtml}}></div>
+        return <div dir="auto" dangerouslySetInnerHTML={{__html: parsedHtml}}></div>
     }
 
     render() {
@@ -64,7 +64,7 @@ class Comment extends Component {
 
         return (
             <VisibilitySensor onChange={this.onVisibilityChange} partialVisibility={true}>
-                <Flexbox name="comment-container" container="column" alignItems="flex-start" className={classes.comment}>
+                <Flexbox name="comment-container" container="column" className={classes.comment}>
                     <Flexbox name="comment-header" container="row" justifyContent="flex-end" alignItems="center" className={classes.header}>
                         <Flexbox name="comment-creator" grow={1} shrink={0} container="row" alignItems="center" className={classes.creator}>
                             <TextTruncate>{comment.creator.displayName}</TextTruncate>
