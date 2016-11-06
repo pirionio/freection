@@ -20,7 +20,6 @@ import * as ThingHelper from '../../../common/helpers/thing-helper'
 import * as EmailParsingUtility from '../utils/email-parsing-utility.js'
 
 const organizationEmailTemplate = requireText('./templates/email-template-organization.html', require)
-const externalEmailTemplate = requireText('./templates/email-template-external.html', require)
 
 export function getAllThings(user) {
     return ThingDomain.getAllUserThings(user.id)
@@ -528,9 +527,10 @@ function getReplyAddress(thingId) {
 function getThingEmailBody(body, user, toAddress) {
     const toOrganization = EmailParsingUtility.getOrganization(toAddress.id)
 
-    const bodyTemplate = template(toOrganization === user.organization ? organizationEmailTemplate : externalEmailTemplate)
+    if (toOrganization !== user.organization)
+        return textToHtml(body)
 
-    return bodyTemplate({
+    return template(organizationEmailTemplate)({
         body: textToHtml(body),
         firstName: user.firstName,
         lastName: user.lastName
