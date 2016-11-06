@@ -85,7 +85,7 @@ class MessageBox extends Component {
                    tabIndex={3}
                    inputRef={ref => this.messageTo = ref}
                    onFocus={this.focusOnTo}
-                   placeholder="To" />
+                   placeholder="To (email, name, or 'me' to send to yourself)" />
     }
 
     focusOnSubject() {

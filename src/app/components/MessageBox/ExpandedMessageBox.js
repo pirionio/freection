@@ -102,6 +102,7 @@ class ExpandedMessageBox extends Component {
                     containerClassName={classes.inputGroup}
                     inputClassName={classes.textField}
                     tabIndex={3}
+                    placeholder="Enter email, name, or 'me' to send to yourself"
                     inputRef={ref => this.messageTo = ref} />
             </Flexbox>)
     }
