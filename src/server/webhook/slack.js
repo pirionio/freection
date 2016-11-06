@@ -35,12 +35,14 @@ router.post('/thing', async function(request, response) {
 
             const {
                 team_id: teamId,
-                channel_id: channelId,
                 channel_name: channelName,
                 user_id: userId,
+                user_name: userName,
                 text,
                 response_url: responseUrl
             } = body
+
+            logger.info(`New thing from slack ${channelName} ${userName} ${text}`)
 
             const creator = await getUserBySlackId(userId)
 
@@ -56,32 +58,26 @@ router.post('/thing', async function(request, response) {
                 return
             }
 
-            let toUserAddress
             let subject = text
 
-            if (channelName === 'directmessage') {
-                respondWithEmpty(response, true)
-                toUserAddress = await getSlackUserFromIMId(team, channelId)
-            } else {
-                // we need to find the mentioned user
-                const mentioned = text.match(/@[a-z0-9][a-z0-9._-]*/)
-                if (!mentioned || !mentioned.length) {
-                    respondWith(response, 'You must mention a user. Please send again with @username')
-                    return
-                }
+            // we need to find the mentioned user
+            const mentioned = text.match(/@[a-z0-9][a-z0-9._-]*/)
+            if (!mentioned || !mentioned.length) {
+                respondWith(response, 'You must mention a user. Please send again with @username')
+                return
+            }
 
-                respondWithEmpty(response, true)
+            respondWithEmpty(response, true)
 
-                if (text.startsWith(mentioned[0])) {
-                    subject = text.substring(mentioned[0].length)
-                }
+            if (text.startsWith(mentioned[0])) {
+                subject = text.substring(mentioned[0].length)
+            }
 
-                toUserAddress = await getSlackUserFromMention(team, mentioned[0])
+            const toUserAddress = await getSlackUserFromMention(team, mentioned[0])
 
-                if (!toUserAddress) {
-                    delayRespondWith(responseUrl, 'The mentioned user doesn\'t exist in slack and therefore thing was not created on freection')
-                    return
-                }
+            if (!toUserAddress) {
+                delayRespondWith(responseUrl, 'The mentioned user doesn\'t exist in slack and therefore thing was not created on freection')
+                return
             }
 
             const toUser = await getUserBySlackId(toUserAddress.id)
@@ -158,27 +154,6 @@ async function getTeam(teamId) {
 
         logger.error('Slack - error while trying to get slack team from db', error)
 
-        throw error
-    }
-}
-
-async function getSlackUserFromIMId(team, channelId) {
-
-    try {
-        const client = new WebClient(team.accessToken)
-        const ims = await client.im.list()
-        const toUserId = head(ims.ims.filter(im => im.id === channelId)).user
-        const toUserName = (await client.users.info(toUserId)).user.name
-
-        const toUser = {
-            id: toUserId,
-            type: UserTypes.SLACK.key,
-            displayName: toUserName
-        }
-
-        return toUser
-    } catch (error) {
-        logger.error('Slack - error while trying to get slack user from IM', error)
         throw error
     }
 }

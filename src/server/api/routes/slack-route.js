@@ -81,7 +81,7 @@ router.get('/addapp', async function(request, response) {
 
     if (user.integrations && user.integrations.slack && user.integrations.slack.active) {
 
-        const scope = ['commands', 'im:read', 'users:read']
+        const scope = ['commands', 'users:read']
 
         const options = {
             client_id: config.clientID,
