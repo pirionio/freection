@@ -75,6 +75,11 @@ export function listenToUpdates(email, pushToken, dispatch) {
     socket.on('connect', () => {
         // This will make the invalidation status of all pages to be REQUIRE_UPDATE
         dispatch(SystemEventActions.reconnected())
+
+        // Only active page will actually get updated, let's manually call all fetch methods
+        dispatch(WhatsNewActions.fetchWhatsNew())
+        dispatch(ToDoActions.fetchToDo())
+        dispatch(FollowUpActions.fetchFollowUps())
     })
 
     socket.on('reconnect', () => {
