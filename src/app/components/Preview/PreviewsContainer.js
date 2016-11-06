@@ -5,7 +5,6 @@ import isArray from 'lodash/isArray'
 import {InvalidationStatus} from '../../constants'
 import Flexbox from '../UI/Flexbox'
 import MessagePanel from '../MessageBox/MessagePanel'
-import Placeholder from './Placeholder'
 import Scrollable from '../Scrollable/Scrollable'
 import Loader from '../UI/Loader'
 
@@ -26,7 +25,7 @@ class PreviewsContainer extends Component {
     getNoPreviews() {
         return (
             <Flexbox name="preview-content" grow={1} container="column" justifyContent="center" alignItems="center">
-                <Placeholder />
+                {this.props.getPlaceholder()}
             </Flexbox>
         )
     }
@@ -89,6 +88,7 @@ const style = {
 PreviewsContainer.propTypes = {
     previewItems: PropTypes.any.isRequired,
     fetchPreviews: PropTypes.func.isRequired,
+    getPlaceholder: PropTypes.func.isRequired,
     invalidationStatus: PropTypes.string.isRequired
 }
 

@@ -6,6 +6,7 @@ import useSheet from 'react-jss'
 
 import Flexbox from '../UI/Flexbox'
 import PreviewsContainer from '../Preview/PreviewsContainer'
+import Placeholder from '../Preview/Placeholder'
 import * as ToDoActions from '../../actions/to-do-actions'
 import ToDoPreviewItem from './ToDoPreviewItem'
 import EmailThingPreviewItem from './EmailThingPreviewItem'
@@ -37,6 +38,13 @@ class ToDo extends Component {
         })
     }
 
+    getPlaceholder() {
+        return (
+            <Placeholder title="No things to do"
+                         subTitle="Come to this page for all the things you need to work on." />
+        )
+    }
+
     render() {
         const {invalidationStatus, sheet: {classes}} = this.props
         
@@ -44,6 +52,7 @@ class ToDo extends Component {
             <Flexbox name="todo-container" grow={1} container="column" className={classes.container}>
                 <PreviewsContainer previewItems={this.getThingsToDo()}
                                    fetchPreviews={this.fetchToDo}
+                                   getPlaceholder={this.getPlaceholder}
                                    invalidationStatus={invalidationStatus}>
                     {this.props.children}
                 </PreviewsContainer>

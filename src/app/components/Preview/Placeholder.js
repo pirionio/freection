@@ -8,7 +8,7 @@ import Logo from '../../static/logo-grey.png'
 
 class Placeholder extends Component {
     render() {
-        const {sheet: {classes}} = this.props
+        const {title, subTitle, sheet: {classes}} = this.props
 
         return (
             <Flexbox name="placeholder-container" container="column" alignItems="center">
@@ -16,10 +16,10 @@ class Placeholder extends Component {
                     <img src={SunImage} />
                 </Flexbox>
                 <Flexbox name="placeholder-title" className={classes.title}>
-                    Nothing new under the sun
+                    {title}
                 </Flexbox>
                 <Flexbox name="placeholder-subtitle" className={classes.subTitle}>
-                    Stop checking your Freection so often.
+                    {subTitle}
                 </Flexbox>
                 <Flexbox name="placeholder-logo" className={classes.logo}>
                     <img src={Logo} />
@@ -54,6 +54,11 @@ const styles = {
             width: 44
         }
     }
+}
+
+Placeholder.propTypes = {
+    title: PropTypes.string.isRequired,
+    subTitle: PropTypes.string.isRequired
 }
 
 export default useSheet(Placeholder, styles)

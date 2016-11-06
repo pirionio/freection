@@ -10,6 +10,7 @@ import {chain} from 'lodash/core'
 import * as ThingHelper from '../../../common/helpers/thing-helper'
 import Flexbox from '../UI/Flexbox'
 import PreviewsContainer from '../Preview/PreviewsContainer'
+import Placeholder from '../Preview/Placeholder'
 import NotificationPreviewItem from './NotificationPreviewItem'
 import GithubPreviewItem from './GithubPreviewItem'
 import * as PreviewHelper from '../../helpers/preview-helper'
@@ -60,6 +61,13 @@ class WhatsNew extends Component {
             <NotificationPreviewItem notification={notification} key={notification.id} />
     }
 
+    getPlaceholder() {
+        return (
+            <Placeholder title="No new notifications"
+                         subTitle="Check this page when you want to be updated about new notifications on your things." />
+        )
+    }
+
     render () {
         const {invalidationStatus} = this.props
 
@@ -67,6 +75,7 @@ class WhatsNew extends Component {
             <Flexbox name="unread-notifications-container" grow={1} container="column">
                 <PreviewsContainer previewItems={this.getNotificationRows()}
                                    fetchPreviews={this.fetchWhatsNew}
+                                   getPlaceholder={this.getPlaceholder}
                                    invalidationStatus={invalidationStatus}>
                     {this.props.children}
                 </PreviewsContainer>

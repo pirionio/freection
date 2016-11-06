@@ -6,6 +6,7 @@ import useSheet from 'react-jss'
 
 import Flexbox from '../UI/Flexbox'
 import PreviewsContainer from '../Preview/PreviewsContainer'
+import Placeholder from '../Preview/Placeholder'
 import * as  FollowUpsActions from '../../actions/follow-up-actions'
 import FollowUpPreviewItem from './FollowUpPreviewItem'
 import SlackPreviewItem from './SlackPreviewItem'
@@ -33,6 +34,13 @@ class FollowUp extends Component {
         })
     }
 
+    getPlaceholder() {
+        return (
+            <Placeholder title="No things to follow up"
+                         subTitle="Come to this page to follow up all the things you sent to others." />
+        )
+    }
+
     render() {
         const {invalidationStatus, sheet: {classes}} = this.props
 
@@ -40,6 +48,7 @@ class FollowUp extends Component {
             <Flexbox name="follow-ups-container" grow={1} container="column" className={classes.container}>
                 <PreviewsContainer previewItems={this.getThingsToFollowUp()}
                                    fetchPreviews={this.fetchFollowUps}
+                                   getPlaceholder={this.getPlaceholder}
                                    invalidationStatus={invalidationStatus}>
                     {this.props.children}
 

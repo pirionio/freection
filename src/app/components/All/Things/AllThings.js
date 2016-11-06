@@ -8,6 +8,7 @@ import {chain} from 'lodash/core'
 import Flexbox from '../../UI/Flexbox'
 import * as AllThingsActions from '../../../actions/all-things-actions'
 import PreviewsContainer from '../../Preview/PreviewsContainer'
+import Placeholder from '../../Preview/Placeholder'
 import AllThingsPreviewItem from './AllThingsPreviewItem'
 import EmailThingPreviewItem from './EmailThingPreviewItem'
 import GithubPreviewItem from './GithubPreviewItem'
@@ -40,6 +41,13 @@ class AllThings extends Component {
         return chain(thing.events).map('createdAt').max().value()
     }
 
+    getPlaceholder() {
+        return (
+            <Placeholder title="No things"
+                         subTitle="Here you will find all of the things ever sent to you or by you." />
+        )
+    }
+
     render() {
         const {invalidationStatus, sheet: {classes}} = this.props
 
@@ -47,6 +55,7 @@ class AllThings extends Component {
             <Flexbox name="all-things-container" grow={1} container="column" className={classes.container}>
                 <PreviewsContainer previewItems={this.getAllThings()}
                                    fetchPreviews={this.fetchAllThings}
+                                   getPlaceholder={this.getPlaceholder}
                                    invalidationStatus={invalidationStatus}>
                     {this.props.children}
                 </PreviewsContainer>

@@ -81,6 +81,25 @@ class FullItem extends  Component {
             null
     }
 
+    getComments() {
+        const {messages, sheet: {classes}} = this.props
+
+        if (!messages || !messages.length) {
+            return (
+                <Flexbox name="full-item-body-container" grow={1} container="column" justifyContent="center" alignItems="center"
+                         className={classes.content}>
+                    <span className={classes.placeholder}>There are no messages here yet.</span>
+                </Flexbox>
+            )
+        }
+
+        return (
+            <Flexbox name="full-item-body-container" grow={1} container="column" className={classes.content}>
+                <CommentList comments={messages} />
+            </Flexbox>
+        )
+    }
+
     getBox() {
         return getChildOfType(this.props.children, FullItemBox)
     }
@@ -109,11 +128,12 @@ class FullItem extends  Component {
     }
 
     renderContent() {
-        const {messages, sheet: {classes}} = this.props
+        const {sheet: {classes}} = this.props
 
         const status = this.getStatus()
         const user = this.getUser()
         const actions = this.getActions()
+        const comments = this.getComments()
 
         const subjectClass = classNames(classes.subject, GeneralConstants.INSPECTLET_SENSITIVE_CLASS)
 
@@ -129,9 +149,7 @@ class FullItem extends  Component {
                         {actions}
                     </Flexbox>
                 </Flexbox>
-                <Flexbox name="full-item-body-container" grow={1} container="column" className={classes.content}>
-                    <CommentList comments={messages} />
-                </Flexbox>
+                {comments}
             </Flexbox>
         )
     }
@@ -215,13 +233,18 @@ const style = {
         height: 30,
         width: 30,
         backgroundColor: 'black',
-        borderRadius: 15,
+        borderRadius: 15
     },
     closeIcon: {
         height: 12,
         width: 12,
         marginTop: 9,
         marginLeft: 9
+    },
+    placeholder: {
+        fontSize: '1.286em',
+        letterSpacing: '0.01em',
+        color: styleVars.primaryColor
     }
 }
 
