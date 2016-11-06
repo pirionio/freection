@@ -4,8 +4,6 @@ import {head} from 'lodash'
 
 import {SlackTeam, User} from '../shared/models'
 import slackConfig from '../shared/config/slack'
-import UserTypes from '../../common/enums/user-types'
-import * as SlackThingService from '../shared/application/slack-thing-service'
 import * as ThingService from '../shared/application/thing-service'
 import {post} from '../../app/util/resource-util'
 import logger from '../shared/utils/logger'
@@ -73,23 +71,15 @@ router.post('/thing', async function(request, response) {
                 subject = text.substring(mentioned[0].length)
             }
 
-            const toUserAddress = await getSlackUserFromMention(team, mentioned[0])
+            const toUserEmail = await getEmailFromMention(team, mentioned[0])
 
-            if (!toUserAddress) {
+            if (!toUserEmail) {
                 delayRespondWith(responseUrl, 'The mentioned user doesn\'t exist in slack and therefore thing was not created on freection')
                 return
             }
 
-            const toUser = await getUserBySlackId(toUserAddress.id)
-
-            if (toUser) {
-                await ThingService.newThing(creator, toUser.email, subject, '')
-                delayRespondWith(responseUrl, 'New thing created on freection')
-            } else {
-                // Creating slack thing as peer is not on freection
-                await SlackThingService.newThing(creator, toUserAddress, subject)
-                delayRespondWith(responseUrl, 'New thing created on freection')
-            }
+            await ThingService.newThing(creator, toUserEmail, subject, '')
+            delayRespondWith(responseUrl, 'New thing created on freection')
 
         } else {
             response.sendStatus(500)
@@ -158,7 +148,7 @@ async function getTeam(teamId) {
     }
 }
 
-async function getSlackUserFromMention(team, mention) {
+async function getEmailFromMention(team, mention) {
 
     try {
         const username = mention.substring(1)
@@ -170,11 +160,7 @@ async function getSlackUserFromMention(team, mention) {
         if (!toUser)
             return null
 
-        return {
-            id: toUser.id,
-            type: UserTypes.SLACK.key,
-            displayName: toUser.name
-        }
+        return `"${toUser.profile.real_name}" <${toUser.profile.email}>`
     } catch(error) {
         logger.error('Slack - error while trying to get slack user from mention', error)
         throw error
