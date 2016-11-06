@@ -15,14 +15,14 @@ export async function newThing(creator, to, subject) {
     const thing = await saveNewThing(creatorAddresss, to, subject)
     thing.events.push(EventCreator.createCreated(creatorAddresss, thing, []))
 
-    await ThingDomain.updateThing(thing)
+    return await ThingDomain.updateThing(thing)
 }
 
 export async function close(user, thingId) {
     const creator = userToAddress(user)
 
     try {
-        const thing = await ThingDomain.getThing(thingId)
+        const thing = await ThingDomain.getFullThing(thingId)
 
         // Removing the user from the doers and follow upers
         remove(thing.followUpers, followUperId => followUperId === user.id)
@@ -31,7 +31,7 @@ export async function close(user, thingId) {
         thing.events.push(EventCreator.createClosed(creator, thing, []))
 
         // saving the thing
-        await ThingDomain.updateThing(thing)
+        return await ThingDomain.updateThing(thing)
     } catch(error) {
         logger.error(`error while closing slack-thing ${thingId} by user ${user.email}:`, error)
         throw error
