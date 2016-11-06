@@ -65,8 +65,8 @@ class NavigationMenu extends Component {
 
         const links = [
             {
-                pathname: '/whatsnew',
-                title: 'What\'s New',
+                pathname: '/notifications',
+                title: 'Notifications',
                 count: this.getWhatsNewCount()
             },
             {

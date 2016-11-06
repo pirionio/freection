@@ -14,10 +14,10 @@ class WhatsNew extends Component {
         // Don't show the menu in demos for now - we to keep emails out of focus.
         /*const menu = !config.isDemo ?
             <Flexbox name="whats-new-menu" shrink={0} alignItems="flex-start" className={classes.menu}>
-                <Link to="/whatsnew/things" className={classes.link} activeClassName={classes.activeLink}>
+                <Link to="/notifications/things" className={classes.link} activeClassName={classes.activeLink}>
                     Things
                 </Link>
-                <Link to="/whatsnew/emails" className={classes.link} activeClassName={classes.activeLink}>
+                <Link to="/notifications/emails" className={classes.link} activeClassName={classes.activeLink}>
                     Emails
                 </Link>
             </Flexbox> :

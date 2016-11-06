@@ -1,9 +1,8 @@
 import React, {Component, PropTypes} from 'react'
-import {Router, Route, IndexRoute, IndexRedirect} from 'react-router'
+import {Router, Route, IndexRoute, IndexRedirect, Redirect} from 'react-router'
 
 import App from './components/App/App'
 import MainApp from './components/MainApp/MainApp'
-import WhatsNew from './components/WhatsNew/WhatsNew'
 import UnreadNotifications from './components/WhatsNew/UnreadNotifications'
 import ToDo from './components/ToDo/ToDo'
 import FollowUp from './components/FollowUp/FollowUp'
@@ -12,7 +11,6 @@ import Integrations from './components/Integrations/Integrations'
 import Github from './components/Github/Github'
 import Slack from './components/Slack/Slack'
 import FullThing from './components/Thing/FullThing'
-import Board from './components/Board/Board'
 
 // import UnreadEmails from './components/Emails/UnreadEmails'
 // import FullEmail from './components/Emails/FullEmail'
@@ -20,17 +18,9 @@ import Board from './components/Board/Board'
 const routes = (
     <Route path="/" component={App}>
         <Route component={MainApp}>
-            <IndexRedirect to="whatsnew" />
-            <Route path="whatsnew" component={WhatsNew}>
-                <IndexRedirect to="things" />
-                <Route path="things" component={UnreadNotifications}>
-                    <Route path=":thingId" component={FullThing} />
-                </Route>
-                {/*
-                    <Route path="emails" component={UnreadEmails}>
-                        <Route path=":emailThreadId" component={FullEmail}/>
-                    </Route>
-                */}
+            <IndexRedirect to="notifications" />
+            <Route path="notifications" component={UnreadNotifications}>
+                <Route path=":thingId" component={FullThing} />
             </Route>
             <Route path="todo" component={ToDo}>
                 <Route path=":thingId" component={FullThing} />
@@ -46,9 +36,7 @@ const routes = (
                 <Route path="github" component={Github} />
                 <Route path="slack" component={Slack} />
             </Route>
-            <Route path="boards/demo-board1" component={Board} />
-            <Route path="boards/demo-board2" component={Board} />
-            <Route path="boards/demo-board3" component={Board} />
+            <Redirect from="*" to="/notifications" />
         </Route>
     </Route>
 )
