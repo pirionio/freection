@@ -11,19 +11,26 @@ import thingReducer from './thing-reducer'
 import {getThingAllowedCommands} from '../services/thing-service.js'
 import immutable from '../util/immutable'
 
-const getCommands = thing => getThingAllowedCommands(thing, [
-    ThingCommandActionTypes.DO_THING,
-    ThingCommandActionTypes.MARK_AS_DONE,
-    ThingCommandActionTypes.DISMISS,
-    ThingCommandActionTypes.SEND_BACK,
-    ThingCommandActionTypes.CLOSE,
-    ThingCommandActionTypes.CANCEL,
-    ThingCommandActionTypes.FOLLOW_UP,
-    ThingCommandActionTypes.UNFOLLOW,
-    ThingCommandActionTypes.CLOSED_UNFOLLOW,
-    ThingCommandActionTypes.MUTE,
-    ThingCommandActionTypes.UNMUTE
-])
+const getCommands = thing => {
+    const commands = getThingAllowedCommands(thing, [
+        ThingCommandActionTypes.DO_THING,
+        ThingCommandActionTypes.MARK_AS_DONE,
+        ThingCommandActionTypes.DISMISS,
+        ThingCommandActionTypes.SEND_BACK,
+        ThingCommandActionTypes.CLOSE,
+        ThingCommandActionTypes.CANCEL,
+        ThingCommandActionTypes.FOLLOW_UP,
+        ThingCommandActionTypes.UNFOLLOW,
+        ThingCommandActionTypes.CLOSED_UNFOLLOW,
+        ThingCommandActionTypes.MUTE,
+        ThingCommandActionTypes.UNMUTE
+    ])
+
+    // For thing page we don't require text for the moment, this is a hack to set all requireText to false
+    return commands.map(command => {
+        return Object.assign({}, command, { requireText: false })
+    })
+}
 
 // TODO Problems with the ongoingAction mechanism:
 // 1) If navigating out of this state, the ongoingAction status is gone.
