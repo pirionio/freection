@@ -133,7 +133,7 @@ export function configure(app) {
     }
 
     function auditNewEvent(event) {
-        logger.info(`New change to audit: event ${event.eventType} on thing ${event.thingId}`)
+        logger.info(`New change to audit: event ${event.eventType} on thing ${event.thingId} by ${event.creator.displayName}`)
 
         Event.getFullEvent(event.id, true)
             .then(fullEvent => {
