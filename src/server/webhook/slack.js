@@ -78,7 +78,7 @@ router.post('/thing', async function(request, response) {
                 return
             }
 
-            await ThingService.newThing(creator, toUserEmail, subject, '')
+            await ThingService.newThing(creator, toUserEmail, subject, '', {fromSlack: true})
             delayRespondWith(responseUrl, 'New thing created on freection')
 
         } else {

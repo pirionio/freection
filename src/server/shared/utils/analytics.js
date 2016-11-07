@@ -29,7 +29,8 @@ export function thingCreated(thing) {
             type: thing.type,
             is_self: ThingHelper.isSelf(thing),
             to_type: thing.to.type,
-            to
+            to,
+            fromSlack: !!thing.payload.fromSlack
         })
     }
 

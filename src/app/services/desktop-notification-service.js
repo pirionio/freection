@@ -50,6 +50,10 @@ export function handleEvent(event) {
         if (event.eventType.key === EventTypes.CREATED.key && event.thing.type.key === EntityTypes.EMAIL_THING.key) {
             emailThingCreateNotification(event)
         }
+
+        if (event.eventType.key === EventTypes.CREATED.key && event.thing.payload.fromSlack) {
+            fromSlackCreateNotification(event)
+        }
     }
 }
 
@@ -68,6 +72,13 @@ function showNotification(id, title, body) {
         remove(notificationStore, id)
         notification.close()
     }, 5000)
+}
+
+function fromSlackCreateNotification(event) {
+    if (event.thing.isFollowUper)
+        showNotification(event.id, 'Thing from slack added to your followup list', event.thing.subject)
+    else if (event.thing.isDoer)
+        showNotification(event.id, 'Thing from slack added to your todo list list', event.thing.subject)
 }
 
 function emailThingCreateNotification(event) {

@@ -78,14 +78,14 @@ export function getThing(user, thingId) {
         })
 }
 
-export async function newThing(user, to, subject, body) {
+export async function newThing(user, to, subject, body, payload = {}) {
     const creator = userToAddress(user)
 
     try {
         const toAddress = await getToAddress(user, to)
         const mentionedUserIds = await getMentionsFromText(body)
 
-        const thing = await saveNewThing(body, subject, creator, toAddress, mentionedUserIds)
+        const thing = await saveNewThing(body, subject, creator, toAddress, mentionedUserIds, payload)
 
         thing.events.push(
             EventCreator.createCreated(creator, thing, getShowNewList(user, thing, EventTypes.CREATED.key),
@@ -604,7 +604,7 @@ async function sendEmailForEvent(user, thing, event) {
     }
 }
 
-function saveNewThing(body, subject, creator, to, mentionedUserIds) {
+function saveNewThing(body, subject, creator, to, mentionedUserIds, payload) {
     // check if thing is self thing (assigned to creator)
     const isSelfThing = creator.id === to.id
     const status = isSelfThing ? ThingStatus.INPROGRESS.key : ThingStatus.NEW.key
@@ -628,9 +628,9 @@ function saveNewThing(body, subject, creator, to, mentionedUserIds) {
         subscribers,
         all,
         type: EntityTypes.THING.key,
-        payload: omitBy({
+        payload: Object.assign({}, payload, {
             status
-        }, isNil),
+        }),
         events: []
     })
 }
