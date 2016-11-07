@@ -189,7 +189,7 @@ export default (state = initialState, action) => {
             return notificationDeleted(state, action)
         default:
             if (isOfTypeEvent(action.type))
-                updateThing(state, action)
+                return updateThing(state, action)
 
             return state
     }
