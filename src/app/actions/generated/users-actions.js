@@ -8,3 +8,10 @@ export function setState(users) {
         users
     }
 }
+
+export function addUser(user) {
+    return {
+        type: UsersActionsTypes.ADD_USER,
+        user
+    }
+}

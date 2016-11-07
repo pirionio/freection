@@ -4,6 +4,7 @@ import * as ToDoActions from '../actions/to-do-actions'
 import * as  FollowUpActions from '../actions/follow-up-actions'
 import * as EventActions from '../actions/event-actions'
 import * as SystemEventActions from '../actions/system-event-actions.js'
+import * as UsersActions from '../actions/users-actions.js'
 import EventTypes from '../../common/enums/event-types'
 import * as DesktopNotificationService from './desktop-notification-service.js'
 
@@ -65,6 +66,10 @@ export function listenToUpdates(email, pushToken, dispatch) {
 
     socket.on('comment-read-by', event => {
         dispatch(EventActions.commentReadBy(event))
+    })
+
+    socket.on('new-user', user => {
+        dispatch(UsersActions.addUser(user))
     })
 
     socket.on('email-notification', () => {

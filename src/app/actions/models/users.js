@@ -4,5 +4,10 @@ module.exports = {
         {
             name: 'set state',
             params: ['users']
-        }]
+        },
+        {
+            name: 'add user',
+            params: ['user']
+        },
+    ]
 }

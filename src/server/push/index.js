@@ -1,11 +1,12 @@
 import SocketIO from 'socket.io'
 import socketioJwt from 'socketio-jwt'
-import {union, difference} from'lodash'
+import {union, difference, chain} from'lodash'
 
 import tokenConfig from '../shared/config/token'
-import {Event, MailNotification} from '../shared/models'
+import {Event, MailNotification, User} from '../shared/models'
 import logger from '../shared/utils/logger'
 import {eventToDto} from '../shared/application/transformers'
+import {userToAddress} from '../shared/application/address-creator.js'
 import SharedConstants from '../../common/shared-constants'
 import {crash} from '../shared/utils/graceful-shutdown'
 
@@ -15,6 +16,7 @@ export function configure(app) {
     acceptConnections()
     listenToEventChanges()
     listenToMailNotifications()
+    listenToUsers()
 
     function acceptConnections() {
         io.on('connection', socketioJwt.authorize({
@@ -45,6 +47,15 @@ export function configure(app) {
             })
     }
 
+    function listenToUsers() {
+        User.changes()
+            .then(auditUsers)
+            .catch(error => {
+                logger.error('Error reading user changes from the DB:', error)
+                crash()
+            })
+    }
+
     function auditChanges(changes) {
         changes.each((error, doc) => {
             if (error) {
@@ -66,6 +77,18 @@ export function configure(app) {
                 if (doc.type === 'NEW' || doc.type === 'UPDATE')
                     io.to(doc.id).emit('email-notification')
             }
+        })
+    }
+
+    function auditUsers(changes) {
+        changes.each((error, doc) => {
+            const oldUser = doc.getOldValue()
+
+            if (error) {
+                logger.error('Error reading user changes from the DB:', error)
+                crash()
+            } else if (!oldUser)
+                auditNewUser(doc)
         })
     }
 
@@ -131,5 +154,16 @@ export function configure(app) {
             const dto = eventToDto(event, user, {includeFullThing: true})
             io.to(userId).emit('new-event', dto)
         })
+    }
+
+    async function auditNewUser(user) {
+        const userAddress = userToAddress(user)
+
+        const users = chain(await User.getOrganizationUsers(user.organization))
+            .map(u => u.id)
+            .reject(userId => user.id === userId)
+            .value()
+
+        users.forEach(userId => io.to(userId).emit('new-user', userAddress))
     }
 }
