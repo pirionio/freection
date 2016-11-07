@@ -7,6 +7,14 @@ export function initialize(user) {
     if (typeof __insp !== 'undefined' && __insp)
         __insp.push(['identify', user.email])
 
+    if (window.FS) {
+        window.FS.identify(user.id, {
+            displayName: `${user.firstName} ${user.lastName}`,
+            email: user.email,
+            organization_str: user.organization
+        })
+    }
+
     if (window.Intercom) {
         window.Intercom('boot', {
             app_id: 's9inbvkn',
@@ -28,6 +36,9 @@ export function clean() {
     if (window.Intercom) {
         window.Intercom('shutdown')
     }
+
+    if (window.FS)
+        window.FS.clearUserCookie(true)
 }
 
 export function newThing() {

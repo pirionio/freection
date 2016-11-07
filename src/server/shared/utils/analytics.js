@@ -6,7 +6,7 @@ import userTypes from '../../../common/enums/user-types.js'
 import * as ThingHelper from '../../../common/helpers/thing-helper'
 import logger from './logger'
 
-const client = isAnalyticsEnabled ? new Client({token: intercomToken}) : null
+const client = isAnalyticsEnabled && intercomToken ? new Client({token: intercomToken}) : null
 
 function trackIntercomEvent(name, userId, metadata = {}) {
     if (client) {
