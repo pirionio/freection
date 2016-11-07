@@ -2,6 +2,7 @@ import remove from 'lodash/remove'
 
 import EventTypes from '../../common/enums/event-types'
 import Logo from '../static/logo-black.png'
+import EntityTypes from '../../common/enums/entity-types.js'
 
 const isNotificationEnabled = 'Notification' in window
 
@@ -16,32 +17,39 @@ export function initialize() {
 }
 
 export function handleEvent(event) {
-    switch (event.eventType.key) {
-        case EventTypes.CREATED.key:
-            createNotification(event)
-            break
-        case EventTypes.DONE.key:
-            doneNotification(event)
-            break
-        case EventTypes.DISMISSED.key:
-            dismissNotification(event)
-            break
-        case EventTypes.CLOSED.key:
-            closedNotification(event)
-            break
-        case EventTypes.PING.key:
-            pingNotification(event)
-            break
-        case EventTypes.PONG.key:
-            pongNotification(event)
-            break
-        case EventTypes.SENT_BACK.key:
-            sendBackNotification(event)
-            break
-        case EventTypes.COMMENT.key:
-            if (event.payload.isMentioned)
-                mentionedNotification(event)
-            break
+
+    if (event.showNew) {
+        switch (event.eventType.key) {
+            case EventTypes.CREATED.key:
+                createNotification(event)
+                break
+            case EventTypes.DONE.key:
+                doneNotification(event)
+                break
+            case EventTypes.DISMISSED.key:
+                dismissNotification(event)
+                break
+            case EventTypes.CLOSED.key:
+                closedNotification(event)
+                break
+            case EventTypes.PING.key:
+                pingNotification(event)
+                break
+            case EventTypes.PONG.key:
+                pongNotification(event)
+                break
+            case EventTypes.SENT_BACK.key:
+                sendBackNotification(event)
+                break
+            case EventTypes.COMMENT.key:
+                if (event.payload.isMentioned)
+                    mentionedNotification(event)
+                break
+        }
+    } else {
+        if (event.eventType.key === EventTypes.CREATED.key && event.thing.type.key === EntityTypes.EMAIL_THING.key) {
+            emailThingCreateNotification(event)
+        }
     }
 }
 
@@ -60,6 +68,15 @@ function showNotification(id, title, body) {
         remove(notificationStore, id)
         notification.close()
     }, 5000)
+}
+
+function emailThingCreateNotification(event) {
+    const recipientNames = event.thing.payload.recipients
+        .filter(recipient => recipient.emailAddress !== event.creator.payload.email)
+        .map(recipient => recipient.name)
+        .join(', ')
+
+    showNotification(event.id, `Email from ${recipientNames} added to your todo list`, event.thing.subject)
 }
 
 function createNotification(event) {

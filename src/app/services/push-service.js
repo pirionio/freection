@@ -12,10 +12,10 @@ export function listenToUpdates(email, pushToken, dispatch) {
     const socket = createSocket(email, pushToken)
     
     socket.on('new-event', event => {
-        if (event.showNew) {
+        DesktopNotificationService.handleEvent(event)
+
+        if (event.showNew)
             dispatch(WhatsNewActions.notificationReceived(event))
-            DesktopNotificationService.handleEvent(event)
-        }
 
         if (event.eventType.key === EventTypes.COMMENT.key)
             dispatch(EventActions.commentCreated(event))
