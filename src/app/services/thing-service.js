@@ -174,5 +174,8 @@ function getAllAllowedCommandsArray(thing) {
 }
 
 function requireText(command) {
-    return { commandType: command, requireText: true}
+    // We temporarly decide to stop require text for commands
+    //return { commandType: command, requireText: true}
+
+    return { commandType: command, requireText: false}
 }
