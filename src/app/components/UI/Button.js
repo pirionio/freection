@@ -59,11 +59,9 @@ const style = {
         whiteSpace: 'pre-line',
         lineHeight: 1.5,
         padding: [5, 10],
-        opacity: '0.5 !important',
         backgroundColor: `${styleVars.primaryColor} !important`,
         '& :after': {
-            borderTopColor: `${styleVars.primaryColor} !important`,
-            opacity: '0.5 !important'
+            borderTopColor: `${styleVars.primaryColor} !important`
         }
     }
 }

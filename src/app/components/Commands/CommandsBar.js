@@ -63,7 +63,9 @@ class CommandsBar extends Component {
                     label: 'Dismiss',
                     commandFunc: ThingCommandActions.dismiss,
                     item: thing,
-                    tooltipText: `Let ${thing.creator.payload.firstName} know you won't do it, and remove the thing from your To Do list`
+                    tooltipText: thing.isTo && thing.isCreator ?
+                        `Mark the thing as dismissed and remove it from your To Do list` :
+                        `Let ${thing.creator.payload.firstName} know you won't do it, and remove the thing from your To Do list`
                 }
             case ThingCommandActionTypes.CLOSE:
                 return {
@@ -97,7 +99,7 @@ class CommandsBar extends Component {
                     label: 'Ping',
                     commandFunc: ThingCommandActions.ping,
                     item: thing,
-                    tooltipText: `Send a quick notification to the thing's doers to check up on it`
+                    tooltipText: `Send a quick notification to ${thing.to.payload.firstName} to check up on it`
                 }
             case ThingCommandActionTypes.PONG:
                 return {
