@@ -31,10 +31,10 @@ class FollowUpPreviewItem extends Component {
 
         switch(thing.payload.status) {
             case ThingStatus.INPROGRESS.key:
-                return <span>It's in <strong>{thing.to.displayName}</strong> todo list</span>
+                return <span>In <strong>{thing.to.displayName}</strong> To Do list</span>
             case ThingStatus.NEW.key:
             case ThingStatus.REOPENED.key:
-                return <span>It's still in <strong>{thing.to.displayName}</strong> what's new</span>
+                return <span>Still in <strong>{thing.to.displayName}</strong> notifications list</span>
             case ThingStatus.DONE.key:
                 return <span><strong>{thing.to.displayName}</strong> completed the thing</span>
             case ThingStatus.DISMISS.key:
