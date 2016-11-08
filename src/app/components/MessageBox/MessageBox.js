@@ -10,6 +10,7 @@ import MessageBody from './MessageBody'
 import To from './To'
 import styleVars from '../style-vars'
 import * as MessageBoxActions from '../../actions/message-box-actions'
+import Subject from './Subject'
 
 class MessageBox extends Component {
     constructor(props) {
@@ -55,11 +56,13 @@ class MessageBox extends Component {
 
         return (
             <Flexbox name="message-subject" className={classes.messageSubject}>
-                <Field model="messageBox.message.subject">
-                    <input type="text" className={classes.textField} tabIndex="1" placeholder="Subject"
-                           ref={ref => this.messageSubject = ref}
-                           onFocus={this.focusOnSubject} />
-                </Field>
+                <Subject model="messageBox.message.subject"
+                         tabIndex="1"
+                         placeholder="Subject"
+                         className={classes.textField}
+                         inputRef={ref => this.messageSubject = ref}
+                         onFocus={this.focusOnSubject}
+                         onCommandEnter={this.props.onCommandEnter} />
             </Flexbox>
         )
     }
@@ -69,7 +72,11 @@ class MessageBox extends Component {
 
         const bodyClass = (!this.hasSubject() && !this.hasTo()) ? classes.bodyOnly : null
         return (
-            <MessageBody className={bodyClass} onFocus={this.focusOnBody} tabIndex="2" editorRef={ref => this.messageBody = ref} />
+            <MessageBody className={bodyClass}
+                         onFocus={this.focusOnBody}
+                         onCommandEnter={this.props.onCommandEnter}
+                         tabIndex="2"
+                         editorRef={ref => this.messageBody = ref} />
         )
     }
 
@@ -85,6 +92,7 @@ class MessageBox extends Component {
                    tabIndex={3}
                    inputRef={ref => this.messageTo = ref}
                    onFocus={this.focusOnTo}
+                   onCommandEnter={this.props.onCommandEnter}
                    placeholder="To (email, name, or 'me' to send to yourself)" />
     }
 
@@ -162,7 +170,8 @@ const style = {
 MessageBox.propTypes = {
     messageBox: PropTypes.object.isRequired,
     subject: PropTypes.string,
-    to: PropTypes.string
+    to: PropTypes.string,
+    onCommandEnter: PropTypes.func
 }
 
 function mapStateToProps(state) {

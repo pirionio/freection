@@ -19,6 +19,7 @@ import * as MessageBoxActions from '../../actions/message-box-actions'
 import MessageTypes from '../../../common/enums/message-types'
 import Close from '../../static/close-message-box.svg'
 import Collapse from '../../static/collapse-message-box.svg'
+import Subject from './Subject'
 
 class ExpandedMessageBox extends Component {
     constructor(props) {
@@ -75,12 +76,12 @@ class ExpandedMessageBox extends Component {
                     Subject:
                 </Flexbox>
                 <Flexbox grow={1} shrink={1} className={classes.inputGroup}>
-                    <Field model="messageBox.message.subject">
-                        <input type="text"
-                               tabIndex="1"
-                               className={classes.textField}
-                               ref={ref => this.messageSubject = ref} />
-                    </Field>
+                    <Subject model="messageBox.message.subject"
+                             tabIndex="1"
+                             className={classes.textField}
+                             inputRef={ref => this.messageSubject = ref}
+                             onCommandEnter={this.onCommandEnter}
+                    />
                 </Flexbox>
             </Flexbox>
         )
@@ -103,7 +104,8 @@ class ExpandedMessageBox extends Component {
                     inputClassName={classes.textField}
                     tabIndex={3}
                     placeholder="Enter email, name, or 'me' to send to yourself"
-                    inputRef={ref => this.messageTo = ref} />
+                    inputRef={ref => this.messageTo = ref}
+                    onCommandEnter={this.onCommandEnter} />
             </Flexbox>)
     }
 
@@ -113,7 +115,10 @@ class ExpandedMessageBox extends Component {
         const bodyClass = this.hasSubject() && this.hasTo() ? classes.bodyWithSubject : classes.bodyAlone
 
         return (
-            <MessageBody className={bodyClass} tabIndex="2" ref={ref => this.messageBody = ref} />
+            <MessageBody className={bodyClass}
+                         tabIndex="2"
+                         ref={ref => this.messageBody = ref}
+                         onCommandEnter={this.onCommandEnter} />
         )
     }
 
@@ -168,6 +173,11 @@ class ExpandedMessageBox extends Component {
         }
 
         dispatch(MessageBoxActions.messageSent(activeMessageBox.id, promise))
+    }
+
+    onCommandEnter() {
+        if (!this.isSendDisabled())
+            this.send()
     }
 
     render() {

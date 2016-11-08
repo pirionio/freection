@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import useSheet from 'react-jss'
 import Editor from 'draft-js-plugins-editor'
 import createMentionPlugin, {defaultSuggestionsFilter} from 'draft-js-mention-plugin'
-import {EditorState, ContentState, convertToRaw} from 'draft-js'
+import {EditorState, ContentState, convertToRaw, getDefaultKeyBinding} from 'draft-js'
 import 'draft-js-mention-plugin/lib/plugin.css'
 import 'draft-js/dist/Draft.css'
 import {fromJS} from 'immutable'
@@ -16,6 +16,7 @@ import trimEnd from 'lodash/trimEnd'
 import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
 import {GeneralConstants} from '../../constants'
+import {isCommandEnter} from '../../helpers/key-binding-helper.js'
 
 class MessageBody extends Component {
     constructor(props) {
@@ -127,6 +128,25 @@ class MessageBody extends Component {
             editorRef(ref)
     }
 
+    keyBinding(event) {
+        if (isCommandEnter(event)) {
+            return 'commandEnter'
+        }
+
+        return getDefaultKeyBinding(event)
+    }
+
+    handleKeyCommand(command) {
+        const {onCommandEnter} = this.props
+
+        if (command === 'commandEnter' && onCommandEnter) {
+            setTimeout(() => onCommandEnter())
+            return 'handled'
+        }
+
+        return 'not-handled'
+    }
+
     render() {
         const {sheet: {classes}, onFocus, tabIndex, className} = this.props
         const {MentionSuggestions} = this._mentionPlugin
@@ -144,6 +164,8 @@ class MessageBody extends Component {
                         ref={this.setEditorRef}
                         onFocus={onFocus}
                         tabIndex={tabIndex}
+                        keyBindingFn={this.keyBinding}
+                        handleKeyCommand={this.handleKeyCommand}
                         placeholder="Write your message here" />
                     <MentionSuggestions
                         onSearchChange={this.onSearchChange}
@@ -234,6 +256,7 @@ MessageBody.propTypes = {
     messageBox: PropTypes.object.isRequired,
     suggestions: PropTypes.object.isRequired,
     onFocus: PropTypes.func,
+    onCommandEnter: PropTypes.func,
     tabIndex: PropTypes.string,
     className: PropTypes.string,
     editorRef: PropTypes.func

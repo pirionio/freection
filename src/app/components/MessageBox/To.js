@@ -6,12 +6,13 @@ import useSheet from 'react-jss'
 import omit from 'lodash/omit'
 import get from 'lodash/get'
 import AddressParser from 'email-addresses'
+import Autobind from 'class-autobind'
 
 import Flexbox from '../UI/Flexbox.js'
 import * as ToActions from '../../actions/to-actions.js'
 import styleVars from '../style-vars'
 import Close from '../../static/close-selected-box.svg'
-import Autobind from 'class-autobind'
+import {isCommandEnter} from '../../helpers/key-binding-helper.js'
 
 class To extends Component {
 
@@ -50,6 +51,7 @@ class To extends Component {
         const {model, dispatch} = this.props
 
         dispatch(actions.change(`${model}.selected`, true))
+        setTimeout(() => this.focus())
     }
 
     removeSelected() {
@@ -69,21 +71,28 @@ class To extends Component {
     }
 
     onSelectedBoxKeyDown(event) {
+        const {onCommandEnter} = this.props
+
         if (event.key === 'Delete' || event.key === 'Backspace') {
             this.removeSelected()
         }
+
+        if (isCommandEnter(event) && onCommandEnter)
+            setTimeout(() => onCommandEnter())
     }
 
     onInputKeyDown(event) {
-        const {value} = this.props
+        const {value, onCommandEnter} = this.props
 
         if (event.key === 'Enter') {
             const address = AddressParser.parseOneAddress(value)
 
-            if (address) {
+            if (address)
                 this.onSuggestionSelected()
-            }
         }
+
+        if (isCommandEnter(event) && onCommandEnter)
+            setTimeout(() => onCommandEnter())
     }
 
     onInputBlur() {
@@ -307,7 +316,8 @@ To.propTypes = {
     tabIndex: PropTypes.number,
     onFocus: PropTypes.func,
     inputRef: PropTypes.func,
-    placeholder: PropTypes.string
+    placeholder: PropTypes.string,
+    onCommandEnter: PropTypes.func
 }
 
 To.defaultProps = {

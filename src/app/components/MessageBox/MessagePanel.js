@@ -85,11 +85,19 @@ class MessagePanel extends Component {
         return isEmpty(messageBox.message.body)
     }
 
+    onCommandEnter() {
+        if (!this.isSendDisabled())
+            this.send()
+    }
+
     getMessageBox() {
         const {activeMessageBox} = this.props
         return this.isCollapsed() ?
             <CollapsedMessageBox /> :
-            <MessageBox to={activeMessageBox.context ? null : ''} subject={activeMessageBox.context ? null : ''} />
+            <MessageBox to={activeMessageBox.context ? null : ''}
+                        subject={activeMessageBox.context ? null : ''}
+                        onCommandEnter={this.onCommandEnter}
+            />
     }
 
     getSendButton() {
