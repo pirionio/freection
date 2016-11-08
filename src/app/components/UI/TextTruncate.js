@@ -3,11 +3,9 @@ import ReactDOM from 'react-dom'
 import useSheet from 'react-jss'
 import classAutobind from 'class-autobind'
 import classNames from 'classnames'
-import ReactTooltip from 'react-tooltip'
 import random from 'lodash/random'
 
-import styleVars from '../style-vars'
-import {GeneralConstants} from '../../constants'
+import Tooltip from './Tooltip'
 
 class TextTruncate extends Component {
     constructor(props) {
@@ -49,9 +47,9 @@ class TextTruncate extends Component {
                 <span ref={ref => this.text = ref}>
                     {children}
                 </span>
-                <ReactTooltip id={tooltipId} effect="solid" delayShow={GeneralConstants.TOOLTIP_DELAY} multiline={true} class={classes.tooltip}>
+                <Tooltip id={tooltipId}>
                     {children}
-                </ReactTooltip>
+                </Tooltip>
             </div>
         )
     }
@@ -79,20 +77,6 @@ const style = {
         whiteSpace: 'nowrap',
         overflow: 'hidden',
         textOverflow: 'ellipsis'
-    },
-    tooltipWrapper: {
-        display: 'inline-block'
-    },
-    tooltip: {
-        display: 'block',
-        maxWidth: 500,
-        maxHeight: 150,
-        whiteSpace: 'pre-line',
-        lineHeight: 2,
-        backgroundColor: `${styleVars.primaryColor} !important`,
-        '& :after': {
-            borderTopColor: `${styleVars.primaryColor} !important`
-        }
     }
 }
 

@@ -31,7 +31,8 @@ class CommandsBar extends Component {
                         commandFunc={props.commandFunc}
                         requireTextFunc={requireTextFunc}
                         requireText={requireText}
-                        disabled={disabled} />
+                        disabled={disabled}
+                        tooltipText={props.tooltipText} />
     }
 
     getComponentProps(commandType) {
@@ -43,112 +44,132 @@ class CommandsBar extends Component {
                     key: 'command-do',
                     label: 'Do',
                     commandFunc: ThingCommandActions.doThing,
-                    item: thing
+                    item: thing,
+                    tooltipText: `Move the thing to your To Do list`
                 }
             case ThingCommandActionTypes.MARK_AS_DONE:
                 return {
                     key: 'command-done',
                     label: 'Done',
                     commandFunc: ThingCommandActions.markAsDone,
-                    item: thing
+                    item: thing,
+                    tooltipText: thing.isTo && thing.isCreator ?
+                        `Mark the thing as done and remove it from your To Do list` :
+                        `Let ${thing.creator.payload.firstName} know you're done, and remove the thing from your To Do list`
                 }
             case ThingCommandActionTypes.DISMISS:
                 return {
                     key: 'command-dismiss',
                     label: 'Dismiss',
                     commandFunc: ThingCommandActions.dismiss,
-                    item: thing
+                    item: thing,
+                    tooltipText: `Let ${thing.creator.payload.firstName} know you won't do it, and remove the thing from your To Do list`
                 }
             case ThingCommandActionTypes.CLOSE:
                 return {
                     key: 'command-close',
                     label: 'Close',
                     commandFunc: ThingCommandActions.close,
-                    item: thing
+                    item: thing,
+                    tooltipText: thing.isDoer ?
+                        `Close the thing and remove it from your To Do list` :
+                        `Remove the thing from your Follow Up list`
                 }
             case ThingCommandActionTypes.CANCEL:
                 return {
                     key: 'command-cancel',
                     label: 'Close',
                     commandFunc: ThingCommandActions.cancel,
-                    item: thing
+                    item: thing,
+                    tooltipText: `Let the thing's doers know you close the thing, and remove it from your Follow Up list`
                 }
             case ThingCommandActionTypes.SEND_BACK:
                 return {
                     key: 'command-send-back',
                     label: 'Send Back',
                     commandFunc: ThingCommandActions.sendBack,
-                    item: thing
+                    item: thing,
+                    tooltipText: `Let the thing's doers know you want them to keep working on it`
                 }
             case ThingCommandActionTypes.PING:
                 return {
                     key: 'command-ping',
                     label: 'Ping',
                     commandFunc: ThingCommandActions.ping,
-                    item: thing
+                    item: thing,
+                    tooltipText: `Send a quick notification to the thing's doers to check up on it`
                 }
             case ThingCommandActionTypes.PONG:
                 return {
                     key: 'command-pong',
                     label: 'Pong',
                     commandFunc: ThingCommandActions.pong,
-                    item: thing
+                    item: thing,
+                    tooltipText: `Send a quick reply to the ${thing.creator.payload.firstName}'s ping`
                 }
             case ThingCommandActionTypes.DISCARD_COMMENTS:
                 return {
                     key: 'command-discard-comments',
                     label: 'Discard',
                     commandFunc: ThingCommandActions.discardComments,
-                    item: notification
+                    item: notification,
+                    tooltipText: `Remove notification from your Notifications list`
                 }
             case ThingCommandActionTypes.DISCARD_SINGLE_NOTIFICATION:
                 return {
                     key: 'command-discard',
                     label: 'Discard',
                     commandFunc: ThingCommandActions.discardSingleNotification,
-                    item: notification
+                    item: notification,
+                    tooltipText: `Remove notification from your Notifications list`
                 }
             case ThingCommandActionTypes.UNMUTE:
                 return {
                     key: 'command-unmute',
                     label: 'Unmute',
                     commandFunc: ThingCommandActions.unmute,
-                    item: thing
+                    item: thing,
+                    tooltipText: `Keep getting notifications for this thing`
                 }
             case ThingCommandActionTypes.MUTE:
                 return {
                     key: 'command-mute',
                     label: 'Mute',
                     commandFunc: ThingCommandActions.mute,
-                    item: thing
+                    item: thing,
+                    tooltipText: `Stop getting notifications for this thing`
                 }
             case ThingCommandActionTypes.CLOSE_ACK:
                 return {
                     key: 'command-close-ack',
                     label: 'Close',
                     commandFunc: ThingCommandActions.closeAck,
-                    item: thing
+                    item: thing,
+                    tooltipText: `Remove the thing from your To Do list`
                 }
             case ThingCommandActionTypes.CLOSED_UNFOLLOW:
                 return {
                     key: 'command-closed-unfollow',
                     label: 'Close',
                     commandFunc: ThingCommandActions.closedUnfollow,
-                    item: thing
+                    item: thing,
+                    tooltipText: `Remove this thing from your Follow Up list`
                 }
             case ThingCommandActionTypes.FOLLOW_UP:
                 return {
                     key: 'command-followup',
                     label: 'Follow Up',
                     commandFunc: ThingCommandActions.followUp,
-                    item: thing
+                    item: thing,
+                    tooltipText: `Add this thing to your Follow Up list`
                 }
             case ThingCommandActionTypes.UNFOLLOW:
                 return {
                     key: 'command-unfollow',
                     label: 'Unfollow',
                     commandFunc: ThingCommandActions.unfollow,
-                    item: thing
+                    item: thing,
+                    tooltipText: `Remove this thing from your Follow Up list`
                 }
         }
     }

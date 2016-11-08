@@ -23,10 +23,10 @@ class Command extends Component {
     }
 
     render () {
-        const {label, disabled} = this.props
+        const {label, disabled, tooltipText} = this.props
 
         return (
-            <Button label={label} onClick={this.onClick} disabled={disabled} />
+            <Button label={label} onClick={this.onClick} disabled={disabled} tooltipText={tooltipText} />
         )
     }
 }
@@ -38,7 +38,8 @@ Command.propTypes = {
     commandFunc: PropTypes.func.isRequired,
     requireText: PropTypes.bool.isRequired,
     requireTextFunc: PropTypes.func,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
+    tooltipText: PropTypes.string
 }
 
 Command.defaultProps = {
