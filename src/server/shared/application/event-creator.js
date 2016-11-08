@@ -5,7 +5,7 @@ import * as analytics from '../utils/analytics.js'
 import ThingStatus from '../../../common/enums/thing-status.js'
 
 export function createCreated(creator, thing, showNewList, mentionedUserIds, body, emailId) {
-    analytics.thingCreated(thing)
+    analytics.thingCreated(thing, showNewList)
     analytics.mentioned(creator, thing, mentionedUserIds)
 
     return {
@@ -35,7 +35,7 @@ export function createAccepted(creator, thing, showNewList) {
 }
 
 export function createDismissed(creator, thing, showNewList, messageText) {
-    analytics.thingDismissed(creator, thing)
+    analytics.thingDismissed(creator, thing, showNewList)
 
     return {
         thingId: thing.id,
@@ -51,7 +51,7 @@ export function createDismissed(creator, thing, showNewList, messageText) {
 }
 
 export function createDone(creator, thing, showNewList, messageText) {
-    analytics.thingMarkedAsDone(creator, thing)
+    analytics.thingMarkedAsDone(creator, thing, showNewList)
 
     return {
         thingId: thing.id,
@@ -87,7 +87,7 @@ export function createComment(creator, createdAt, thing, showNewList, mentionedU
 }
 
 export function createClosedSync(creator, thing, showNewList, messageText) {
-    analytics.closed(creator, thing)
+    analytics.closed(creator, thing, showNewList)
     
     return {
         thingId: thing.id,
@@ -105,7 +105,7 @@ export function createClosedSync(creator, thing, showNewList, messageText) {
 export function createClosed(creator, thing, showNewList, messageText) {
 
     if ([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED].includes(thing.payload.status))
-        analytics.closed(creator, thing)
+        analytics.closed(creator, thing, showNewList)
 
     return {
         thingId: thing.id,
@@ -121,7 +121,7 @@ export function createClosed(creator, thing, showNewList, messageText) {
 }
 
 export function createPing(creator, thing, showNewList) {
-    analytics.pingCreated(creator, thing)
+    analytics.pingCreated(creator, thing, showNewList)
 
     return {
         thingId: thing.id,
@@ -136,7 +136,7 @@ export function createPing(creator, thing, showNewList) {
 }
 
 export function createPong(creator, thing, showNewList, messageText) {
-    analytics.pongCreated(creator, thing)
+    analytics.pongCreated(creator, thing, showNewList)
 
     return {
         thingId: thing.id,
@@ -152,7 +152,7 @@ export function createPong(creator, thing, showNewList, messageText) {
 }
 
 export function createSentBack(creator, thing, showNewList, messageText) {
-    analytics.sentBack(creator, thing)
+    analytics.sentBack(creator, thing, showNewList)
 
     return {
         thingId: thing.id,

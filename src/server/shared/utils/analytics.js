@@ -21,7 +21,7 @@ function trackIntercomEvent(name, userId, metadata = {}) {
     }
 }
 
-export function thingCreated(thing) {
+export function thingCreated(thing, showNewList) {
     if (thing.creator.type === userTypes.FREECTION.key) {
         const to = thing.to.payload && thing.to.payload.email ? thing.to.payload.email : thing.to.displayName
 
@@ -43,6 +43,8 @@ export function thingCreated(thing) {
             creator
         })
     }
+
+    notification_received(showNewList, 'thing_created')
 }
 
 export function commentCreated(user, thing, showNewList) {
@@ -60,6 +62,8 @@ export function commentCreated(user, thing, showNewList) {
             creator
         })
     })
+
+    notification_received(showNewList, 'comment_created')
 }
 
 
@@ -86,52 +90,65 @@ export function mentioned(user, thing, mentioned) {
 }
 
 
-export function thingDismissed(user, thing) {
+export function thingDismissed(user, thing, showNewList) {
     if (user.type === userTypes.FREECTION.key) {
         trackIntercomEvent('dismissed', user.id, {
             type: thing.type,
         })
     }
+
+    notification_received(showNewList, 'dismissed')
 }
 
-export function thingMarkedAsDone(user, thing) {
+export function thingMarkedAsDone(user, thing, showNewList) {
     if (user.type === userTypes.FREECTION.key) {
         trackIntercomEvent('marked_as_done', user.id, {
             type: thing.type,
         })
     }
+
+    notification_received(showNewList, 'marked_as_done')
 }
 
-export function closed(user, thing) {
+export function closed(user, thing, showNewList) {
     if (user.type === userTypes.FREECTION.key) {
         trackIntercomEvent('closed', user.id, {
             type: thing.type,
         })
     }
+
+    notification_received(showNewList, 'closed')
+
 }
 
-export function pingCreated(user, thing) {
+export function pingCreated(user, thing, showNewList) {
     if (user.type === userTypes.FREECTION.key) {
         trackIntercomEvent('created_ping', user.id, {
             type: thing.type,
         })
     }
+
+    notification_received(showNewList, 'pinged')
 }
 
-export function pongCreated(user, thing) {
+export function pongCreated(user, thing, showNewList) {
     if (user.type === userTypes.FREECTION.key) {
         trackIntercomEvent('created_pong', user.id, {
             type: thing.type,
         })
     }
+
+    notification_received(showNewList, 'ponged')
 }
 
-export function sentBack(user, thing) {
+export function sentBack(user, thing, showNewList) {
     if (user.type === userTypes.FREECTION.key) {
         trackIntercomEvent('sent_back', user.id, {
             type: thing.type,
         })
     }
+
+    notification_received(showNewList, 'sent_back')
 }
 
 export function unmuted(user, thing) {
@@ -164,4 +181,10 @@ export function unfollowed(user, thing) {
             type: thing.type
         })
     }
+}
+
+function notification_received(users, type) {
+    users.forEach(userId => {
+        trackIntercomEvent('notification_received', userId, { type })
+    })
 }
