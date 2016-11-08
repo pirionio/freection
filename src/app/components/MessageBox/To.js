@@ -107,7 +107,7 @@ class To extends Component {
     }
 
     getSuggestionValue(suggestion){
-        return `${suggestion.displayName} <${suggestion.payload.email}>`
+        return `"${suggestion.displayName}" <${suggestion.payload.email}>`
     }
 
     onChange(event, {newValue, method}) {
