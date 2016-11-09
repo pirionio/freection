@@ -52,6 +52,7 @@ class MessageBox extends Component {
         const bodyClass = !this.hasTo() ? classes.bodyOnly : null
         return (
             <MessageBody className={bodyClass}
+                         withSubject={this.hasTo()}
                          onFocus={this.focusOnBody}
                          onCommandEnter={this.props.onCommandEnter}
                          tabIndex="1"

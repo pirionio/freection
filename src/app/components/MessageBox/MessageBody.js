@@ -148,11 +148,13 @@ class MessageBody extends Component {
     }
 
     render() {
-        const {sheet: {classes}, onFocus, tabIndex, className} = this.props
+        const {sheet: {classes}, onFocus, tabIndex, className, withSubject} = this.props
         const {MentionSuggestions} = this._mentionPlugin
 
         const containerClasses = classNames(classes.containerBase, className ? className : classes.containerDefault,
-            GeneralConstants.INSPECTLET_SENSITIVE_CLASS)
+            GeneralConstants.INSPECTLET_SENSITIVE_CLASS, withSubject && classes.withSubject)
+
+        const placeholder = withSubject ? 'Subject\nPress enter to continue writing the rest of your message' : 'write your message here'
 
         return (
             <Flexbox name="message-body" container="row" className={containerClasses}>
@@ -166,7 +168,7 @@ class MessageBody extends Component {
                         tabIndex={tabIndex}
                         keyBindingFn={this.keyBinding}
                         handleKeyCommand={this.handleKeyCommand}
-                        placeholder={'Subject\nPress enter to continue writing the rest of your message'} />
+                        placeholder={placeholder} />
                     <MentionSuggestions
                         onSearchChange={this.onSearchChange}
                         suggestions={this.state.suggestions} />
@@ -191,7 +193,9 @@ const style = {
         },
         '& .public-DraftEditorPlaceholder-inner': {
             whiteSpace: 'pre'
-        },
+        }
+    },
+    withSubject: {
         '& div[data-block="true"]:first-of-type': {
             fontWeight: 'bold'
         }
@@ -261,6 +265,7 @@ const style = {
 MessageBody.propTypes = {
     messageBox: PropTypes.object.isRequired,
     suggestions: PropTypes.object.isRequired,
+    withSubject: PropTypes.bool.isRequired,
     onFocus: PropTypes.func,
     onCommandEnter: PropTypes.func,
     tabIndex: PropTypes.string,

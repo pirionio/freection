@@ -87,6 +87,7 @@ class ExpandedMessageBox extends Component {
 
         return (
             <MessageBody className={bodyClass}
+                         withSubject={this.hasTo()}
                          tabIndex="1"
                          editorRef={ref => this.messageBody = ref}
                          onCommandEnter={this.onCommandEnter} />
