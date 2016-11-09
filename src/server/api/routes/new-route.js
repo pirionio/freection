@@ -38,17 +38,12 @@ router.post('/email', (request, response) => {
 function isValid(request, response) {
     const {to, subject} = request.body
 
-    if (!to) {
-        response.status(400).send('to field is missing')
-        return false
-    }
-
     if (!subject) {
         response.status(400).send('subject field is missing')
         return false
     }
 
-    if (!validateEmailAddress(to)) {
+    if (to && !validateEmailAddress(to)) {
         response.status(400).send('Invalid address')
     }
 

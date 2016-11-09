@@ -150,7 +150,7 @@ class ExpandedMessageBox extends Component {
         const {activeMessageBox, messageBox} = this.props
         const addressValid = (activeMessageBox && activeMessageBox.type.key === MessageTypes.NEW_THING.key &&
             messageBox && messageBox.message && messageBox.message.subject &&
-            AddressParser.parseOneAddress(messageBox.message.to)) ||
+            (isEmpty(messageBox.message.to) || AddressParser.parseOneAddress(messageBox.message.to))) ||
             (activeMessageBox && activeMessageBox.type.key !== MessageTypes.NEW_THING.key)
 
         return isNil(activeMessageBox) || activeMessageBox.ongoingAction || !addressValid

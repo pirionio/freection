@@ -82,7 +82,7 @@ export async function newThing(user, to, subject, body, payload = {}) {
     const creator = userToAddress(user)
 
     try {
-        const toAddress = await getToAddress(user, to)
+        const toAddress = to ? (await getToAddress(user, to)) : creator
         const mentionedUserIds = await getMentionsFromText(body)
 
         const thing = await saveNewThing(body, subject, creator, toAddress, mentionedUserIds, payload)
