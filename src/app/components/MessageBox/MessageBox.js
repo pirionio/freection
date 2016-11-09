@@ -73,7 +73,7 @@ class MessageBox extends Component {
                    inputRef={ref => this.messageTo = ref}
                    onFocus={this.focusOnTo}
                    onCommandEnter={this.props.onCommandEnter}
-                   placeholder="To (email, name, or 'me' to send to yourself)" />
+                   placeholder="To (email, name, or leave empty to send to yourself)" />
     }
 
     focusOnBody() {
