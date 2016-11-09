@@ -166,7 +166,7 @@ class MessageBody extends Component {
                         tabIndex={tabIndex}
                         keyBindingFn={this.keyBinding}
                         handleKeyCommand={this.handleKeyCommand}
-                        placeholder="Write your message here" />
+                        placeholder={'Subject\nPress enter to continue writing the rest of your message'} />
                     <MentionSuggestions
                         onSearchChange={this.onSearchChange}
                         suggestions={this.state.suggestions} />
@@ -188,10 +188,16 @@ const style = {
         '& .public-DraftEditor-content': {
             overflowY: 'auto',
             maxHeight: '100%'
+        },
+        '& .public-DraftEditorPlaceholder-inner': {
+            whiteSpace: 'pre'
+        },
+        '& div[data-block="true"]:first-of-type': {
+            fontWeight: 'bold'
         }
     },
     containerDefault: {
-        height: 87
+        height: 135
     },
     editor: {
         width: '100%'

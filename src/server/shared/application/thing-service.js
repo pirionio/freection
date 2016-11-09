@@ -78,12 +78,14 @@ export function getThing(user, thingId) {
         })
 }
 
-export async function newThing(user, to, subject, body, payload = {}) {
+export async function newThing(user, to, subjectObsolete, body, payload = {}) {
     const creator = userToAddress(user)
 
     try {
         const toAddress = to ? (await getToAddress(user, to)) : creator
         const mentionedUserIds = await getMentionsFromText(body)
+
+        const subject = subjectObsolete ? subjectObsolete : body.match(/^(.*)$/m)[0]
 
         const thing = await saveNewThing(body, subject, creator, toAddress, mentionedUserIds, payload)
 

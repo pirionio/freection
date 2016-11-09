@@ -43,8 +43,7 @@ export function newThing(thing) {
         })
         return ResourceUtil.post(`/api/new/thing`, {
                 to: thing.to,
-                body: thing.body,
-                subject: thing.subject
+                body: thing.body
             })
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.NEW_THING, 

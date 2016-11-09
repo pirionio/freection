@@ -19,7 +19,6 @@ import MessageBox from './MessageBox'
 import CollapsedMessageBox from './CollapsedMessageBox'
 import MessageTabs from './MessageTabs'
 import * as ThingCommandActions from '../../actions/thing-command-actions'
-import * as EmailCommandActions from '../../actions/email-command-actions'
 import MessageTypes from '../../../common/enums/message-types'
 import styleVars from '../style-vars'
 import componentStyles from '../component-styles'
@@ -38,19 +37,8 @@ class MessagePanel extends Component {
             case MessageTypes.NEW_THING.key:
                 promise = dispatch(ThingCommandActions.newThing(messageBox.message))
                 break
-            case MessageTypes.NEW_EMAIL.key:
-                promise = dispatch(EmailCommandActions.newEmail(messageBox.message))
-                break
             case MessageTypes.COMMENT_THING.key:
                 promise = dispatch(ThingCommandActions.comment(activeMessageBox.context.id, messageBox.message.body))
-                break
-            case MessageTypes.REPLY_EMAIL.key:
-                const toEmails = this.getToEmails()
-                const lastMessage = chain(activeMessageBox.context.messages).sortBy('createdAt').head().clone().value()
-                const references = map(activeMessageBox.context.messages, 'id')
-
-                promise = dispatch(EmailCommandActions.replyToAll(activeMessageBox.context.id, messageBox.message.body,
-                    activeMessageBox.context.subject, toEmails, lastMessage.id, references))
                 break
             case MessageTypes.THING_ACTION.key:
                 promise = messageBox.action(messageBox.message.body)
@@ -58,14 +46,6 @@ class MessagePanel extends Component {
         }
 
         dispatch(MessageBoxActions.messageSent(activeMessageBox.id, promise))
-    }
-
-    getToEmails() {
-        const {activeMessageBox, currentUser} = this.props
-        return chain([...activeMessageBox.context.to, activeMessageBox.context.creator])
-            .filter(user => user.payload.email !== currentUser.email)
-            .map(user => user.payload.email)
-            .value()
     }
 
     isSendDisabled() {
@@ -77,9 +57,9 @@ class MessagePanel extends Component {
         }
 
         // In case of a new entity being created, disable only if there's no valid address.
-        if ([MessageTypes.NEW_THING.key, MessageTypes.NEW_EMAIL.key].includes(activeMessageBox.type.key)) {
-            return isEmpty(messageBox.message.subject) || (
-                !isEmpty(messageBox.message.to) && !AddressParser.parseOneAddress(messageBox.message.to))
+        if (activeMessageBox.type.key === MessageTypes.NEW_THING.key &&
+            !isEmpty(messageBox.message.to) && !AddressParser.parseOneAddress(messageBox.message.to)) {
+            return true
         }
 
         // In case of a reply to an existing entity, disable if there's no body.
@@ -96,7 +76,6 @@ class MessagePanel extends Component {
         return this.isCollapsed() ?
             <CollapsedMessageBox /> :
             <MessageBox to={activeMessageBox.context ? null : ''}
-                        subject={activeMessageBox.context ? null : ''}
                         onCommandEnter={this.onCommandEnter}
             />
     }
@@ -110,7 +89,7 @@ class MessagePanel extends Component {
         return !isNil(activeMessageBox) ?
             <div name="send-container" className={sendClass}>
                 <button type="button"
-                        tabIndex="4"
+                        tabIndex="3"
                         onClick={this.send}
                         disabled={this.isSendDisabled()}
                         className={buttonClass}>
@@ -122,7 +101,7 @@ class MessagePanel extends Component {
 
     isFullItemMode() {
         const {messageBoxes} = this.props
-        return some(messageBoxes, messageBox => [MessageTypes.COMMENT_THING.key, MessageTypes.REPLY_EMAIL.key].includes(messageBox.type.key))
+        return some(messageBoxes, messageBox => messageBox.type.key === MessageTypes.COMMENT_THING.key)
     }
 
     isCollapsed() {

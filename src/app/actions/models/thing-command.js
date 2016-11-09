@@ -26,8 +26,7 @@ module.exports = {
             path: '/api/new/thing',
             body: {
                 to: 'thing.to',
-                body: 'thing.body',
-                subject: 'thing.subject'
+                body: 'thing.body'
             },
             track: 'newThing'
         },

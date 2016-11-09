@@ -19,7 +19,6 @@ import * as MessageBoxActions from '../../actions/message-box-actions'
 import MessageTypes from '../../../common/enums/message-types'
 import Close from '../../static/close-message-box.svg'
 import Collapse from '../../static/collapse-message-box.svg'
-import Subject from './Subject'
 
 class ExpandedMessageBox extends Component {
     constructor(props) {
@@ -38,14 +37,10 @@ class ExpandedMessageBox extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const {messageBox, opened} = this.props
+        const {opened} = this.props
 
         if (opened && !prevProps.opened) {
-            if (!messageBox.message || isEmpty(messageBox.message.subject)) {
-                this.messageSubject.focus()
-            } else {
-                this.messageBody.focus()
-            }
+            this.messageBody.focus()
         }
     }
 
@@ -63,30 +58,6 @@ class ExpandedMessageBox extends Component {
             </Flexbox>)
     }
 
-    getSubject() {
-        const {sheet: {classes}} = this.props
-
-        if (!this.hasSubject())
-            return null
-
-        return (
-            <Flexbox grow={0} shrink={0} name="expanded-message-subject" container="row" className={classes.subject}>
-                <Flexbox className={classes.label} grow={0} shrink={0} container="column" justifyContent="center"
-                         onClick={() => this.messageSubject.focus() }>
-                    Subject:
-                </Flexbox>
-                <Flexbox grow={1} shrink={1} className={classes.inputGroup}>
-                    <Subject model="messageBox.message.subject"
-                             tabIndex="1"
-                             className={classes.textField}
-                             inputRef={ref => this.messageSubject = ref}
-                             onCommandEnter={this.onCommandEnter}
-                    />
-                </Flexbox>
-            </Flexbox>
-        )
-    }
-
     getTo() {
         const {sheet: {classes}} = this.props
 
@@ -102,7 +73,7 @@ class ExpandedMessageBox extends Component {
                 <To model="messageBox.message"
                     containerClassName={classes.inputGroup}
                     inputClassName={classes.textField}
-                    tabIndex={3}
+                    tabIndex={2}
                     placeholder="Enter email, name, or 'me' to send to yourself"
                     inputRef={ref => this.messageTo = ref}
                     onCommandEnter={this.onCommandEnter} />
@@ -112,19 +83,14 @@ class ExpandedMessageBox extends Component {
     getBody() {
         const {sheet: {classes}} = this.props
 
-        const bodyClass = this.hasSubject() && this.hasTo() ? classes.bodyWithSubject : classes.bodyAlone
+        const bodyClass = this.hasTo() ? classes.bodyWithTo : classes.bodyAlone
 
         return (
             <MessageBody className={bodyClass}
-                         tabIndex="2"
-                         ref={ref => this.messageBody = ref}
+                         tabIndex="1"
+                         editorRef={ref => this.messageBody = ref}
                          onCommandEnter={this.onCommandEnter} />
         )
-    }
-
-    hasSubject() {
-        const {activeMessageBox} = this.props
-        return !activeMessageBox || !activeMessageBox.context
     }
 
     hasTo() {
@@ -139,7 +105,7 @@ class ExpandedMessageBox extends Component {
         const buttonClass = classnames(classes.sendButton, isDisabled && classes.disabledSendButton)
 
         return (<button type="submit"
-                tabIndex="4"
+                tabIndex="3"
                 disabled={isDisabled}
                 className={buttonClass} >
             SEND
@@ -149,7 +115,7 @@ class ExpandedMessageBox extends Component {
     isSendDisabled() {
         const {activeMessageBox, messageBox} = this.props
         const addressValid = (activeMessageBox && activeMessageBox.type.key === MessageTypes.NEW_THING.key &&
-            messageBox && messageBox.message && messageBox.message.subject &&
+            messageBox && messageBox.message && messageBox.message.body &&
             (isEmpty(messageBox.message.to) || AddressParser.parseOneAddress(messageBox.message.to))) ||
             (activeMessageBox && activeMessageBox.type.key !== MessageTypes.NEW_THING.key)
 
@@ -198,7 +164,6 @@ class ExpandedMessageBox extends Component {
                             {this.getTitle()}
                             <Flexbox container="column" className={classes.box}>
                                 <Flexbox className={classes.content} grow={1} container="column">
-                                    {this.getSubject()}
                                     {this.getBody()}
                                     {this.getTo()}
                                 </Flexbox>
@@ -306,9 +271,6 @@ const style = {
     actions: {
         padding: '20px 30px 20px 30px'
     },
-    subject: {
-        marginBottom: 25
-    },
     to: {
         marginTop: 25
     },
@@ -368,8 +330,8 @@ const style = {
             cursor: 'not-allowed'
         }
     },
-    bodyWithSubject: {
-        height: 310
+    bodyWithTo: {
+        height: 365
     },
     bodyAlone: {
         height: 420

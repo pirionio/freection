@@ -36,10 +36,10 @@ router.post('/email', (request, response) => {
 })
 
 function isValid(request, response) {
-    const {to, subject} = request.body
+    const {to, subject, body} = request.body
 
-    if (!subject) {
-        response.status(400).send('subject field is missing')
+    if (!subject && !body) {
+        response.status(400).send('body field is missing')
         return false
     }
 
