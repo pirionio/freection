@@ -3,6 +3,7 @@ import remove from 'lodash/remove'
 import EventTypes from '../../common/enums/event-types'
 import Logo from '../static/logo-black.png'
 import EntityTypes from '../../common/enums/entity-types.js'
+import DeviceType from '../../common/enums/device-types'
 
 const isNotificationEnabled = 'Notification' in window
 
@@ -54,6 +55,10 @@ export function handleEvent(event) {
         if (event.eventType.key === EventTypes.CREATED.key && event.thing.payload.fromSlack) {
             fromSlackCreateNotification(event)
         }
+
+        if (event.eventType.key === EventTypes.CREATED.key && event.thing.payload.sourceDevice.key !== DeviceType.DESKTOP.key) {
+            fromMobileCreateNotification(event)
+        }
     }
 }
 
@@ -76,9 +81,9 @@ function showNotification(id, title, body) {
 
 function fromSlackCreateNotification(event) {
     if (event.thing.isFollowUper)
-        showNotification(event.id, 'Thing from slack added to your followup list', event.thing.subject)
+        showNotification(event.id, 'Thing from slack added to your Follow Up list', event.thing.subject)
     else if (event.thing.isDoer)
-        showNotification(event.id, 'Thing from slack added to your todo list list', event.thing.subject)
+        showNotification(event.id, 'Thing from slack added to your To Do list list', event.thing.subject)
 }
 
 function emailThingCreateNotification(event) {
@@ -87,7 +92,14 @@ function emailThingCreateNotification(event) {
         .map(recipient => recipient.name)
         .join(', ')
 
-    showNotification(event.id, `Email from ${recipientNames} added to your todo list`, event.thing.subject)
+    showNotification(event.id, `Email from ${recipientNames} added to your To Do list`, event.thing.subject)
+}
+
+function fromMobileCreateNotification(event) {
+    if (event.thing.isFollowUper)
+        showNotification(event.id, 'Thing from your mobile added to your Follow Up list', event.thing.subject)
+    else if (event.thing.isDoer)
+        showNotification(event.id, 'Thing from your mobile added to your To Do list', event.thing.subject)
 }
 
 function createNotification(event) {

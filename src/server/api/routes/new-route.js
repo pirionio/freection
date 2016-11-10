@@ -1,9 +1,11 @@
 import {Router} from 'express'
 import AddressParser from 'email-addresses'
+import {find, toArray} from 'lodash'
 
 import * as EndpointUtil from '../../shared/utils/endpoint-util'
 import * as ThingService from '../../shared/application/thing-service'
 import * as EmailService from '../../shared/application/email-service'
+import DeviceType from '../../../common/enums/device-types'
 
 const router = Router()
 
@@ -12,7 +14,9 @@ router.post('/thing', (request, response) => {
         return
     }
 
-    EndpointUtil.handlePost(request, response, ThingService.newThing, {
+    EndpointUtil.handlePost(request, response, (user, to, subjectObsolete, body) => {
+        return ThingService.newThing(user, to, subjectObsolete, body, {sourceDevice: findDevice(request.device.type)})
+    }, {
         body: ['to', 'subject', 'body'],
         result: false,
         errorTemplates: {
@@ -53,6 +57,10 @@ function isValid(request, response) {
 function validateEmailAddress(email) {
     const emailAddress = AddressParser.parseOneAddress(email)
     return !!emailAddress
+}
+
+function findDevice(deviceType) {
+    return find(toArray(DeviceType), {expressDeviceType: deviceType})
 }
 
 export default router

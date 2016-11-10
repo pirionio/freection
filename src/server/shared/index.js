@@ -4,6 +4,7 @@ import express from 'express'
 import passport from 'passport'
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
+import device from 'express-device'
 
 import token from './utils/token-strategy'
 import tokenConfig from './config/token'
@@ -19,6 +20,7 @@ app.use(bodyParser.json())
 app.use(cookieParser())
 app.use(passport.initialize())
 app.use(token.initialize(passport, {secret: tokenConfig.secret}))
+app.use(device.capture())
 
 app.start = () => {
     app.set('port', (process.env.PORT || 3000))
