@@ -20,8 +20,9 @@ import textToHtml from '../../../common/util/textToHtml'
 import * as ThingHelper from '../../../common/helpers/thing-helper'
 import * as EmailParsingUtility from '../utils/email-parsing-utility.js'
 
-const organizationEmailTemplate = requireText('./templates/email-template-organization.html', require)
-const externalEmailTemplate = requireText('./templates/email-template-external.html', require)
+const organizationEmailTemplate = template(requireText('./templates/email-template-organization.html', require))
+const externalEmailTemplate = template(requireText('./templates/email-template-external.html', require))
+const emailCommentTemplate = template(requireText('./templates/email-comment-template.html', require))
 
 export function getAllThings(user) {
     return ThingDomain.getAllUserThings(user.id)
@@ -531,7 +532,7 @@ function getReplyAddress(thingId) {
 function getThingEmailBody(event, body, user, toAddress) {
     const toOrganization = EmailParsingUtility.getOrganization(toAddress.id)
 
-    const bodyTemplate = template(toOrganization === user.organization ? organizationEmailTemplate : externalEmailTemplate)
+    const bodyTemplate = toOrganization === user.organization ? organizationEmailTemplate : externalEmailTemplate
 
     return bodyTemplate({
         body: textToHtml(body),
@@ -599,8 +600,12 @@ async function sendEmailForEvent(user, thing, event) {
     if (event.payload.text)
         message.text = event.payload.text
 
-    if (event.payload.html)
-        message.html = event.payload.html
+    message.html = emailCommentTemplate({
+        body: event.payload.html ? event.payload.html : textToHtml(event.payload.text),
+        email: emailRecipients[0],
+        eventId: event.id,
+        pixelUrl: pixelUrl
+    })
 
     try {
         await sendMessage(user, message)
