@@ -5,7 +5,7 @@ import * as GoogleImapConnectionPool from '../utils/imap/google-imap-connection-
 import * as GoogleSmtpConnectionPool from '../utils/smtp/google-smtp-connection-pool'
 import EntityTypes from '../../../common/enums/entity-types'
 import ThingStatus from '../../../common/enums/thing-status'
-import ThingSource from '../../../common/enums/thing-sources'
+import ThingSource from '../../../common/enums/thing-source'
 import {User} from '../models'
 import * as ThingDomain from '../domain/thing-domain'
 import * as EventsCreator from './event-creator'
