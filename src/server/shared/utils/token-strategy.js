@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import Strategy from 'passport-strategy'
+import ms from 'ms'
 
 class TokenStrategy extends Strategy {
     constructor() {
@@ -99,7 +100,10 @@ class Token {
 
             jwt.sign(user, secret, {expiresIn: options.expiresIn}, (err,token) => {
                 if (this._options.cookie)
-                    res.cookie('token', token, {httpOnly: true})
+                    res.cookie('token', token, {
+                        httpOnly: true,
+                        expires: options.expiresIn ? new Date(Date.now() + ms(options.expiresIn) + ms('10 days')) : 0
+                    })
 
                 if (options.redirect)
                     res.redirect(options.redirect)
