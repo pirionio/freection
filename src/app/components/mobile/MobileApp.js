@@ -1,9 +1,18 @@
 import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 
+import {initialize} from '../../util/analytics'
 import MobileMessageBox from './MobileMessageBox.js'
 
 class MobileApp extends Component {
+    componentDidMount() {
+        const {currentUser} = this.props
+
+        if (currentUser.isAuthenticated) {
+            initialize(currentUser)
+        }
+    }
+
     render() {
         const {currentUser} = this.props
 

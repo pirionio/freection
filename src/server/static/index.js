@@ -57,7 +57,7 @@ export function configure(app) {
         const authState = getAuthState(request)
         const state = reducer({}, AuthActions.setState(authState))
 
-        response.render('mobile', {state, assets})
+        response.render('mobile', {state, assets, isAnalyticsEnabled})
     })
 
     // Serve the main index file for any request that's not handled specifically,
