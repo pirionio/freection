@@ -30,7 +30,7 @@ config.module.loaders = [
         loader: ExtractTextPlugin.extract('style', 'css')
     },
     {
-        test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,
+        test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot|ico)$/,
         loader: 'url-loader',
         query: {
             name: '[hash].[ext]',
