@@ -53,6 +53,13 @@ export function configure(app) {
             response.render('demo')
     })
 
+    app.get('/mobile', (request, response) => {
+        const authState = getAuthState(request)
+        const state = reducer({}, AuthActions.setState(authState))
+
+        response.render('mobile', {state, assets})
+    })
+
     // Serve the main index file for any request that's not handled specifically,
     // to support URL navigation without hash tags.
     app.get('*', (request, response) => {

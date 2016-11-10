@@ -17,7 +17,7 @@ export function isSelf(thing) {
 export function getEmailId(thing) {
     const email = thing.creator.payload.email
     const domain = email.substr(email.indexOf('@'))
-    return `thing/${this.id}${domain}`
+    return `thing/${thing.id}${domain}`
 }
 
 export function getAllMessages(thing) {

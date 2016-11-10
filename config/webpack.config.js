@@ -4,6 +4,7 @@ module.exports = {
     context: path.join(__dirname, '../src'),
     entry: {
         'bundle': './app/index.js',
+        'mobile': './app/mobile.js',
         'chrome': './extension/src/content.js'
     },
     output: {

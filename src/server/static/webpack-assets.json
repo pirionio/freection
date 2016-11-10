@@ -3,6 +3,10 @@
     "js": "bundle.js",
     "css": ""
   },
+  "mobile": {
+    "js": "mobile.js",
+    "css": ""
+  },
   "chrome": {
     "js": "chrome.js"
   }

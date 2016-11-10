@@ -4,6 +4,7 @@ const config = require('./webpack.config')
 config.devtool = 'eval-source-map'
 config.entry = Object.assign(config.entry, {
     'bundle': ['webpack-hot-middleware/client?reload=true', './app/index.js'],
+    'mobile': ['webpack-hot-middleware/client?reload=true', './app/mobile.js'],
     'chrome': ['webpack-hot-middleware/client?reload=true', './extension/src/content.js']
 })
 config.plugins = [
@@ -24,7 +25,7 @@ config.module.loaders = [
         loader: 'style!css'
     },
     {
-        test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,
+        test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot|ico)$/,
         loader: 'url-loader',
         query: {
             name: '[path][name].[ext]?[hash]'
