@@ -15,6 +15,7 @@ import {userToAddress, emailToAddress} from './address-creator'
 import {sendMessage} from '../technical/email-send-service'
 import logger from '../utils/logger'
 import replyToAddress from '../config/reply-email'
+import {url as pixelUrl} from '../config/pixel'
 import textToHtml from '../../../common/util/textToHtml'
 import * as ThingHelper from '../../../common/helpers/thing-helper'
 import * as EmailParsingUtility from '../utils/email-parsing-utility.js'
@@ -89,10 +90,10 @@ export async function newThing(user, to, subjectObsolete, body, payload = {}) {
 
         const thing = await saveNewThing(body, subject, creator, toAddress, mentionedUserIds, payload)
 
-        thing.events.push(
-            EventCreator.createCreated(creator, thing, getShowNewList(user, thing, EventTypes.CREATED.key),
-                mentionedUserIds, body, ThingHelper.getEmailId(thing))
-        )
+        const createdEvent = EventCreator.createCreated(creator, thing, getShowNewList(user, thing, EventTypes.CREATED.key),
+            mentionedUserIds, body, ThingHelper.getEmailId(thing))
+
+        thing.events.push(createdEvent)
 
         if (ThingHelper.isSelf(thing)) {
             thing.events.push(EventCreator.createAccepted(creator, thing, [], mentionedUserIds))
@@ -100,7 +101,7 @@ export async function newThing(user, to, subjectObsolete, body, payload = {}) {
 
         const persistedThing = await ThingDomain.updateThing(thing)
 
-        await sendEmailForThing(thing, user, toAddress, subject, body)
+        await sendEmailForThing(thing, createdEvent, user, toAddress, subject, body)
 
         return persistedThing
     } catch(error) {
@@ -527,7 +528,7 @@ function getReplyAddress(thingId) {
     return `${parts[0]}+${thingId}@${parts[1]}`
 }
 
-function getThingEmailBody(body, user, toAddress) {
+function getThingEmailBody(event, body, user, toAddress) {
     const toOrganization = EmailParsingUtility.getOrganization(toAddress.id)
 
     const bodyTemplate = template(toOrganization === user.organization ? organizationEmailTemplate : externalEmailTemplate)
@@ -535,18 +536,21 @@ function getThingEmailBody(body, user, toAddress) {
     return bodyTemplate({
         body: textToHtml(body),
         firstName: user.firstName,
-        lastName: user.lastName
+        lastName: user.lastName,
+        email: toAddress.payload.email,
+        eventId: event.id,
+        pixelUrl: pixelUrl
     })
 }
 
-async function sendEmailForThing(thing, user, toAddress, subject, body) {
+async function sendEmailForThing(thing, event, user, toAddress, subject, body) {
     if (toAddress.type !== UserTypes.EMAIL.key)
-       return null
+        return null
 
     try {
         const messageId = ThingHelper.getEmailId(thing)
 
-        const htmlBody = getThingEmailBody(body, user, toAddress)
+        const htmlBody = getThingEmailBody(event, body, user, toAddress)
 
         // we don't wait for the send email to complete, we want it to be async so creating a thing won't be delayed
         await sendMessage(user, {
@@ -618,7 +622,7 @@ function saveNewThing(body, subject, creator, to, mentionedUserIds, payload) {
         [creator.id, to.id, ...mentioned] :
         [creator.id, ...mentioned])
 
-    return ThingDomain.createThing({
+    const thing = ThingDomain.createThing({
         createdAt: new Date(),
         creator,
         to,
@@ -635,6 +639,8 @@ function saveNewThing(body, subject, creator, to, mentionedUserIds, payload) {
         }),
         events: []
     })
+
+    return thing.save()
 }
 
 function isCreatorOrMentioned(thing, user) {

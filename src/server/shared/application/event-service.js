@@ -9,6 +9,10 @@ export function discard(user, eventId) {
         })
 }
 
+export async function markAsReadByEmail(email, eventId) {
+    Event.markAsReadByEmail(eventId, email)
+}
+
 export async function markAsRead(user, eventId) {
     try {
         await Event.markAsRead(eventId, user.id)

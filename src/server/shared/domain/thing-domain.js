@@ -1,6 +1,6 @@
 import {Thing, Event, User} from '../models'
 
-export async function createThing(thing) {
+export function createThing(thing) {
     return new Thing(thing)
 }
 

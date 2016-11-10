@@ -16,6 +16,7 @@ export function createCreated(creator, thing, showNewList, mentionedUserIds, bod
         payload: {
             text: body,
             readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : [],
+            readByEmailList: [],
             mentioned: mentionedUserIds,
             emailId
         },
@@ -44,7 +45,8 @@ export function createDismissed(creator, thing, showNewList, messageText) {
         creator,
         payload: messageText ? {
             text: messageText,
-            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
+            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : [],
+            readByEmailList: []
         } : {},
         showNewList
     }
@@ -60,7 +62,8 @@ export function createDone(creator, thing, showNewList, messageText) {
         creator,
         payload: messageText ? {
             text: messageText,
-            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
+            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : [],
+            readByEmailList: []
         } : {},
         showNewList
     }
@@ -80,6 +83,7 @@ export function createComment(creator, createdAt, thing, showNewList, mentionedU
             html: commentHtml,
             text: commentText,
             readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : [],
+            readByEmailList: [],
             mentioned: mentionedUserIds
         },
         showNewList
@@ -96,7 +100,8 @@ export function createClosedSync(creator, thing, showNewList, messageText) {
         creator,
         payload: messageText ? {
             text: messageText,
-            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
+            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : [],
+            readByEmailList: []
         } : {},
         showNewList
     }
@@ -114,7 +119,8 @@ export function createClosed(creator, thing, showNewList, messageText) {
         creator,
         payload: messageText ? {
             text: messageText,
-            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
+            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : [],
+            readByEmailList: []
         } : {},
         showNewList
     }
@@ -129,7 +135,8 @@ export function createPing(creator, thing, showNewList) {
         createdAt: new Date(),
         creator,
         payload: {
-            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
+            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : [],
+            readByEmailList: []
         },
         showNewList
     }
@@ -145,7 +152,8 @@ export function createPong(creator, thing, showNewList, messageText) {
         creator,
         payload: {
             text: messageText,
-            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
+            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : [],
+            readByEmailList: []
         },
         showNewList
     }
@@ -161,7 +169,8 @@ export function createSentBack(creator, thing, showNewList, messageText) {
         creator,
         payload: messageText ? {
             text: messageText,
-            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : []
+            readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : [],
+            readByEmailList: []
         } : {},
         showNewList
     }

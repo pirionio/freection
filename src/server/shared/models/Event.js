@@ -98,6 +98,16 @@ Event.defineStatic('discardUserEventById', function(eventId, userId) {
     }).run()
 })
 
+Event.defineStatic('markAsReadByEmail', function(eventId, email) {
+    return this.get(eventId).update(event => {
+        return {
+            payload: {
+                readByEmailList: event('payload')('readByEmailList').setInsert(email)
+            }
+        }
+    }).run()
+})
+
 Event.defineStatic('markAsRead', function(eventId, userId) {
     return this.get(eventId).update(event => {
         return {
