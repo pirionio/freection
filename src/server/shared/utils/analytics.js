@@ -27,7 +27,7 @@ export function thingCreated(thing, showNewList) {
     if (thing.creator.type === userTypes.FREECTION.key) {
         const to = thing.to.payload && thing.to.payload.email ? thing.to.payload.email : thing.to.displayName
 
-        const sourceDevice = thing.payload.sourceDevice || DeviceType.UNKNOWN.key
+        const sourceDevice = thing.payload.sourceDevice.key || DeviceType.UNKNOWN.key
         const source = thing.payload.source || ThingSource.WEB.key
 
         trackIntercomEvent('created_thing', thing.creator.id, {
