@@ -8,6 +8,7 @@ export const GeneralConstants = {
     FETCHING_DELAY_MILLIS: 1000,
     ONGOING_ACTION_DELAY_MILLIS: 500,
     TOOLTIP_DELAY: 400,
+    MOBILE_SEND_DELAY: 1200,
     INSPECTLET_SENSITIVE_CLASS: 'inspectlet-sensitive',
     MAX_MESSAGE_PANEL_TABS: 4,
     CHROME_EXTENSION_MESSAGE: 'FreectionChromeExtension'

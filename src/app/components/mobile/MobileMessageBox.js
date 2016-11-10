@@ -3,12 +3,14 @@ import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
 import classNames from 'classnames'
 import useSheet from 'react-jss'
-import {Page, Button} from 'react-onsenui'
+import {Page, Button, ProgressCircular} from 'react-onsenui'
+import isEmpty from 'lodash/isEmpty'
 
 import * as ThingCommandActions from '../../actions/thing-command-actions'
 import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
 import Logo from '../../static/logo-black.png'
+import {GeneralConstants} from '../../constants'
 
 class MobileMessageBox extends Component {
     constructor(props) {
@@ -18,19 +20,31 @@ class MobileMessageBox extends Component {
         this.state = {
             message: {
                 body: ''
-            }
+            },
+            isSending: false
         }
     }
 
     send() {
         const {dispatch} = this.props
-        dispatch(ThingCommandActions.newThing(this.state.message)).then(() => {
+
+        if (this.isSendDisabled())
+            return
+
+        this.setState({
+            isSending: true
+        })
+
+        dispatch(ThingCommandActions.newThing(this.state.message))
+
+        setTimeout(() => {
             this.setState({
                 message: {
                     body: ''
-                }
+                },
+                isSending: false
             })
-        })
+        }, GeneralConstants.MOBILE_SEND_DELAY)
     }
 
     textChanged(event) {
@@ -41,10 +55,15 @@ class MobileMessageBox extends Component {
         })
     }
 
+    isSendDisabled() {
+        return this.state.isSending || isEmpty(this.state.message.body)
+    }
+
     render() {
         const {sheet: {classes}} = this.props
 
         const textAreaClasses = classNames('textarea', classes.textArea)
+        const sendButtonClasses = classNames(classes.sendButton, this.isSendDisabled() ? classes.sendButtonDisabled : undefined)
 
         return (
             <Page className={classes.page}>
@@ -52,12 +71,15 @@ class MobileMessageBox extends Component {
                     <img src={Logo} className={classes.logoImage} />
                     <textarea value={this.state.message.body} onChange={this.textChanged} className={textAreaClasses}
                               placeholder="Write your message here" />
-                    <Button onClick={this.send} modifier="large" className={classes.sendButton}>
+                    <Button onClick={this.send} disabled={this.isSendDisabled()} modifier="large" className={sendButtonClasses}>
                         Send
                     </Button>
+                    {this.state.isSending ? <ProgressCircular indeterminate className={classes.spinner} /> : null}
                 </Flexbox>
             </Page>
         )
+
+
     }
 }
 
@@ -75,7 +97,8 @@ const style = {
     },
     container: {
         height: '100%',
-        width: '100%'
+        width: '100%',
+        position: 'relative'
     },
     logoImage: {
         height: 30,
@@ -103,6 +126,16 @@ const style = {
         fontSize: '1.5em',
         textTransform: 'uppercase',
         letterSpacing: '0.025em'
+    },
+    sendButtonDisabled: {
+        opacity: 0.5
+    },
+    spinner: {
+        position: 'absolute',
+        top: '50%',
+        bottom: '50%',
+        left: 'auto',
+        right: 'auto'
     }
 }
 
