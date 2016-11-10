@@ -14,7 +14,7 @@ import 'onsenui/css/onsenui.css'
 import 'onsenui/css/onsen-css-components.css'
 
 import reducers from './reducers'
-import MobileMessageBox from './components/mobile/MobileMessageBox'
+import MobileApp from './components/mobile/MobileApp'
 
 jss.use(
     jssExtend(),
@@ -32,7 +32,7 @@ const store = createStore(reducers, window.__STATE__, applyMiddleware(thunk))
 const rootElement = document.getElementById('mobile-app')
 ReactDOM.render(
     <Provider store={store}>
-        <MobileMessageBox />
+        <MobileApp />
     </Provider>,
     rootElement
-);
+)

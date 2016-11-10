@@ -13,7 +13,7 @@ import {createNewUser} from '../shared/application/users-service.js'
 
 const router = Router()
 
-function generateOAuth2Url({prompt, hint} = {}) {
+function generateOAuth2Url({prompt, hint, mobile=false} = {}) {
     const oauthUrl = 'https://accounts.google.com/o/oauth2/auth'
     const scope = [
         'profile',
@@ -26,7 +26,8 @@ function generateOAuth2Url({prompt, hint} = {}) {
         client_id: config.clientID,
         redirect_uri: config.callbackURL,
         access_type: 'offline',
-        scope: scope.join(' ')
+        scope: scope.join(' '),
+        state: mobile ? 'mobile' : ''
     }, prompt ? { prompt } : {}, hint ? {login_hint: hint} : {})
 
     return `${oauthUrl}?${querystring.stringify(options)}`
@@ -106,8 +107,17 @@ router.get('/google', (request, response) => {
     response.redirect(302, redirectUrl)
 })
 
+router.get('/google/mobile', (request, response) => {
+    const {hint} = request.query
+
+    const redirectUrl = generateOAuth2Url(Object.assign({mobile:true}, hint ? {hint} : {}))
+    response.redirect(302, redirectUrl)
+})
+
 router.get('/google/callback',
     passport.authenticate('google', {session: false, failureRedirect: '/login'}), (request, response, next) => {
+        const {state} = request.query
+
         if (request.user.missingRefreshToken) {
             const redirectUrl = generateOAuth2Url({
                 prompt: 'consent',
@@ -115,7 +125,9 @@ router.get('/google/callback',
             })
             response.redirect(302, redirectUrl)
         } else {
-            token.login({ redirect: '/', expiresIn: '30 days' })(request, response, next)
+            const redirect = state === 'mobile' ? '/mobile' : '/'
+
+            token.login({ redirect, expiresIn: '30 days' })(request, response, next)
         }
     })
 
