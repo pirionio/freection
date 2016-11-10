@@ -7,6 +7,7 @@ import slackConfig from '../shared/config/slack'
 import * as ThingService from '../shared/application/thing-service'
 import {post} from '../../app/util/resource-util'
 import logger from '../shared/utils/logger'
+import ThingSource from '../../common/enums/thing-source'
 
 const router = Router()
 
@@ -78,7 +79,7 @@ router.post('/thing', async function(request, response) {
                 return
             }
 
-            await ThingService.newThing(creator, toUserEmail, subject, '', {fromSlack: true})
+            await ThingService.newThing(creator, toUserEmail, subject, '', {source: ThingSource.SLACK.key})
             delayRespondWith(responseUrl, 'New thing created on freection')
 
         } else {

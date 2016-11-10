@@ -5,6 +5,7 @@ import * as GoogleImapConnectionPool from '../utils/imap/google-imap-connection-
 import * as GoogleSmtpConnectionPool from '../utils/smtp/google-smtp-connection-pool'
 import EntityTypes from '../../../common/enums/entity-types'
 import ThingStatus from '../../../common/enums/thing-status'
+import ThingSource from '../../../common/enums/thing-sources'
 import {User} from '../models'
 import * as ThingDomain from '../domain/thing-domain'
 import * as EventsCreator from './event-creator'
@@ -201,7 +202,8 @@ function saveNewThing(thread, creator, to) {
             threadId: thread.payload.threadId,
             threadIdHex: thread.payload.threadIdHex,
             status: ThingStatus.INPROGRESS.key,
-            recipients: thread.payload.recipients
+            recipients: thread.payload.recipients,
+            source: ThingSource.GMAIL.key
         },
         events: []
     })

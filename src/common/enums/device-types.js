@@ -22,5 +22,9 @@ export default {
     CAR: {
         key: 'CAR',
         expressDeviceType: 'car'
+    },
+    UNKNOWN: {
+        key: 'UNKNOWN',
+        expressDeviceType: 'unknown'
     }
 }

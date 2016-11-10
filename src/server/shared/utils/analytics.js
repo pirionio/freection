@@ -3,6 +3,8 @@ import {now, toInteger} from 'lodash'
 
 import {isAnalyticsEnabled, intercomToken} from '../config/analytics.js'
 import userTypes from '../../../common/enums/user-types.js'
+import ThingSource from '../../../common/enums/thing-source'
+import DeviceType from '../../../common/enums/device-types'
 import * as ThingHelper from '../../../common/helpers/thing-helper'
 import logger from './logger'
 
@@ -25,12 +27,15 @@ export function thingCreated(thing, showNewList) {
     if (thing.creator.type === userTypes.FREECTION.key) {
         const to = thing.to.payload && thing.to.payload.email ? thing.to.payload.email : thing.to.displayName
 
+        const sourceDevice = thing.payload.sourceDevice || DeviceType.UNKNOWN.key
+        const source = thing.payload.source || ThingSource.WEB.key
+
         trackIntercomEvent('created_thing', thing.creator.id, {
             type: thing.type,
             is_self: ThingHelper.isSelf(thing),
             to_type: thing.to.type,
             to,
-            fromSlack: !!thing.payload.fromSlack
+            source: `${sourceDevice} (${source})`
         })
     }
 

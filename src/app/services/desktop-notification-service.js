@@ -4,6 +4,7 @@ import EventTypes from '../../common/enums/event-types'
 import Logo from '../static/logo-black.png'
 import EntityTypes from '../../common/enums/entity-types.js'
 import DeviceType from '../../common/enums/device-types'
+import ThingSource from '../../common/enums/thing-source'
 
 const isNotificationEnabled = 'Notification' in window
 
@@ -52,11 +53,11 @@ export function handleEvent(event) {
             emailThingCreateNotification(event)
         }
 
-        if (event.eventType.key === EventTypes.CREATED.key && event.thing.payload.fromSlack) {
+        if (event.eventType.key === EventTypes.CREATED.key && event.thing.payload.source === ThingSource.SLACK.key) {
             fromSlackCreateNotification(event)
         }
 
-        if (event.eventType.key === EventTypes.CREATED.key && event.thing.payload.sourceDevice.key !== DeviceType.DESKTOP.key) {
+        if (event.eventType.key === EventTypes.CREATED.key && event.thing.payload.sourceDevice.key === DeviceType.PHONE.key) {
             fromMobileCreateNotification(event)
         }
     }
