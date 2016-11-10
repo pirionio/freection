@@ -10,7 +10,7 @@ import logger from '../utils/logger'
 import {userToAddress} from './address-creator'
 
 export async function newThing(creator, toUser, subject, body, id, number, url) {
-    const thing = await saveNewThing(creator, userToAddress(toUser), subject, body, id, number, url)
+    const thing = saveNewThing(creator, userToAddress(toUser), subject, body, id, number, url)
     thing.events.push(EventCreator.createCreated(creator, thing, [thing.to.id]))
     await ThingDomain.updateThing(thing)
     return thing.events[0]

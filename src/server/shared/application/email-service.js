@@ -143,7 +143,7 @@ export async function newEmailThing(user, emailData, isHex) {
     const creator = userToAddress(user)
     const doer = userToAddress(user)
 
-    const thing = await saveNewThing(thread, creator, doer)
+    const thing = saveNewThing(thread, creator, doer)
     thing.events.push(EventsCreator.createCreated(creator, thing, []))
     thing.events.push(EventsCreator.createAccepted(creator, thing, []))
 
