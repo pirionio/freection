@@ -2,6 +2,7 @@ import parseReply from 'parse-reply'
 import trimStart from 'lodash/trimStart'
 import trimEnd from 'lodash/trimEnd'
 import {chain} from 'lodash/core'
+import reject from 'lodash/reject'
 
 import {emailToAddress} from '../application/address-creator'
 import EntityTypes from '../../../common/enums/entity-types'
@@ -37,21 +38,21 @@ export function eventToDto(event, user, {includeThing = true, includeFullThing =
         thing: (includeThing || includeFullThing)&& event.thing && thingToDto(event.thing, user, {includeEvents: includeFullThing}),
         createdAt: event.createdAt,
         payload: SharedConstants.MESSAGE_TYPED_EVENTS.includes(event.eventType) ?
-            commentPayloadToDto(event.payload, user) : event.payload,
+            commentPayloadToDto(event.creator, event.payload, user) : event.payload,
         eventType: EventTypes[event.eventType],
         creator: event.creator,
         showNew: event.showNewList.includes(user.id)
     }
 }
 
-function commentPayloadToDto(payload, user) {
+function commentPayloadToDto(creator, payload, user) {
     if (!payload.readByList && !payload.mentioned)
         return payload
 
     return Object.assign({}, payload, {
         isRead: payload.readByList ? payload.readByList.includes(user.id) : false,
         isMentioned: payload.mentioned ? payload.mentioned.includes(user.id) : false,
-        readByList: undefined,
+        readByList: reject(payload.readByList, userId => userId === user.id || creator.id === userId),
         mentioned: undefined
     })
 }

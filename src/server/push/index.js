@@ -3,7 +3,7 @@ import socketioJwt from 'socketio-jwt'
 import {union, difference, chain} from'lodash'
 
 import tokenConfig from '../shared/config/token'
-import {Event, MailNotification, User} from '../shared/models'
+import {Event, MailNotification, User, Thing} from '../shared/models'
 import logger from '../shared/utils/logger'
 import {eventToDto} from '../shared/application/transformers'
 import {userToAddress} from '../shared/application/address-creator.js'
@@ -102,7 +102,7 @@ export function configure(app) {
         }
     }
 
-    function auditChangedEvent(oldEvent, event) {
+    async function auditChangedEvent(oldEvent, event) {
         const shownToUsers = difference(oldEvent.showNewList, event.showNewList)
         const newUsers = difference(event.showNewList, oldEvent.showNewList)
 
@@ -111,24 +111,31 @@ export function configure(app) {
         })
 
         if (newUsers && newUsers.length !== 0) {
-            Event.getFullEvent(event.id, true)
-                .then(fullEvent => {
-                    sendNewEvent(fullEvent, newUsers)
-                })
-                .catch(error => logger.error('error while fetching full event from db', error))
+            try {
+                const fullEvent = await Event.getFullEvent(event.id, true)
+                sendNewEvent(fullEvent, newUsers)
+            } catch(error) {
+                logger.error('error while fetching full event from db', error)
+            }
         }
 
         if (SharedConstants.MESSAGE_TYPED_EVENTS.includes(event.eventType)) {
             const readByUsers = difference(event.payload.readByList, oldEvent.payload.readByList)
 
-            readByUsers.forEach(userId => {
-                io.to(userId).emit('comment-read-by', {
-                    id: event.id,
-                    thing: {
-                        id: event.thingId
-                    }
+            if (readByUsers && readByUsers.length) {
+                const thing = await Thing.get(event.thingId).run()
+
+                readByUsers.forEach(readByUserId => {
+                    thing.all.forEach(userId => {
+                        io.to(userId).emit('comment-read-by', {
+                            id: event.id,
+                            isReadByMe: userId === readByUserId,
+                            readByUserId: readByUserId,
+                            thing
+                        })
+                    })
                 })
-            })
+            }
         }
     }
 

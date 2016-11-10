@@ -1,3 +1,5 @@
+import union from 'lodash/union'
+
 import EventActionTypes from '../actions/types/event-action-types'
 import ThingCommandActionTypes from '../actions/types/thing-command-action-types'
 import immutable from '../util/immutable'
@@ -5,9 +7,20 @@ import {ActionStatus} from '../constants'
 
 function commentReadByReceived(state, action) {
     return immutable(state)
-        .arrayMergeItem('events', event => event.id === action.event.id, {
-            payload: {
-                isRead: true
+        .arrayMergeItem('events', event => event.id === action.event.id, event => {
+
+            if (action.event.isReadByMe) {
+                return {
+                    payload: {
+                        isRead: true
+                    }
+                }
+            }
+
+            return {
+                payload: {
+                    readByList: union(event.payload.readByList, [action.event.readByUserId])
+                }
             }
         })
         .value()
