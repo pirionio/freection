@@ -1,5 +1,4 @@
 import querystring from 'querystring'
-
 import {Router} from 'express'
 import passport from 'passport'
 import {Strategy as GoogleStrategy} from 'passport-google-oauth20'
@@ -33,12 +32,7 @@ function generateOAuth2Url({prompt, hint, mobile=false} = {}) {
     return `${oauthUrl}?${querystring.stringify(options)}`
 }
 
-passport.use(new GoogleStrategy({
-    clientID: config.clientID,
-    clientSecret: config.clientSecret,
-    callbackURL: config.callbackURL
-}, (accessToken, refreshToken, profile, cb) => {
-
+async function authenticateGoogleCallback(accessToken, refreshToken, profile, callback) {
     const userData = {
         googleId: profile.id,
         firstName: profile.name.givenName,
@@ -48,55 +42,68 @@ passport.use(new GoogleStrategy({
         refreshToken
     }
 
-    User.getUserByGoogleId(userData.googleId)
-        .catch(e => {
-            if (e !== 'NotFound')
-                throw e
+    let user
 
-            if (!userData.refreshToken)
-                throw 'MissingRefreshToken'
+    try {
+        try {
+            user = await User.getUserByGoogleId(userData.googleId)
 
-            return createNewUser(userData)
-                .then(user => {
-                    logger.info(`new user ${user.firstName} ${user.lastName} ${user.email}`)
-                    return user
-                })
-        })
-        .then(user => {
-            if (!user.refreshToken) {
-                if (!userData.refreshToken)
-                    throw 'MissingRefreshToken'
+        } catch(getUserError) {
+            if (getUserError !== 'NotFound')
+                throw getUserError
 
-                user.refreshToken = userData.refreshToken
-                user.accessToken = userData.accessToken
-                return user.save()
+            if (!userData.refreshToken) {
+                handleMissingRefreshToken(userData, callback)
+                return
             }
 
-            // We probably requested more permissions, so updating the scopes
-            if (userData.refreshToken) {
-                user.refreshToken = userData.refreshToken
-                user.accessToken = userData.accessToken
-                return user.save()
+            user = await createNewUser(userData)
+            logger.info(`new user ${user.firstName} ${user.lastName} ${user.email}`)
+        }
+
+        if (!user.refreshToken) {
+            if (!userData.refreshToken) {
+                handleMissingRefreshToken(userData, callback)
+                return
             }
 
-            if (!user.accessToken) {
-                user.accessToken = userData.accessToken
-                return user.save()
-            }
+            user.refreshToken = userData.refreshToken
+            user.accessToken = userData.accessToken
+            user = await user.save()
+        }
 
-            return user
-        })
-        .then(user => cb(null, createUserToken(user)))
-        .catch(err => {
-            if (err === 'MissingRefreshToken') {
-                logger.info(
-                    `missing refresh token for new user ${userData.firstName} ${userData.lastName} ${userData.email}`)
-                cb(null, {missingRefreshToken:true, email: userData.email})
-            } else {
-                cb(err)
-            }
-        })
-}))
+        // We probably requested more permissions, so updating the scopes
+        if (userData.refreshToken) {
+            user.refreshToken = userData.refreshToken
+            user.accessToken = userData.accessToken
+            user = await user.save()
+        }
+
+        if (!user.accessToken) {
+            user.accessToken = userData.accessToken
+            user = await user.save()
+        }
+
+        const token = createUserToken(user)
+        callback(null, token)
+    } catch(error) {
+        callback(error)
+    }
+}
+
+function handleMissingRefreshToken(userData, callback) {
+    logger.info(`missing refresh token for new user ${userData.firstName} ${userData.lastName} ${userData.email}`)
+    callback(null, {
+        missingRefreshToken: true,
+        email: userData.email
+    })
+}
+
+passport.use(new GoogleStrategy({
+    clientID: config.clientID,
+    clientSecret: config.clientSecret,
+    callbackURL: config.callbackURL
+}, authenticateGoogleCallback))
 
 router.get('/logout', token.logout({redirect: '/'}))
 
@@ -110,7 +117,7 @@ router.get('/google', (request, response) => {
 router.get('/google/mobile', (request, response) => {
     const {hint} = request.query
 
-    const redirectUrl = generateOAuth2Url(Object.assign({mobile:true}, hint ? {hint} : {}))
+    const redirectUrl = generateOAuth2Url(Object.assign({mobile: true}, hint ? {hint} : {}))
     response.redirect(302, redirectUrl)
 })
 
@@ -126,8 +133,7 @@ router.get('/google/callback',
             response.redirect(302, redirectUrl)
         } else {
             const redirect = state === 'mobile' ? '/mobile' : '/'
-
-            token.login({ redirect, expiresIn: '30 days' })(request, response, next)
+            token.login({redirect, expiresIn: '30 days'})(request, response, next)
         }
     })
 
