@@ -30,6 +30,9 @@ const User = thinky.createModel('User', {
             teamId: type.string(),
             userId: type.string(),
             username: type.string()
+        },
+        gmail: {
+            allowSendMail: type.boolean()
         }
     }
 })

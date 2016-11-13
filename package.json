@@ -83,6 +83,7 @@
     "linkifyjs": "2.1.1",
     "lodash": "4.13.1",
     "mailcomposer": "3.12.0",
+    "mailgun-js": "0.7.13",
     "mailparser": "0.6.1",
     "ms": "0.7.2",
     "node-cache": "3.2.1",
