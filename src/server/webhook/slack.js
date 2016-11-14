@@ -26,13 +26,14 @@ router.post('/thing', async function(request, response) {
 
         if (body.ssl_check) {
             response.sendStatus(200)
-        } else if (body.command === '/thing') {
+        } else if (body.command === '/thing' || body.command === '/thing-me') {
             if (body.token !== slackConfig.token) {
                 response.sendStatus(400)
                 return
             }
 
             const {
+                command,
                 team_id: teamId,
                 channel_name: channelName,
                 user_id: userId,
@@ -41,7 +42,9 @@ router.post('/thing', async function(request, response) {
                 response_url: responseUrl
             } = body
 
-            logger.info(`New thing from slack ${channelName} ${userName} ${text}`)
+            const isSelf = command === '/thing-me'
+
+            logger.info(`New thing from slack ${channelName} ${userName} ${command} ${text}`)
 
             const creator = await getUserBySlackId(userId)
 
@@ -58,25 +61,32 @@ router.post('/thing', async function(request, response) {
             }
 
             let subject = text
+            let toUserEmail
 
-            // we need to find the mentioned user
-            const mentioned = text.match(/@[a-z0-9][a-z0-9._-]*/)
-            if (!mentioned || !mentioned.length) {
-                respondWith(response, 'You must mention a user. Please send again with @username')
-                return
+            if (isSelf) {
+                toUserEmail = creator.email
+                respondWith(response, 'Just a second...',false)
             }
+            else {
+                // we need to find the mentioned user
+                const mentioned = text.match(/@[a-z0-9][a-z0-9._-]*/)
+                if (!mentioned || !mentioned.length) {
+                    respondWith(response, 'You must mention a user. Please send again with @username')
+                    return
+                }
 
-            respondWithEmpty(response, true)
+                respondWithEmpty(response, true)
 
-            if (text.startsWith(mentioned[0])) {
-                subject = text.substring(mentioned[0].length)
-            }
+                toUserEmail = await getEmailFromMention(team, mentioned[0])
 
-            const toUserEmail = await getEmailFromMention(team, mentioned[0])
+                if (!toUserEmail) {
+                    delayRespondWith(responseUrl, 'The mentioned user doesn\'t exist in slack and therefore thing was not created on freection')
+                    return
+                }
 
-            if (!toUserEmail) {
-                delayRespondWith(responseUrl, 'The mentioned user doesn\'t exist in slack and therefore thing was not created on freection')
-                return
+                if (text.startsWith(mentioned[0])) {
+                    subject = text.substring(mentioned[0].length)
+                }
             }
 
             await ThingService.newThing(creator, toUserEmail, subject, '', {source: ThingSource.SLACK.key})
@@ -106,15 +116,16 @@ async function delayRespondWith(url, text, isPublic = false) {
 
 function respondWith(response, text, isPublic = false) {
     response.json({
-        response_type: isPublic ? 'in_channel' : 'ephemeral ',
+        response_type: isPublic ? 'in_channel' : 'ephemeral',
         text: text
     })
 }
 
 function respondWithEmpty(response, isPublic = false) {
-    response.json({
-        response_type: isPublic ? 'in_channel' : 'ephemeral '
-    })
+    if (isPublic)
+        response.json({ response_type: 'in_channel' })
+    else
+        response.sendStatus(200)
 }
 
 async function getUserBySlackId(userId) {
