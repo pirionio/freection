@@ -1,5 +1,4 @@
-import React, {Component, PropTypes} from 'react'
-import {connect} from 'react-redux'
+import React, {Component} from 'react'
 import useSheet from 'react-jss'
 import Icon from 'react-fontawesome'
 import classAutobind from 'class-autobind'
@@ -13,48 +12,8 @@ class Integrations extends Component {
         classAutobind(this, Integrations.prototype)
     }
 
-    installChromeExtension() {
-        if (!this.isChromeExtensionInstalled()) {
-            chrome.webstore.install()
-        }
-    }
-
-    isChromeExtensionInstalled() {
-        return this.props.chromeExtension.isInstalled
-    }
-
-    getGmailLink() {
-        const {sheet: {classes}} = this.props
-
-        if (!this.isChromeExtensionInstalled()) {
-            return (
-                <Flexbox name="chrome-extension" className={classes.extension}>
-                    <span className={classes.title}>
-                        You can also try our Chrome extension, in order to use Freection for managing your emails:
-                    </span>
-                    <button type="button" className={classes.gmailLink} onClick={this.installChromeExtension}
-                            disabled={this.isChromeExtensionInstalled()}>
-                        <Icon name="envelope" className={classes.icon} />
-                        Gmail
-                    </button>
-                </Flexbox>
-            )
-        }
-
-        return (
-            <Flexbox name="chrome-extension" className={classes.extension}>
-                <span className={classes.title}>
-                    <Icon name="envelope" className={classes.icon} />
-                    You're already using our Chrome extension for Gmail, that's great!
-                </span>
-            </Flexbox>
-        )
-    }
-
     render() {
         const {sheet: {classes}} = this.props
-
-        const gmailLink = this.getGmailLink()
 
         return (
             <Flexbox name="integrations-container" grow={1} container="column">
@@ -67,7 +26,10 @@ class Integrations extends Component {
                     <Icon name="slack" className={classes.icon} />
                     Slack
                 </Link>
-                {gmailLink}
+                <Link to="/integrations/gmail" className={classes.link}>
+                    <Icon name="envelope" className={classes.icon} />
+                    Gmail
+                </Link>
             </Flexbox>
         )
     }
@@ -86,32 +48,7 @@ const style = {
     },
     icon: {
         marginRight: 10
-    },
-    extension: {
-        marginTop: 15
-    },
-    gmailLink: {
-        color: 'black',
-        fontSize: '1.4em',
-        margin: [15, 0, 0],
-        padding: 0,
-        textDecoration: 'underline',
-        display: 'block',
-        cursor: 'pointer',
-        background: 'none',
-        border: 'none',
-        outline: 'none'
     }
 }
 
-Integrations.propTypes = {
-    chromeExtension: PropTypes.object.isRequired
-}
-
-function mapStateToProps(state) {
-    return {
-        chromeExtension: state.chromeExtension
-    }
-}
-
-export default useSheet(connect(mapStateToProps)(Integrations), style)
+export default useSheet(Integrations, style)

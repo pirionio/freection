@@ -98,7 +98,8 @@ class Token {
             if (!user)
                 throw new Error('No user is set')
 
-            jwt.sign(user, secret, {expiresIn: options.expiresIn}, (err,token) => {
+            // It's not allowed to send an expiration, if the token already has an expiration.
+            jwt.sign(user, secret, {expiresIn: !user.exp ? options.expiresIn : undefined}, (err,token) => {
                 if (this._options.cookie)
                     res.cookie('token', token, {
                         httpOnly: true,

@@ -10,6 +10,7 @@ import AllThings from './components/All/Things/AllThings'
 import Integrations from './components/Integrations/Integrations'
 import Github from './components/Github/Github'
 import Slack from './components/Slack/Slack'
+import Gmail from './components/Gmail/Gmail'
 import FullThing from './components/Thing/FullThing'
 
 // import UnreadEmails from './components/Emails/UnreadEmails'
@@ -35,6 +36,7 @@ const routes = (
                 <IndexRoute component={Integrations} />
                 <Route path="github" component={Github} />
                 <Route path="slack" component={Slack} />
+                <Route path="gmail" component={Gmail} />
             </Route>
             <Redirect from="*" to="/notifications" />
         </Route>

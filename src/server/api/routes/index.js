@@ -8,6 +8,7 @@ import EmailThingRoute from './email-thing-route'
 import EventRoute from './event-route'
 import GithubRoute from './github-route'
 import SlackRoute from './slack-route'
+import GoogleRoute from './google-route'
 import ContactsRoute from './contacts-route'
 
 const router = Router()
@@ -20,6 +21,7 @@ router.use('/emailthing', EmailThingRoute)
 router.use('/events', EventRoute)
 router.use('/github', GithubRoute)
 router.use('/slack', SlackRoute)
+router.use('/google', GoogleRoute)
 router.use('/contacts', ContactsRoute)
 
 export default router
