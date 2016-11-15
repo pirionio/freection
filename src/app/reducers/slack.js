@@ -4,6 +4,7 @@ import immutable from '../util/immutable'
 
 const initialState = {
     active: false,
+    appInstalled: false,
     repositories: [],
     invalidationStatus: InvalidationStatus.INVALIDATED
 }
@@ -11,7 +12,7 @@ const initialState = {
 function fetch(state, action) {
     switch (action.status) {
         case ActionStatus.COMPLETE:
-            return immutable(action)
+            return immutable(state)
                 .set('active', action.slack.active)
                 .set('appInstalled', action.slack.appInstalled)
                 .set('invalidationStatus', InvalidationStatus.FETCHED)
@@ -25,7 +26,7 @@ function fetch(state, action) {
                 .set('invalidationStatus', InvalidationStatus.INVALIDATED)
                 .value()
         default:
-            return status
+            return state
     }
 }
 
