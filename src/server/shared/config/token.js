@@ -1,6 +1,6 @@
 import process from 'process'
 
-const version = '8'
+const version = '9'
 
 let config
 
