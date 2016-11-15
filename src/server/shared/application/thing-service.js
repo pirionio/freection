@@ -1,4 +1,4 @@
-import {remove, castArray, union, chain, omitBy, isNil, last, map, clone, uniq, reject, template} from 'lodash'
+import {remove, castArray, union, chain, omitBy, isNil, last, map, clone, uniq, reject, template, isEmpty} from 'lodash'
 import AddressParser from 'email-addresses'
 import requireText from 'require-text'
 
@@ -87,12 +87,16 @@ export async function newThing(user, to, subjectObsolete, body, payload = {}) {
         const toAddress = to ? (await getToAddress(user, to)) : creator
         const mentionedUserIds = await getMentionsFromText(body)
 
-        const subject = subjectObsolete ? subjectObsolete : body.match(/^(.*)$/m)[0]
+        const subject = subjectObsolete ? subjectObsolete : extractSubjectOnly(body)
+        const bodyOnly = extractBodyOnly(body)
 
-        const thing = await saveNewThing(body, subject, creator, toAddress, mentionedUserIds, payload)
+        if (isEmpty(subject))
+            throw new Error('Subject must be given as the first line in the message')
+
+        const thing = await saveNewThing(bodyOnly, subject, creator, toAddress, mentionedUserIds, payload)
 
         const createdEvent = EventCreator.createCreated(creator, thing, getShowNewList(user, thing, EventTypes.CREATED.key),
-            mentionedUserIds, body, ThingHelper.getEmailId(thing))
+            mentionedUserIds, bodyOnly, ThingHelper.getEmailId(thing))
 
         thing.events.push(createdEvent)
 
@@ -102,7 +106,7 @@ export async function newThing(user, to, subjectObsolete, body, payload = {}) {
 
         const persistedThing = await ThingDomain.updateThing(thing)
 
-        await sendEmailForThing(thing, createdEvent, user, toAddress, subject, body)
+        await sendEmailForThing(thing, createdEvent, user, toAddress, subject, bodyOnly)
 
         return persistedThing
     } catch(error) {
@@ -613,6 +617,18 @@ async function sendEmailForEvent(user, thing, event) {
     } catch (error) {
         logger.error(`Error while sending email from ${user.email} to ${emailRecipients}`, error)
     }
+}
+
+function extractSubjectOnly(body) {
+    const bodyLines = body ? body.match(/^(.*)$/m) : []
+    return bodyLines && bodyLines.length && bodyLines[0]
+}
+
+function extractBodyOnly(body) {
+    const firstNewlineIndex = body.indexOf('\n')
+    return firstNewlineIndex > -1 ?
+        body.substring(firstNewlineIndex + 1) :
+        body
 }
 
 function saveNewThing(body, subject, creator, to, mentionedUserIds, payload) {
