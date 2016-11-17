@@ -1,8 +1,118 @@
-<div dir="auto">
-    <div>${body}</div>
-    <div style="font-family: Roboto, Arial; line-height: 1.5; letter-spacing: 0.05px; padding-top: 15px; margin-top: 15px; border-top: 1px solid #e0e0e0">
-        <strong>${firstName} ${lastName}</strong> sent you a Thing from Freection! Do you want to let ${firstName} know when you're done?
-        Do it from Freection <a href="https://freection.com" target="_blank">here!</a>
-        <img src="${pixelUrl}?email=${email}&eventId=${eventId}" width="0" height="0" />
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    .container {
+        width: 700px;
+        border: 1px solid #d7d7d7;
+        margin: auto;
+    }
+
+    .message-section {
+        width: 100%;
+        border-bottom: 1px solid #d7d7d7;
+    }
+
+    .signature-section {
+        height: 115px;
+        width: 100%;
+        padding: 20px 25px;
+        background-color: #f5f5f5;
+    }
+
+    .logo {
+        width: 48px;
+        height: 15px;
+        margin-top: 15px;
+        font-size: 18px;
+        letter-spacing: 0.1em;
+    }
+
+    .message-title {
+        height: 50px;
+        margin-top: 5px;
+        font-family: Roboto, Arial;
+        font-size: 22px;
+        font-weight: 100;
+        text-transform: uppercase;
+    }
+
+    .message-body {
+        padding: 20px;
+        min-height: 230px;
+    }
+
+    .explanation {
+        float: left;
+        font-size: 13px;
+        line-height: 1.5;
+        vertical-align: middle;
+        margin-top: 10px;
+    }
+
+    .action {
+        width: 150px;
+        float: right;
+    }
+
+    .try-link {
+        text-decoration: none;
+    }
+
+    .try-text {
+        width: 150px;
+        height: 30px;
+        margin-top: 20px;
+        line-height: 30px;
+        background-color: #fab029;
+        color: black;
+        text-transform: uppercase;
+        text-align: center;
+        font-size: 11px;
+        border: none;
+        outline: none;
+        letter-spacing: 0.05em;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .try-text:hover {
+        color: white;
+    }
+
+    .pixel {
+        visibility: hidden;
+    }
+</style>
+
+<div dir="auto" class="container">
+    <div class="message-section">
+        <div style="text-align: center">
+            <span>
+                <img src="${logoUrl}" class="logo" alt="***" width="48" height="15">
+                <div class="message-title">
+                    ${firstName} sent you a thing in Freection
+                </div>
+            </span>
+        </div>
+        <div class="message-body">
+            ${body}
+        </div>
+    </div>
+    <div class="signature-section">
+        <div class="explanation">
+            Freection is a collaborative to-do list and a communication platform.<br>
+            Follow up on things you send to others, and track all of your work in a single place.<br>
+            <b>What Slack is for chats - Freection is for to-do lists.</b>
+        </div>
+        <div class="action">
+            <a href="https://freection.com" target="_blank" class="try-link">
+                <div class="try-text">
+                    Try Freection here
+                </div>
+            </a>
+        </div>
     </div>
 </div>
+<img src="${pixelUrl}?email=${email}&eventId=${eventId}" class="pixel" width="0" height="0" />

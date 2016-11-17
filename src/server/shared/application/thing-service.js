@@ -1,6 +1,7 @@
 import {remove, castArray, union, chain, omitBy, isNil, last, map, clone, uniq, reject, template, isEmpty} from 'lodash'
 import AddressParser from 'email-addresses'
 import requireText from 'require-text'
+import juice from 'juice'
 
 import {Event, User} from '../models'
 import * as EventCreator from './event-creator'
@@ -14,6 +15,7 @@ import SharedConstants from '../../../common/shared-constants'
 import {userToAddress, emailToAddress} from './address-creator'
 import {sendMessage} from '../technical/email-send-service'
 import logger from '../utils/logger'
+import GeneralConfig from '../config/general'
 import {replyToAddress} from '../config/email'
 import {url as pixelUrl} from '../config/pixel'
 import textToHtml from '../../../common/util/textToHtml'
@@ -533,19 +535,19 @@ function getReplyAddress(thingId) {
     return `${parts[0]}+${thingId}@${parts[1]}`
 }
 
-function getThingEmailBody(event, body, user, toAddress) {
+async function getThingEmailBody(event, body, user, toAddress) {
     const toOrganization = EmailParsingUtility.getOrganization(toAddress.id)
 
     const bodyTemplate = toOrganization === user.organization ? organizationEmailTemplate : externalEmailTemplate
 
-    return bodyTemplate({
+    return juice(bodyTemplate({
         body: textToHtml(body),
         firstName: user.firstName,
-        lastName: user.lastName,
         email: toAddress.payload.email,
         eventId: event.id,
+        logoUrl: `${GeneralConfig.BASE_URL}/logo-black.png`,
         pixelUrl: pixelUrl
-    })
+    }))
 }
 
 async function sendEmailForThing(thing, event, user, toAddress, subject, body) {
@@ -555,7 +557,7 @@ async function sendEmailForThing(thing, event, user, toAddress, subject, body) {
     try {
         const messageId = ThingHelper.getEmailId(thing)
 
-        const htmlBody = getThingEmailBody(event, body, user, toAddress)
+        const htmlBody = await getThingEmailBody(event, body, user, toAddress)
 
         // we don't wait for the send email to complete, we want it to be async so creating a thing won't be delayed
         await sendMessage(user, {
