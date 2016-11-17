@@ -3,10 +3,10 @@ import path from 'path'
 import express from 'express'
 import jwt from 'jsonwebtoken'
 
-import SharedConstants from '../../common/shared-constants'
 import {isDemo} from '../shared/config/demo'
 import {isAnalyticsEnabled} from '../shared/config/analytics.js'
-import tokenConfig from '../shared/config/token'
+import GeneralConfig from '../shared/config/general'
+import TokenConfig from '../shared/config/token'
 import logger from '../shared/utils/logger'
 import login from './login'
 import * as ThingService from '../shared/application/thing-service'
@@ -121,7 +121,7 @@ function getAuthState(request) {
     const tokenOptions = request.user.exp ? {} : {expiresIn: '30 days'}
     try {
         // TODO: this is synchronous function call, we might want to call async version of it
-        auth.pushToken = jwt.sign(request.user, tokenConfig.pushSecret, tokenOptions)
+        auth.pushToken = jwt.sign(request.user, TokenConfig.pushSecret, tokenOptions)
         return auth
     } catch (error) {
         logger.error(`Failed to sign user ${request.user.email} for a the push service token`, error)
@@ -132,6 +132,6 @@ function getAuthState(request) {
 function getConfig() {
     return {
         isDemo: isDemo,
-        baseUrl: process.env.FREECTION_HOST || SharedConstants.DEFAULT_BASE_URL
+        baseUrl: GeneralConfig.BASE_URL
     }
 }

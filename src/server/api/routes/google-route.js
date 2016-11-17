@@ -2,15 +2,14 @@ import {Router} from 'express'
 import passport from 'passport'
 import isUndefined from 'lodash/isUndefined'
 
+import GeneralConfig from '../../shared/config/general'
 import token from '../../shared/utils/token-strategy'
 import {User} from '../../shared/models'
 import {generateOAuth2Url} from '../../shared/technical/google-service'
-import SharedConstants from '../../../common/shared-constants'
 
 const router = Router()
 
-const baseUrl = process.env.FREECTION_HOST || SharedConstants.DEFAULT_BASE_URL
-const sendPermissionCallbackUrl = `${baseUrl}/api/google/sendpermission/callback`
+const sendPermissionCallbackUrl = `${GeneralConfig.BASE_URL}/api/google/sendpermission/callback`
 const finalRedirectPath = '/integrations/gmail'
 
 router.get('/sendpermission', setSendPermission)
