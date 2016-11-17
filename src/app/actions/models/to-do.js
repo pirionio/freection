@@ -13,6 +13,14 @@ module.exports = {
             completeParams: {
                 things: 'result'
             }
+        },
+        {
+            name: 'reorder drag',
+            params: ['movedItemId', 'onItemId']
+        },
+        {
+            name: 'move to group',
+            params: ['movedItemId', 'category']
         }
     ]
 }

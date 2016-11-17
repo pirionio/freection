@@ -4,7 +4,8 @@ import {connect} from 'react-redux'
 import ThingStatus from '../../../common/enums/thing-status'
 import * as ThingPageActions from '../../actions/thing-page-actions'
 import * as ThingHelper from '../../../common/helpers/thing-helper'
-import PreviewItem, {PreviewItemStatus, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
+import PreviewCard from '../Preview/PreviewCard'
+import {PreviewItemStatus, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
 import {ThingPreviewText} from '../Preview/Thing'
 import styleVars from '../style-vars'
 import CommandsBar from '../Commands/CommandsBar.js'
@@ -33,15 +34,20 @@ class TodoPreviewItem extends Component {
     }
 
     render() {
-        const {thing, commands, dispatch} = this.props
+        const {thing, commands, index, reorder, dispatch} = this.props
 
         const textPreview = <ThingPreviewText thing={thing}/>
 
         return (
-            <PreviewItem circleColor={this.getCircleColor()}
+            <PreviewCard thing={thing}
+                         circleColor={this.getCircleColor()}
                          title={thing.subject}
                          date={thing.createdAt}
                          expandedMessages={this.getExpandedMessages()}
+                         entityId={thing.id}
+                         index={index}
+                         category={thing.todoTimeCategory}
+                         reorder={reorder}
                          onClick={() => dispatch(ThingPageActions.show(thing))}>
                 <PreviewItemStatus>
                     <strong>{thing.creator.displayName}</strong>
@@ -50,14 +56,15 @@ class TodoPreviewItem extends Component {
                 <PreviewItemActions>
                     <CommandsBar thing={thing} commands={commands} />
                 </PreviewItemActions>
-            </PreviewItem>
+            </PreviewCard>
         )
     }
 }
 
 TodoPreviewItem.propTypes = {
     thing: PropTypes.object.isRequired,
-    commands: PropTypes.array.isRequired
+    commands: PropTypes.array.isRequired,
+    index: PropTypes.number.isRequired
 }
 
 export default connect()(TodoPreviewItem)

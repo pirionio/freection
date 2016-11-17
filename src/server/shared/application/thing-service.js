@@ -1,4 +1,4 @@
-import {remove, castArray, union, chain, omitBy, isNil, last, map, clone, uniq, reject, template, isEmpty} from 'lodash'
+import {remove, castArray, union, chain, omitBy, isNil, last, map, clone, uniq, reject, template, isEmpty, forOwn} from 'lodash'
 import AddressParser from 'email-addresses'
 import requireText from 'require-text'
 import juice from 'juice'
@@ -11,6 +11,7 @@ import ThingStatus from '../../../common/enums/thing-status'
 import EntityTypes from '../../../common/enums/entity-types'
 import EventTypes from '../../../common/enums/event-types'
 import UserTypes from '../../../common/enums/user-types'
+import TodoTimeCategory from '../../../common/enums/todo-time-category'
 import SharedConstants from '../../../common/shared-constants'
 import {userToAddress, emailToAddress} from './address-creator'
 import {sendMessage} from '../technical/email-send-service'
@@ -44,13 +45,29 @@ export function getWhatsNew(user) {
         })
 }
 
-export function getToDo(user) {
-    return ThingDomain.getUserToDos(user.id)
-        .then(things => things.map(thing => thingToDto(thing, user)))
-        .catch(error => {
-            logger.error(`error while fetching to do list for user ${user.email}`, error)
-            throw error
+export async function getToDo(user) {
+    try {
+        const things = await ThingDomain.getUserToDos(user.id)
+        const fullUser = await User.get(user.id).run()
+
+        forOwn(fullUser.todos, (categoryTodos, categoryKey) => {
+            things.forEach(thing => {
+                if (categoryTodos.includes(thing.id))
+                    thing.todoTimeCategory = TodoTimeCategory[categoryKey]
+            })
         })
+
+        // Set a category for the things that didn't appear in any category
+        things.forEach(thing => {
+            if (isNil(thing.todoTimeCategory))
+                thing.todoTimeCategory = TodoTimeCategory.LATER
+        })
+
+        return things.map(thing => thingToDto(thing, user))
+    } catch (error) {
+        logger.error(`error while fetching to do list for user ${user.email}`, error)
+        throw error
+    }
 }
 
 export function getFollowUps(user) {

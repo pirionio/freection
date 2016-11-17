@@ -1,4 +1,6 @@
 import some from 'lodash/some'
+import find from 'lodash/find'
+import findIndex from 'lodash/findIndex'
 
 import ToDoActionTypes from '../actions/types/to-do-action-types'
 import ThingCommandActionTypes from '../actions/types/thing-command-action-types'
@@ -120,10 +122,53 @@ function createTodo(thing) {
     }
 }
 
+function reorder(state, action) {
+    const movedTodo = find(state.todos, {id: action.movedItemId})
+    const onTodo = find(state.todos, {id: action.onItemId})
+
+    let newTodo = movedTodo
+
+    if (!movedTodo)
+        return state
+
+    if (onTodo) {
+        newTodo = immutable(movedTodo)
+            .touch('thing')
+            .set('thing.todoTimeCategory', onTodo.thing.todoTimeCategory)
+            .value()
+    }
+
+    const newState = immutable(state)
+        .arrayReject('todos', {id: action.movedItemId})
+        .value()
+
+    const onIndex = findIndex(state.todos, {id: action.onItemId})
+
+    if (onIndex > -1) {
+        return immutable(newState)
+            .arraySplice('todos', onIndex, newTodo)
+            .value()
+    }
+
+
+    return state
+}
+
+function moveToGroup(state, action) {
+    return immutable(state)
+        .arrayMergeItem('todos', {id: action.movedItemId}, {thing: {todoTimeCategory: action.category}})
+        .value()
+}
+
+
 export default (state = initialState, action) => {
     switch (action.type) {
         case ToDoActionTypes.SET_STATE:
             return setState(state, action)
+        case ToDoActionTypes.REORDER_DRAG:
+            return reorder(state, action)
+        case ToDoActionTypes.MOVE_TO_GROUP:
+            return moveToGroup(state, action)
         case SystemEventActionTypes.RECONNECTED:
             return reconnected(state)
         case ToDoActionTypes.FETCH_TO_DO:

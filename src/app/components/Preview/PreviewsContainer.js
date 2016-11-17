@@ -53,6 +53,8 @@ class PreviewsContainer extends Component {
     render () {
         const {children, previewItems, invalidationStatus, sheet: {classes}} = this.props
 
+        // console.log('PreviewsContainer - previewItems - LATER:', previewItems[1].props.children[1].map(item => item.props.thing))
+
         let content = null
         if (invalidationStatus === InvalidationStatus.FETCHING)
             content = this.getFetching()

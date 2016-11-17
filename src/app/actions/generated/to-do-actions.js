@@ -27,3 +27,19 @@ export function _fetchToDo() {
             }))
     }
 }
+
+export function reorderDrag(movedItemId,onItemId) {
+    return {
+        type: ToDoActionsTypes.REORDER_DRAG,
+        movedItemId,
+        onItemId
+    }
+}
+
+export function moveToGroup(movedItemId,category) {
+    return {
+        type: ToDoActionsTypes.MOVE_TO_GROUP,
+        movedItemId,
+        category
+    }
+}

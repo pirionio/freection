@@ -92,6 +92,18 @@ class Immutable {
         return this
     }
 
+    arraySplice(path, index, value) {
+        const array = get(this._object, path)
+
+        if (array) {
+            const newArray = [...array]
+            newArray.splice(index, 0, value)
+            set(this._object, path, newArray)
+        }
+
+        return this
+    }
+
     value() {
         return this._object
     }

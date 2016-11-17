@@ -33,3 +33,7 @@ export const GlassPaneIds = {
     WHOLE_APP: 'WHOLE_APP',
     MAIN_APP: 'MAIN_APP'
 }
+
+export const DragItemTypes = {
+    PREVIEW_CARD: 'PREVIEW_CARD'
+}

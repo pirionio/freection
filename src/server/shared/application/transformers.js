@@ -20,6 +20,7 @@ export function thingToDto(thing, user, {includeEvents = true} = {}) {
         subject: thing.subject,
         payload: thing.payload,
         type: EntityTypes[thing.type],
+        todoTimeCategory: thing.todoTimeCategory,
         events: includeEvents && thing.events ? thing.events.map(event => eventToDto(event, user, {includeThing: false})) : [],
         isCreator: thing.creator.id === user.id,
         isTo: thing.to.id === user.id,

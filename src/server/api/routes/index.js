@@ -10,6 +10,7 @@ import GithubRoute from './github-route'
 import SlackRoute from './slack-route'
 import GoogleRoute from './google-route'
 import ContactsRoute from './contacts-route'
+import UserRoute from './user-route'
 
 const router = Router()
 
@@ -23,5 +24,6 @@ router.use('/github', GithubRoute)
 router.use('/slack', SlackRoute)
 router.use('/google', GoogleRoute)
 router.use('/contacts', ContactsRoute)
+router.use('/users', UserRoute)
 
 export default router

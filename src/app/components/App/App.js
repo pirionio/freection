@@ -3,6 +3,8 @@ import {connect} from 'react-redux'
 import useSheet from 'react-jss'
 import classAutobind from 'class-autobind'
 import Favicon from 'react-favicon'
+import {DragDropContext} from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend'
 
 import * as ThingHelper from '../../../common/helpers/thing-helper'
 import Flexbox from '../UI/Flexbox'
@@ -19,6 +21,7 @@ import * as DesktopNotificationService from '../../services/desktop-notification
 import * as ChromeExtensionActions from '../../actions/chrome-extension-actions'
 import { closeExpanded } from '../../actions/message-box-actions'
 import {goBack} from 'react-router-redux'
+import CustomDragLayer from '../UI/CustomDragLayer'
 
 // import EmailLifecycleService from '../../services/email-lifecycle-service'
 
@@ -82,6 +85,8 @@ class App extends Component {
     render () {
         const {currentUser, sheet: {classes}} = this.props
 
+        // Add CustomDragLayer if the dragged items are not captured properly by the browser.
+
         if (currentUser.isAuthenticated) {
             return (
                 <Page title={this.getTitle()} className={classes.page}>
@@ -134,4 +139,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default useSheet(connect(mapStateToProps)(App), style)
+export default useSheet(connect(mapStateToProps)(DragDropContext(HTML5Backend)(App)), style)

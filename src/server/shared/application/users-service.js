@@ -93,3 +93,10 @@ export async function getUsers(user) {
 
     return organizationsUsers.map(userToAddress)
 }
+
+export async function setTodos(userId, todos) {
+    const user = await User.get(userId).run()
+    user.todos = todos
+    const persistedUser = await user.save()
+    return persistedUser.todos
+}
