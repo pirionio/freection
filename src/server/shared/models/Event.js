@@ -112,7 +112,7 @@ Event.defineStatic('markAsRead', function(eventId, userId) {
     return this.get(eventId).update(event => {
         return {
             payload: {
-                readByList: event('payload')('readByList').append(userId)
+                readByList: event('payload')('readByList').setInsert(userId)
             }
         }
     }).run()
