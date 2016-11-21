@@ -7,6 +7,7 @@ import classNames from 'classnames'
 import useSheet from 'react-jss'
 import Icon from 'react-fontawesome'
 import find from 'lodash/find'
+import uniq from 'lodash/uniq'
 
 import * as HtmlUtil from '../../util/html-util'
 import EventTypes from '../../../common/enums/event-types'
@@ -54,17 +55,26 @@ class Comment extends Component {
     }
 
     getReadBy() {
-        const {comment, users, sheet: {classes}} = this.props
+        const {comment, currentUser, users, sheet: {classes}} = this.props
 
         const tooltipId = `readByTooltip-${comment.id}`
+
+        const list = uniq(comment.payload.readByList)
+
+        if (list.length === 0)
+            return <Icon name="eye-slash" className={classes.notReadBy} />
 
         return (<div data-tip data-for={tooltipId}>
             <Icon name="eye" className={classes.readBy} />
             <Tooltip id={tooltipId} type="light" className={classes.readByTooltip} place="right">
                 <div className={classes.readByTooltipTitle}>Seen By:</div>
                 <div>
-                    {comment.payload.readByList.map((userId,index) => {
-                        return (<div className={classes.readByTooltipItem} key={index} >{find(users, user => user.id === userId).displayName}</div>)
+                    {list.map((userId,index) => {
+                        return (
+                            <div className={classes.readByTooltipItem} key={index} >
+                                {currentUser.id === userId ? 'You' : find(users, user => user.id === userId).displayName}
+                            </div>
+                        )
                     })}
                 </div>
             </Tooltip>
@@ -83,9 +93,7 @@ class Comment extends Component {
 
         const textClass = classNames(classes.text, GeneralConstants.INSPECTLET_SENSITIVE_CLASS)
 
-        const readBy = comment.payload.readByList.length > 0 ?
-            this.getReadBy() :
-            <Icon name="eye-slash" className={classes.notReadBy} />
+        const readBy = this.getReadBy()
 
         return (
             <VisibilitySensor onChange={this.onVisibilityChange} partialVisibility={true}>

@@ -52,7 +52,7 @@ function commentPayloadToDto(creator, payload, user) {
     return Object.assign({}, payload, {
         isRead: payload.readByList ? payload.readByList.includes(user.id) : false,
         isMentioned: payload.mentioned ? payload.mentioned.includes(user.id) : false,
-        readByList: reject(payload.readByList, userId => userId === user.id || creator.id === userId),
+        readByList: reject(payload.readByList, userId => creator.id === userId),
         mentioned: undefined
     })
 }
