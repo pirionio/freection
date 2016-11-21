@@ -355,6 +355,8 @@ export async function comment(user, thingId, commentText) {
 
         await sendEmailForEvent(user, thing, comment)
 
+        await Event.discardUserEventsByType(thingId, EventTypes.COMMENT.key, user.id)
+
         return persistedThing
     } catch (error) {
         logger.error(`Could not comment on thing ${thingId} for user ${user.email}`, error)
