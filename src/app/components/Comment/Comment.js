@@ -64,7 +64,7 @@ class Comment extends Component {
                 return currentUser.id === userId ? 'You' : find(users, user => user.id === userId).displayName
             })
 
-        const list = [...readByList, ...comment.payload.readByEmailList]
+        const list =  comment.payload.readByEmailList ? [...readByList, ...comment.payload.readByEmailList] : readByList
 
         if (list.length === 0)
             return <Icon name="eye-slash" className={classes.notReadBy} />
