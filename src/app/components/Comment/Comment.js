@@ -59,7 +59,12 @@ class Comment extends Component {
 
         const tooltipId = `readByTooltip-${comment.id}`
 
-        const list = uniq(comment.payload.readByList)
+        const readByList = uniq(comment.payload.readByList)
+            .map(userId => {
+                return currentUser.id === userId ? 'You' : find(users, user => user.id === userId).displayName
+            })
+
+        const list = [...readByList, ...comment.payload.readByEmailList]
 
         if (list.length === 0)
             return <Icon name="eye-slash" className={classes.notReadBy} />
@@ -69,10 +74,10 @@ class Comment extends Component {
             <Tooltip id={tooltipId} type="light" className={classes.readByTooltip} place="right">
                 <div className={classes.readByTooltipTitle}>Seen By:</div>
                 <div>
-                    {list.map((userId,index) => {
+                    {list.map((name,index) => {
                         return (
                             <div className={classes.readByTooltipItem} key={index} >
-                                {currentUser.id === userId ? 'You' : find(users, user => user.id === userId).displayName}
+                                {name}
                             </div>
                         )
                     })}
