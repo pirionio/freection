@@ -68,6 +68,10 @@ export function listenToUpdates(email, pushToken, dispatch) {
         dispatch(EventActions.commentReadBy(event))
     })
 
+    socket.on('comment-read-by-email', event => {
+        dispatch(EventActions.commentReadByEmail(event))
+    })
+
     socket.on('new-user', user => {
         dispatch(UsersActions.addUser(user))
     })
