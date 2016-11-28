@@ -28,7 +28,7 @@ function getGmailUser(sdk) {
 function getOptions() {
 	return new Promise(resolve => {
 		chrome.storage.sync.get({
-			baseUrl: 'https://freection.com'
+			baseUrl: 'https://app.freection.com'
 		}, function(options) {
 			resolve(options)
 		})

@@ -235,7 +235,7 @@ function getEmailForThingHtml(user, body) {
                 <span>
                     ${user.firstName} ${user.lastName} is using Freection.
                     If you want to let ${user.firstName} know that's going on with this thing, try Freection 
-                    <a href="https://freection.com" target="_blank">here!</a>
+                    <a href="https://app.freection.com" target="_blank">here!</a>
                 </span>
             </div>`
 }

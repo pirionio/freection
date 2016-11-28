@@ -49,7 +49,7 @@ router.post('/thing', async function(request, response) {
             const creator = await getUserBySlackId(userId)
 
             if (!creator) {
-                respondWith(response, 'You are not registered on freection, go to http://freection.com to join')
+                respondWith(response, 'You are not registered on freection, go to https://app.freection.com to join')
                 return
             }
 
