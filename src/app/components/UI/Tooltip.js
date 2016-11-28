@@ -7,7 +7,7 @@ import {GeneralConstants} from '../../constants'
 
 class Tooltip extends Component {
     render() {
-        const {id, delay, multiline, place, children, text, className, sheet: {classes}} = this.props
+        const {id, type, delay, multiline, place, children, text, className, sheet: {classes}} = this.props
 
         const content =
             children ? children :
@@ -15,7 +15,7 @@ class Tooltip extends Component {
             null
 
         return (
-            <ReactTooltip id={id} effect="solid" delayShow={delay} multiline={multiline} place={place} class={className || classes.tooltip}>
+            <ReactTooltip id={id} type={type} effect="solid" delayShow={delay} multiline={multiline} place={place} class={className || classes.tooltip}>
                 {content}
             </ReactTooltip>
         )
@@ -38,13 +38,16 @@ const style = {
 
 Tooltip.propTypes = {
     id: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
     delay: PropTypes.number.isRequired,
     multiline: PropTypes.bool.isRequired,
     place: PropTypes.string.isRequired,
-    text: PropTypes.string
+    text: PropTypes.string,
+    className: PropTypes.string
 }
 
 Tooltip.defaultProps = {
+    type: 'dark',
     delay: GeneralConstants.TOOLTIP_DELAY,
     multiline: true,
     place: 'top'

@@ -1,5 +1,5 @@
 chrome.storage.sync.get({
-    baseUrl: 'https://freection.com'
+    baseUrl: 'https://app.freection.com'
 }, function(options) {
     var url = options.baseUrl + '/chrome.js'
 

@@ -6,7 +6,7 @@ export default {
 
     EVENTS_TO_GROUP: [EventTypes.CREATED.key, EventTypes.COMMENT.key],
 
-    DEFAULT_BASE_URL: 'https://freection.com',
+    DEFAULT_BASE_URL: 'https://app.freection.com',
 
     MENTION_REGEX: /(^|\s+)@([\w\.]+)/gm
 }

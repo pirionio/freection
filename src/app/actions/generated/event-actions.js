@@ -106,3 +106,10 @@ export function commentReadBy(event) {
         event
     }
 }
+
+export function commentReadByEmail(event) {
+    return {
+        type: EventActionsTypes.COMMENT_READ_BY_EMAIL,
+        event
+    }
+}

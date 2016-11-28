@@ -23,7 +23,7 @@ function updateSaveStatus() {
 function restoreBaseUrl() {
     // Determining the default values.
     chrome.storage.sync.get({
-        baseUrl: 'https://freection.com'
+        baseUrl: 'https://app.freection.com'
     }, function(options) {
         for (var field in options) {
             if (options.hasOwnProperty(field)) {

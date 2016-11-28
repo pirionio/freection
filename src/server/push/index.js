@@ -121,8 +121,9 @@ export function configure(app) {
 
         if (SharedConstants.MESSAGE_TYPED_EVENTS.includes(event.eventType)) {
             const readByUsers = difference(event.payload.readByList, oldEvent.payload.readByList)
+            const readByEmailUsers = difference(event.payload.readByEmailList, oldEvent.payload.readByEmailList)
 
-            if (readByUsers && readByUsers.length) {
+            if (readByUsers.length || readByEmailUsers.length) {
                 const thing = await Thing.get(event.thingId).run()
 
                 readByUsers.forEach(readByUserId => {
@@ -131,6 +132,16 @@ export function configure(app) {
                             id: event.id,
                             isReadByMe: userId === readByUserId,
                             readByUserId: readByUserId,
+                            thing
+                        })
+                    })
+                })
+
+                readByEmailUsers.forEach(readByEmail => {
+                    thing.all.forEach(userId => {
+                        io.to(userId).emit('comment-read-by-email', {
+                            id: event.id,
+                            readByEmail: readByEmail,
                             thing
                         })
                     })

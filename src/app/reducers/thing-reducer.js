@@ -26,6 +26,18 @@ function commentReadByReceived(state, action) {
         .value()
 }
 
+function commentReadByEmailReceived(state, action) {
+    return immutable(state)
+        .arrayMergeItem('events', event => event.id === action.event.id, event => {
+            return {
+                payload: {
+                    readByEmailList: union(event.payload.readByEmailList, [action.event.readByEmail])
+                }
+            }
+        })
+        .value()
+}
+
 function eventReceived(state, action, isPing) {
     const newState = immutable(state)
         .touch('payload')
@@ -84,6 +96,8 @@ export default (state, action) => {
             return ping(state, action)
         case EventActionTypes.COMMENT_READ_BY:
             return commentReadByReceived(state, action)
+        case EventActionTypes.COMMENT_READ_BY_EMAIL:
+            return commentReadByEmailReceived(state, action)
         default:
             return state
     }

@@ -13,6 +13,7 @@
         "https://mail.google.com/*",
         "https://inbox.google.com/*",
         "https://freection.com/*",
+        "https://app.freection.com/*",
         "https://demo.freection.com/*",
         "https://freection1.ngrok.io/*",
         "https://freection2.ngrok.io/*"
@@ -32,6 +33,7 @@
     "https://mail.google.com/",
     "https://inbox.google.com/",
     "https://freection.com/",
+    "https://app.freection.com/",
     "https://demo.freection.com/",
     "https://ycdemo.freection.com/",
     "https://freection1.ngrok.io/",
