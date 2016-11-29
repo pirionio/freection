@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Freection Thank You</title>
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" />
+    <link href="    https://fonts.googleapis.com/css?family=Lato:400,500|Montserrat:400,500" rel="stylesheet">
+
+    <style>
+        html {
+            height: 100%;
+        }
+
+        body {
+            font-family: Lato, SansSerif;
+            height: 100%;
+        }
+
+        strong {
+            font-weight: 500;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+        
+        .container {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .top {
+            position: relative;
+            background-image: url("site-bg.png");
+            height: 592px;
+            width: 100%;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-grow: 0;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 20;
+        }
+
+        .bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            background-color: white;
+        }
+
+        .layover {
+            position: absolute;
+            display: block;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            background-color: white;
+            opacity: 0.55;
+        }
+
+        .logo {
+            height: 60px;
+        }
+
+        .logo img {
+            height: 23px;
+            width: 317px;
+            margin-top: 36px;
+        }
+
+        .title {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 43px;
+            font-family: Montserrat, Lato, SansSerif;
+            margin-top: 108px;
+            line-height: 52px;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            line-height: 34px;
+            margin-top: 63px;
+            font-weight: bold;
+        }
+
+        .thankyou-title {
+            color: #f6ab27;
+            font-size: 62px;
+        }
+
+        .thankyou-subtitle {
+            color: #1e272c;
+            font-size: 28px;
+            margin-top: 40px;
+        }
+    </style>
+
+    <!-- Facebook Pixel Code -->
+    <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '686513141511242');
+        fbq('track', 'Lead');
+    </script>
+    <noscript>
+        <img height="1" width="1" src="https://www.facebook.com/tr?id=686513141511242&ev=Lead&noscript=1"/>
+    </noscript>
+    <!-- End Facebook Pixel Code -->
+</head>
+<body>
+    <div class="container">
+        <div class="top">
+            <div class="layover"></div>
+            <div class="content">
+                <a href="http://fb.freection.com" class="logo">
+                    <img src="logo-text-black.png" />
+                </a>
+                <div class="title">
+                    <div>Gmail id old.</div>
+                    <div>Move to the next step.</div>
+                </div>
+                <div class="subtitle">
+                    Freection is a communication platform for your organization
+                </div>
+            </div>
+        </div>
+        <div class="bottom">
+            <div class="thankyou-title">
+                Thank you very much!
+            </div>
+            <div class="thankyou-subtitle">
+                We will contact you when there are updates about our product.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

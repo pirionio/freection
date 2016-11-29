@@ -48,6 +48,10 @@ export function configure(app) {
     // Serve static
     app.use(express.static(path.join(__dirname, '../../public')))
 
+    app.get('/thankyou', (request, response) => {
+        response.render('thank-you')
+    })
+
     app.get('/demo', (request, response) => {
         if (isDemo)
             response.render('demo')
