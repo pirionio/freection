@@ -34,7 +34,7 @@ class FollowUpPreviewItem extends Component {
                 return <span>In <strong>{thing.to.displayName}</strong> To Do list</span>
             case ThingStatus.NEW.key:
             case ThingStatus.REOPENED.key:
-                return <span>Still in <strong>{thing.to.displayName}</strong> notifications list</span>
+                return <span>Still in <strong>{thing.to.displayName}</strong> inbox list</span>
             case ThingStatus.DONE.key:
                 return <span><strong>{thing.to.displayName}</strong> completed the thing</span>
             case ThingStatus.DISMISS.key:
