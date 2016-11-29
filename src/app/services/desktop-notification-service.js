@@ -99,10 +99,16 @@ function showNotification(id, title, body, type) {
 
     notificationStore.push = id
 
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
         remove(notificationStore, id)
         notification.close()
     }, 5000)
+
+    notification.onclick = () => {
+        clearTimeout(timeoutId)
+        notification.close()
+        window.focus()
+    }
 }
 
 function fromSlackCreateNotification(event) {
