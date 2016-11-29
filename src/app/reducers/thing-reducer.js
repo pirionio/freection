@@ -12,7 +12,8 @@ function commentReadByReceived(state, action) {
             if (action.event.isReadByMe) {
                 return {
                     payload: {
-                        isRead: true
+                        isRead: true,
+                        readByList: union(event.payload.readByList, [action.event.readByUserId])
                     }
                 }
             }
