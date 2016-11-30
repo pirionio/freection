@@ -30,6 +30,14 @@ export function initialize(user) {
             hostname: window.location.hostname
         })
     }
+
+    if (window._cio) {
+        window._cio.identify({
+            id: user.id,
+            email: user.email,
+            name: `${user.firstName} ${user.lastName}`
+        })
+    }
 }
 
 export function clean() {
