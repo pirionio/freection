@@ -50,22 +50,22 @@ export function thingCreated(thing, showNewList) {
         })
     }
 
-    if (thing.to.type === userTypes.FREECTION.key && !ThingHelper.isSelf(thing)) {
-        const creator = thing.creator.payload && thing.creator.payload.email ? thing.creator.payload.email : thing.creator.displayName
+    const creator = thing.creator.payload && thing.creator.payload.email ? thing.creator.payload.email : thing.creator.displayName
 
-        trackIntercomEvent('received_thing', thing.to.id, {
+    showNewList.forEach(userId => {
+        trackIntercomEvent('received_thing', userId, {
             type: thing.type,
             creator_type: thing.creator.type,
             creator
         })
 
-        trackCustomer('received_thing', thing.to.id, {
+        trackCustomer('received_thing', userId, {
             type: thing.type,
             creator_type: thing.creator.type,
             creator: thing.creator.displayName,
             subject: thing.subject,
         })
-    }
+    })
 
     notification_received(showNewList, 'thing_created')
 }
