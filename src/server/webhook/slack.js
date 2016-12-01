@@ -47,14 +47,14 @@ router.post('/thing', async function(request, response) {
             const creator = await getUserBySlackId(userId)
 
             if (!creator) {
-                respondWith(response, 'You are not registered on freection, go to https://app.freection.com to join')
+                respondWith(response, 'You are not registered on Freection, go to https://app.freection.com to join')
                 return
             }
 
             const team = await getTeam(teamId)
 
             if (!team) {
-                respondWith(response, 'You have to integrate slack with freection first')
+                respondWith(response, 'You have to integrate Slack with Freection first')
                 return
             }
 
@@ -77,7 +77,7 @@ router.post('/thing', async function(request, response) {
             }
 
             if (!toUserEmail) {
-                delayRespondWith(responseUrl, 'The mentioned user doesn\'t exist in slack and therefore task was not created on freection')
+                delayRespondWith(responseUrl, 'The mentioned user doesn\'t exist in Slack, therefore a task was not created in Freection')
                 return
             }
 
@@ -86,13 +86,13 @@ router.post('/thing', async function(request, response) {
             }
 
             await ThingService.newThing(creator, toUserEmail, subject, '', {source: ThingSource.SLACK.key})
-            delayRespondWith(responseUrl, 'New task created on freection')
+            delayRespondWith(responseUrl, 'New task created in Freection')
 
         } else {
             response.sendStatus(500)
         }
     } catch(error) {
-        logger.error('Slack - error while handling webhook from slack', error)
+        logger.error('Slack - error while handling webhook from Slack', error)
         response.sendStatus(500)
     }
 })
@@ -133,7 +133,7 @@ async function getUserBySlackId(userId) {
             return null
         }
 
-        logger.error('Slack - error while trying to user by slack id from db', error)
+        logger.error('Slack - error while trying to get user by Slack ID from DB', error)
 
         throw error
     }
@@ -150,7 +150,7 @@ async function getTeam(teamId) {
         }
 
 
-        logger.error('Slack - error while trying to get slack team from db', error)
+        logger.error('Slack - error while trying to get Slack team from DB', error)
 
         throw error
     }
@@ -170,7 +170,7 @@ async function getEmailFromMention(team, mention) {
 
         return `"${toUser.profile.real_name}" <${toUser.profile.email}>`
     } catch(error) {
-        logger.error('Slack - error while trying to get slack user from mention', error)
+        logger.error('Slack - error while trying to get Slack user from the mention parameter in the command', error)
         throw error
     }
 }
