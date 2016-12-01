@@ -64,7 +64,7 @@ class WhatsNew extends Component {
     getPlaceholder() {
         return (
             <Placeholder title="Zero Inbox!"
-                         subTitle="Check this page when you want to be updated about new notifications on your things." />
+                         subTitle="Check this page when you want to be updated about new notifications on your tasks." />
         )
     }
 

@@ -29,7 +29,7 @@ const routes = (
             <Route path="followup" component={FollowUp}>
                 <Route path=":thingId" component={FullThing} />
             </Route>
-            <Route path="all/things" component={AllThings}>
+            <Route path="all/items" component={AllThings}>
                 <Route path=":thingId" component={FullThing} />
             </Route>
             <Route path="integrations">

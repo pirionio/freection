@@ -40,8 +40,8 @@ class ToDo extends Component {
 
     getPlaceholder() {
         return (
-            <Placeholder title="No things to do"
-                         subTitle="Come to this page for all the things you need to work on." />
+            <Placeholder title="No tasks to do"
+                         subTitle="Come to this page for all the tasks you need to work on." />
         )
     }
 

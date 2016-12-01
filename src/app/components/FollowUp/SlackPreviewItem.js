@@ -30,7 +30,7 @@ class SlackPreviewItem extends Component {
                          title={thing.subject}
                          date={thing.createdAt}>
                 <PreviewItemStatus>
-                    <span>You sent <strong>{thing.to.displayName}</strong> thing in slack</span>
+                    <span>You sent <strong>{thing.to.displayName}</strong> task in slack</span>
                 </PreviewItemStatus>
                 <PreviewItemText />
                 <PreviewItemActions>

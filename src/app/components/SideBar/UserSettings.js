@@ -35,7 +35,7 @@ class UserSettings extends Component {
         const {sheet: {classes}} = this.props
         return this.isOpen() ? (
             <Flexbox name="settings-menu" grow={1} container="column" justifyContent="space-between" className={classes.menu}>
-                <Link to="/all/things" className={classes.menuOption} activeClassName={classes.menuOptionActive}>All Things</Link>
+                <Link to="/all/items" className={classes.menuOption} activeClassName={classes.menuOptionActive}>All Items</Link>
                 <Link to="/integrations" className={classes.menuOption} activeClassName={classes.menuOptionActive}>Integrations</Link>
                 <a href="/login/logout" className={classes.menuOption}>Log Out</a>
             </Flexbox>
