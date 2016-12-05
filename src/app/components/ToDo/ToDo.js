@@ -41,32 +41,38 @@ class ToDo extends Component {
     getThingsToDo() {
         const {todos, sheet: {classes}} = this.props
 
-        const firstCategoryClass = classNames(classes.categoryHeader, classes.firstCategoryHeader)
-
         const todosByTimeCategory = groupBy(todos, todo => todo.thing.todoTimeCategory ? todo.thing.todoTimeCategory.key :
             SharedConstants.DEFAULT_TODO_TIME_CATEGORY.key)
 
         return [
-            this.buildToDoSection(TodoTimeCategory.NEXT, todosByTimeCategory, firstCategoryClass),
-            this.buildToDoSection(TodoTimeCategory.LATER, todosByTimeCategory, classes.categoryHeader),
-            this.buildToDoSection(TodoTimeCategory.SOMEDAY, todosByTimeCategory, classes.categoryHeader)
+            this.buildToDoSection(TodoTimeCategory.NEXT, todosByTimeCategory, classes.firstCategoryHeader),
+            this.buildToDoSection(TodoTimeCategory.LATER, todosByTimeCategory),
+            this.buildToDoSection(TodoTimeCategory.SOMEDAY, todosByTimeCategory)
         ]
     }
 
-    buildToDoSection(category, todosByTimeCategory, categoryClasses) {
+    buildToDoSection(category, todosByTimeCategory, additionalCategoryClass) {
         const {sheet: {classes}} = this.props
 
         const todos = todosByTimeCategory[category.key]
+        const hasTodos = todos && todos.length
         const isCollapsed = this.state.collapseMap[category.key]
 
         const todosSection = isCollapsed ? this.getCollapsedCategoryPlaceholder(category, todos) : this.buildToDoComponents(category, todos)
+        const titleIcon = hasTodos ?
+            <Icon name={isCollapsed ? 'angle-up' : 'angle-down'} className={classes.categoryCollapseIcon} /> :
+            null
+
+        const titleClass = classNames(classes.categoryHeader, additionalCategoryClass)
 
         return (
             <div name={`container-${category.key}`} key={`container-${category.key}`} className="clearfix">
-                <div name="group-title" className={categoryClasses}>
-                    <span>{category.label}</span>
-                    <Icon name={isCollapsed ? 'angle-up' : 'angle-down'} className={classes.categoryCollapseIcon}
-                          onClick={() => this.toggleCategoryCollapseMode(category)} />
+                <div name="group-title" className={titleClass}>
+                    <span className={hasTodos ? classes.categoryHeaderCollapsable : ''}
+                          onClick={() => hasTodos && this.toggleCategoryCollapseMode(category)}>
+                        {category.label}
+                        {titleIcon}
+                    </span>
                 </div>
                 {todosSection}
             </div>
@@ -178,6 +184,9 @@ const style = {
         marginBottom: 13,
         marginLeft: 1
     },
+    categoryHeaderCollapsable: {
+        cursor: 'pointer'
+    },
     firstCategoryHeader: {
         marginTop: 0
     },
@@ -185,8 +194,7 @@ const style = {
         cursor: 'pointer'
     },
     categoryCollapseIcon: {
-        marginLeft: 10,
-        cursor: 'pointer'
+        marginLeft: 10
     }
 }
 
