@@ -230,7 +230,7 @@ const style = {
     previewCard: {
         position: 'relative',
         width: 250,
-        height: 250,
+        height: 193,
         float: 'left',
         backgroundColor: styleVars.secondaryBackgroundColor,
         border: `1px solid ${styleVars.baseBorderColor}`,
@@ -270,7 +270,8 @@ const style = {
         }
     },
     commandsBar: {
-        justifyContent: 'center'
+        justifyContent: 'center',
+        backgroundColor: styleVars.secondaryBackgroundColor
     },
     command: {
         paddingLeft: 0,
@@ -291,9 +292,9 @@ const style = {
         padding: [17, 24, 15, 29]
     },
     subject: {
-        height: 44,
-        marginBottom: 21,
-        fontSize: '1.286em',
+        height: 42,
+        lineHeight: '23px',
+        marginBottom: 11,
         letterSpacing: '0.025em',
         color: 'black',
         overflowY: 'hidden',
@@ -320,8 +321,10 @@ const style = {
         marginTop: 22
     },
     lastComment: {
-        height: 65,
-        lineHeight: 1.5,
+        height: 40,
+        lineHeight: '21px',
+        fontSize: '0.857em',
+        fontWeight: '300',
         letterSpacing: '0.025em',
         color: 'black',
         overflowY: 'hidden'
