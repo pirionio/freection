@@ -17,11 +17,7 @@ class TodoPreviewItem extends Component {
 
     getRecipients() {
         const {thing} = this.props
-
-        return thing.isCreator ? 'Me' :
-            thing.type.key === EntityTypes.THING.key ? thing.creator.displayName :
-            thing.type.key === EntityTypes.EMAIL_THING ? this.getEmailRecipients() :
-            ''
+        return thing.isCreator ? 'Me' : thing.creator.displayName
     }
 
     getEmailRecipients() {
@@ -60,7 +56,9 @@ class TodoPreviewItem extends Component {
 TodoPreviewItem.propTypes = {
     thing: PropTypes.object.isRequired,
     commands: PropTypes.array.isRequired,
-    index: PropTypes.number.isRequired
+    index: PropTypes.number.isRequired,
+    reorder: PropTypes.func.isRequired,
+    commitReorder: PropTypes.func.isRequired
 }
 
 function mapStateToProps(state) {

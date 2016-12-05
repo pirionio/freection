@@ -4,31 +4,14 @@ import useSheet from 'react-jss'
 import classAutobind from 'class-autobind'
 import trimEnd from 'lodash/trimEnd'
 
-import PreviewItem, {PreviewItemStatus, PreviewItemActions} from '../Preview/PreviewItem'
+import PreviewCard from '../Preview/PreviewCard'
+import {PreviewCardRecipients, PreviewCardActions} from '../Preview/PreviewCard'
 import CommandsBar from '../Commands/CommandsBar.js'
-import ThingStatus from '../../../common/enums/thing-status'
-import styleVars from '../style-vars'
 
 class EmailThingPreviewItem extends Component {
     constructor(props) {
         super(props)
         classAutobind(this, EmailThingPreviewItem.prototype)
-    }
-
-    getCircleColor() {
-        const {thing} = this.props
-
-        switch (thing.payload.status) {
-            case ThingStatus.CLOSE.key:
-            case ThingStatus.DISMISS.key:
-                return styleVars.redCircleColor
-            case ThingStatus.NEW.key:
-            case ThingStatus.INPROGRESS.key:
-            case ThingStatus.REOPENED.key:
-                return styleVars.blueCircleColor
-            case ThingStatus.DONE.key:
-                return styleVars.greenCircleColor
-        }
     }
 
     getEmailUrl() {
@@ -46,20 +29,23 @@ class EmailThingPreviewItem extends Component {
     }
 
     render() {
-        const {thing, commands} = this.props
+        const {thing, commands, index, reorder, commitReorder} = this.props
 
         return (
-            <PreviewItem circleColor={this.getCircleColor()}
-                         title={thing.subject}
-                         date={thing.createdAt}
+            <PreviewCard thing={thing}
+                         entityId={thing.id}
+                         index={index}
+                         category={thing.todoTimeCategory}
+                         reorder={reorder}
+                         commitReorder={commitReorder}
                          onClick={() => window.open(this.getEmailUrl(), '_blank')}>
-                <PreviewItemStatus>
-                    <span>Email from <strong>{this.getRecipients()}</strong></span>
-                </PreviewItemStatus>
-                <PreviewItemActions>
-                    <CommandsBar thing={thing} commands={commands} />
-                </PreviewItemActions>
-            </PreviewItem>
+                <PreviewCardRecipients>
+                    <span>{this.getRecipients()}</span>
+                </PreviewCardRecipients>
+                <PreviewCardActions>
+                    <CommandsBar thing={thing} commands={commands} supportRollover={false} />
+                </PreviewCardActions>
+            </PreviewCard>
         )
     }
 }
@@ -73,7 +59,10 @@ const style = {
 EmailThingPreviewItem.propTypes = {
     thing: PropTypes.object.isRequired,
     commands: PropTypes.array.isRequired,
-    currentUser: PropTypes.object.isRequired
+    currentUser: PropTypes.object.isRequired,
+    index: PropTypes.number.isRequired,
+    reorder: PropTypes.func.isRequired,
+    commitReorder: PropTypes.func.isRequired
 }
 
 function mapStateToProps(state) {

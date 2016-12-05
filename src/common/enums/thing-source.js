@@ -1,11 +1,14 @@
 export default {
     WEB: {
-        key: 'WEB'
+        key: 'WEB',
+        label: 'Web'
     },
     SLACK: {
-        key: 'SLACK'
+        key: 'SLACK',
+        label: 'Slack'
     },
     GMAIL: {
-        key: 'GMAIL'
+        key: 'GMAIL',
+        label: 'Gmail'
     }
 }

@@ -62,10 +62,12 @@ class ToDo extends Component {
 
         return todos.map(({thing, commands}, index) => {
             if (thing.type.key === EntityTypes.GITHUB.key)
-                return <GithubPreviewItem thing={thing} commands={commands} key={thing.id} index={index} />
+                return <GithubPreviewItem thing={thing} commands={commands} key={thing.id} index={index}
+                                          reorder={this.reorder} commitReorder={this.commitReorder}/>
 
             if (thing.type.key === EntityTypes.EMAIL_THING.key)
-                return <EmailThingPreviewItem thing={thing} commands={commands} key={thing.id} index={index} />
+                return <EmailThingPreviewItem thing={thing} commands={commands} key={thing.id} index={index}
+                                              reorder={this.reorder} commitReorder={this.commitReorder}/>
 
             return <ToDoPreviewItem thing={thing} commands={commands} key={thing.id} index={index}
                                     reorder={this.reorder} commitReorder={this.commitReorder} />

@@ -18,9 +18,11 @@ import styleVars from '../style-vars'
 import {GeneralConstants, DragItemTypes} from '../../constants'
 import ThingSource from '../../../common/enums/thing-source'
 import ThingStatus from '../../../common/enums/thing-status'
+import EntityTypes from '../../../common/enums/entity-types'
 import {getChildOfType, createSlots} from '../../util/component-util'
 import SlackLogo from '../../static/SlackLogo.svg'
 import GmailLogo from '../../static/GmailLogo.svg'
+import GithubLogo from '../../static/GithubLogo.png'
 import FreectionLogo from '../../static/logo-black-39x10.png'
 import DragHandle from '../../static/dnd-bg.png'
 
@@ -68,14 +70,16 @@ class PreviewCard extends Component {
     getSource() {
         const {thing, sheet: {classes}} = this.props
 
-        const source = thing.payload.source ? ThingSource[thing.payload.source].label : 'Freection'
+        const source =
+            thing.payload.source ? ThingSource[thing.payload.source].label :
+            thing.type.key === EntityTypes.GITHUB.key ? EntityTypes.GITHUB.label :
+            'Freection'
 
         return (
             <div className={classes.source}>
                 {this.getSourceLogo()}
                 {source}
             </div>
-
         )
     }
 
@@ -87,6 +91,9 @@ class PreviewCard extends Component {
 
         if (thing.payload.source === ThingSource.GMAIL.key)
             return <img src={GmailLogo} className={classes.sourceLogoSquare} />
+
+        if (thing.type.key === EntityTypes.GITHUB.key)
+            return <img src={GithubLogo} className={classes.sourceLogoSquare} />
 
         return <img src={FreectionLogo} className={classes.sourceLogoRectangle} />
     }
@@ -282,11 +289,12 @@ const style = {
         padding: [17, 24, 15, 29]
     },
     subject: {
-        height: 46,
+        height: 44,
         marginBottom: 21,
         fontSize: '1.286em',
         letterSpacing: '0.025em',
-        color: 'black'
+        color: 'black',
+        overflowY: 'hidden'
     },
     source: {
         display: 'flex',
