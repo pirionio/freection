@@ -17,15 +17,15 @@ class PreviewGroupPlaceholder extends Component {
     }
 
     render() {
-        const {isOver, connectDropTarget, sheet: {classes}} = this.props
+        const {text, icon, connectDropTarget, className, onClick, sheet: {classes}} = this.props
 
-        const containerClasses = classNames(classes.container, isOver ? classes.hover : undefined)
+        const containerClasses = classNames(classes.container, className)
 
         return connectDropTarget(
             <div>
-                <Flexbox name="drag-placeholder" container="row" alignItems="center" className={containerClasses}>
-                    <Icon name="check-circle" className={classes.icon} />
-                    <span>Nothing left to do here.</span>
+                <Flexbox name="drag-placeholder" container="row" alignItems="center" className={containerClasses} onClick={onClick}>
+                    {icon ? <Icon name={icon} className={classes.icon} /> : null}
+                    <span>{text}</span>
                 </Flexbox>
             </div>
         )
@@ -39,25 +39,28 @@ const style = {
         color: '#7f8b91',
         fontSize: '0.857em',
         letterSpacing: '0.016em',
-        border: `1px solid ${styleVars.baseBorderColor}`
-    },
-    hover: {
-        border: `1px solid ${styleVars.highlightColor}`
+        border: `1px solid ${styleVars.baseBorderColor}`,
+        padding: [0, 15]
     },
     icon: {
-        margin: [0, 15]
+        marginRight: 15
     }
 }
 
 PreviewGroupPlaceholder.propTypes = {
-
+    text: PropTypes.string.isRequired,
+    icon: PropTypes.string,
+    className: PropTypes.string,
+    onClick: PropTypes.func
 }
 
 const dropTarget = {
     hover(props, monitor) {
         const draggedItemId = monitor.getItem().entityId
         const category = props.category
-        props.moveToGroup(draggedItemId, category)
+
+        if (category)
+            props.moveToGroup(draggedItemId, category)
     }
 }
 

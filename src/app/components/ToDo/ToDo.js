@@ -4,6 +4,7 @@ import classAutobind from 'class-autobind'
 import classNames from 'classnames'
 import useSheet from 'react-jss'
 import groupBy from 'lodash/groupBy'
+import keys from 'lodash/keys'
 
 import Flexbox from '../UI/Flexbox'
 import PreviewsContainer from '../Preview/PreviewsContainer'
@@ -16,11 +17,20 @@ import GithubPreviewItem from './GithubPreviewItem'
 import EntityTypes from '../../../common/enums/entity-types'
 import TodoTimeCategory from '../../../common/enums/todo-time-category'
 import SharedConstants from '../../../common/shared-constants'
+import Icon from 'react-fontawesome'
 
 class ToDo extends Component {
     constructor(props) {
         super(props)
         classAutobind(this)
+
+        this.state = {
+            collapseMap: {}
+        }
+
+        keys(TodoTimeCategory).forEach(categoryKey => {
+            this.state.collapseMap[categoryKey] = false
+        })
     }
 
     fetchToDo() {
@@ -44,21 +54,34 @@ class ToDo extends Component {
     }
 
     buildToDoSection(category, todosByTimeCategory, categoryClasses) {
+        const {sheet: {classes}} = this.props
+
         const todos = todosByTimeCategory[category.key]
+        const isCollapsed = this.state.collapseMap[category.key]
+
+        const todosSection = isCollapsed ? this.getCollapsedCategoryPlaceholder(category, todos) : this.buildToDoComponents(category, todos)
 
         return (
             <div name={`container-${category.key}`} key={`container-${category.key}`} className="clearfix">
                 <div name="group-title" className={categoryClasses}>
-                    {category.label}
+                    <span>{category.label}</span>
+                    <Icon name={isCollapsed ? 'angle-up' : 'angle-down'} className={classes.categoryCollapseIcon}
+                          onClick={() => this.toggleCategoryCollapseMode(category)} />
                 </div>
-                {this.buildToDoComponents(category, todos)}
+                {todosSection}
             </div>
         )
     }
 
+    toggleCategoryCollapseMode(category) {
+        const collapseMap = this.state.collapseMap
+        collapseMap[category.key] = !this.state.collapseMap[category.key]
+        this.setState({collapseMap})
+    }
+
     buildToDoComponents(category, todos) {
         if (!todos || !todos.length)
-            return this.getDragPlaceholder(category)
+            return this.getEmptyCategoryPlaceholder(category)
 
         return todos.map(({thing, commands}, index) => {
             if (thing.type.key === EntityTypes.GITHUB.key)
@@ -74,16 +97,30 @@ class ToDo extends Component {
         })
     }
 
-    getPlaceholder() {
+    getEmptyPagePlaceholder() {
         return (
             <Placeholder title="No tasks to do"
                          subTitle="Come to this page for all the tasks you need to work on." />
         )
     }
 
-    getDragPlaceholder(category) {
+    getEmptyCategoryPlaceholder(category) {
         return (
-            <PreviewGroupPlaceholder category={category} moveToGroup={this.moveToGroup} />
+            <PreviewGroupPlaceholder text="Nothing left to do here." icon="check-circle" category={category} moveToGroup={this.moveToGroup} />
+        )
+    }
+
+    getCollapsedCategoryPlaceholder(category, todos) {
+        const {sheet: {classes}} = this.props
+
+        const text = todos.length === 1 ?
+            `Click here to see the the task you have to do` :
+            `Click here to see the the ${todos.length} tasks you have to do`
+
+        return (
+            <PreviewGroupPlaceholder text={text}
+                                     moveToGroup={this.moveToGroup} onClick={() => this.toggleCategoryCollapseMode(category)}
+                                     className={classes.categoryCollapsePlaceholder}/>
         )
     }
 
@@ -121,7 +158,7 @@ class ToDo extends Component {
             <Flexbox name="todo-container" grow={1} container="column" className={classes.container}>
                 <PreviewsContainer previewItems={this.getThingsToDo()}
                                    fetchPreviews={this.fetchToDo}
-                                   getPlaceholder={this.getPlaceholder}
+                                   getPlaceholder={this.getEmptyPagePlaceholder}
                                    invalidationStatus={invalidationStatus}>
                     {this.props.children}
                 </PreviewsContainer>
@@ -143,6 +180,13 @@ const style = {
     },
     firstCategoryHeader: {
         marginTop: 0
+    },
+    categoryCollapsePlaceholder: {
+        cursor: 'pointer'
+    },
+    categoryCollapseIcon: {
+        marginLeft: 10,
+        cursor: 'pointer'
     }
 }
 
