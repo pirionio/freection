@@ -30,7 +30,7 @@ class CollapsedMessageBox extends Component {
     }
 
     getPlaceholder() {
-        return !this.isInThingPage() ? 'Create a new Thing by typing here.' : 'Comment by typing here.'
+        return !this.isInThingPage() ? 'Create a new Task by typing here.' : 'Comment by typing here.'
     }
 
     render () {

@@ -11,7 +11,7 @@ const router = Router()
 
 router.get('/all', (request, response) => {
     EndpointUtil.handleGet(request, response, ThingService.getAllThings, {
-        type: 'All Things'
+        type: 'All Items'
     })
 })
 
@@ -35,7 +35,7 @@ router.get('/followups', (request, response) => {
 
 router.get('/emailthings', (request, response) => {
     EndpointUtil.handleGet(request, response, ThingService.getEmailThings, {
-        type: 'Email Things'
+        type: 'Email Tasks'
     })
 })
 
@@ -73,7 +73,7 @@ router.post('/:type/:thingId/dismiss', (request, response) => {
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
             illegalOperation: getIllegalOperationErrorTemplate(),
-            general: 'Could not dismiss thing ${thingId} by user user ${user}'
+            general: 'Could not dismiss task ${thingId} by user user ${user}'
         }
     })
 })
@@ -87,7 +87,7 @@ router.post('/:thingId/done', (request, response) => {
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
             illegalOperation: getIllegalOperationErrorTemplate(),
-            general: 'Could not mark thing ${thingId} as done by user user ${user}'
+            general: 'Could not mark task ${thingId} as done by user user ${user}'
         }
     })
 })
@@ -101,7 +101,7 @@ router.post('/:type/:thingId/close', (request, response) => {
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
             illegalOperation: getIllegalOperationErrorTemplate(),
-            general: 'Could not close thing ${thingId} by user user ${user}'
+            general: 'Could not close task ${thingId} by user user ${user}'
         }
     })
 })
@@ -112,7 +112,7 @@ router.post('/:thingId/closeack', (request, response) => {
         result: false,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
-            general: 'Could not accept close of thing ${thingId} by user user ${user}'
+            general: 'Could not accept close of task ${thingId} by user user ${user}'
         }
     })
 })
@@ -126,7 +126,7 @@ router.post('/:thingId/sendback', (request, response) => {
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
             illegalOperation: getIllegalOperationErrorTemplate(),
-            general: 'Could not send back thing ${thingId} by user user ${user}'
+            general: 'Could not send back task ${thingId} by user user ${user}'
         }
     })
 })
@@ -139,7 +139,7 @@ router.post('/:thingId/ping', (request, response) => {
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
             illegalOperation: getIllegalOperationErrorTemplate(),
-            general: 'Could not ping thing ${thingId} by user user ${user}'
+            general: 'Could not ping task ${thingId} by user user ${user}'
         }
     })
 })
@@ -153,7 +153,7 @@ router.post('/:thingId/pong', (request, response) => {
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
             illegalOperation: getIllegalOperationErrorTemplate(),
-            general: 'Could not pong thing ${thingId} by user user ${user}'
+            general: 'Could not pong task ${thingId} by user user ${user}'
         }
     })
 })
@@ -166,7 +166,7 @@ router.post('/:thingId/comment', (request, response) => {
         transform: thingToDto,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
-            general: 'Could not comment on thing ${thingId} by user ${user}'
+            general: 'Could not comment on task ${thingId} by user ${user}'
         }
     })
 })
@@ -177,7 +177,7 @@ router.post('/:thingId/discardComments', (request, response) => {
         result: false,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
-            general: 'Could not discard comments unread by user ${user} for thing ${thingId}'
+            general: 'Could not discard comments unread by user ${user} for task ${thingId}'
         }
     })
 })
@@ -188,7 +188,7 @@ router.post('/:thingId/followup', (request, response) => {
         result: true,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
-            general: 'Could not follow up thing ${thingId} for user ${user}'
+            general: 'Could not follow up task ${thingId} for user ${user}'
         }
     })
 })
@@ -199,7 +199,7 @@ router.post('/:thingId/unfollow', (request, response) => {
         result: true,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
-            general: 'Could not stop following up thing ${thingId} for user ${user}'
+            general: 'Could not stop following up task ${thingId} for user ${user}'
         }
     })
 })
@@ -210,7 +210,7 @@ router.post('/:thingId/unmute', (request, response) => {
         result: true,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
-            general: 'Could not unmute a thing for user ${user} for thing ${thingId}'
+            general: 'Could not unmute a task for user ${user} for thing ${thingId}'
         }
     })
 })
@@ -221,17 +221,17 @@ router.post('/:thingId/mute', (request, response) => {
         result: true,
         errorTemplates: {
             notFound: getNotFoundErrorTemplate(),
-            general: 'Could not mute a thing for user ${user} for thing ${thingId}'
+            general: 'Could not mute a task for user ${user} for thing ${thingId}'
         }
     })
 })
 
 function getIllegalOperationErrorTemplate() {
-    return 'Illegal operation on thing ${thingId}'
+    return 'Illegal operation on task ${thingId}'
 }
 
 function getNotFoundErrorTemplate() {
-    return 'Could not find thing ${thingId}'
+    return 'Could not find task ${thingId}'
 }
 
 function getServiceByType(request) {

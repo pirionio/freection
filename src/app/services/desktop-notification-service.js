@@ -99,17 +99,23 @@ function showNotification(id, title, body, type) {
 
     notificationStore.push = id
 
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
         remove(notificationStore, id)
         notification.close()
     }, 5000)
+
+    notification.onclick = () => {
+        clearTimeout(timeoutId)
+        notification.close()
+        window.focus()
+    }
 }
 
 function fromSlackCreateNotification(event) {
     if (event.thing.isFollowUper)
-        showNotification(event.id, 'Thing from slack added to your Follow Up list', event.thing.subject, event.eventType)
+        showNotification(event.id, 'Task from slack added to your Follow Up list', event.thing.subject, event.eventType)
     else if (event.thing.isDoer)
-        showNotification(event.id, 'Thing from slack added to your To Do list list', event.thing.subject, event.eventType)
+        showNotification(event.id, 'Task from slack added to your To Do list', event.thing.subject, event.eventType)
 }
 
 function emailThingCreateNotification(event) {
@@ -123,25 +129,25 @@ function emailThingCreateNotification(event) {
 
 function fromMobileCreateNotification(event) {
     if (event.thing.isFollowUper)
-        showNotification(event.id, 'Thing from your mobile added to your Follow Up list', event.thing.subject, event.eventType)
+        showNotification(event.id, 'Task from your mobile added to your Follow Up list', event.thing.subject, event.eventType)
     else if (event.thing.isDoer)
-        showNotification(event.id, 'Thing from your mobile added to your To Do list', event.thing.subject, event.eventType)
+        showNotification(event.id, 'Task from your mobile added to your To Do list', event.thing.subject, event.eventType)
 }
 
 function createNotification(event) {
-    showNotification(event.id, `${event.creator.payload.firstName} sent you a thing`, event.thing.subject, event.eventType)
+    showNotification(event.id, `${event.creator.payload.firstName} sent you a task`, event.thing.subject, event.eventType)
 }
 
 function doneNotification(event) {
-    showNotification(event.id, `${event.creator.payload.firstName} completed a thing`, event.thing.subject, event.eventType)
+    showNotification(event.id, `${event.creator.payload.firstName} completed a task`, event.thing.subject, event.eventType)
 }
 
 function dismissNotification(event) {
-    showNotification(event.id, `${event.creator.payload.firstName} dismissed a thing`, event.thing.subject, event.eventType)
+    showNotification(event.id, `${event.creator.payload.firstName} dismissed a task`, event.thing.subject, event.eventType)
 }
 
 function closedNotification(event) {
-    showNotification(event.id, `${event.creator.payload.firstName} closed a thing`, event.thing.subject, event.eventType)
+    showNotification(event.id, `${event.creator.payload.firstName} closed a task`, event.thing.subject, event.eventType)
 }
 
 function pingNotification(event) {
@@ -153,7 +159,7 @@ function pongNotification(event) {
 }
 
 function sendBackNotification(event) {
-    showNotification(event.id, `${event.creator.payload.firstName} sent a thing back`, event.thing.subject, event.eventType)
+    showNotification(event.id, `${event.creator.payload.firstName} sent a task back`, event.thing.subject, event.eventType)
 }
 
 function mentionedNotification(event) {

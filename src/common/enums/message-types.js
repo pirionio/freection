@@ -1,7 +1,7 @@
 export default {
     NEW_THING: {
         key: 'NEW_THING',
-        label: 'New Thing'
+        label: 'New Task'
     },
     NEW_EMAIL: {
         key: 'NEW_EMAIL',

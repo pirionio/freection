@@ -26,7 +26,7 @@ router.post('/thing', async function(request, response) {
 
         if (body.ssl_check) {
             response.sendStatus(200)
-        } else if (body.command === '/thing' || body.command === '/thing-me') {
+        } else if (body.command === '/freection') {
             if (body.token !== slackConfig.token) {
                 response.sendStatus(400)
                 return
@@ -42,61 +42,57 @@ router.post('/thing', async function(request, response) {
                 response_url: responseUrl
             } = body
 
-            const isSelf = command === '/thing-me'
-
             logger.info(`New thing from slack ${channelName} ${userName} ${command} ${text}`)
 
             const creator = await getUserBySlackId(userId)
 
             if (!creator) {
-                respondWith(response, 'You are not registered on freection, go to https://app.freection.com to join')
+                respondWith(response, 'You are not registered on Freection, go to https://app.freection.com to join')
                 return
             }
 
             const team = await getTeam(teamId)
 
             if (!team) {
-                respondWith(response, 'You have to integrate slack with freection first')
+                respondWith(response, 'You have to integrate Slack with Freection first')
                 return
             }
 
             let subject = text
             let toUserEmail
 
-            if (isSelf) {
-                toUserEmail = creator.email
-                respondWith(response, 'Just a second...',false)
+            // we need to find the mentioned user
+            const mentioned = text.match(/((@[a-z0-9][a-z0-9._-]*)|me)/)
+            if (!mentioned || !mentioned.length) {
+                respondWith(response, 'You must mention a user. Please send again with @username, or \'me\' to send to yourself')
+                return
             }
-            else {
-                // we need to find the mentioned user
-                const mentioned = text.match(/@[a-z0-9][a-z0-9._-]*/)
-                if (!mentioned || !mentioned.length) {
-                    respondWith(response, 'You must mention a user. Please send again with @username')
-                    return
-                }
 
-                respondWithEmpty(response, true)
-
+            if (mentioned[0] === 'me') {
+                toUserEmail = creator.email
+                respondWith(response, 'Just a second...', false)
+            } else {
                 toUserEmail = await getEmailFromMention(team, mentioned[0])
+                respondWithEmpty(response, true)
+            }
 
-                if (!toUserEmail) {
-                    delayRespondWith(responseUrl, 'The mentioned user doesn\'t exist in slack and therefore thing was not created on freection')
-                    return
-                }
+            if (!toUserEmail) {
+                delayRespondWith(responseUrl, 'The mentioned user doesn\'t exist in Slack, therefore a task was not created in Freection')
+                return
+            }
 
-                if (text.startsWith(mentioned[0])) {
-                    subject = text.substring(mentioned[0].length)
-                }
+            if (text.startsWith(mentioned[0])) {
+                subject = text.substring(mentioned[0].length)
             }
 
             await ThingService.newThing(creator, toUserEmail, subject, '', {source: ThingSource.SLACK.key})
-            delayRespondWith(responseUrl, 'New thing created on freection')
+            delayRespondWith(responseUrl, 'New task created in Freection')
 
         } else {
             response.sendStatus(500)
         }
     } catch(error) {
-        logger.error('Slack - error while handling webhook from slack', error)
+        logger.error('Slack - error while handling webhook from Slack', error)
         response.sendStatus(500)
     }
 })
@@ -110,7 +106,7 @@ async function delayRespondWith(url, text, isPublic = false) {
         }, {responseType: 'text'})
     }
     catch (error) {
-        logger.error('Slack - Error while sending delay response to /thing command', error)
+        logger.error('Slack - Error while sending delay response to /freection command', error)
     }
 }
 
@@ -137,7 +133,7 @@ async function getUserBySlackId(userId) {
             return null
         }
 
-        logger.error('Slack - error while trying to user by slack id from db', error)
+        logger.error('Slack - error while trying to get user by Slack ID from DB', error)
 
         throw error
     }
@@ -154,7 +150,7 @@ async function getTeam(teamId) {
         }
 
 
-        logger.error('Slack - error while trying to get slack team from db', error)
+        logger.error('Slack - error while trying to get Slack team from DB', error)
 
         throw error
     }
@@ -174,7 +170,7 @@ async function getEmailFromMention(team, mention) {
 
         return `"${toUser.profile.real_name}" <${toUser.profile.email}>`
     } catch(error) {
-        logger.error('Slack - error while trying to get slack user from mention', error)
+        logger.error('Slack - error while trying to get Slack user from the mention parameter in the command', error)
         throw error
     }
 }

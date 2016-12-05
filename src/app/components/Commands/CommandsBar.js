@@ -45,7 +45,7 @@ class CommandsBar extends Component {
                     label: 'Do',
                     commandFunc: ThingCommandActions.doThing,
                     item: thing,
-                    tooltipText: `Move the thing to your To Do list`
+                    tooltipText: `Move the task to your To Do list`
                 }
             case ThingCommandActionTypes.MARK_AS_DONE:
                 return {
@@ -54,8 +54,8 @@ class CommandsBar extends Component {
                     commandFunc: ThingCommandActions.markAsDone,
                     item: thing,
                     tooltipText: thing.isTo && thing.isCreator ?
-                        `Mark the thing as done and remove it from your To Do list` :
-                        `Let ${thing.creator.payload.firstName} know you're done, and remove the thing from your To Do list`
+                        `Mark the task as done and remove it from your To Do list` :
+                        `Let ${thing.creator.payload.firstName} know you're done, and remove the task from your To Do list`
                 }
             case ThingCommandActionTypes.DISMISS:
                 return {
@@ -64,8 +64,8 @@ class CommandsBar extends Component {
                     commandFunc: ThingCommandActions.dismiss,
                     item: thing,
                     tooltipText: thing.isTo && thing.isCreator ?
-                        `Mark the thing as dismissed and remove it from your To Do list` :
-                        `Let ${thing.creator.payload.firstName} know you won't do it, and remove the thing from your To Do list`
+                        `Mark the task as dismissed and remove it from your To Do list` :
+                        `Let ${thing.creator.payload.firstName} know you won't do it, and remove the task from your To Do list`
                 }
             case ThingCommandActionTypes.CLOSE:
                 return {
@@ -74,8 +74,8 @@ class CommandsBar extends Component {
                     commandFunc: ThingCommandActions.close,
                     item: thing,
                     tooltipText: thing.isDoer ?
-                        `Close the thing and remove it from your To Do list` :
-                        `Remove the thing from your Follow Up list`
+                        `Close the task and remove it from your To Do list` :
+                        `Remove the task from your Follow Up list`
                 }
             case ThingCommandActionTypes.CANCEL:
                 return {
@@ -83,7 +83,7 @@ class CommandsBar extends Component {
                     label: 'Close',
                     commandFunc: ThingCommandActions.cancel,
                     item: thing,
-                    tooltipText: `Let the thing's doers know you close the thing, and remove it from your Follow Up list`
+                    tooltipText: `Let the task's doers know you close the task, and remove it from your Follow Up list`
                 }
             case ThingCommandActionTypes.SEND_BACK:
                 return {
@@ -91,7 +91,7 @@ class CommandsBar extends Component {
                     label: 'Send Back',
                     commandFunc: ThingCommandActions.sendBack,
                     item: thing,
-                    tooltipText: `Let the thing's doers know you want them to keep working on it`
+                    tooltipText: `Let the task's doers know you want them to keep working on it`
                 }
             case ThingCommandActionTypes.PING:
                 return {
@@ -115,7 +115,7 @@ class CommandsBar extends Component {
                     label: 'Discard',
                     commandFunc: ThingCommandActions.discardComments,
                     item: notification,
-                    tooltipText: `Remove notification from your Notifications list`
+                    tooltipText: `Remove notification from your Inbox`
                 }
             case ThingCommandActionTypes.DISCARD_SINGLE_NOTIFICATION:
                 return {
@@ -123,7 +123,7 @@ class CommandsBar extends Component {
                     label: 'Discard',
                     commandFunc: ThingCommandActions.discardSingleNotification,
                     item: notification,
-                    tooltipText: `Remove notification from your Notifications list`
+                    tooltipText: `Remove notification from your Inbox`
                 }
             case ThingCommandActionTypes.UNMUTE:
                 return {
@@ -131,7 +131,7 @@ class CommandsBar extends Component {
                     label: 'Unmute',
                     commandFunc: ThingCommandActions.unmute,
                     item: thing,
-                    tooltipText: `Keep getting notifications for this thing`
+                    tooltipText: `Keep getting notifications for this task`
                 }
             case ThingCommandActionTypes.MUTE:
                 return {
@@ -139,7 +139,7 @@ class CommandsBar extends Component {
                     label: 'Mute',
                     commandFunc: ThingCommandActions.mute,
                     item: thing,
-                    tooltipText: `Stop getting notifications for this thing`
+                    tooltipText: `Stop getting notifications for this task`
                 }
             case ThingCommandActionTypes.CLOSE_ACK:
                 return {
@@ -147,7 +147,7 @@ class CommandsBar extends Component {
                     label: 'Close',
                     commandFunc: ThingCommandActions.closeAck,
                     item: thing,
-                    tooltipText: `Remove the thing from your To Do list`
+                    tooltipText: `Remove the task from your To Do list`
                 }
             case ThingCommandActionTypes.CLOSED_UNFOLLOW:
                 return {
@@ -155,7 +155,7 @@ class CommandsBar extends Component {
                     label: 'Close',
                     commandFunc: ThingCommandActions.closedUnfollow,
                     item: thing,
-                    tooltipText: `Remove this thing from your Follow Up list`
+                    tooltipText: `Remove this task from your Follow Up list`
                 }
             case ThingCommandActionTypes.FOLLOW_UP:
                 return {
@@ -163,7 +163,7 @@ class CommandsBar extends Component {
                     label: 'Follow Up',
                     commandFunc: ThingCommandActions.followUp,
                     item: thing,
-                    tooltipText: `Add this thing to your Follow Up list`
+                    tooltipText: `Add this task to your Follow Up list`
                 }
             case ThingCommandActionTypes.UNFOLLOW:
                 return {
@@ -171,7 +171,7 @@ class CommandsBar extends Component {
                     label: 'Unfollow',
                     commandFunc: ThingCommandActions.unfollow,
                     item: thing,
-                    tooltipText: `Remove this thing from your Follow Up list`
+                    tooltipText: `Remove this task from your Follow Up list`
                 }
         }
     }

@@ -60,17 +60,17 @@ class NotificationPreviewItem extends Component {
             case EventTypes.CREATED.key:
                 return notification.payload.isMentioned ?
                     <span><strong>{creator.displayName}</strong> mentioned you</span> :
-                    <span><strong>{creator.displayName}</strong> sent you a thing</span>
+                    <span><strong>{creator.displayName}</strong> sent you a task</span>
             case EventTypes.DONE.key:
-                return <span><strong>{creator.displayName}</strong> completed a thing</span>
+                return <span><strong>{creator.displayName}</strong> completed a task</span>
             case EventTypes.DISMISSED.key:
-                return <span><strong>{creator.displayName}</strong> dismissed a thing</span>
+                return <span><strong>{creator.displayName}</strong> dismissed a task</span>
             case EventTypes.SENT_BACK.key:
                 return notification.thing.isMentioned ?
-                    <span>Thing sent back to <strong>{notification.thing.to.displayName}</strong> </span> :
-                    <span><strong>{creator.displayName}</strong> sent a thing back</span>
+                    <span>Task sent back to <strong>{notification.thing.to.displayName}</strong> </span> :
+                    <span><strong>{creator.displayName}</strong> sent a task back</span>
             case EventTypes.CLOSED.key:
-                return <span><strong>{creator.displayName}</strong> closed a thing</span>
+                return <span><strong>{creator.displayName}</strong> closed a task</span>
             default:
                 return <span><strong>{creator.displayName}</strong> {notification.eventType.label}</span>
         }

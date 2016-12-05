@@ -1,7 +1,7 @@
 export default {
     THING: {
         key: 'THING',
-        label: 'Thing'
+        label: 'Task'
     },
     EMAIL: {
         key: 'EMAIL',
@@ -13,10 +13,10 @@ export default {
     },
     EMAIL_THING: {
         key: 'EMAIL_THING',
-        label: 'Email thing'
+        label: 'Email task'
     },
     SLACK: {
         key:'SLACK',
-        label:'SLACK'
+        label:'Slack'
     }
 }

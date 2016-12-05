@@ -19,8 +19,8 @@ import FullThing from './components/Thing/FullThing'
 const routes = (
     <Route path="/" component={App}>
         <Route component={MainApp}>
-            <IndexRedirect to="notifications" />
-            <Route path="notifications" component={UnreadNotifications}>
+            <IndexRedirect to="inbox" />
+            <Route path="inbox" component={UnreadNotifications}>
                 <Route path=":thingId" component={FullThing} />
             </Route>
             <Route path="todo" component={ToDo}>
@@ -29,7 +29,7 @@ const routes = (
             <Route path="followup" component={FollowUp}>
                 <Route path=":thingId" component={FullThing} />
             </Route>
-            <Route path="all/things" component={AllThings}>
+            <Route path="all/items" component={AllThings}>
                 <Route path=":thingId" component={FullThing} />
             </Route>
             <Route path="integrations">
@@ -38,7 +38,7 @@ const routes = (
                 <Route path="slack" component={Slack} />
                 <Route path="gmail" component={Gmail} />
             </Route>
-            <Redirect from="*" to="/notifications" />
+            <Redirect from="*" to="/inbox" />
         </Route>
     </Route>
 )
