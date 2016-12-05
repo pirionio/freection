@@ -1,4 +1,5 @@
 import EventTypes from './enums/event-types'
+import TodoTimeCategory from './enums/todo-time-category'
 
 export default {
     MESSAGE_TYPED_EVENTS: [EventTypes.COMMENT.key, EventTypes.CREATED.key, EventTypes.PING.key, EventTypes.PONG.key, EventTypes.DONE.key,
@@ -6,6 +7,8 @@ export default {
 
     EVENTS_TO_GROUP: [EventTypes.CREATED.key, EventTypes.COMMENT.key],
 
+    DEFAULT_TODO_TIME_CATEGORY: TodoTimeCategory.LATER,
+    
     DEFAULT_BASE_URL: 'https://app.freection.com',
 
     MENTION_REGEX: /(^|\s+)@([\w\.]+)/gm
