@@ -142,7 +142,9 @@ class PreviewCard extends Component {
     }
 
     getSubject() {
-        return this.props.thing.subject
+        const {thing} = this.props
+        return thing.subject.length < GeneralConstants.PREVIEW_CARD_SUBJECT_TRIM_INDEX ? thing.subject :
+            thing.subject.substr(0, GeneralConstants.PREVIEW_CARD_SUBJECT_TRIM_INDEX - 3) + '...'
     }
 
     getContent() {
@@ -166,8 +168,8 @@ class PreviewCard extends Component {
             text = last(readEvents).payload.text
         }
 
-        if (text.length >= GeneralConstants.PREVIEW_CARD_TEXT_TRIM_INDEX) {
-            text = text.substr(0, GeneralConstants.PREVIEW_CARD_TEXT_TRIM_INDEX - 3) + '...'
+        if (text.length >= GeneralConstants.PREVIEW_CARD_COMMENT_TRIM_INDEX) {
+            text = text.substr(0, GeneralConstants.PREVIEW_CARD_COMMENT_TRIM_INDEX - 3) + '...'
         }
 
         return (
@@ -294,7 +296,8 @@ const style = {
         fontSize: '1.286em',
         letterSpacing: '0.025em',
         color: 'black',
-        overflowY: 'hidden'
+        overflowY: 'hidden',
+        overflowX: 'hidden'
     },
     source: {
         display: 'flex',
