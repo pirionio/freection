@@ -543,11 +543,6 @@ async function getToAddress(user, to) {
     try {
         const toUser = await User.getUserByEmail(email)
 
-        // Only when users are in same organization you can send a thing in freection
-        if (toUser.organization !== user.organization) {
-            return emailToAddress(to)
-        }
-
         return userToAddress(toUser)
     } catch (error) {
         if (error !== 'NotFound')
