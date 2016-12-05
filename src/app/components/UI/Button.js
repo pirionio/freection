@@ -8,10 +8,10 @@ import styleVars from '../style-vars'
 
 class Button extends Component {
     render() {
-        const {label, onClick, disabled, type, tabIndex, tooltipText, sheet: {classes}} = this.props
+        const {label, onClick, disabled, type, tabIndex, tooltipText, className, sheet: {classes}} = this.props
 
         // The 'js-button' class is provided in order to let parent components override styles of this button.
-        const buttonClasses = classNames(classes.button, 'js-button')
+        const buttonClasses = classNames(classes.button, className, 'js-button')
 
         if (tooltipText) {
             const tooltipId = `tooltip-${random(Number.MAX_SAFE_INTEGER)}`
@@ -21,7 +21,6 @@ class Button extends Component {
                             data-for={tooltipId}>
                         {label}
                     </button>
-                    <Tooltip id={tooltipId} text={tooltipText} place="right" className={classes.tooltip} />
                 </div>
             )
         }

@@ -18,7 +18,7 @@ class CommandsBar extends Component {
     }
 
     getCommandComponent(command) {
-        const {requireTextFunc, disabled} = this.props
+        const {requireTextFunc, disabled, commandClassName} = this.props
 
         const {commandType, requireText} = command
 
@@ -32,7 +32,8 @@ class CommandsBar extends Component {
                         requireTextFunc={requireTextFunc}
                         requireText={requireText}
                         disabled={disabled}
-                        tooltipText={props.tooltipText} />
+                        tooltipText={props.tooltipText}
+                        className={commandClassName} />
     }
 
     getComponentProps(commandType) {
@@ -225,7 +226,8 @@ CommandsBar.propTypes = {
     requireTextFunc: PropTypes.func,
     supportRollover: PropTypes.bool,
     disabled: PropTypes.bool,
-    className: PropTypes.string
+    className: PropTypes.string,
+    commandClassName: PropTypes.string
 }
 
 CommandsBar.defaultProps = {

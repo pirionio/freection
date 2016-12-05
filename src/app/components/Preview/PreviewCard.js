@@ -7,7 +7,6 @@ import useSheet from 'react-jss'
 import {compose} from 'redux'
 import {DragSource, DropTarget} from 'react-dnd'
 import {getEmptyImage} from 'react-dnd-html5-backend'
-import trimEnd from 'lodash/trimEnd'
 import first from 'lodash/first'
 import last from 'lodash/last'
 
@@ -16,10 +15,16 @@ import Flexbox from '../UI/Flexbox'
 import Ellipse from '../UI/Ellipse'
 import TextTruncate from '../UI/TextTruncate'
 import styleVars from '../style-vars'
-import {DragItemTypes} from '../../constants'
+import {GeneralConstants, DragItemTypes} from '../../constants'
 import ThingSource from '../../../common/enums/thing-source'
 import ThingStatus from '../../../common/enums/thing-status'
-import EntityTypes from '../../../common/enums/entity-types'
+import {getChildOfType, createSlots} from '../../util/component-util'
+import SlackLogo from '../../static/SlackLogo.svg'
+import GmailLogo from '../../static/GmailLogo.svg'
+import FreectionLogo from '../../static/logo-black-39x10.png'
+import DragHandle from '../../static/dnd-bg.png'
+
+const {PreviewCardRecipients, PreviewCardActions} = createSlots('PreviewCardRecipients', 'PreviewCardActions')
 
 class PreviewCard extends Component {
     constructor(props) {
@@ -43,21 +48,47 @@ class PreviewCard extends Component {
     //     }
     // }
 
-    getDragHandle() {
+    getDragHandle(className) {
         const {connectDragSource, sheet: {classes}} = this.props
+
+        const handleClasses = classNames(classes.dragHandle, className)
+
         return connectDragSource(
-            <div className={classes.dragHandle}></div>
+            <div className={handleClasses}>
+                <img src={DragHandle} />
+            </div>
         )
+    }
+
+    getMetadataDragHandle() {
+        const {sheet: {classes}} = this.props
+        return this.getDragHandle(classes.dragHandleMetadata)
     }
 
     getSource() {
         const {thing, sheet: {classes}} = this.props
 
-        const source = thing.payload.source ? ThingSource[thing.payload.source] : 'Freection'
+        const source = thing.payload.source ? ThingSource[thing.payload.source].label : 'Freection'
 
         return (
-            <div className={classes.source}>{source}</div>
+            <div className={classes.source}>
+                {this.getSourceLogo()}
+                {source}
+            </div>
+
         )
+    }
+
+    getSourceLogo() {
+        const {thing, sheet: {classes}} = this.props
+
+        if (thing.payload.source === ThingSource.SLACK.key)
+            return <img src={SlackLogo} className={classes.sourceLogoSquare} />
+
+        if (thing.payload.source === ThingSource.GMAIL.key)
+            return <img src={GmailLogo} className={classes.sourceLogoSquare} />
+
+        return <img src={FreectionLogo} className={classes.sourceLogoRectangle} />
     }
 
     getStatus() {
@@ -66,17 +97,21 @@ class PreviewCard extends Component {
         let statusColor
 
         switch (thing.payload.status) {
-            case ThingStatus.CLOSE.key:
-            case ThingStatus.DISMISS.key:
-                statusColor = styleVars.redCircleColor
-                break
             case ThingStatus.NEW.key:
-            case ThingStatus.INPROGRESS.key:
             case ThingStatus.REOPENED.key:
                 statusColor = styleVars.blueCircleColor
                 break
+            case ThingStatus.INPROGRESS.key:
+                statusColor = styleVars.yellowCircleColor
+                break
             case ThingStatus.DONE.key:
                 statusColor = styleVars.greenCircleColor
+                break
+            case ThingStatus.DISMISS.key:
+                statusColor = styleVars.redCircleColor
+                break
+            case ThingStatus.CLOSE.key:
+                statusColor = statusColor.greyCircleColor
                 break
         }
 
@@ -88,13 +123,9 @@ class PreviewCard extends Component {
     }
 
     getRecipients() {
-        const {thing, sheet: {classes}} = this.props
+        const {sheet: {classes}} = this.props
 
-        const recipients =
-            thing.isCreator ? 'Me' :
-            thing.type.key === EntityTypes.THING.key ? thing.creator.displayName :
-            thing.type.key === EntityTypes.EMAIL_THING ? this.getEmailRecipients() :
-            ''
+        const recipients = getChildOfType(this.props.children, PreviewCardRecipients)
 
         return (
             <div className={classes.recipients}>
@@ -103,46 +134,67 @@ class PreviewCard extends Component {
         )
     }
 
-    getEmailRecipients() {
-        const {thing, currentUser} = this.props
-
-        const recipientNames = thing.payload.recipients
-            .filter(recipient => recipient.emailAddress !== currentUser.email)
-            .map(recipient => recipient.name)
-            .join(', ')
-
-        return trimEnd(recipientNames, ', ')
-    }
-
     getSubject() {
         return this.props.thing.subject
     }
 
     getContent() {
-        const {thing} = this.props
+        const {thing, sheet: {classes}} = this.props
 
         const unreadEvents = ThingHelper.getUnreadMessages(thing)
         const readEvents = ThingHelper.getReadMessages(thing)
 
-        if (unreadEvents && unreadEvents.length)
-            return first(unreadEvents).payload.text
+        let text = ''
+        let unreadCount = null
 
-        if (readEvents && readEvents.length)
-            return last(readEvents).payload.text
+        if (unreadEvents && unreadEvents.length) {
+            text = first(unreadEvents).payload.text
+            unreadCount = unreadEvents.length > 1 ?
+                <span className={classes.unreadCount}>
+                    (+{unreadEvents.length - 1})
+                </span> : null
+        }
 
-        return ''
+        if (readEvents && readEvents.length) {
+            text = last(readEvents).payload.text
+        }
+
+        if (text.length >= GeneralConstants.PREVIEW_CARD_TEXT_TRIM_INDEX) {
+            text = text.substr(0, GeneralConstants.PREVIEW_CARD_TEXT_TRIM_INDEX - 3) + '...'
+        }
+
+        return (
+            <div name="last-comment-text" className={classes.lastCommentText}>
+                <span>{text}</span>
+                {unreadCount}
+            </div>
+        )
+    }
+
+    getActions() {
+        const {sheet: {classes}} = this.props
+        
+        const original = getChildOfType(this.props.children, PreviewCardActions)
+        return React.cloneElement(original, {
+            className: classes.commandsBar,
+            commandClassName: classes.command
+        })
     }
 
     render() {
-        const {connectDragPreview, connectDropTarget, isDragging, sheet: {classes}} = this.props
+        const {connectDragPreview, connectDropTarget, isDragging, onClick, sheet: {classes}} = this.props
 
         const cardClasses = classNames(classes.previewCard, isDragging ? classes.previewCardDragging : undefined)
 
         return compose(connectDragPreview, connectDropTarget)(
             <div name="preview-card-draggable" className={cardClasses}>
-                {this.getDragHandle()}
                 <Flexbox name="preview-card" container="column">
+                    <div name="overlay" className={classes.overlay} onClick={onClick} />
+                    <div name="actions" className={classes.actions}>
+                        {this.getActions()}
+                    </div>
                     <Flexbox name="thing-metadata" container="column" grow={0} shrink={0} className={classes.metadata}>
+                        {this.getMetadataDragHandle()}
                         <Flexbox name="first-row" container="row" justifyContent="space-between">
                             {this.getSource()}
                             {this.getStatus()}
@@ -167,28 +219,67 @@ class PreviewCard extends Component {
 
 const style = {
     previewCard: {
+        position: 'relative',
         width: 250,
         height: 250,
         float: 'left',
-        position: 'relative',
         backgroundColor: styleVars.secondaryBackgroundColor,
         border: `1px solid ${styleVars.baseBorderColor}`,
         marginBottom: 10,
-        padding: [15, 21],
         '&:not(:last-of-type)': {
             marginRight: 10
+        },
+        '&:hover': {
+            '& $overlay': {
+                display: 'block'
+            },
+            '& $actions': {
+                display: 'block'
+            }
         }
+    },
+    overlay: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: styleVars.glassPaneColor,
+        zIndex: styleVars.backZIndex,
+        display: 'none',
+        cursor: 'pointer'
+    },
+    actions: {
+        position: 'absolute',
+        bottom: 5,
+        left: 0,
+        width: '100%',
+        display: 'none',
+        zIndex: styleVars.dragHandleZIndex,
+        '& .js-button:not(:first-of-type)': {
+            marginLeft: 5
+        }
+    },
+    commandsBar: {
+        justifyContent: 'center'
+    },
+    command: {
+        paddingLeft: 0,
+        paddingRight: 0,
+        width: 75
     },
     previewCardDragging: {
         opacity: 0
     },
     metadata: {
-        height: 50,
+        position: 'relative',
+        height: 65,
         borderBottom: `1px solid #dbdee1`,
-        paddingBottom: 17
+        padding: [15, 24, 17, 29]
     },
     content: {
-        paddingTop: 17
+        position: 'relative',
+        padding: [17, 24, 15, 29]
     },
     subject: {
         height: 46,
@@ -198,15 +289,40 @@ const style = {
         color: 'black'
     },
     source: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'flex-start',
         fontSize: '0.714em'
     },
+    sourceLogoSquare: {
+        height: 15,
+        width: 15,
+        marginRight: 8
+    },
+    sourceLogoRectangle: {
+        height: 9,
+        width: 39,
+        marginRight: 8
+    },
     recipients: {
-        marginTop: 17
+        marginTop: 22
     },
     lastComment: {
         height: 65,
+        lineHeight: 1.5,
         letterSpacing: '0.025em',
-        color: 'black'
+        color: 'black',
+        overflowY: 'hidden'
+    },
+    lastCommentText: {
+        overflowX: 'hidden',
+        textOverflow: 'ellipsis'
+    },
+    unreadCount: {
+        color: styleVars.baseGrayColor,
+        marginLeft: 6,
+        fontSize: '0.85em'
     },
     circleContainer: {
         width: 8,
@@ -218,17 +334,23 @@ const style = {
     },
     dragHandle: {
         position: 'absolute',
-        top: 0,
-        left: 0,
-        height: '100%',
-        width: 15,
+        left: 10,
         cursor: 'move',
-        backgroundColor: 'lightgray'
+        overflowY: 'hidden',
+        zIndex: styleVars.dragHandleZIndex
+    },
+    dragHandleMetadata: {
+        height: 36
+    },
+    dragHandleContent: {
+        height: 168,
+        top: 11
     }
 }
 
 PreviewCard.propTypes = {
-
+    thing: PropTypes.object.isRequired,
+    onClick: PropTypes.func
 }
 
 const itemDragSource = {
@@ -248,6 +370,10 @@ const itemDropTarget = {
         
         if (draggedItemId !== hoveredItemId)
             props.reorder(draggedItemId, hoveredItemId)
+    },
+    
+    drop(props) {
+        props.commitReorder()
     }
 }
 
@@ -278,3 +404,8 @@ export default useSheet(
         DropTarget(DragItemTypes.PREVIEW_CARD, itemDropTarget, collectDrop),
         connect(mapStateToProps))
     (PreviewCard), style)
+
+export {
+    PreviewCardRecipients,
+    PreviewCardActions
+}

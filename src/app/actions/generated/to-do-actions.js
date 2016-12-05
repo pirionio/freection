@@ -43,3 +43,26 @@ export function moveToGroup(movedItemId,category) {
         category
     }
 }
+
+export function setTodos(todos) {
+    return dispatch => {
+        dispatch({
+            type: ToDoActionsTypes.SET_TODOS, 
+            status: ActionStatus.START,
+            todos
+        })
+        return ResourceUtil.post(`/api/users/todos`, {
+                todos: todos
+            })
+            .then(result => dispatch({
+                type: ToDoActionsTypes.SET_TODOS, 
+                status: ActionStatus.COMPLETE,
+                todos
+            }))
+            .catch(() => dispatch({
+                type: ToDoActionsTypes.SET_TODOS, 
+                status: ActionStatus.ERROR,
+                todos
+            }))
+    }
+}

@@ -1,4 +1,4 @@
-import {remove, castArray, union, chain, omitBy, isNil, last, map, clone, uniq, reject, template, isEmpty, forOwn} from 'lodash'
+import {remove, castArray, union, chain, omitBy, isNil, last, map, clone, uniq, reject, template, isEmpty, forOwn, find} from 'lodash'
 import AddressParser from 'email-addresses'
 import requireText from 'require-text'
 import juice from 'juice'
@@ -50,20 +50,29 @@ export async function getToDo(user) {
         const things = await ThingDomain.getUserToDos(user.id)
         const fullUser = await User.get(user.id).run()
 
+        const orderedThings = []
+
         forOwn(fullUser.todos, (categoryTodos, categoryKey) => {
-            things.forEach(thing => {
-                if (categoryTodos.includes(thing.id))
+            // It's important to iterate the todos as they are set for the user, in order to maintain their order.
+            categoryTodos.forEach(thingId => {
+                const thing = find(things, {id: thingId})
+
+                if (thing) {
                     thing.todoTimeCategory = TodoTimeCategory[categoryKey]
+                    orderedThings.push(thingToDto(thing, user))
+                }
             })
         })
 
         // Set a category for the things that didn't appear in any category
         things.forEach(thing => {
-            if (isNil(thing.todoTimeCategory))
+            if (isNil(thing.todoTimeCategory)) {
                 thing.todoTimeCategory = TodoTimeCategory.LATER
+                orderedThings.push(thingToDto(thing, user))
+            }
         })
 
-        return things.map(thing => thingToDto(thing, user))
+        return orderedThings
     } catch (error) {
         logger.error(`error while fetching to do list for user ${user.email}`, error)
         throw error

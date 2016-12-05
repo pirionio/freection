@@ -15,6 +15,7 @@ import EmailThingPreviewItem from './EmailThingPreviewItem'
 import GithubPreviewItem from './GithubPreviewItem'
 import EntityTypes from '../../../common/enums/entity-types'
 import TodoTimeCategory from '../../../common/enums/todo-time-category'
+import SharedConstants from '../../../common/shared-constants'
 
 class ToDo extends Component {
     constructor(props) {
@@ -32,7 +33,8 @@ class ToDo extends Component {
 
         const firstCategoryClass = classNames(classes.categoryHeader, classes.firstCategoryHeader)
 
-        const todosByTimeCategory = groupBy(todos, 'thing.todoTimeCategory.key')
+        const todosByTimeCategory = groupBy(todos, todo => todo.thing.todoTimeCategory ? todo.thing.todoTimeCategory.key :
+            SharedConstants.DEFAULT_TODO_TIME_CATEGORY.key)
 
         return [
             this.buildToDoSection(TodoTimeCategory.NEXT, todosByTimeCategory, firstCategoryClass),
@@ -42,7 +44,6 @@ class ToDo extends Component {
     }
 
     buildToDoSection(category, todosByTimeCategory, categoryClasses) {
-        const {sheet: {classes}} = this.props
         const todos = todosByTimeCategory[category.key]
 
         return (
@@ -66,7 +67,8 @@ class ToDo extends Component {
             if (thing.type.key === EntityTypes.EMAIL_THING.key)
                 return <EmailThingPreviewItem thing={thing} commands={commands} key={thing.id} index={index} />
 
-            return <ToDoPreviewItem thing={thing} commands={commands} key={thing.id} index={index} reorder={this.reorder} />
+            return <ToDoPreviewItem thing={thing} commands={commands} key={thing.id} index={index}
+                                    reorder={this.reorder} commitReorder={this.commitReorder} />
         })
     }
 
@@ -88,6 +90,23 @@ class ToDo extends Component {
         dispatch(ToDoActions.reorderDrag(draggedItemId, hoveredItemId))
     }
 
+    commitReorder() {
+        const {todos, dispatch} = this.props
+        
+        const thingIdsByCategory = {}
+
+        todos.forEach(todo => {
+            const categoryKey = todo.thing.todoTimeCategory ? todo.thing.todoTimeCategory.key : SharedConstants.DEFAULT_TODO_TIME_CATEGORY.key
+
+            if (!thingIdsByCategory[categoryKey])
+                thingIdsByCategory[categoryKey] = []
+
+            thingIdsByCategory[categoryKey].push(todo.thing.id)
+        })
+
+        dispatch(ToDoActions.setTodos(thingIdsByCategory))
+    }
+
     moveToGroup(draggedItemId, category) {
         const {dispatch} = this.props
         dispatch(ToDoActions.moveToGroup(draggedItemId, category))
@@ -95,8 +114,6 @@ class ToDo extends Component {
 
     render() {
         const {invalidationStatus, sheet: {classes}} = this.props
-
-        console.log('render - firstTodo:', this.props.todos[0].thing)
 
         return (
             <Flexbox name="todo-container" grow={1} container="column" className={classes.container}>

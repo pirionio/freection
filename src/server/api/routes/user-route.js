@@ -9,7 +9,7 @@ router.post('/todos', (request, response) => {
     const user = request.user
     const {todos} = request.body
 
-    UserService.setTodos(user, todos)
+    UserService.setTodos(user.id, todos)
         .then(result => response.json(result))
         .catch(error => {
             logger.error(`Could not set the things in todo for user ${user.email}`, error)

@@ -21,6 +21,15 @@ module.exports = {
         {
             name: 'move to group',
             params: ['movedItemId', 'category']
+        },
+        {
+            name: 'set todos',
+            params: ['todos'],
+            type: 'post',
+            path: '/api/users/todos',
+            body: {
+                todos: 'todos'
+            }
         }
     ]
 }

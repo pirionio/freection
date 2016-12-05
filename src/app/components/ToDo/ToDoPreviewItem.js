@@ -1,61 +1,57 @@
 import React,{PropTypes, Component} from 'react'
 import {connect} from 'react-redux'
+import classAutobind from 'class-autobind'
+import trimEnd from 'lodash/trimEnd'
 
-import ThingStatus from '../../../common/enums/thing-status'
 import * as ThingPageActions from '../../actions/thing-page-actions'
-import * as ThingHelper from '../../../common/helpers/thing-helper'
 import PreviewCard from '../Preview/PreviewCard'
-import {PreviewItemStatus, PreviewItemText, PreviewItemActions} from '../Preview/PreviewItem'
-import {ThingPreviewText} from '../Preview/Thing'
-import styleVars from '../style-vars'
+import {PreviewCardRecipients, PreviewCardActions} from '../Preview/PreviewCard'
 import CommandsBar from '../Commands/CommandsBar.js'
+import EntityTypes from '../../../common/enums/entity-types'
 
 class TodoPreviewItem extends Component {
-    getCircleColor() {
-        const {thing} = this.props
-
-        switch (thing.payload.status) {
-            case ThingStatus.CLOSE.key:
-            case ThingStatus.DISMISS.key:
-                return styleVars.redCircleColor
-            case ThingStatus.NEW.key:
-            case ThingStatus.INPROGRESS.key:
-            case ThingStatus.REOPENED.key:
-                return styleVars.blueCircleColor
-            case ThingStatus.DONE.key:
-                return styleVars.greenCircleColor
-        }
+    constructor(props) {
+        super(props)
+        classAutobind(this, TodoPreviewItem.prototype)
     }
 
-    getExpandedMessages() {
+    getRecipients() {
         const {thing} = this.props
-        const unreadEvents = ThingHelper.getUnreadMessages(thing)
-        return unreadEvents && unreadEvents.length ? unreadEvents : [ThingHelper.getLastMessage(thing)]
+
+        return thing.isCreator ? 'Me' :
+            thing.type.key === EntityTypes.THING.key ? thing.creator.displayName :
+            thing.type.key === EntityTypes.EMAIL_THING ? this.getEmailRecipients() :
+            ''
+    }
+
+    getEmailRecipients() {
+        const {thing, currentUser} = this.props
+
+        const recipientNames = thing.payload.recipients
+            .filter(recipient => recipient.emailAddress !== currentUser.email)
+            .map(recipient => recipient.name)
+            .join(', ')
+
+        return trimEnd(recipientNames, ', ')
     }
 
     render() {
-        const {thing, commands, index, reorder, dispatch} = this.props
-
-        const textPreview = <ThingPreviewText thing={thing}/>
+        const {thing, commands, index, reorder, commitReorder, dispatch} = this.props
 
         return (
             <PreviewCard thing={thing}
-                         circleColor={this.getCircleColor()}
-                         title={thing.subject}
-                         date={thing.createdAt}
-                         expandedMessages={this.getExpandedMessages()}
                          entityId={thing.id}
                          index={index}
                          category={thing.todoTimeCategory}
                          reorder={reorder}
+                         commitReorder={commitReorder}
                          onClick={() => dispatch(ThingPageActions.show(thing))}>
-                <PreviewItemStatus>
-                    <strong>{thing.creator.displayName}</strong>
-                </PreviewItemStatus>
-                <PreviewItemText>{textPreview}</PreviewItemText>
-                <PreviewItemActions>
-                    <CommandsBar thing={thing} commands={commands} />
-                </PreviewItemActions>
+                <PreviewCardRecipients>
+                    <span>{this.getRecipients()}</span>
+                </PreviewCardRecipients>
+                <PreviewCardActions>
+                    <CommandsBar thing={thing} commands={commands} supportRollover={false} />
+                </PreviewCardActions>
             </PreviewCard>
         )
     }
@@ -67,4 +63,10 @@ TodoPreviewItem.propTypes = {
     index: PropTypes.number.isRequired
 }
 
-export default connect()(TodoPreviewItem)
+function mapStateToProps(state) {
+    return {
+        currentUser: state.auth
+    }
+}
+
+export default connect(mapStateToProps)(TodoPreviewItem)

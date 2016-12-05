@@ -31,6 +31,7 @@ export default {
     messageLetterSpacing: '0.025em',
 
     backZIndex: 10,
+    dragHandleZIndex: 13,
     mentionSuggestionsZIndex: 14,
     toAutosuggestZIndex: 15,
     fullItemBlurZIndex: 40,

@@ -4,6 +4,7 @@ import classAutobind from 'class-autobind'
 import classNames from 'classnames'
 import useSheet from 'react-jss'
 import {DropTarget} from 'react-dnd'
+import Icon from 'react-fontawesome'
 
 import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
@@ -16,14 +17,15 @@ class PreviewGroupPlaceholder extends Component {
     }
 
     render() {
-        const {category, isOver, connectDropTarget, sheet: {classes}} = this.props
+        const {isOver, connectDropTarget, sheet: {classes}} = this.props
 
         const containerClasses = classNames(classes.container, isOver ? classes.hover : undefined)
 
         return connectDropTarget(
             <div>
-                <Flexbox name="drag-placeholder" container="column" justifyContent="center" alignItems="flex-start" className={containerClasses}>
-                    <div>No things for {category.label.toLowerCase()}, drag things here.</div>
+                <Flexbox name="drag-placeholder" container="row" alignItems="center" className={containerClasses}>
+                    <Icon name="check-circle" className={classes.icon} />
+                    <span>Nothing left to do here.</span>
                 </Flexbox>
             </div>
         )
@@ -32,13 +34,18 @@ class PreviewGroupPlaceholder extends Component {
 
 const style = {
     container: {
-        height: 30,
+        height: 60,
         lineHeight: 1.5,
-        color: '#aaa',
-        letterSpacing: '0.025em'
+        color: '#7f8b91',
+        fontSize: '0.857em',
+        letterSpacing: '0.016em',
+        border: `1px solid ${styleVars.baseBorderColor}`
     },
     hover: {
         border: `1px solid ${styleVars.highlightColor}`
+    },
+    icon: {
+        margin: [0, 15]
     }
 }
 
