@@ -111,7 +111,7 @@ class PreviewCard extends Component {
                 statusColor = styleVars.redCircleColor
                 break
             case ThingStatus.CLOSE.key:
-                statusColor = statusColor.greyCircleColor
+                statusColor = styleVars.greyCircleColor
                 break
         }
 
