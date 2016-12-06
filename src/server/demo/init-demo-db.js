@@ -15,34 +15,34 @@ async function sendThing(from, to, subject, body) {
     return await ThingService.newThing(fromUser, toUser.email, subject, body)
 }
 
-async function acceptThing(firstName, thingId) {
+async function acceptThing(firstName, thing) {
     const user = (await User.filter({firstName: firstName}).run())[0]
-    await ThingService.doThing(user, thingId)
+    await ThingService.doThing(user, thing.id)
 }
 
-async function comment(from, thingId, text) {
+async function comment(from, thing, text) {
     const fromUser = (await User.filter({firstName: from}).run())[0]
 
-    await ThingService.comment(fromUser, thingId, text)
+    await ThingService.comment(fromUser, thing.id, text)
 }
 
 
-async function ping(firstName, thingId) {
+async function ping(firstName, thing) {
     const user = (await User.filter({firstName: firstName}).run())[0]
-    await ThingService.ping(user, thingId)
+    await ThingService.ping(user, thing.id)
 }
 
-async function discardComments(firstName, thingId) {
+async function discardComments(firstName, thing) {
     const user = (await User.filter({firstName: firstName}).run())[0]
 
-    await ThingService.discardComments(user, thingId)
+    await ThingService.discardComments(user, thing.id)
 }
 
-async function readAllComments(firstName, thingId) {
+async function readAllComments(firstName, thing) {
     const user = (await User.filter({firstName: firstName}).run())[0]
-    const thing = await ThingService.getThing(user, thingId)
+    const fullThing = await ThingService.getThing(user, thing.id)
 
-    await Promise.all(thing.events.filter(event => {
+    await Promise.all(fullThing.events.filter(event => {
         return SharedConstants.MESSAGE_TYPED_EVENTS.includes(event.eventType.key) &&
             (!event.payload.readByList || !event.payload.readByList.includes(user.id))
     }).map(event => EventService.markAsRead(user, event.id)))
@@ -116,7 +116,7 @@ async function createUsers() {
 }
 
 export default async function() {
-    //await User.filter(doc => doc('id').ne(userId)).delete().execute()
+    await User.filter(doc => doc('id').ne(userId)).delete().execute()
     await Thing.delete().execute()
     await Event.delete().execute()
     await createUsers()
