@@ -1,5 +1,7 @@
 import 'isomorphic-fetch'
+import 'isomorphic-form-data'
 import {polyfill} from 'es6-promise'
+import toPairs from 'lodash/toPairs'
 
 polyfill()
 
@@ -27,14 +29,28 @@ export function get(endpoint) {
     }).then(checkStatus).then(parseJSON)
 }
 
-export function post(endpoint, body, { responseType = 'json'} = {}) {
-    return fetch(endpoint, {
-        method: 'POST',
-        headers: {
+export function post(endpoint, bodyObject, { requestType = 'json', responseType = 'json'} = {}) {
+    let body
+    let headers
+
+    if (requestType === 'json') {
+        body = JSON.stringify(bodyObject)
+        headers = {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
-        },
+        }
+    } else if (requestType === 'form') {
+        body = new FormData()
+        headers = undefined
+        toPairs(bodyObject).forEach(pair => body.append(pair[0], pair[1]))
+    } else {
+        throw 'UnknownRequestType'
+    }
+
+    return fetch(endpoint, {
+        method: 'POST',
         credentials: 'include',
-        body: JSON.stringify(body)
+        headers,
+        body
     }).then(checkStatus).then(responseType === 'json' ? parseJSON : parseText)
 }

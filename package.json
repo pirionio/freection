@@ -32,6 +32,7 @@
   "homepage": "https://github.com/freection/freection#readme",
   "dependencies": {
     "@slack/client": "3.6.0",
+    "asana": "0.15.0",
     "assets-webpack-plugin": "3.4.0",
     "babel-async-preset": "https://github.com/freection/babel-async-preset.git",
     "babel-cli": "6.14.0",
@@ -69,6 +70,7 @@
     "immutable": "3.8.1",
     "intercom-client": "2.8.3",
     "isomorphic-fetch": "2.2.1",
+    "isomorphic-form-data": "0.0.1",
     "json-loader": "0.5.4",
     "jsonwebtoken": "7.0.1",
     "jss": "5.4.0",
