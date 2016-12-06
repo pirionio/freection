@@ -60,7 +60,7 @@ class ToDoGroup extends Component {
         return (
             <PreviewGroupPlaceholder text={text}
                                      moveToGroup={moveToGroup} onClick={this.toggleCategoryCollapseMode}
-                                     className={classes.categoryCollapsePlaceholder}/>
+                                     className={classes.collapsedPlaceholder}/>
         )
     }
 
@@ -81,15 +81,15 @@ class ToDoGroup extends Component {
 
         const todosSection = this.state.isCollapsed ? this.getCollapsedCategoryPlaceholder() : this.buildToDoComponents()
         const titleIcon = this.hasTodos() ?
-            <Icon name={this.state.isCollapsed ? 'angle-up' : 'angle-down'} className={classes.categoryCollapseIcon} /> :
+            <Icon name={this.state.isCollapsed ? 'angle-up' : 'angle-down'} className={classes.collapseIcon} /> :
             null
 
-        const titleClass = classNames(classes.categoryHeader, className)
+        const titleClass = classNames(classes.header, className)
 
         return connectDropTarget(
             <div name={`container-${category.key}`} className="clearfix">
                 <div name="group-title" className={titleClass}>
-                    <span className={this.hasTodos() ? classes.categoryHeaderCollapsable : ''} onClick={this.toggleCategoryCollapseMode}>
+                    <span className={this.hasTodos() ? classes.headerWhenCollapsible : ''} onClick={this.toggleCategoryCollapseMode}>
                         {category.label}
                         {titleIcon}
                     </span>
@@ -110,20 +110,20 @@ ToDoGroup.propTypes = {
 }
 
 const style = {
-    categoryHeader: {
+    header: {
         color: '#515151',
         textTransform: 'uppercase',
         marginTop: 26,
         marginBottom: 13,
         marginLeft: 1
     },
-    categoryHeaderCollapsable: {
+    headerWhenCollapsible: {
         cursor: 'pointer'
     },
-    categoryCollapsePlaceholder: {
+    collapsedPlaceholder: {
         cursor: 'pointer'
     },
-    categoryCollapseIcon: {
+    collapseIcon: {
         marginLeft: 10
     }
 }
