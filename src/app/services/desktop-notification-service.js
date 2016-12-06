@@ -135,33 +135,33 @@ function fromMobileCreateNotification(event) {
 }
 
 function createNotification(event) {
-    showNotification(event.id, `${event.creator.payload.firstName} sent you a task`, event.thing.subject, event.eventType)
+    showNotification(event.id, `${event.creator.displayName} sent you a task`, event.thing.subject, event.eventType)
 }
 
 function doneNotification(event) {
-    showNotification(event.id, `${event.creator.payload.firstName} completed a task`, event.thing.subject, event.eventType)
+    showNotification(event.id, `${event.creator.displayName} completed a task`, event.thing.subject, event.eventType)
 }
 
 function dismissNotification(event) {
-    showNotification(event.id, `${event.creator.payload.firstName} dismissed a task`, event.thing.subject, event.eventType)
+    showNotification(event.id, `${event.creator.displayName} dismissed a task`, event.thing.subject, event.eventType)
 }
 
 function closedNotification(event) {
-    showNotification(event.id, `${event.creator.payload.firstName} closed a task`, event.thing.subject, event.eventType)
+    showNotification(event.id, `${event.creator.displayName} closed a task`, event.thing.subject, event.eventType)
 }
 
 function pingNotification(event) {
-    showNotification(event.id, `${event.creator.payload.firstName} pinged you`, event.thing.subject, event.eventType)
+    showNotification(event.id, `${event.creator.displayName} pinged you`, event.thing.subject, event.eventType)
 }
 
 function pongNotification(event) {
-    showNotification(event.id, `${event.creator.payload.firstName} ponged ${event.thing.isFollowUper ? 'you' : ''}`, event.thing.subject, event.eventType)
+    showNotification(event.id, `${event.creator.displayName} ponged ${event.thing.isFollowUper ? 'you' : ''}`, event.thing.subject, event.eventType)
 }
 
 function sendBackNotification(event) {
-    showNotification(event.id, `${event.creator.payload.firstName} sent a task back`, event.thing.subject, event.eventType)
+    showNotification(event.id, `${event.creator.displayName} sent a task back`, event.thing.subject, event.eventType)
 }
 
 function mentionedNotification(event) {
-    showNotification(event.id, `${event.creator.payload.firstName} mentioned you`, event.thing.subject, event.eventType)
+    showNotification(event.id, `${event.creator.displayName} mentioned you`, event.thing.subject, event.eventType)
 }
