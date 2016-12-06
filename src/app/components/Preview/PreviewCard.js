@@ -24,7 +24,6 @@ import SlackLogo from '../../static/SlackLogo.svg'
 import GmailLogo from '../../static/GmailLogo.svg'
 import GithubLogo from '../../static/GithubLogo.png'
 import FreectionLogo from '../../static/logo-black-39x10.png'
-import DragHandle from '../../static/dnd-bg.png'
 
 const {PreviewCardRecipients, PreviewCardActions} = createSlots('PreviewCardRecipients', 'PreviewCardActions')
 
@@ -32,39 +31,6 @@ class PreviewCard extends Component {
     constructor(props) {
         super(props)
         classAutobind(this, PreviewCard.prototype)
-    }
-
-    // Uncomment this if the dragged items are not captured properly by the browser.
-    
-    // componentDidMount() {
-    //     const {connectDragPreview} = this.props
-    //
-    //     if (connectDragPreview) {
-    //         // Use empty image as a drag preview so browsers don't draw it
-    //         // and we can draw whatever we want on the custom drag layer instead.
-    //         connectDragPreview(getEmptyImage(), {
-    //             // IE fallback: specify that we'd rather screenshot the node
-    //             // when it already knows it's being dragged so we can hide it with CSS.
-    //             captureDraggingState: true
-    //         })
-    //     }
-    // }
-
-    getDragHandle(className) {
-        const {connectDragSource, sheet: {classes}} = this.props
-
-        const handleClasses = classNames(classes.dragHandle, className)
-
-        return connectDragSource(
-            <div className={handleClasses}>
-                <img src={DragHandle} />
-            </div>
-        )
-    }
-
-    getMetadataDragHandle() {
-        const {sheet: {classes}} = this.props
-        return this.getDragHandle(classes.dragHandleMetadata)
     }
 
     getSource() {
@@ -191,11 +157,11 @@ class PreviewCard extends Component {
     }
 
     render() {
-        const {connectDragPreview, connectDropTarget, isDragging, onClick, sheet: {classes}} = this.props
+        const {connectDragSource, connectDropTarget, isDragging, onClick, sheet: {classes}} = this.props
 
         const cardClasses = classNames(classes.previewCard, isDragging ? classes.previewCardDragging : undefined)
 
-        return compose(connectDragPreview, connectDropTarget)(
+        return compose(connectDragSource, connectDropTarget)(
             <div name="preview-card-draggable" className={cardClasses}>
                 <Flexbox name="preview-card" container="column">
                     <div name="overlay" className={classes.overlay} onClick={onClick} />
@@ -203,7 +169,6 @@ class PreviewCard extends Component {
                         {this.getActions()}
                     </div>
                     <Flexbox name="thing-metadata" container="column" grow={0} shrink={0} className={classes.metadata}>
-                        {this.getMetadataDragHandle()}
                         <Flexbox name="first-row" container="row" justifyContent="space-between">
                             {this.getSource()}
                             {this.getStatus()}
@@ -264,7 +229,7 @@ const style = {
         left: 0,
         width: '100%',
         display: 'none',
-        zIndex: styleVars.dragHandleZIndex,
+        zIndex: styleVars.actionsHoverZIndex,
         '& .js-button:not(:first-of-type)': {
             marginLeft: 5
         }
@@ -345,20 +310,6 @@ const style = {
     circle: {
         width: 8,
         height: 8
-    },
-    dragHandle: {
-        position: 'absolute',
-        left: 10,
-        cursor: 'move',
-        overflowY: 'hidden',
-        zIndex: styleVars.dragHandleZIndex
-    },
-    dragHandleMetadata: {
-        height: 36
-    },
-    dragHandleContent: {
-        height: 168,
-        top: 11
     }
 }
 
@@ -394,7 +345,6 @@ const itemDropTarget = {
 function collectDrag(connect, monitor) {
     return {
         connectDragSource: connect.dragSource(),
-        connectDragPreview: connect.dragPreview(),
         isDragging: monitor.isDragging()
     }
 }
