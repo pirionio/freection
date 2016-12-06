@@ -1,36 +1,21 @@
 import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
-import classNames from 'classnames'
 import useSheet from 'react-jss'
 import groupBy from 'lodash/groupBy'
-import keys from 'lodash/keys'
 
 import Flexbox from '../UI/Flexbox'
 import PreviewsContainer from '../Preview/PreviewsContainer'
 import Placeholder from '../Preview/Placeholder'
-import PreviewGroupPlaceholder from '../Preview/PreviewGroupPlaceholder'
+import ToDoGroup from './ToDoGroup'
 import * as ToDoActions from '../../actions/to-do-actions'
-import ToDoPreviewItem from './ToDoPreviewItem'
-import EmailThingPreviewItem from './EmailThingPreviewItem'
-import GithubPreviewItem from './GithubPreviewItem'
-import EntityTypes from '../../../common/enums/entity-types'
 import TodoTimeCategory from '../../../common/enums/todo-time-category'
 import SharedConstants from '../../../common/shared-constants'
-import Icon from 'react-fontawesome'
 
 class ToDo extends Component {
     constructor(props) {
         super(props)
         classAutobind(this)
-
-        this.state = {
-            collapseMap: {}
-        }
-
-        keys(TodoTimeCategory).forEach(categoryKey => {
-            this.state.collapseMap[categoryKey] = false
-        })
     }
 
     fetchToDo() {
@@ -41,92 +26,26 @@ class ToDo extends Component {
     getThingsToDo() {
         const {todos, sheet: {classes}} = this.props
 
-        const todosByTimeCategory = groupBy(todos, todo => todo.thing.todoTimeCategory ? todo.thing.todoTimeCategory.key :
-            SharedConstants.DEFAULT_TODO_TIME_CATEGORY.key)
+        const todosByTimeCategory = groupBy(todos, todo => {
+            return todo.thing.todoTimeCategory ? todo.thing.todoTimeCategory.key : SharedConstants.DEFAULT_TODO_TIME_CATEGORY.key
+        })
 
         return [
-            this.buildToDoSection(TodoTimeCategory.NEXT, todosByTimeCategory, classes.firstCategoryHeader),
-            this.buildToDoSection(TodoTimeCategory.LATER, todosByTimeCategory),
-            this.buildToDoSection(TodoTimeCategory.SOMEDAY, todosByTimeCategory)
+            this.createToDoGroup(TodoTimeCategory.NEXT, todosByTimeCategory, classes.firstCategoryHeader),
+            this.createToDoGroup(TodoTimeCategory.LATER, todosByTimeCategory),
+            this.createToDoGroup(TodoTimeCategory.SOMEDAY, todosByTimeCategory)
         ]
     }
 
-    buildToDoSection(category, todosByTimeCategory, additionalCategoryClass) {
-        const {sheet: {classes}} = this.props
-
-        const todos = todosByTimeCategory[category.key]
-        const hasTodos = todos && todos.length
-        const isCollapsed = this.state.collapseMap[category.key]
-
-        const todosSection = isCollapsed ? this.getCollapsedCategoryPlaceholder(category, todos) : this.buildToDoComponents(category, todos)
-        const titleIcon = hasTodos ?
-            <Icon name={isCollapsed ? 'angle-up' : 'angle-down'} className={classes.categoryCollapseIcon} /> :
-            null
-
-        const titleClass = classNames(classes.categoryHeader, additionalCategoryClass)
-
-        return (
-            <div name={`container-${category.key}`} key={`container-${category.key}`} className="clearfix">
-                <div name="group-title" className={titleClass}>
-                    <span className={hasTodos ? classes.categoryHeaderCollapsable : ''}
-                          onClick={() => hasTodos && this.toggleCategoryCollapseMode(category)}>
-                        {category.label}
-                        {titleIcon}
-                    </span>
-                </div>
-                {todosSection}
-            </div>
-        )
+    createToDoGroup(category, todosByTimeCategory, className) {
+        return <ToDoGroup key={`container-${category.key}`} category={category} todos={todosByTimeCategory[category.key]} className={className}
+                   reorder={this.reorder} commitReorder={this.commitReorder} moveToGroup={this.moveToGroup} />
     }
 
-    toggleCategoryCollapseMode(category) {
-        const collapseMap = this.state.collapseMap
-        collapseMap[category.key] = !this.state.collapseMap[category.key]
-        this.setState({collapseMap})
-    }
-
-    buildToDoComponents(category, todos) {
-        if (!todos || !todos.length)
-            return this.getEmptyCategoryPlaceholder(category)
-
-        return todos.map(({thing, commands}, index) => {
-            if (thing.type.key === EntityTypes.GITHUB.key)
-                return <GithubPreviewItem thing={thing} commands={commands} key={thing.id} index={index}
-                                          reorder={this.reorder} commitReorder={this.commitReorder}/>
-
-            if (thing.type.key === EntityTypes.EMAIL_THING.key)
-                return <EmailThingPreviewItem thing={thing} commands={commands} key={thing.id} index={index}
-                                              reorder={this.reorder} commitReorder={this.commitReorder}/>
-
-            return <ToDoPreviewItem thing={thing} commands={commands} key={thing.id} index={index}
-                                    reorder={this.reorder} commitReorder={this.commitReorder} />
-        })
-    }
-
-    getEmptyPagePlaceholder() {
+    getPlaceholder() {
         return (
             <Placeholder title="No tasks to do"
                          subTitle="Come to this page for all the tasks you need to work on." />
-        )
-    }
-
-    getEmptyCategoryPlaceholder(category) {
-        return (
-            <PreviewGroupPlaceholder text="Drag tasks here." icon="check-circle" category={category} moveToGroup={this.moveToGroup} />
-        )
-    }
-
-    getCollapsedCategoryPlaceholder(category, todos) {
-        const {sheet: {classes}} = this.props
-
-        const text = todos.length === 1 ?
-            `Click here to see the the task you have to do` :
-            `Click here to see the the ${todos.length} tasks you have to do`
-
-        return (
-            <PreviewGroupPlaceholder text={text}
-                                     moveToGroup={this.moveToGroup} onClick={() => this.toggleCategoryCollapseMode(category)}
-                                     className={classes.categoryCollapsePlaceholder}/>
         )
     }
 
@@ -164,7 +83,7 @@ class ToDo extends Component {
             <Flexbox name="todo-container" grow={1} container="column" className={classes.container}>
                 <PreviewsContainer previewItems={this.getThingsToDo()}
                                    fetchPreviews={this.fetchToDo}
-                                   getPlaceholder={this.getEmptyPagePlaceholder}
+                                   getPlaceholder={this.getPlaceholder}
                                    invalidationStatus={invalidationStatus}>
                     {this.props.children}
                 </PreviewsContainer>
@@ -177,24 +96,8 @@ const style = {
     container: {
         position: 'relative'
     },
-    categoryHeader: {
-        color: '#515151',
-        textTransform: 'uppercase',
-        marginTop: 26,
-        marginBottom: 13,
-        marginLeft: 1
-    },
-    categoryHeaderCollapsable: {
-        cursor: 'pointer'
-    },
     firstCategoryHeader: {
         marginTop: 0
-    },
-    categoryCollapsePlaceholder: {
-        cursor: 'pointer'
-    },
-    categoryCollapseIcon: {
-        marginLeft: 10
     }
 }
 
