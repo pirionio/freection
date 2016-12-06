@@ -112,7 +112,7 @@ class ToDo extends Component {
 
     getEmptyCategoryPlaceholder(category) {
         return (
-            <PreviewGroupPlaceholder text="Nothing left to do here." icon="check-circle" category={category} moveToGroup={this.moveToGroup} />
+            <PreviewGroupPlaceholder text="Drag tasks here." icon="check-circle" category={category} moveToGroup={this.moveToGroup} />
         )
     }
 
