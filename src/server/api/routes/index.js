@@ -11,6 +11,7 @@ import SlackRoute from './slack-route'
 import GoogleRoute from './google-route'
 import ContactsRoute from './contacts-route'
 import UserRoute from './user-route'
+import BotRoute from './bot-route'
 
 const router = Router()
 
@@ -25,5 +26,6 @@ router.use('/slack', SlackRoute)
 router.use('/google', GoogleRoute)
 router.use('/contacts', ContactsRoute)
 router.use('/users', UserRoute)
+router.use('/bot', BotRoute)
 
 export default router

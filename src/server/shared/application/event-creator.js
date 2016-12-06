@@ -53,7 +53,7 @@ export function createDismissed(creator, thing, showNewList, messageText) {
     }
 }
 
-export function createDone(creator, thing, showNewList, messageText) {
+export function createDone(creator, thing, showNewList, messageText, messageHtml) {
     analytics.thingMarkedAsDone(creator, thing, showNewList)
 
     return {
@@ -63,6 +63,7 @@ export function createDone(creator, thing, showNewList, messageText) {
         creator,
         payload: messageText ? {
             text: messageText,
+            html: messageHtml,
             readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : [],
             readByEmailList: []
         } : {},

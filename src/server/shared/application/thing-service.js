@@ -145,7 +145,7 @@ export async function newThing(user, to, content, payload = {}) {
 }
 
 export async function doThing(user, thingId) {
-    const creator = userToAddress(user)
+    const creator = getCreatorAddress(user)
 
     try {
         const thing = await ThingDomain.getFullThing(thingId)
@@ -168,7 +168,7 @@ export async function doThing(user, thingId) {
 }
 
 export async function dismiss(user, thingId, messageText) {
-    const creator = userToAddress(user)
+    const creator = getCreatorAddress(user)
 
     try {
         const thing = await ThingDomain.getFullThing(thingId)
@@ -196,7 +196,7 @@ export async function dismiss(user, thingId, messageText) {
 }
 
 export async function close(user, thingId, messageText) {
-    const creator = userToAddress(user)
+    const creator = getCreatorAddress(user)
 
     try {
         // TODO: only creator can close a thing
@@ -239,7 +239,7 @@ export async function close(user, thingId, messageText) {
 }
 
 export async function closeAck(user, thingId) {
-    const creator = userToAddress(user)
+    const creator = getCreatorAddress(user)
 
     try {
         const thing = await ThingDomain.getThing(thingId)
@@ -258,10 +258,12 @@ export async function closeAck(user, thingId) {
     }
 }
 
-export async function markAsDone(user, thingId, messageText) {
-    const creator = userToAddress(user)
+export async function markAsDone(user, thingId, content) {
+    const creator = getCreatorAddress(user)
 
     try {
+        fillContent(content, false)
+
         const thing = await ThingDomain.getFullThing(thingId)
 
         // Validate that the status of the thing matched the action
@@ -270,7 +272,7 @@ export async function markAsDone(user, thingId, messageText) {
         remove(thing.doers, doerId => doerId === user.id)
         thing.payload.status = ThingHelper.isSelf(thing) ? ThingStatus.CLOSE.key : ThingStatus.DONE.key
 
-        const doneEvent = EventCreator.createDone(creator, thing, getShowNewList(user, thing, EventTypes.DONE.key), messageText)
+        const doneEvent = EventCreator.createDone(creator, thing, getShowNewList(user, thing, EventTypes.DONE.key), content.text, content.html)
         thing.events.push(doneEvent)
 
         ThingHelper.discardUserEvents(user, thing)
@@ -291,7 +293,7 @@ export async function markAsDone(user, thingId, messageText) {
 }
 
 export async function sendBack(user, thingId, messageText) {
-    const creator = userToAddress(user)
+    const creator = getCreatorAddress(user)
 
     try {
         const thing = await ThingDomain.getFullThing(thingId)
@@ -318,7 +320,7 @@ export async function sendBack(user, thingId, messageText) {
 }
 
 export async function ping(user, thingId) {
-    const creator = userToAddress(user)
+    const creator = getCreatorAddress(user)
 
     try {
         const thing = await ThingDomain.getFullThing(thingId)
@@ -340,7 +342,7 @@ export async function ping(user, thingId) {
 }
 
 export async function pong(user, thingId, messageText) {
-    const creator = userToAddress(user)
+    const creator = getCreatorAddress(user)
 
     try {
         const thing = await ThingDomain.getFullThing(thingId)
@@ -395,7 +397,7 @@ export async function comment(user, thingId, content) {
 
 export async function followUp(user, thingId) {
     try {
-        const creator = userToAddress(user)
+        const creator = getCreatorAddress(user)
 
         const thing = await ThingDomain.getThing(thingId)
 
@@ -427,7 +429,7 @@ export async function followUp(user, thingId) {
 }
 
 export async function unfollow(user, thingId) {
-    const creator = userToAddress(user)
+    const creator = getCreatorAddress(user)
 
     const thing = await ThingDomain.getThing(thingId)
 
@@ -461,7 +463,7 @@ export async function unmute(user, thingId) {
         thing.subscribers.push(user.id)
         await thing.save()
 
-        const creator = userToAddress(user)
+        const creator = getCreatorAddress(user)
         await EventCreator.createUnmute(creator, thing, getShowNewList)
     }
 
@@ -483,7 +485,7 @@ export async function mute(user, thingId) {
         remove(thing.subscribers, userId => userId === user.id)
         await thing.save()
 
-        const creator = userToAddress(user)
+        const creator = getCreatorAddress(user)
         await EventCreator.createMute(creator, thing, getShowNewList)
     }
 
@@ -550,6 +552,9 @@ function getCreatorAddress(creator) {
 async function getToAddress(to) {
     const email = AddressParser.parseOneAddress(to).address
 
+    if (email === BOT.EMAIL)
+        return botToAddress()
+
     try {
         const toUser = await User.getUserByEmail(email)
         return userToAddress(toUser)
@@ -607,6 +612,9 @@ async function sendEmailForThing(thing, event, user, toAddress, subject, body) {
 }
 
 async function sendEmailForEvent(user, thing, event) {
+    if (thing.to.type === UserTypes.BOT.key)
+        return
+
     // Event without any message
     if (!event.payload.text && !event.payload.html)
         return

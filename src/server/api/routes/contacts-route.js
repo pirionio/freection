@@ -9,6 +9,8 @@ import {findUsers} from '../../shared/application/users-service'
 import {User} from '../../shared/models'
 import UserTypes from '../../../common/enums/user-types'
 import logger from '../../shared/utils/logger.js'
+import {BOT} from '../../shared/constants'
+import {botToAddress} from '../../shared/application/address-creator'
 
 const router = Router()
 
@@ -28,20 +30,11 @@ router.get('/', async function(request, response) {
         const googleWithoutFreection = reject(googleContacts,
             contact => freectionEmails.includes(contact.payload.email))
 
-        const meName = 'Me'
-
-        const shouldIncludeMe = meName.toLowerCase().includes(query) || user.email.toLowerCase().includes(query)
-        const me = shouldIncludeMe ? [{
-            id: user.id,
-            type: UserTypes.FREECTION.key,
-            displayName: 'Me',
-            payload: {
-                email: user.email
-            }
-        }] : []
+        const me = getMeOption(user, query)
+        const bot = getBotOption(query)
 
         // merge, freection first
-        const merged = union(me, freectionContacts, googleWithoutFreection)
+        const merged = union(me, bot, freectionContacts, googleWithoutFreection)
         const taken = take(merged, max)
 
         response.json(taken)
@@ -105,6 +98,23 @@ function getNewAccessToken(user) {
     promisify(oauth2, ['getAccessToken'])
     oauth2.setCredentials({refresh_token: user.refreshToken})
     return oauth2.getAccessTokenAsync()
+}
+
+function getMeOption(user, query) {
+    const meName = 'Me'
+    const shouldIncludeMe = meName.toLowerCase().includes(query) || user.email.toLowerCase().includes(query)
+    return shouldIncludeMe ? [{
+        id: user.id,
+        type: UserTypes.FREECTION.key,
+        displayName: 'Me',
+        payload: {
+            email: user.email
+        }
+    }] : []
+}
+
+function getBotOption(query) {
+    return BOT.NAME.toLowerCase().includes(query) ? [botToAddress()] : []
 }
 
 export default router

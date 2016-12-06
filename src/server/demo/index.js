@@ -9,7 +9,7 @@ async function done() {
     const fromUser = (await User.filter({firstName: 'Jawed'}).run())[0]
     const thing = (await Thing.filter({subject: 'Supporting Internet Explorer 4'}).run())[0]
 
-    await ThingService.markAsDone(fromUser, thing.id, 'This IE really sucks man...')
+    await ThingService.markAsDone(fromUser, thing.id, {text: 'This IE really sucks man...'})
 }
 
 async function ping() {

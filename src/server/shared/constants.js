@@ -17,5 +17,7 @@ export const SMTP = {
 
 export const BOT = {
     EMAIL: 'team@freection.com',
-    GETTING_STARTED_FLOW_SUBJECT: 'Getting Started!'
+    NAME: 'FreectionBot',
+    GETTING_STARTED_FLOW_SUBJECT: 'Getting Started!',
+    FOLLOW_UP_FLOW_SUBJECT: 'How to Follow Up?'
 }

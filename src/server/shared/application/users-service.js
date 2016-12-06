@@ -1,5 +1,4 @@
-import requireText from 'require-text'
-import {reject, chain } from 'lodash'
+import {reject, chain} from 'lodash'
 
 import {User, Thing} from '../models'
 import {userToAddress} from './address-creator'
@@ -9,10 +8,7 @@ import UserTypes from '../../../common/enums/user-types.js'
 import EventTypes from '../../../common/enums/event-types.js'
 import EntityTypes from '../../../common/enums/entity-types.js'
 import logger from '../utils/logger.js'
-import {newThing} from './thing-service'
-import {BOT} from '../constants'
-
-const gettingStarted01 = requireText('../templates/getting-started/getting-started01.html', require)
+import {onboard} from './bot-service'
 
 export async function createNewUser({googleId, firstName, lastName, email, accessToken, refreshToken}) {
     let organization = EmailParsingUtility.getOrganization(email)
@@ -55,7 +51,7 @@ export async function createNewUser({googleId, firstName, lastName, email, acces
         })
         .catch(error => logger.error(`Error thrown when importing new ${user.email} user things`, error))
 
-    await createOnBoardingTasks(user)
+    await onboard(user)
 
     return user
 }
@@ -85,10 +81,6 @@ function importThings(user, things) {
 
     return Promise.all(promises).then(() =>
         logger.info(`import ${promises.length} things for user ${user.email}`))
-}
-
-async function createOnBoardingTasks(user) {
-    return await newThing(BOT.EMAIL, user.email, {subject: BOT.GETTING_STARTED_FLOW_SUBJECT, html: gettingStarted01})
 }
 
 export async function findUsers(user, query) {

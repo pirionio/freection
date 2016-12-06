@@ -79,7 +79,11 @@ router.post('/:type/:thingId/dismiss', (request, response) => {
 })
 
 router.post('/:thingId/done', (request, response) => {
-    EndpointUtil.handlePost(request, response, ThingService.markAsDone, {
+    const markAsDone = (user, thingId, text) => {
+        return ThingService.markAsDone(user, thingId, {text})
+    }
+
+    EndpointUtil.handlePost(request, response, markAsDone, {
         params: ['thingId'],
         body: ['messageText'],
         result: true,
