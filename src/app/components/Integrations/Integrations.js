@@ -5,6 +5,8 @@ import classAutobind from 'class-autobind'
 
 import Flexbox from '../UI/Flexbox'
 import Link from '../UI/Link'
+import AsanaLogoBlack from '../../static/AsanaLogoBlack.png'
+
 
 class Integrations extends Component {
     constructor(props) {
@@ -21,6 +23,10 @@ class Integrations extends Component {
                 <Link to="/integrations/github" className={classes.link}>
                     <Icon name="github" className={classes.icon} />
                     Github
+                </Link>
+                <Link to="/integrations/asana" className={classes.link}>
+                    <img name="asana" src={AsanaLogoBlack} className={classes.logo} />
+                    Asana
                 </Link>
                 <Link to="/integrations/slack" className={classes.link}>
                     <Icon name="slack" className={classes.icon} />
@@ -48,7 +54,12 @@ const style = {
     },
     icon: {
         marginRight: 10
-    }
+    },
+    logo: {
+        marginRight: 10,
+        width:19,
+        height:18
+    },
 }
 
 export default useSheet(Integrations, style)

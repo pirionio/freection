@@ -2,7 +2,6 @@ import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
 import useSheet from 'react-jss'
-import Icon from 'react-fontawesome'
 
 import * as AsanaActions from '../../actions/asana-actions'
 import {InvalidationStatus} from '../../constants'
@@ -10,7 +9,7 @@ import Project from './Project'
 import Loader from '../UI/Loader'
 import Flexbox from '../UI/Flexbox'
 import Scrollable from '../Scrollable/Scrollable'
-import styleVars from '../style-vars'
+import AsanaLogoBlack from '../../static/AsanaLogoBlack.png'
 
 class Asana extends Component {
     constructor(props) {
@@ -71,7 +70,7 @@ class Asana extends Component {
         return (
             <Flexbox name="asana-container" grow={1} container="column" className={classes.container}>
                 <Flexbox className={classes.title}>
-                    { /* <Icon name="github" className={classes.icon} /> */}
+                    <img src={AsanaLogoBlack} className={classes.logo} />
                     Asana Integration
                 </Flexbox>
                 {content}
@@ -89,8 +88,10 @@ const style = {
         fontSize: '1.3em',
         marginBottom: 20
     },
-    icon: {
-        marginRight: 10
+    logo: {
+        marginRight: 10,
+        width:19,
+        height:18
     },
     contentHeader: {
         marginBottom: 20
