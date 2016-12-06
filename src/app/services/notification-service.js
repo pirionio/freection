@@ -35,8 +35,8 @@ function getCommandsUnwrapped(notification) {
             case EventTypes.SENT_BACK.key:
                 return [
                     ThingCommandActionTypes.DO_THING,
-                    requireText(ThingCommandActionTypes.MARK_AS_DONE),
-                    requireText(ThingCommandActionTypes.DISMISS)]
+                    createCommand(ThingCommandActionTypes.MARK_AS_DONE),
+                    createCommand(ThingCommandActionTypes.DISMISS)]
             case EventTypes.CLOSED.key:
                 return [ThingCommandActionTypes.CLOSE_ACK]
             case EventTypes.COMMENT.key:
@@ -44,7 +44,7 @@ function getCommandsUnwrapped(notification) {
                         ThingCommandActionTypes.DISCARD_SINGLE_NOTIFICATION :
                         ThingCommandActionTypes.DISCARD_COMMENTS]
             case EventTypes.PING.key:
-                return [requireText(ThingCommandActionTypes.PONG), ThingCommandActionTypes.DISCARD_SINGLE_NOTIFICATION]
+                return [createCommand(ThingCommandActionTypes.PONG, true), ThingCommandActionTypes.DISCARD_SINGLE_NOTIFICATION]
             default:
                 throw 'UnknownEventType'
         }
@@ -54,7 +54,7 @@ function getCommandsUnwrapped(notification) {
         switch (notification.eventType.key) {
             case EventTypes.DONE.key:
             case EventTypes.DISMISSED.key:
-                return [ThingCommandActionTypes.CLOSE, requireText(ThingCommandActionTypes.SEND_BACK)]
+                return [ThingCommandActionTypes.CLOSE, createCommand(ThingCommandActionTypes.SEND_BACK)]
             case EventTypes.COMMENT.key:
                 return [notification.payload.isMentioned ?
                         ThingCommandActionTypes.DISCARD_SINGLE_NOTIFICATION :
@@ -103,9 +103,6 @@ function getCommandsUnwrapped(notification) {
     }
 }
 
-function requireText(command) {
-    // We temporarly decide to stop require text for commands
-    //return { commandType: command, requireText: true}
-
-    return { commandType: command, requireText: false}
+function createCommand(command, requireText = false) {
+    return { commandType: command, requireText}
 }
