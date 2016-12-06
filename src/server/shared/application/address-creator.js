@@ -1,6 +1,7 @@
 import AddressParser from 'email-addresses'
 
 import UserTypes from '../../../common/enums/user-types'
+import {BOT} from '../constants'
 
 export function userToAddress(user) {
     return {
@@ -36,5 +37,16 @@ export function emailToAddress(email, name) {
             email: address.address
         },
         displayName: displayName
+    }
+}
+
+export function botToAddress() {
+    return {
+        id: BOT.EMAIL,
+        type: UserTypes.BOT.key,
+        payload: {
+            email: BOT.EMAIL
+        },
+        displayName: UserTypes.BOT.label
     }
 }

@@ -14,3 +14,8 @@ export const SMTP = {
     MAX_RETRIES: 2,
     CONNECTION_ALLOWED_IDLE_MILLIS: 1000 * 60 * 30
 }
+
+export const BOT = {
+    EMAIL: 'team@freection.com',
+    GETTING_STARTED_FLOW_SUBJECT: 'Getting Started!'
+}

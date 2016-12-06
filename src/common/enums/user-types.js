@@ -14,6 +14,10 @@ export default {
     SLACK: {
         key: 'SLACK',
         label: 'Slack'
+    },
+    BOT: {
+        key: 'BOT',
+        label: 'Freection Bot'
     }
 }
 

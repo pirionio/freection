@@ -85,7 +85,7 @@ router.post('/thing', async function(request, response) {
                 subject = text.substring(mentioned[0].length)
             }
 
-            await ThingService.newThing(creator, toUserEmail, subject, '', {source: ThingSource.SLACK.key})
+            await ThingService.newThing(creator, toUserEmail, {subject, text: ''}, {source: ThingSource.SLACK.key})
             delayRespondWith(responseUrl, 'New task created in Freection')
 
         } else {

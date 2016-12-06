@@ -14,10 +14,13 @@ router.post('/thing', (request, response) => {
         return
     }
 
-    EndpointUtil.handlePost(request, response, (user, to, subjectObsolete, body) => {
-        return ThingService.newThing(user, to, subjectObsolete, body, {sourceDevice: findDevice(request.device.type)})
-    }, {
-        body: ['to', 'subject', 'body'],
+    const newThing = (user, to, subject, text, html) => {
+        // request.device exists due to the use of the express-device middleware.
+        return ThingService.newThing(user, to, {subject, text, html}, {sourceDevice: findDevice(request.device.type)})
+    }
+
+    EndpointUtil.handlePost(request, response, newThing, {
+        body: ['to', 'subject', 'body', 'html'],
         result: false,
         errorTemplates: {
             general: 'Could not create new thing by user ${user}'

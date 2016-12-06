@@ -4,7 +4,7 @@ import UserTypes from '../../../common/enums/user-types'
 import * as analytics from '../utils/analytics.js'
 import ThingStatus from '../../../common/enums/thing-status.js'
 
-export function createCreated(creator, thing, showNewList, mentionedUserIds, body, emailId) {
+export function createCreated(creator, thing, showNewList, mentionedUserIds, commentText, commentHtml, emailId) {
     analytics.thingCreated(thing, showNewList)
     analytics.mentioned(creator, thing, mentionedUserIds)
 
@@ -14,7 +14,8 @@ export function createCreated(creator, thing, showNewList, mentionedUserIds, bod
         createdAt: thing.createdAt,
         creator,
         payload: {
-            text: body,
+            text: commentText,
+            html: commentHtml,
             readByList: creator.type === UserTypes.FREECTION.key ? [creator.id] : [],
             readByEmailList: [],
             mentioned: mentionedUserIds,

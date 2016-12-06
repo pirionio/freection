@@ -12,7 +12,7 @@ async function sendThing(from, to, subject, body) {
     const fromUser = (await User.filter({firstName: from}).run())[0]
     const toUser = (await User.filter({firstName: to}).run())[0]
 
-    return await ThingService.newThing(fromUser, toUser.email, subject, body)
+    return await ThingService.newThing(fromUser, toUser.email, {subject, text: body})
 }
 
 async function acceptThing(firstName, thing) {
@@ -23,9 +23,8 @@ async function acceptThing(firstName, thing) {
 async function comment(from, thing, text) {
     const fromUser = (await User.filter({firstName: from}).run())[0]
 
-    await ThingService.comment(fromUser, thing.id, text)
+    await ThingService.comment(fromUser, thing.id, {text})
 }
-
 
 async function ping(firstName, thing) {
     const user = (await User.filter({firstName: firstName}).run())[0]

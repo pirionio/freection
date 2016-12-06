@@ -159,7 +159,11 @@ router.post('/:thingId/pong', (request, response) => {
 })
 
 router.post('/:thingId/comment', (request, response) => {
-    EndpointUtil.handlePost(request, response, ThingService.comment, {
+    const comment = (user, thingId, text) => {
+        return ThingService.comment(user, thingId, {text})
+    }
+    
+    EndpointUtil.handlePost(request, response, comment, {
         params: ['thingId'],
         body: ['commentText'],
         result: true,

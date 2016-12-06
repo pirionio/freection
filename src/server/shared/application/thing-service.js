@@ -1,7 +1,8 @@
-import {remove, castArray, union, chain, omitBy, isNil, last, map, clone, uniq, reject, template, isEmpty, forOwn, find} from 'lodash'
+import {remove, castArray, union, chain, isNil, last, map, uniq, reject, template, isEmpty, forOwn, find, isString, isObject} from 'lodash'
 import AddressParser from 'email-addresses'
 import requireText from 'require-text'
 import juice from 'juice'
+import htmlToText from 'html-to-text'
 
 import {Event, User} from '../models'
 import * as EventCreator from './event-creator'
@@ -13,7 +14,8 @@ import EventTypes from '../../../common/enums/event-types'
 import UserTypes from '../../../common/enums/user-types'
 import TodoTimeCategory from '../../../common/enums/todo-time-category'
 import SharedConstants from '../../../common/shared-constants'
-import {userToAddress, emailToAddress} from './address-creator'
+import {BOT} from '../constants'
+import {userToAddress, emailToAddress, botToAddress} from './address-creator'
 import {sendMessage} from '../technical/email-send-service'
 import logger from '../utils/logger'
 import GeneralConfig from '../config/general'
@@ -108,23 +110,22 @@ export function getThing(user, thingId) {
         })
 }
 
-export async function newThing(user, to, subjectObsolete, body, payload = {}) {
-    const creator = userToAddress(user)
+export async function newThing(user, to, content, payload = {}) {
+    const creator = getCreatorAddress(user)
 
     try {
-        const toAddress = to ? (await getToAddress(user, to)) : creator
-        const mentionedUserIds = await getMentionsFromText(body)
+        fillContent(content)
 
-        const subject = subjectObsolete ? subjectObsolete : extractSubjectOnly(body)
-        const bodyOnly = extractBodyOnly(body)
+        const toAddress = to ? (await getToAddress(to)) : creator
+        const mentionedUserIds = await getMentionsFromText(content.text)
 
-        if (isEmpty(subject))
+        if (isEmpty(content.subject))
             throw new Error('Subject must be given as the first line in the message')
 
-        const thing = await saveNewThing(bodyOnly, subject, creator, toAddress, mentionedUserIds, payload)
+        const thing = await saveNewThing(content.text, content.subject, creator, toAddress, mentionedUserIds, payload)
 
         const createdEvent = EventCreator.createCreated(creator, thing, getShowNewList(user, thing, EventTypes.CREATED.key),
-            mentionedUserIds, bodyOnly, ThingHelper.getEmailId(thing))
+            mentionedUserIds, content.text, content.html, ThingHelper.getEmailId(thing))
 
         thing.events.push(createdEvent)
 
@@ -134,7 +135,7 @@ export async function newThing(user, to, subjectObsolete, body, payload = {}) {
 
         const persistedThing = await ThingDomain.updateThing(thing)
 
-        await sendEmailForThing(thing, createdEvent, user, toAddress, subject, bodyOnly)
+        await sendEmailForThing(thing, createdEvent, user, toAddress, content.subject, content.text)
 
         return persistedThing
     } catch(error) {
@@ -362,17 +363,19 @@ export async function pong(user, thingId, messageText) {
     }
 }
  
-export async function comment(user, thingId, commentText) {
+export async function comment(user, thingId, content) {
     try {
-        const creator = userToAddress(user)
+        fillContent(content, false)
+
+        const creator = getCreatorAddress(user)
 
         const thing = await ThingDomain.getFullThing(thingId)
 
-        const mentionedUserIds = await getMentionsFromText(commentText)
+        const mentionedUserIds = await getMentionsFromText(content.text)
 
         const comment = EventCreator.createComment(creator, new Date(), thing,
             getShowNewList(creator, thing, EventTypes.COMMENT.key, mentionedUserIds),
-            mentionedUserIds, commentText)
+            mentionedUserIds, content.text, content.html)
         thing.events.push(comment)
 
         updateThingMentions(thing, mentionedUserIds)
@@ -537,12 +540,18 @@ export async function addCommentFromEmail(thingId, messageId, from, date, text, 
     }
 }
 
-async function getToAddress(user, to) {
+function getCreatorAddress(creator) {
+    if ((isString(creator) && creator === BOT.EMAIL) || (isObject(creator) && creator.type === UserTypes.BOT.key))
+        return botToAddress()
+
+    return userToAddress(creator)
+}
+
+async function getToAddress(to) {
     const email = AddressParser.parseOneAddress(to).address
 
     try {
         const toUser = await User.getUserByEmail(email)
-
         return userToAddress(toUser)
     } catch (error) {
         if (error !== 'NotFound')
@@ -642,6 +651,19 @@ async function sendEmailForEvent(user, thing, event) {
     } catch (error) {
         logger.error(`Error while sending email from ${user.email} to ${emailRecipients}`, error)
     }
+}
+
+function fillContent(content, fixSubject=true) {
+    if (!content.text && content.html)
+        content.text = htmlToText.fromString(content.html)
+
+    if (!content.subject && content.text && fixSubject) {
+        content.subject = extractSubjectOnly(content.text)
+        content.text = extractBodyOnly(content.text)
+    }
+
+    if (!content.html && content.text)
+        content.html = textToHtml(content.text)
 }
 
 function extractSubjectOnly(body) {
