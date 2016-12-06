@@ -10,5 +10,9 @@ export default {
     GMAIL: {
         key: 'GMAIL',
         label: 'Gmail'
+    },
+    GITHUB: {
+        key: 'GITHUB',
+        label: 'Github'
     }
 }

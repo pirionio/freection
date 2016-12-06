@@ -12,7 +12,7 @@ import Flexbox from '../UI/Flexbox'
 import PreviewsContainer from '../Preview/PreviewsContainer'
 import Placeholder from '../Preview/Placeholder'
 import NotificationPreviewItem from './NotificationPreviewItem'
-import GithubPreviewItem from './GithubPreviewItem'
+import ExternalPreviewItem from './ExternalPreviewItem'
 import * as PreviewHelper from '../../helpers/preview-helper'
 import * as WhatsNewActions from '../../actions/whats-new-actions'
 import EntityTypes from '../../../common/enums/entity-types'
@@ -56,8 +56,8 @@ class WhatsNew extends Component {
     }
 
     buildPreviewItem(notification) {
-        return notification.thing.type.key === EntityTypes.GITHUB.key ?
-            <GithubPreviewItem notification={notification} key={notification.id} /> :
+        return [EntityTypes.GITHUB.key, EntityTypes.EXTERNAL.key].includes(notification.thing.type.key) ?
+            <ExternalPreviewItem notification={notification} key={notification.id} /> :
             <NotificationPreviewItem notification={notification} key={notification.id} />
     }
 

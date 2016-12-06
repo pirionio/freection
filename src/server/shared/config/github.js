@@ -13,7 +13,7 @@ if (process.env.NODE_ENV === 'production') {
 } else {
     clientID = '670e9152744b7c09ad10'
     clientSecret = '8b205abce1b65d869020c0c0aeb878f6faa35f85'
-    callbackURL = `${process.env.FREECTION_HOST}/api/github/callback`
+    callbackURL = 'http://localhost:3000/api/github/callback'
     webhookURL = `${process.env.FREECTION_HOST}/webhook/github`
 }
 

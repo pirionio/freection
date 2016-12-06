@@ -58,7 +58,7 @@ class PreviewCard extends Component {
         if (thing.payload.source === ThingSource.GMAIL.key)
             return <img src={GmailLogo} className={classes.sourceLogoSquare} />
 
-        if (thing.type.key === EntityTypes.GITHUB.key)
+        if (thing.payload.source === ThingSource.GITHUB.key || thing.type.key === EntityTypes.GITHUB.key)
             return <img src={GithubLogo} className={classes.sourceLogoSquare} />
 
         return <img src={FreectionLogo} className={classes.sourceLogoRectangle} />

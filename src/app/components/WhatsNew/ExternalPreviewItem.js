@@ -8,8 +8,9 @@ import TextSeparator from '../UI/TextSeparator'
 import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
 import CommandsBar from '../Commands/CommandsBar.js'
+import UserTypes from '../../../common/enums/user-types'
 
-class GithubPreviewItem extends Component {
+class ExternalPreviewItem extends Component {
     getTextElement() {
         const {notification, sheet: {classes}} = this.props
 
@@ -36,9 +37,11 @@ class GithubPreviewItem extends Component {
             styleVars.greenCircleColor
         const {creator} = notification
 
+        const platform = UserTypes[creator.type].label
+
         const text = notification.eventType.key === EventTypes.CREATED.key ?
-            <span><strong>{creator.displayName}</strong> opened an issue on github</span> :
-            <span><strong>{creator.displayName}</strong> closed an issue on github</span>
+            <span><strong>{creator.displayName}</strong> opened an issue on {platform}</span> :
+            <span><strong>{creator.displayName}</strong> closed an issue on {platform}</span>
 
         return (
             <PreviewItem circleColor={color}
@@ -65,8 +68,8 @@ const style = {
     }
 }
 
-GithubPreviewItem.propTypes = {
+ExternalPreviewItem.propTypes = {
     notification: PropTypes.object.isRequired
 }
 
-export default useSheet(GithubPreviewItem, style)
+export default useSheet(ExternalPreviewItem, style)

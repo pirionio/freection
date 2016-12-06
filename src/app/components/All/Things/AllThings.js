@@ -11,7 +11,7 @@ import PreviewsContainer from '../../Preview/PreviewsContainer'
 import Placeholder from '../../Preview/Placeholder'
 import AllThingsPreviewItem from './AllThingsPreviewItem'
 import EmailThingPreviewItem from './EmailThingPreviewItem'
-import GithubPreviewItem from './GithubPreviewItem'
+import ExternalPreviewItem from './ExternalPreviewItem'
 import EntityTypes from '../../../../common/enums/entity-types'
 
 class AllThings extends Component {
@@ -27,8 +27,8 @@ class AllThings extends Component {
 
     getAllThings() {
         return orderBy(this.props.things, this.getThingUpdateDate, 'desc').map(thing => {
-            if (thing.type.key === EntityTypes.GITHUB.key) {
-                return <GithubPreviewItem thing={thing} key={thing.id} />
+            if ([EntityTypes.GITHUB.key, EntityTypes.EXTERNAL.key].includes(thing.type.key)) {
+                return <ExternalPreviewItem thing={thing} key={thing.id} />
             } else if (thing.type.key === EntityTypes.EMAIL_THING.key) {
                 return <EmailThingPreviewItem thing={thing} key={thing.id} />
             }

@@ -6,10 +6,10 @@ import PreviewCard from '../Preview/PreviewCard'
 import {PreviewCardRecipients, PreviewCardActions} from '../Preview/PreviewCard'
 import CommandsBar from '../Commands/CommandsBar.js'
 
-class GithubTodoPreviewItem extends Component {
+class ExternalPreviewCard extends Component {
     constructor(props) {
         super(props)
-        classAutobind(this, GithubTodoPreviewItem.prototype)
+        classAutobind(this, ExternalPreviewCard.prototype)
     }
 
     getRecipients() {
@@ -45,7 +45,7 @@ const style = {
     }
 }
 
-GithubTodoPreviewItem.propTypes = {
+ExternalPreviewCard.propTypes = {
     thing: PropTypes.object.isRequired,
     commands: PropTypes.array.isRequired,
     index: PropTypes.number.isRequired,
@@ -53,4 +53,4 @@ GithubTodoPreviewItem.propTypes = {
     commitReorder: PropTypes.func.isRequired
 }
 
-export default useSheet(GithubTodoPreviewItem, style)
+export default useSheet(ExternalPreviewCard, style)

@@ -1,8 +1,7 @@
 import {Router} from 'express'
 
 import * as ThingService from '../../shared/application/thing-service'
-import * as GithubThingService from '../../shared/application/github-thing-service'
-import * as SlackThingService from '../../shared/application/slack-thing-service'
+import * as ExternalThingService from '../../shared/application/external-thing-service'
 import * as EndpointUtil from '../../shared/utils/endpoint-util'
 import EntityTypes from '../../../common/enums/entity-types'
 import {thingToDto} from '../../shared/application/transformers'
@@ -245,11 +244,8 @@ function getNotFoundErrorTemplate() {
 function getServiceByType(request) {
     const type = request.params.type.toUpperCase()
 
-    if (type === EntityTypes.GITHUB.key)
-        return GithubThingService
-
-    if (type === EntityTypes.SLACK.key)
-        return SlackThingService
+    if ([EntityTypes.GITHUB.key,EntityTypes.EXTERNAL.key].includes(type))
+        return ExternalThingService
 
     return ThingService
 }

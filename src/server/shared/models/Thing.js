@@ -46,8 +46,8 @@ Thing.ensureIndex('all', doc => {
     return doc('all')
 }, {multi: true})
 
-Thing.ensureIndex('githubIssueId', doc => {
-    return thinky.r.branch(doc('type').eq(EntityType.GITHUB.key), doc('payload')('id'), null)
+Thing.ensureIndex('externalId', doc => {
+    return thinky.r.branch(doc('type').eq(EntityType.EXTERNAL.key), doc('payload')('id'), null)
 })
 
 Thing.ensureIndex('threadId', doc => {

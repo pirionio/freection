@@ -7,7 +7,7 @@ import Icon from 'react-fontawesome'
 
 import ToDoPreviewItem from './ToDoPreviewItem'
 import EmailThingPreviewItem from './EmailThingPreviewItem'
-import GithubPreviewItem from './GithubPreviewItem'
+import ExternalPreviewItem from './ExternalPreviewCard'
 import PreviewGroupPlaceholder from '../Preview/PreviewGroupPlaceholder'
 import EntityTypes from '../../../common/enums/entity-types'
 import {DragItemTypes} from '../../constants'
@@ -29,8 +29,8 @@ class ToDoGroup extends Component {
             return this.getEmptyCategoryPlaceholder()
 
         return todos.map(({thing, commands}, index) => {
-            if (thing.type.key === EntityTypes.GITHUB.key)
-                return <GithubPreviewItem thing={thing} commands={commands} key={thing.id} index={index}
+            if ([EntityTypes.GITHUB.key, EntityTypes.EXTERNAL.key].includes(thing.type.key))
+                return <ExternalPreviewItem thing={thing} commands={commands} key={thing.id} index={index}
                                           reorder={reorder} commitReorder={commitReorder}/>
 
             if (thing.type.key === EntityTypes.EMAIL_THING.key)

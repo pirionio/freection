@@ -3,10 +3,11 @@ import {toString} from 'lodash'
 
 import {User} from './../shared/models'
 import * as ThingDomain from '../shared/domain/thing-domain'
-import * as GithubThingService from '../shared/application/github-thing-service'
+import * as ExternalThingService from '../shared/application/external-thing-service'
 import ThingStatus from '../../common/enums/thing-status'
 import logger from '../shared/utils/logger'
 import UserTypes from '../../common/enums/user-types'
+import ThingSource from '../../common/enums/thing-source.js'
 
 const router = Router()
 
@@ -40,7 +41,7 @@ function handleClosed(payload) {
     const { id, number} = payload.issue
     const fullName = payload.repository.full_name
 
-    ThingDomain.getThingsByGithubIssueId(id, true)
+    ThingDomain.getThingsByExternalId(id, true)
         .then(things => {
 
             const creator = {
@@ -56,10 +57,10 @@ function handleClosed(payload) {
             things.forEach(thing => {
                 if (thing.payload.status === ThingStatus.INPROGRESS.key) {
                     logger.info(`marking thing as done by github ${fullName}/${number}`)
-                    GithubThingService.markAsDone(creator, thing)
+                    ExternalThingService.markAsDone(creator, thing)
                 } else if ((thing.payload.status === ThingStatus.NEW.key)) {
                     logger.info(`closing thing by github ${fullName}/${number}`)
-                    GithubThingService.closeByGithub(creator, thing)
+                    ExternalThingService.closeByExternal(creator, thing)
                 }
             })
         })
@@ -77,7 +78,7 @@ function handleAssigned(payload) {
     User.getUserByGithubId(githubUserId)
         .then(user => isRepositoryEnabled(user, fullName))
         .then(user => {
-            return ThingDomain.getThingsByGithubIssueId(id)
+            return ThingDomain.getThingsByExternalId(id)
                 .then(things => isNewThing(user, things))
                 .then(() => {
                     logger.info(`creating new thing for issue ${fullName}/${number}`)
@@ -92,7 +93,7 @@ function handleAssigned(payload) {
                         }
                     }
 
-                    return GithubThingService.newThing(creator, user, title, body, id, number, html_url)
+                    return ExternalThingService.newThing(creator, user, title, body, id, html_url, ThingSource.GITHUB.key)
                 })
         })
         .catch(error => {

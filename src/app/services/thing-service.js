@@ -57,7 +57,7 @@ function getEmailThingAllowedCommands(thing) {
     return []
 }
 
-function getGithubAllowedCommands(thing) {
+function getExternalAllowedCommands(thing) {
     if (thing.isDoer) {
         switch (thing.payload.status) {
             case ThingStatus.NEW.key:
@@ -81,8 +81,8 @@ function getAllAllowedCommandsArray(thing) {
         return getEmailThingAllowedCommands(thing)
     }
 
-    if (thing.type.key === EntityTypes.GITHUB.key) {
-        return getGithubAllowedCommands(thing)
+    if ([EntityTypes.GITHUB.key, EntityTypes.EXTERNAL.key].includes(thing.type.key)) {
+        return getExternalAllowedCommands(thing)
     }
 
     if (thing.isTo && thing.isCreator) {
