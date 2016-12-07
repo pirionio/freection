@@ -3,6 +3,7 @@ import process from 'process'
 let clientID
 let clientSecret
 const callbackURL = `${process.env.FREECTION_HOST}/api/asana/callback`
+const webhookURL = `${process.env.FREECTION_HOST}/webhook/asana`
 
 if (process.env.NODE_ENV === 'production') {
     clientID = process.env.ASANA_CLIENT_ID
@@ -12,7 +13,7 @@ if (process.env.NODE_ENV === 'production') {
     clientSecret = 'ae6b8f3dc018d3b06d90ff64a0220a2f'
 }
 
-export default { clientID, clientSecret, callbackURL }
+export default { clientID, clientSecret, callbackURL, webhookURL }
 
 
 

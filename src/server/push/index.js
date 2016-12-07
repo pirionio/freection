@@ -82,13 +82,14 @@ export function configure(app) {
 
     function auditUsers(changes) {
         changes.each((error, doc) => {
-            const oldUser = doc.getOldValue()
-
             if (error) {
                 logger.error('Error reading user changes from the DB:', error)
                 crash()
-            } else if (!oldUser)
-                auditNewUser(doc)
+            } else {
+                const oldUser = doc.getOldValue()
+                if (!oldUser)
+                    auditNewUser(doc)
+            }
         })
     }
 

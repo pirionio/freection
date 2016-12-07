@@ -14,5 +14,9 @@ export default {
     GITHUB: {
         key: 'GITHUB',
         label: 'Github'
+    },
+    ASANA: {
+        key: 'ASANA',
+        label: 'Asana'
     }
 }

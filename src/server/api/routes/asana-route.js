@@ -1,7 +1,7 @@
 import querystring from 'querystring'
 
 import asana from 'asana'
-import {flatten, toString} from 'lodash'
+import {flatten, toString, chain} from 'lodash'
 import {Router} from 'express'
 
 import { User } from '../../shared/models'
@@ -30,6 +30,21 @@ router.get('/', async function (request, response) {
     }
 })
 
+router.get('/webhooks', async function (request, response) {
+    try {
+        const user = await User.get(request.user.id)
+        const client = createAsanaClient(user)
+
+        const organizations = await getOrganizations(client)
+
+        response.json(await collectionToArray(await client.webhooks.getAll(organizations[0].id)))
+
+    } catch(error) {
+        logger.error(`error while getting Asana webhooks for user ${request.user.email}`, error)
+        response.status(500).send('error while getting Asana webhooks')
+    }
+})
+
 router.post('/enableProject/:projectId', async function (request, response) {
     const {projectId} = request.params
 
@@ -39,7 +54,11 @@ router.post('/enableProject/:projectId', async function (request, response) {
     }
 
     try {
-        await User.appendAsanaProject(request.user.id, toString(projectId))
+        const user = await User.get(request.user.id)
+        const client = createAsanaClient(user)
+        const webhook = await client.webhooks.create(projectId, `${config.webhookURL}/${request.user.id}`)
+
+        await User.appendAsanaProject(request.user.id, toString(projectId), toString(webhook.id))
         response.json({})
     } catch(error) {
         logger.error(`error while enabling Asana project for user ${request.user.email}`, error)
@@ -56,6 +75,20 @@ router.post('/disableProject/:projectId', async function (request, response) {
     }
 
     try {
+        const user = await User.get(request.user.id)
+        const project = chain(user.integrations.asana.projects)
+            .filter(project => project.projectId === projectId)
+            .head()
+            .value()
+
+        if (!project) {
+            response.status(404).send('Project is not enabled')
+            return
+        }
+
+        const client = createAsanaClient(user)
+
+        await client.webhooks.deleteById(project.webhookId)
         await User.removeAsanaProject(request.user.id, toString(projectId))
         response.json({})
     } catch(error) {
@@ -148,18 +181,11 @@ async function getOrganizations(client) {
 }
 
 async function getProjects(user) {
-    const client = asana.Client.create({
-        clientId: config.clientID,
-        clientSecret: config.clientSecret,
-        redirectUri: config.callbackURL
-    })
-    client.useOauth({
-        credentials: {
-            refresh_token: user.integrations.asana.refreshToken
-        }
-    })
+    const client = createAsanaClient(user)
 
     const teams = await getTeams(client)
+
+    const userProjects = user.integrations.asana.projects.map(project => project.projectId)
 
     const projects = await Promise.all(teams.map(async function(team) {
         const teamProjects = await collectionToArray(await client.projects.findByTeam(team.id))
@@ -172,7 +198,7 @@ async function getProjects(user) {
                 name: project.name,
                 team: team.name,
                 organization: team.organization.name,
-                enabled: user.integrations.asana.projects.includes(projectId)
+                enabled: userProjects.includes(projectId)
             }
         })
     }))
@@ -194,6 +220,21 @@ function collectionToArray(streamWrapper) {
 
         stream.on('error', error => reject(error))
     })
+}
+
+function createAsanaClient(user) {
+    const client = asana.Client.create({
+        clientId: config.clientID,
+        clientSecret: config.clientSecret,
+        redirectUri: config.callbackURL
+    })
+    client.useOauth({
+        credentials: {
+            refresh_token: user.integrations.asana.refreshToken
+        }
+    })
+
+    return client
 }
 
 

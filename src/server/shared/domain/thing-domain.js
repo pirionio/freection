@@ -36,6 +36,14 @@ export async function getThingsByExternalId(externalId, full = false) {
     return Thing.getAll(externalId, {index: 'externalId'}).run()
 }
 
+export async function getUserThingByExternalId(externalId, userId) {
+    const things = await Thing.getAll(externalId, {index: 'externalId'}).filter({to: {id: userId}}).run()
+    if (things && things.length > 0)
+        return things[0]
+
+    return null
+}
+
 export async function getThingByThreadId(threadId) {
     return Thing.getAll(threadId, {index: 'threadId'}).run().then(things => {
         if (things.length === 0)
