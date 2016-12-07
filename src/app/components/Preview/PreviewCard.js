@@ -138,8 +138,10 @@ class PreviewCard extends Component {
             text = text.substr(0, GeneralConstants.PREVIEW_CARD_COMMENT_TRIM_INDEX - 3) + '...'
         }
 
+        const lastCommentClass = classNames(classes.lastCommentText, GeneralConstants.INSPECTLET_SENSITIVE_CLASS)
+
         return (
-            <div name="last-comment-text" className={classes.lastCommentText}>
+            <div name="last-comment-text" className={lastCommentClass}>
                 <span>{text}</span>
                 {unreadCount}
             </div>
@@ -160,6 +162,7 @@ class PreviewCard extends Component {
         const {connectDragSource, connectDropTarget, isDragging, onClick, sheet: {classes}} = this.props
 
         const cardClasses = classNames(classes.previewCard, isDragging ? classes.previewCardDragging : undefined)
+        const subjectClasses = classNames(classes.subject, GeneralConstants.INSPECTLET_SENSITIVE_CLASS)
 
         return compose(connectDragSource, connectDropTarget)(
             <div name="preview-card-draggable" className={cardClasses}>
@@ -178,7 +181,7 @@ class PreviewCard extends Component {
                         </Flexbox>
                     </Flexbox>
                     <Flexbox name="thing-content" container="column" grow={1} className={classes.content}>
-                        <Flexbox name="subject" className={classes.subject}>
+                        <Flexbox name="subject" className={subjectClasses}>
                             {this.getSubject()}
                         </Flexbox>
                         <Flexbox name="last-comment" className={classes.lastComment}>
