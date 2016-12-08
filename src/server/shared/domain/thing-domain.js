@@ -37,7 +37,7 @@ export async function getThingsByExternalId(externalId, full = false) {
 }
 
 export async function getUserThingByExternalId(externalId, userId) {
-    const things = await Thing.getAll(externalId, {index: 'externalId'}).filter({to: {id: userId}}).run()
+    const things = await Thing.getAll(externalId, {index: 'externalId'}).filter({to: {id: userId}}).getJoin({events: true}).run()
     if (things && things.length > 0)
         return things[0]
 

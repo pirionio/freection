@@ -65,16 +65,14 @@ router.post('/:userId', async function(request, response) {
 async function handleStory(client, user, event) {
     try {
         const story = await client.stories.findById(event.resource)
-        logger.info(`Asana - new story arrived ${story.type} ${story.text}`)
+        logger.info(`Asana - new story arrived, type: ${story.type}, text: ${story.text}`)
 
-        if (story.type === 'system' && story.text === 'assigned to you') {
+        if (shouldHandle(story)) {
             const creator = {
                 id: toString(story.created_by.id),
                 type: UserTypes.ASANA.key,
                 displayName: story.created_by.name,
-                payload: {
-
-                }
+                payload: {}
             }
 
             const asanaTaskId = toString(story.target.id)
@@ -82,13 +80,10 @@ async function handleStory(client, user, event) {
             const asanaTask = await client.tasks.findById(asanaTaskId)
             const thing = await ThingDomain.getUserThingByExternalId(asanaTaskId, user.id)
 
-            if (!asanaTask.completed && !thing) {
-                await ExternalThingService.newThing(creator, user, asanaTask.name, asanaTask.notes, asanaTaskId,
-                    `https://app.asana.com/0/${asanaTask.projects[0].id}/${asanaTaskId}`, ThingSource.ASANA.key)
-                logger.info(`Asana - new task created for user ${user.email}`)
-            } else if (thing) {
-                logger.info(`Asana - thing already existed for the task ${user.email}`)
-            }
+            if (isTaskAssign(story))
+                await handleTaskAssign(user, thing, asanaTask, creator)
+            else if (isTaskCompleted(story))
+                await handleTaskCompleted(user, thing, asanaTask, creator)
         }
     } catch(error) {
         // story might already be removed
@@ -97,6 +92,37 @@ async function handleStory(client, user, event) {
         else
             throw error
     }
+}
+
+async function handleTaskAssign(user, thing, asanaTask, creator) {
+    if (!asanaTask.completed && !thing) {
+        await ExternalThingService.newThing(creator, user, asanaTask.name, asanaTask.notes, toString(asanaTask.id),
+            `https://app.asana.com/0/${asanaTask.projects[0].id}/${asanaTask.id}`, ThingSource.ASANA.key)
+        logger.info(`Asana - new task created for user ${user.email}`)
+    } else if (thing) {
+        logger.info(`Asana - thing already existed for the task ${user.email}`)
+    }
+}
+
+async function handleTaskCompleted(user, thing, asanaTask, creator) {
+    if (asanaTask.completed && thing &&
+        [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status)) {
+
+        await ExternalThingService.markAsDone(creator, thing)
+        logger.info(`Asana - thing completed for user ${user.email} by ${creator.displayName}`)
+    }
+}
+
+function isTaskAssign(story) {
+    return story.text === 'assigned to you'
+}
+
+function isTaskCompleted(story) {
+    return story.text === 'completed this task'
+}
+
+function shouldHandle(story) {
+    return story.type === 'system' && (isTaskAssign(story) || isTaskCompleted(story))
 }
 
 export default router
