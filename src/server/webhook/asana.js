@@ -82,6 +82,8 @@ async function handleStory(client, user, event) {
 
             if (isTaskAssign(story))
                 await handleTaskAssign(user, thing, asanaTask, creator)
+            else if (isTaakUnassign(story))
+                await handleTaskUnassign(user, thing, asanaTask, creator)
             else if (isTaskCompleted(story))
                 await handleTaskCompleted(user, thing, asanaTask, creator)
         }
@@ -104,6 +106,13 @@ async function handleTaskAssign(user, thing, asanaTask, creator) {
     }
 }
 
+async function handleTaskUnassign(user, thing, asanaTask, creator) {
+    if (!asanaTask.completed && thing && thing.to.id === user.id && thing.doers.includes(user.id)) {
+        await ExternalThingService.unassign(user, creator, thing.id)
+        logger.info(`Asana - unassigning user ${user.email} from thing ${thing.id} by user ${creator.displayName}`)
+    }
+}
+
 async function handleTaskCompleted(user, thing, asanaTask, creator) {
     if (asanaTask.completed && thing &&
         [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status)) {
@@ -117,12 +126,16 @@ function isTaskAssign(story) {
     return story.text === 'assigned to you'
 }
 
+function isTaakUnassign(story) {
+    return story.text === 'unassigned from you'
+}
+
 function isTaskCompleted(story) {
     return story.text === 'completed this task'
 }
 
 function shouldHandle(story) {
-    return story.type === 'system' && (isTaskAssign(story) || isTaskCompleted(story))
+    return story.type === 'system' && (isTaskAssign(story) || isTaakUnassign(story) || isTaskCompleted(story))
 }
 
 export default router

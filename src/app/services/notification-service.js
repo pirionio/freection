@@ -24,6 +24,8 @@ function getCommandsUnwrapped(notification) {
                 return [ThingCommandActionTypes.DO_THING, ThingCommandActionTypes.DISMISS]
             case EventTypes.DONE.key:
                 return [ThingCommandActionTypes.CLOSE]
+            case EventTypes.UNASSIGNED.key:
+                return [ThingCommandActionTypes.CLOSE_ACK]
             default:
                 throw 'UnknownEventType'
         }

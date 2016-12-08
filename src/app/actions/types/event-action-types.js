@@ -12,6 +12,7 @@ const EventActionsTypes = {
     MUTED: 'EVENT_MUTED',
     FOLLOW_UP: 'EVENT_FOLLOW_UP',
     UNFOLLOW: 'EVENT_UNFOLLOW',
+    UNASSIGNED: 'EVENT_UNASSIGNED',
     COMMENT_CREATED: 'EVENT_COMMENT_CREATED',
     COMMENT_READ_BY: 'EVENT_COMMENT_READ_BY',
     COMMENT_READ_BY_EMAIL: 'EVENT_COMMENT_READ_BY_EMAIL'
@@ -34,6 +35,7 @@ export function isOfTypeEvent(type) {
         case EventActionsTypes.MUTED:
         case EventActionsTypes.FOLLOW_UP:
         case EventActionsTypes.UNFOLLOW:
+        case EventActionsTypes.UNASSIGNED:
         case EventActionsTypes.COMMENT_CREATED:
         case EventActionsTypes.COMMENT_READ_BY:
         case EventActionsTypes.COMMENT_READ_BY_EMAIL:

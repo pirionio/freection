@@ -54,6 +54,10 @@ module.exports = {
             params: ['event']
         },
         {
+            name: 'unassigned',
+            params: ['event']
+        },
+        {
             name: 'comment created',
             params: ['event']
         },

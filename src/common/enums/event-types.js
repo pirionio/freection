@@ -54,6 +54,9 @@ export default {
     UNFOLLOWED: {
         key: 'UNFOLLOWED',
         label:'Unfollowed'
+    },
+    UNASSIGNED: {
+        key: 'UNASSIGNED',
+        label: 'Unassigned'
     }
-
 }

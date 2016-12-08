@@ -1,4 +1,4 @@
-import {castArray, uniq} from 'lodash'
+import {castArray, uniq, remove} from 'lodash'
 
 import {Event} from '../models'
 import * as ThingDomain from '../domain/thing-domain'
@@ -124,6 +124,23 @@ export async function close(user, thingId) {
     }
 }
 
+export async function unassign(user, creator, thingId) {
+    try {
+        const thing = await ThingDomain.getFullThing(thingId)
+
+        validateType(thing)
+
+        thing.events.push(EventCreator.createUnassigned(creator, thing, [user.id], user))
+
+        await ThingDomain.updateThing(thing)
+
+        return thing
+    } catch(error) {
+        logger.error(`error while unassigning external thing ${thingId} by user ${creator.displayName} for user ${user.email}:`, error)
+        throw error
+    }
+}
+
 function saveNewThing(creator, to, subject, body, id, url, source) {
     return ThingDomain.createThing({
         createdAt: new Date(),
@@ -133,6 +150,7 @@ function saveNewThing(creator, to, subject, body, id, url, source) {
         subject,
         followUpers: [],
         doers: [],
+        subscribers: [],
         all: uniq([creator.id, to.id]),
         type: EntityTypes.EXTERNAL.key,
         payload: {
