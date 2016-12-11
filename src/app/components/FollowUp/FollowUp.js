@@ -1,16 +1,16 @@
 import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
-import orderBy from 'lodash/orderBy'
 import classAutobind from 'class-autobind'
 import useSheet from 'react-jss'
+import forOwn from 'lodash/forOwn'
+import groupBy from 'lodash/groupBy'
 
 import Flexbox from '../UI/Flexbox'
+import FollowUpGroup from './FollowUpGroup'
 import PreviewsContainer from '../Preview/PreviewsContainer'
 import Placeholder from '../Preview/Placeholder'
 import * as  FollowUpsActions from '../../actions/follow-up-actions'
-import FollowUpPreviewItem from './FollowUpPreviewItem'
-import SlackPreviewItem from './SlackPreviewItem'
-import EntityTypes from '../../../common/enums/entity-types'
+import SharedConstants from '../../../common/shared-constants'
 
 class FollowUp extends Component {
     constructor(props) {
@@ -24,14 +24,26 @@ class FollowUp extends Component {
     }
 
     getThingsToFollowUp() {
-        return orderBy(this.props.followUps, 'thing.createdAt', 'desc').map(followUp => {
-            const {thing, commands} = followUp
+        const {followUps} = this.props
 
-            if (thing.type.key === EntityTypes.SLACK.key)
-                return (<SlackPreviewItem thing={thing} key={thing.id} commands={commands} />)
-
-            return (<FollowUpPreviewItem thing={thing} key={thing.id} commands={commands} />)
+        const followUpsByTo = groupBy(followUps, followUp => {
+            return followUp.thing.to ? followUp.thing.to.displayName : SharedConstants.DEFAULT_FOLLOWUP_TO_CATEGORY
         })
+
+        const followUpCategories = []
+
+        forOwn(followUpsByTo, (categoryFollowUps, categoryTitle) => {
+            const category = {
+                key: categoryTitle,
+                label: categoryTitle
+            }
+
+            followUpCategories.push(
+                <FollowUpGroup key={`container-${category.key}`} category={category} followUps={categoryFollowUps} />
+            )
+        })
+
+        return followUpCategories
     }
 
     getPlaceholder() {

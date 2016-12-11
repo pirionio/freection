@@ -8,6 +8,8 @@ export default {
     EVENTS_TO_GROUP: [EventTypes.CREATED.key, EventTypes.COMMENT.key],
 
     DEFAULT_TODO_TIME_CATEGORY: TodoTimeCategory.LATER,
+
+    DEFAULT_FOLLOWUP_TO_CATEGORY: 'Other',
     
     DEFAULT_BASE_URL: 'https://app.freection.com',
 

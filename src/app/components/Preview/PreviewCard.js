@@ -9,6 +9,7 @@ import {DragSource, DropTarget} from 'react-dnd'
 import {getEmptyImage} from 'react-dnd-html5-backend'
 import first from 'lodash/first'
 import last from 'lodash/last'
+import isNil from 'lodash/isNil'
 
 import * as ThingHelper from '../../../common/helpers/thing-helper'
 import Flexbox from '../UI/Flexbox'
@@ -322,7 +323,12 @@ const style = {
 
 PreviewCard.propTypes = {
     thing: PropTypes.object.isRequired,
-    onClick: PropTypes.func
+    onClick: PropTypes.func,
+    allowDrag: PropTypes.bool
+}
+
+PreviewCard.defaultProps = {
+    allowDrag: true
 }
 
 const itemDragSource = {
@@ -332,6 +338,12 @@ const itemDragSource = {
             index: props.index,
             category: props.category
         }
+    },
+
+    canDrag(props) {
+        // For some reason, props does not include allowDrag when it's not specific explicitly (i.e. set via the defaultProps).
+        // So we have to consider a nil value as a true value (drag is allowed by default...)
+        return isNil(props.allowDrag) || !!props.allowDrag
     }
 }
 

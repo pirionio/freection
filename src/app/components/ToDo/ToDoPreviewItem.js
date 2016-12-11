@@ -1,13 +1,11 @@
 import React,{PropTypes, Component} from 'react'
 import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
-import trimEnd from 'lodash/trimEnd'
 
 import * as ThingPageActions from '../../actions/thing-page-actions'
 import PreviewCard from '../Preview/PreviewCard'
 import {PreviewCardRecipients, PreviewCardActions} from '../Preview/PreviewCard'
 import CommandsBar from '../Commands/CommandsBar.js'
-import EntityTypes from '../../../common/enums/entity-types'
 
 class TodoPreviewItem extends Component {
     constructor(props) {
@@ -18,17 +16,6 @@ class TodoPreviewItem extends Component {
     getRecipients() {
         const {thing} = this.props
         return thing.isCreator ? 'Me' : thing.creator.displayName
-    }
-
-    getEmailRecipients() {
-        const {thing, currentUser} = this.props
-
-        const recipientNames = thing.payload.recipients
-            .filter(recipient => recipient.emailAddress !== currentUser.email)
-            .map(recipient => recipient.name)
-            .join(', ')
-
-        return trimEnd(recipientNames, ', ')
     }
 
     render() {
