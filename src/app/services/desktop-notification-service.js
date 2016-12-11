@@ -59,13 +59,11 @@ export function handleEvent(event) {
     } else {
         if (event.eventType.key === EventTypes.CREATED.key && event.thing.type.key === EntityTypes.EMAIL_THING.key) {
             emailThingCreateNotification(event)
-        }
-
-        if (event.eventType.key === EventTypes.CREATED.key && event.thing.payload.source === ThingSource.SLACK.key) {
+        } else if (event.eventType.key === EventTypes.CREATED.key && event.thing.payload.source === ThingSource.SLACK.key) {
             fromSlackCreateNotification(event)
-        }
+        } else if (event.eventType.key === EventTypes.CREATED.key && event.thing.payload.sourceDevice &&
+            event.thing.payload.sourceDevice.key === DeviceType.PHONE.key) {
 
-        if (event.eventType.key === EventTypes.CREATED.key && event.thing.payload.sourceDevice.key === DeviceType.PHONE.key) {
             fromMobileCreateNotification(event)
         }
     }
