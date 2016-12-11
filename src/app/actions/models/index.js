@@ -11,6 +11,7 @@ module.exports = [
     require('./email-page'),
     require('./email-command'),
     require('./github'),
+    require('./asana'),
     require('./message-box'),
     require('./auth'),
     require('./to'),

@@ -13,6 +13,7 @@ import {inlineMessage, inlineMessageForm} from './inline-message-reducer'
 import thingPage from './thing-page-reducer'
 import emailPage from './email-page-reducer'
 import github from './github'
+import asana from './asana'
 import slack from './slack'
 import auth from './auth'
 import to from './to-reducer'
@@ -35,6 +36,7 @@ export default combineReducers({
     unreadEmails,
     emailPage,
     github,
+    asana,
     slack,
     auth,
     to,

@@ -7,6 +7,10 @@ export default {
         key: 'GITHUB',
         label: 'Github'
     },
+    ASANA: {
+        key: 'ASANA',
+        label: 'Asana'
+    },
     EMAIL: {
         key: 'EMAIL',
         label: 'Email'

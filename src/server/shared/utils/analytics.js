@@ -265,6 +265,18 @@ export function unfollowed(user, thing) {
     }
 }
 
+export function unassigned(user, thing, unassigningUser) {
+    // In this context, the user is the Freection user that's the doer of the task.
+    // The unassigningUser is the creator of the unassign event.
+    // Since that's not necessarily a Freection user, we set the event only for unassignee, and not for the unassigner.
+    if (user.type === userTypes.FREECTION.key) {
+        trackIntercomEvent('unassigned', user.id, {
+            type: thing.type,
+            by: unassigningUser.displayName
+        })
+    }
+}
+
 function notification_received(users, type) {
     users.forEach(userId => {
         trackIntercomEvent('notification_received', userId, { type })

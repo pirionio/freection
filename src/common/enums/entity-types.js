@@ -18,5 +18,9 @@ export default {
     SLACK: {
         key:'SLACK',
         label:'Slack'
+    },
+    EXTERNAL: {
+        key: 'EXTERNAL',
+        label: 'External'
     }
 }

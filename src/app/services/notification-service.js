@@ -18,12 +18,14 @@ export function getCommands(notification) {
 
 function getCommandsUnwrapped(notification) {
 
-    if (notification.thing.type.key === EntityTypes.GITHUB.key) {
+    if ([EntityTypes.GITHUB.key, EntityTypes.EXTERNAL.key].includes(notification.thing.type.key)) {
         switch (notification.eventType.key) {
             case EventTypes.CREATED.key:
                 return [ThingCommandActionTypes.DO_THING, ThingCommandActionTypes.DISMISS]
             case EventTypes.DONE.key:
                 return [ThingCommandActionTypes.CLOSE]
+            case EventTypes.UNASSIGNED.key:
+                return [ThingCommandActionTypes.CLOSE_ACK]
             default:
                 throw 'UnknownEventType'
         }

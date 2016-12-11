@@ -178,15 +178,15 @@ export function createSentBack(creator, thing, showNewList, messageText) {
     }
 }
 
-export function createCloseAck(creator, thing, getShowNewList) {
-    return Event.save({
+export function createCloseAck(creator, thing, showNewList) {
+    return {
         thingId: thing.id,
         eventType: EventTypes.CLOSE_ACKED.key,
         createdAt: new Date(),
         creator,
         payload: {},
-        showNewList: getShowNewList(creator, thing, EventTypes.CLOSE_ACKED.key)
-    })
+        showNewList: showNewList
+    }
 }
 
 export function createUnmute(creator, thing, getShowNewList) {
@@ -240,4 +240,17 @@ export function createUnfollowedUp(creator, thing, getShowNewList) {
         payload: {},
         showNewList: getShowNewList(creator, thing, EventTypes.UNFOLLOWED.key)
     })
+}
+
+export function createUnassigned(creator, thing, showNewList, user) {
+    analytics.unassigned(user, thing, creator)
+
+    return {
+        thingId: thing.id,
+        eventType: EventTypes.UNASSIGNED.key,
+        createdAt: new Date(),
+        creator,
+        payload: {},
+        showNewList
+    }
 }

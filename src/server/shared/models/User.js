@@ -31,6 +31,16 @@ const User = thinky.createModel('User', {
             userId: type.string(),
             username: type.string()
         },
+        asana: {
+            active: type.boolean(),
+            accessToken: type.string(),
+            refreshToken: type.string(),
+            userId: type.string(),
+            projects: [{
+                projectId: type.string(),
+                webhookId: type.string()
+            }]
+        },
         gmail: {
             allowSendMail: type.boolean()
         }
@@ -73,6 +83,34 @@ User.defineStatic('getUserByUsername', function(username) {
 
         return users[0]
     })
+})
+
+User.defineStatic('appendAsanaProject', function(userId, projectId, webhookId)  {
+    return this.get(userId).update(user => {
+        return {
+            integrations: {
+                asana: {
+                    projects: user('integrations')('asana')('projects').setInsert({
+                        projectId,
+                        webhookId
+                    })
+                }
+            }
+        }
+    })
+})
+
+User.defineStatic('removeAsanaProject', function(userId, projectId)  {
+    return this.get(userId).update(user => {
+        return {
+            integrations: {
+                asana: {
+                    projects: user('integrations')('asana')('projects')
+                        .filter(project => project('projectId').ne(projectId))
+                }
+            }
+        }
+    }).run()
 })
 
 User.defineStatic('appendGithubRepository', function(userId, fullName) {

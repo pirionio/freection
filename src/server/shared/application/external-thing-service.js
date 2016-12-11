@@ -1,4 +1,4 @@
-import {castArray, uniq} from 'lodash'
+import {castArray, uniq, remove} from 'lodash'
 
 import {Event} from '../models'
 import * as ThingDomain from '../domain/thing-domain'
@@ -9,8 +9,9 @@ import EntityTypes from '../../../common/enums/entity-types'
 import logger from '../utils/logger'
 import {userToAddress} from './address-creator'
 
-export async function newThing(creator, toUser, subject, body, id, number, url) {
-    const thing = saveNewThing(creator, userToAddress(toUser), subject, body, id, number, url)
+
+export async function newThing(creator, toUser, subject, body, id, url, source) {
+    const thing = saveNewThing(creator, userToAddress(toUser), subject, body, id, url, source)
     thing.events.push(EventCreator.createCreated(creator, thing, [thing.to.id]))
     await ThingDomain.updateThing(thing)
     return thing.events[0]
@@ -22,9 +23,7 @@ export async function doThing(user, thingId) {
     try {
         const thing = await ThingDomain.getFullThing(thingId)
 
-        if (thing.type !== EntityTypes.GITHUB.key)
-            throw 'InvalidEntityType'
-
+        validateType(thing)
         validateStatus(thing, [ThingStatus.NEW.key])
 
         thing.doers.push(user.id)
@@ -36,7 +35,7 @@ export async function doThing(user, thingId) {
 
         return thing
     } catch(error) {
-        logger.error(`error while setting user ${user.email} as doer of github thing ${thingId}:`, error)
+        logger.error(`error while setting user ${user.email} as doer of external thing ${thingId}:`, error)
         throw error
     }
 }
@@ -52,12 +51,12 @@ export async function markAsDone(creator, thing) {
 
         return thing
     } catch(error) {
-        logger.error(`Error while marking thing ${thing.id} as done by github:`, error)
+        logger.error(`Error while marking thing ${thing.id} as done by external:`, error)
         throw error
     }
 }
 
-export async function closeByGithub(creator, thing) {
+export async function closeByExternal(creator, thing) {
     try {
         validateStatus(thing, ThingStatus.NEW.key)
 
@@ -71,7 +70,7 @@ export async function closeByGithub(creator, thing) {
 
         return thing
     } catch(error) {
-        logger.error(`Error while closing thing ${thing.id} as done by github:`, error)
+        logger.error(`Error while closing thing ${thing.id} as done by external:`, error)
         throw error
     }
 }
@@ -81,9 +80,7 @@ export async function dismiss(user, thingId) {
 
     try {
         const thing = await ThingDomain.getFullThing(thingId)
-
-        if (thing.type !== EntityTypes.GITHUB.key)
-            throw 'InvalidEntityType'
+        validateType(thing)
 
         // Validate that the status of the thing matched the action
         validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key])
@@ -98,7 +95,7 @@ export async function dismiss(user, thingId) {
 
         return thing
     } catch(error) {
-        logger.error(`error while dismissing github thing ${thingId} by user ${user.email}`, error)
+        logger.error(`error while dismissing external thing ${thingId} by user ${user.email}`, error)
         throw error
     }
 }
@@ -109,9 +106,7 @@ export async function close(user, thingId) {
     try {
         const thing = await ThingDomain.getFullThing(thingId)
 
-        if (thing.type !== EntityTypes.GITHUB.key)
-            throw 'InvalidEntityType'
-
+        validateType(thing)
         validateStatus(thing, ThingStatus.DONE.key)
 
         thing.doers = []
@@ -124,12 +119,29 @@ export async function close(user, thingId) {
 
         return thing
     } catch(error) {
-        logger.error(`error while closing github thing ${thingId} by user ${user.email}:`, error)
+        logger.error(`error while closing external thing ${thingId} by user ${user.email}:`, error)
         throw error
     }
 }
 
-function saveNewThing(creator, to, subject, body, id, number, url) {
+export async function unassign(user, creator, thingId) {
+    try {
+        const thing = await ThingDomain.getFullThing(thingId)
+
+        validateType(thing)
+
+        thing.events.push(EventCreator.createUnassigned(creator, thing, [user.id], user))
+
+        await ThingDomain.updateThing(thing)
+
+        return thing
+    } catch(error) {
+        logger.error(`error while unassigning external thing ${thingId} by user ${creator.displayName} for user ${user.email}:`, error)
+        throw error
+    }
+}
+
+function saveNewThing(creator, to, subject, body, id, url, source) {
     return ThingDomain.createThing({
         createdAt: new Date(),
         creator,
@@ -138,13 +150,14 @@ function saveNewThing(creator, to, subject, body, id, number, url) {
         subject,
         followUpers: [],
         doers: [],
+        subscribers: [],
         all: uniq([creator.id, to.id]),
-        type: EntityTypes.GITHUB.key,
+        type: EntityTypes.EXTERNAL.key,
         payload: {
             status: ThingStatus.NEW.key,
             id,
-            number,
-            url
+            url,
+            source
         },
         events: []
     })
@@ -155,4 +168,9 @@ function validateStatus(thing, allowedStatuses) {
         throw 'IllegalOperation'
 
     return thing
+}
+
+function validateType(thing) {
+    if (![EntityTypes.EXTERNAL.key, EntityTypes.GITHUB.key].includes(thing.type))
+        throw 'InvalidEntityType'
 }

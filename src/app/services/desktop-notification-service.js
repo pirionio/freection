@@ -52,6 +52,9 @@ export function handleEvent(event) {
                 if (event.payload.isMentioned)
                     mentionedNotification(event)
                 break
+            case EventTypes.UNASSIGNED.key:
+                unassignedNotification(event)
+                break
         }
     } else {
         if (event.eventType.key === EventTypes.CREATED.key && event.thing.type.key === EntityTypes.EMAIL_THING.key) {
@@ -80,6 +83,7 @@ function getLogoByEventType(type) {
         case EventType.DONE.key:
             return LogoDone
         case EventType.DISMISSED.key:
+        case EventType.UNASSIGNED.key:
             return LogoDismissed
         case EventType.CLOSED.key:
             return LogoClosed
@@ -164,4 +168,8 @@ function sendBackNotification(event) {
 
 function mentionedNotification(event) {
     showNotification(event.id, `${event.creator.displayName} mentioned you`, event.thing.subject, event.eventType)
+}
+
+function unassignedNotification(event) {
+    showNotification(event.id, `${event.creator.displayName} unassigned you`, event.thing.subject, event.eventType)
 }

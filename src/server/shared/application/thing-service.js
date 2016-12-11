@@ -242,15 +242,21 @@ export async function closeAck(user, thingId) {
     const creator = getCreatorAddress(user)
 
     try {
-        const thing = await ThingDomain.getThing(thingId)
+        const thing = await ThingDomain.getFullThing(thingId)
 
         remove(thing.doers, doerUserId => doerUserId === user.id)
         remove(thing.followUpers, followUpperUserId => followUpperUserId === user.id)
-        thing.subscribers.push(user.id)
-        await thing.save()
 
-        await Event.discardUserEventsByType(thingId, EventTypes.CLOSED.key, user.id)
-        await EventCreator.createCloseAck(creator, thing, getShowNewList)
+        if (!thing.subscribers)
+            thing.subscribers = []
+                
+        if (!thing.subscribers.includes(user.id))
+            thing.subscribers.push(user.id)
+
+        thing.events.push(EventCreator.createCloseAck(creator, thing, []))
+        ThingHelper.discardUserEventsByType(user, thing, EventTypes.CLOSED)
+
+        return await ThingDomain.updateThing(thing)
     }
     catch(error) {
         logger.error(`error while accepting close of thing ${thingId} by user ${user.email}:`, error)

@@ -23,6 +23,7 @@ import {getChildOfType, createSlots} from '../../util/component-util'
 import SlackLogo from '../../static/SlackLogo.svg'
 import GmailLogo from '../../static/GmailLogo.svg'
 import GithubLogo from '../../static/GithubLogo.png'
+import AsanaLogo from '../../static/AsanaLogo.jpg'
 import FreectionLogo from '../../static/logo-black-39x10.png'
 
 const {PreviewCardRecipients, PreviewCardActions} = createSlots('PreviewCardRecipients', 'PreviewCardActions')
@@ -58,8 +59,11 @@ class PreviewCard extends Component {
         if (thing.payload.source === ThingSource.GMAIL.key)
             return <img src={GmailLogo} className={classes.sourceLogoSquare} />
 
-        if (thing.type.key === EntityTypes.GITHUB.key)
+        if (thing.payload.source === ThingSource.GITHUB.key || thing.type.key === EntityTypes.GITHUB.key)
             return <img src={GithubLogo} className={classes.sourceLogoSquare} />
+
+        if (thing.payload.source === ThingSource.ASANA.key)
+            return <img src={AsanaLogo} className={classes.sourceLogoSquare} />
 
         return <img src={FreectionLogo} className={classes.sourceLogoRectangle} />
     }

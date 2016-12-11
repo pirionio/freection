@@ -9,16 +9,16 @@ import Flexbox from '../../UI/Flexbox'
 import TextSeparator from '../../UI/TextSeparator'
 import ActionsBar from '../../Actions/ActionsBar'
 
-const GithubActionsBar = () => {
+const ExternalActionsBar = () => {
     return <ActionsBar actions={[]} />
 }
 
-GithubActionsBar.propTypes = {
+ExternalActionsBar.propTypes = {
     thing: PropTypes.object.isRequired,
     isRollover: PropTypes.bool
 }
 
-class GithubTodoPreviewItem extends Component {
+class ExternalPreviewItem extends Component {
     getTextElement() {
         const {thing, sheet: {classes}} = this.props
 
@@ -68,7 +68,7 @@ class GithubTodoPreviewItem extends Component {
                     {this.getTextElement()}
                 </PreviewItemText>
                 <PreviewItemActions>
-                    <GithubActionsBar thing={thing}/>
+                    <ExternalActionsBar thing={thing}/>
                 </PreviewItemActions>
             </PreviewItem>
         )
@@ -81,8 +81,8 @@ const style = {
     }
 }
 
-GithubTodoPreviewItem.propTypes = {
+ExternalPreviewItem.propTypes = {
     thing: PropTypes.object.isRequired
 }
 
-export default useSheet(GithubTodoPreviewItem, style)
+export default useSheet(ExternalPreviewItem, style)

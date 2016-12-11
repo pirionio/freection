@@ -95,6 +95,6 @@ function handleMissingRefreshToken(userData, user, callback) {
     callback(null, {
         missingRefreshToken: true,
         email: userData.email,
-        allowSendGmail: user.integrations && user.integrations.gmail && user.integrations.gmail.allowSendMail
+        allowSendGmail: user && user.integrations && user.integrations.gmail && user.integrations.gmail.allowSendMail
     })
 }

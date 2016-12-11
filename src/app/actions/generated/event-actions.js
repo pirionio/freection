@@ -93,6 +93,13 @@ export function unfollow(event) {
     }
 }
 
+export function unassigned(event) {
+    return {
+        type: EventActionsTypes.UNASSIGNED,
+        event
+    }
+}
+
 export function commentCreated(event) {
     return {
         type: EventActionsTypes.COMMENT_CREATED,
