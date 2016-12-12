@@ -10,5 +10,9 @@ export default {
     SOMEDAY: {
         key: 'SOMEDAY',
         label: 'Someday'
+    },
+    URGENT: {
+        key: 'URGENT',
+        label: 'Urgent'
     }
 }

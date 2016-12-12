@@ -123,18 +123,18 @@ export function sendEmailForThing(user, to, subject, body, messageId) {
     return sendEmail(user, to, subject, undefined, emailForThingHtml, messageId)
 }
 
-export async function newEmailThing(user, emailData, isHex) {
+export async function newEmailThing(user, emailData, isHex, payload={}) {
     const emailThreadIdDec = isHex ? converter.hexToDec(emailData.threadId) : emailData.threadId
     const emailThreadIdHex = !isHex ? converter.decToHex(emailData.threadId) : emailData.threadId
 
     const thread = {
         subject: emailData.subject,
         id: emailThreadIdDec,
-        payload: {
+        payload: Object.assign({
             threadId: emailThreadIdDec,
             threadIdHex: emailThreadIdHex,
             recipients: emailData.recipients
-        }
+        }, payload)
     }
 
     const existingThing = await ThingDomain.getThingByThreadId(thread.id)
@@ -203,7 +203,8 @@ function saveNewThing(thread, creator, to) {
             threadIdHex: thread.payload.threadIdHex,
             status: ThingStatus.INPROGRESS.key,
             recipients: thread.payload.recipients,
-            source: ThingSource.GMAIL.key
+            source: ThingSource.GMAIL.key,
+            isUrgent: thread.payload.isUrgent
         },
         events: []
     })

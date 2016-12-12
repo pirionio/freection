@@ -30,16 +30,25 @@ class ToDo extends Component {
             return todo.thing.todoTimeCategory ? todo.thing.todoTimeCategory.key : SharedConstants.DEFAULT_TODO_TIME_CATEGORY.key
         })
 
-        return [
-            this.createToDoGroup(TodoTimeCategory.NEXT, todosByTimeCategory, classes.firstCategoryHeader),
+        const urgentTodos = todosByTimeCategory[TodoTimeCategory.URGENT.key]
+        const hasUrgent = urgentTodos && urgentTodos.length
+
+        const todosGroups = [
+            this.createToDoGroup(TodoTimeCategory.NEXT, todosByTimeCategory, !hasUrgent ? classes.firstCategoryHeader : null),
             this.createToDoGroup(TodoTimeCategory.LATER, todosByTimeCategory),
             this.createToDoGroup(TodoTimeCategory.SOMEDAY, todosByTimeCategory)
         ]
+
+        if (hasUrgent)
+            todosGroups.unshift(this.createToDoGroup(TodoTimeCategory.URGENT, todosByTimeCategory, classes.firstCategoryHeader, false, false))
+
+        return  todosGroups
     }
 
-    createToDoGroup(category, todosByTimeCategory, className) {
+    createToDoGroup(category, todosByTimeCategory, className, allowDrop, allowDrag) {
         return <ToDoGroup key={`container-${category.key}`} category={category} todos={todosByTimeCategory[category.key]} className={className}
-                   reorder={this.reorder} commitReorder={this.commitReorder} moveToGroup={this.moveToGroup} />
+                          reorder={this.reorder} commitReorder={this.commitReorder} moveToGroup={this.moveToGroup}
+                          allowDrop={allowDrop} allowDrag={allowDrag} />
     }
 
     getPlaceholder() {

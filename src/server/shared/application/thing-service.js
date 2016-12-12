@@ -69,7 +69,7 @@ export async function getToDo(user) {
         // Set a category for the things that didn't appear in any category
         things.forEach(thing => {
             if (isNil(thing.todoTimeCategory)) {
-                thing.todoTimeCategory = TodoTimeCategory.LATER
+                thing.todoTimeCategory = thing.payload.isUrgent ? TodoTimeCategory.URGENT : TodoTimeCategory.LATER
                 orderedThings.push(thingToDto(thing, user))
             }
         })
