@@ -27,7 +27,7 @@ function getCommandsUnwrapped(notification) {
             case EventTypes.UNASSIGNED.key:
                 return [ThingCommandActionTypes.CLOSE_ACK]
             default:
-                throw 'UnknownEventType'
+                throw new Error(`UnknownEventType ${notification.eventType.key}`)
         }
     }
 
@@ -48,7 +48,7 @@ function getCommandsUnwrapped(notification) {
             case EventTypes.PING.key:
                 return [createCommand(ThingCommandActionTypes.PONG, true), ThingCommandActionTypes.DISCARD_SINGLE_NOTIFICATION]
             default:
-                throw 'UnknownEventType'
+                throw new Error(`UnknownEventType ${notification.eventType.key}`)
         }
     }
 
@@ -64,7 +64,7 @@ function getCommandsUnwrapped(notification) {
             case EventTypes.PONG.key:
                 return [ThingCommandActionTypes.DISCARD_SINGLE_NOTIFICATION]
             default:
-                throw 'UnknownEventType'
+                throw new Error(`UnknownEventType ${notification.eventType.key}`)
         }
     }
 
@@ -81,8 +81,11 @@ function getCommandsUnwrapped(notification) {
                 return [notification.payload.isMentioned ?
                         ThingCommandActionTypes.DISCARD_SINGLE_NOTIFICATION :
                         ThingCommandActionTypes.DISCARD_COMMENTS]
+            case EventTypes.PONG.key:
+            case EventTypes.PING.key:
+                return [ThingCommandActionTypes.DISCARD_SINGLE_NOTIFICATION]
             default:
-                throw 'UnknownEventType'
+                throw new Error(`UnknownEventType ${notification.eventType.key}`)
         }
     }
 
@@ -101,7 +104,7 @@ function getCommandsUnwrapped(notification) {
 
             return [ThingCommandActionTypes.DISCARD_COMMENTS]
         default:
-            throw 'UnknownEventType'
+            throw new Error(`UnknownEventType ${notification.eventType.key}`)
     }
 }
 
