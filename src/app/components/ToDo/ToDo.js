@@ -106,7 +106,9 @@ const style = {
         position: 'relative'
     },
     firstCategoryHeader: {
-        marginTop: 0
+        '&.js-header': {
+            marginTop: 0
+        }
     }
 }
 

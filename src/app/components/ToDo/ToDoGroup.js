@@ -89,7 +89,7 @@ class ToDoGroup extends Component {
             null
 
         const containerClass = classNames('clearfix', isOver && !allowDrop ? classes.dropNotAllowed : null)
-        const titleClass = classNames(classes.header, className)
+        const titleClass = classNames(classes.header, className, 'js-header')
 
         return connectDropTarget(
             <div name={`container-${category.key}`} className={containerClass}>
