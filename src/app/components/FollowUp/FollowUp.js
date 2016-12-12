@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
 import useSheet from 'react-jss'
-import forOwn from 'lodash/forOwn'
+import toPairs from 'lodash/toPairs'
 import groupBy from 'lodash/groupBy'
 
 import Flexbox from '../UI/Flexbox'
@@ -24,7 +24,7 @@ class FollowUp extends Component {
     }
 
     getThingsToFollowUp() {
-        const {followUps} = this.props
+        const {followUps, sheet: {classes}} = this.props
 
         const followUpsByTo = groupBy(followUps, followUp => {
             return followUp.thing.to ? followUp.thing.to.displayName : SharedConstants.DEFAULT_FOLLOWUP_TO_CATEGORY
@@ -32,14 +32,15 @@ class FollowUp extends Component {
 
         const followUpCategories = []
 
-        forOwn(followUpsByTo, (categoryFollowUps, categoryTitle) => {
+        toPairs(followUpsByTo).forEach(([categoryTitle, categoryFollowUps], index) => {
             const category = {
                 key: categoryTitle,
                 label: categoryTitle
             }
 
             followUpCategories.push(
-                <FollowUpGroup key={`container-${category.key}`} category={category} followUps={categoryFollowUps} />
+                <FollowUpGroup key={`container-${category.key}`} category={category} followUps={categoryFollowUps}
+                               className={index === 0 ? classes.firstCategoryHeader : null} />
             )
         })
 
@@ -73,6 +74,11 @@ class FollowUp extends Component {
 const style = {
     container: {
         position: 'relative'
+    },
+    firstCategoryHeader: {
+        '&.js-header': {
+            marginTop: 0
+        }
     }
 }
 

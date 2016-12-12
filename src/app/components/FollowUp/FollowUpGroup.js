@@ -73,7 +73,7 @@ class FollowUpGroup extends Component {
 
 
         const containerClass = classNames(classes.container, 'clearfix')
-        const titleClass = classNames(classes.header, className)
+        const titleClass = classNames(classes.header, className, 'js-header')
 
         return (
             <div name={`container-${category.key}`} className={containerClass}>
