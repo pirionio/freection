@@ -187,7 +187,8 @@ const style = {
         zIndex: styleVars.fullItemZIndex,
         backgroundColor: styleVars.secondaryBackgroundColor,
         borderRight: '1px solid #e0e0e0',
-        borderLeft: '1px solid #e0e0e0'
+        borderLeft: '1px solid #e0e0e0',
+        maxWidth: 1104
     },
     item: {
         marginBottom: 30,
