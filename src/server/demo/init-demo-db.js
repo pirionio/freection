@@ -43,6 +43,10 @@ async function comment(from, thing, text) {
     await ThingService.comment(fromUser, thing.id, {text})
 }
 
+async function addCommentFromEmail(from, thing, commentMessage) {
+    await ThingService.addCommentFromEmail(thing.id, random(1, Number.MAX_VALUE).toString(), from, new Date(), commentMessage)
+}
+
 async function ping(firstName, thing) {
     const user = (await User.filter({firstName: firstName}).run())[0]
     await ThingService.ping(user, thing.id)
@@ -199,6 +203,7 @@ export default async function() {
     const crManifesto = await sendThing('David', 'Max', 'Manifesto for code reviews', 'Come up with a clear guide about how and when to do them.', {source: ThingSource.ASANA.key})
     await acceptThing('Max', crManifesto)
 
+    // Update user to-do groups.
     await UserService.setTodos(userId, {
         [TodoTimeCategory.NEXT.key]: [guestPayments.id, addQuestions.id],
         [TodoTimeCategory.LATER.key]: [monthlyReport.id, userProfileDesign.id, americanExpress.id],
@@ -230,7 +235,28 @@ export default async function() {
     // interview
     await sendThing('Max', 'Steve', 'What do you think about that girl you interviewed yesterday?', 'I have a following interview with her next week, would be glad to go over your remarks')
 
+    // 10bis
+    const tenbis = await sendThing('Max', 'eden.freection@gmail.com', 'New 10bis card', 'Hey Eden, how are you?\r\n\r\nSeems like my card is not working :/\r\n\r\nCan we issue me a new one?\r\n\r\nThanks!')
+    await addCommentFromEmail('eden.freection@gmail.com', tenbis, 'Hey Max,\r\n\r\nWhat do you mean by “not working”?\r\n\r\nLet me check into it.')
+    await discardComments('Max', tenbis)
+    await readAllComments('Max', tenbis)
+
+    // QA involvement
+    const qaInvolvement = await sendThing('Max', 'David', 'QS involvement', 'So as people mentioned in the introspection, we need to involve QA better.')
+    await acceptThing('David', qaInvolvement)
+    await comment('David', qaInvolvement, 'Yeah, maybe we can sit with them earlier when features (or bugs) arrive to our team.')
+    await comment('David', qaInvolvement, 'Oh, and we can try the project we talked about earlier as pilot.')
+    await comment('Max', qaInvolvement, 'Yes, maybe someone from your team can be involved in designing automatic tests.\r\n\r\nIn any case, I will schedule with Dana to figure this out.')
+    await discardComments('Max', qaInvolvement)
+    await readAllComments('Max', qaInvolvement)
+
+    await sendThing('Max', 'Steve', 'Knowledge base for support', 'I saw that when I worked with David - every day when the on-duty changes, many things seem to slip.', {source: ThingSource.ASANA.key})
+
+    const videos = await sendThing('Max', 'Jawed', 'Can we uploads videos for education about our product?', null, {source: ThingSource.SLACK.key})
+    await acceptThing('Jawed', videos)
+
     // New tasks in Inbox
+
     await sendThing('David', 'Max', 'Crash from last night', 'Hey Max,\r\n\r\nnot sure if you got it, but many users could not log in tonight, can we direct them that it’s all over now?\r\nPlease keep me in the loop and let me know ASAP.')
     await sendThing('Steve', 'Max', 'let\'s talk about my salary', 'Hey what’s up?\r\n\r\nI’ve been in the company for a while now, I would appreciate it if we could have a talk about upgrading my salary.\r\n\r\nThank you!')
     await sendThing('Peter', 'Max', 'How many active users so far this month', 'I have a meeting soon, can’t remember the exact number we talked about last week in the meeting.')
