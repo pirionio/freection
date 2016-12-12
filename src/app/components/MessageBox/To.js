@@ -5,6 +5,7 @@ import Autosuggest from 'react-autosuggest'
 import useSheet from 'react-jss'
 import omit from 'lodash/omit'
 import get from 'lodash/get'
+import isString from 'lodash/isString'
 import AddressParser from 'email-addresses'
 import Autobind from 'class-autobind'
 
@@ -13,6 +14,10 @@ import * as ToActions from '../../actions/to-actions.js'
 import styleVars from '../style-vars'
 import Close from '../../static/close-selected-box.svg'
 import {isCommandEnter} from '../../helpers/key-binding-helper.js'
+import UserTypes from '../../../common/enums/user-types.js'
+import GmailLogo from '../../static/GmailLogo.svg'
+import FreectionLogo from '../../static/logo-black-39x10.png'
+import {emailToAddress} from '../../../common/util/email-to-address'
 
 class To extends Component {
 
@@ -39,18 +44,38 @@ class To extends Component {
     renderSuggestion(suggestion) {
         const {sheet: {classes}} = this.props
 
-        return (
-            <Flexbox container justifyContent="space-between" >
-                <Flexbox container="column" justifyContent="center" className={classes.autoCompleteName}>{suggestion.displayName}</Flexbox>
-                <Flexbox container="column" justifyContent="center" className={classes.autoCompleteEmail}>{suggestion.payload.email}</Flexbox>
-            </Flexbox>
-        )
+        if (suggestion.type === UserTypes.FREECTION.key) {
+            return (
+                <Flexbox container>
+                    <Flexbox container="column" justifyContent="center">
+                        <img src={FreectionLogo} className={classes.suggestionIconRectangle} />
+                    </Flexbox>
+                    <Flexbox container="column" justifyContent="center" className={classes.autoCompleteName} grow={1}>{suggestion.displayName}</Flexbox>
+                </Flexbox>
+            )
+        } else if (suggestion.type === UserTypes.EMAIL.key) {
+
+            return (
+                <Flexbox container>
+                    <Flexbox container="column" justifyContent="center">
+                        <img src={GmailLogo} className={classes.suggestionIconSquare} />
+                    </Flexbox>
+                    <Flexbox container="column" justifyContent="center" className={classes.autoCompleteName}
+                             grow={1}>{suggestion.displayName}</Flexbox>
+                    <Flexbox container="column" justifyContent="center"
+                             className={classes.autoCompleteEmail}>{suggestion.payload.email}</Flexbox>
+                </Flexbox>
+            )
+        }
     }
 
-    onSuggestionSelected() {
+    onSuggestionSelected(value) {
         const {model, dispatch} = this.props
 
+        const address = isString(value) ? emailToAddress(value) : value
+
         dispatch(actions.change(`${model}.selected`, true))
+        dispatch(actions.change(`${model}.selectedAddress`, address))
         setTimeout(() => this.focus())
     }
 
@@ -58,6 +83,7 @@ class To extends Component {
         const {model, dispatch} = this.props
 
         dispatch(actions.change(`${model}.selected`, false))
+        dispatch(actions.change(`${model}.selectedAddress`, null))
         dispatch(actions.change(`${model}.to`, ''))
     }
 
@@ -88,7 +114,7 @@ class To extends Component {
             const address = AddressParser.parseOneAddress(value)
 
             if (address)
-                this.onSuggestionSelected()
+                this.onSuggestionSelected(value)
         }
 
         if (isCommandEnter(event) && onCommandEnter)
@@ -101,7 +127,7 @@ class To extends Component {
         const address = AddressParser.parseOneAddress(value)
 
         if (address) {
-            this.onSuggestionSelected()
+            this.onSuggestionSelected(value)
         }
     }
 
@@ -115,8 +141,11 @@ class To extends Component {
             </div>
     }
 
-    getSuggestionValue(suggestion){
-        return `"${suggestion.displayName}" <${suggestion.payload.email}>`
+    getSuggestionValue(suggestion) {
+        if (suggestion.type === UserTypes.FREECTION.key)
+            return suggestion.displayName
+        else if (suggestion.type === UserTypes.EMAIL.key)
+            return `"${suggestion.displayName}" <${suggestion.payload.email}>`
     }
 
     onChange(event, {newValue, method}) {
@@ -180,11 +209,10 @@ class To extends Component {
     }
 
     render() {
-        const {value, selected, contacts, placeholder, containerClassName, inputClassName, tabIndex , onFocus, inputRef, sheet: {classes}} = this.props
+        const {value, selected, selectedAddress, contacts, placeholder, containerClassName, inputClassName, tabIndex , onFocus, inputRef, sheet: {classes}} = this.props
 
         if (selected) {
-            const address = AddressParser.parseOneAddress(value)
-            const name = address.name ? address.name : address.address
+            const name = selectedAddress.displayName
 
             return (
                 <div name="message-to" className={containerClassName}>
@@ -205,7 +233,7 @@ class To extends Component {
                              onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
                              onSuggestionsClearRequested={this.onSuggestionsClearRequested}
                              getSuggestionValue={this.getSuggestionValue}
-                             onSuggestionSelected={this.onSuggestionSelected}
+                             onSuggestionSelected={(event, data) => this.onSuggestionSelected(data.suggestion)}
                              renderSuggestion={this.renderSuggestion}
                              renderSuggestionsContainer={this.renderSuggestionContainer}
                              focusFirstSuggestion={true}
@@ -243,7 +271,7 @@ const style = {
         bottom: 25,
         left: 0,
         boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.15)',
-        width: '350px',
+        width: '400px',
         backgroundColor: 'white',
         zIndex: styleVars.toAutosuggestZIndex
     },
@@ -260,6 +288,16 @@ const style = {
         cursor: 'default',
         paddingLeft: 20,
         paddingRight: 20
+    },
+    suggestionIconSquare: {
+        height: 15,
+        width: 15,
+        marginRight: 40
+    },
+    suggestionIconRectangle: {
+        height: 9,
+        width: 39,
+        marginRight: 16
     },
     suggestionFocused: {
         backgroundColor: styleVars.suggestionColor
@@ -307,6 +345,7 @@ To.propTypes = {
     cache: PropTypes.object.isRequired,
     pendingQueries: PropTypes.array.isRequired,
     value: PropTypes.string,
+    selectedAddress: PropTypes.object,
     selected: PropTypes.bool,
     query: PropTypes.string,
     currentUser: PropTypes.object.isRequired,
@@ -332,6 +371,7 @@ function mapStateToProps(state, {model}) {
         cache: state.to.cache,
         currentUser: state.auth,
         value: get(state, `${model}.to`),
+        selectedAddress: get(state, `${model}.selectedAddress`),
         selected: get(state, `${model}.selected`)
     }
 }

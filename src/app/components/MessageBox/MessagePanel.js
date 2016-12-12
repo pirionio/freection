@@ -35,7 +35,12 @@ class MessagePanel extends Component {
         let promise
         switch (activeMessageBox.type.key) {
             case MessageTypes.NEW_THING.key:
-                promise = dispatch(ThingCommandActions.newThing(messageBox.message))
+                const to = messageBox.message.selectedAddress ? messageBox.message.selectedAddress : messageBox.message.to
+                const thing = {
+                    to,
+                    body: messageBox.message.body
+                }
+                promise = dispatch(ThingCommandActions.newThing(thing))
                 break
             case MessageTypes.COMMENT_THING.key:
                 promise = dispatch(ThingCommandActions.comment(activeMessageBox.context.id, messageBox.message.body))
@@ -57,8 +62,10 @@ class MessagePanel extends Component {
         }
 
         // In case of a new entity being created, disable only if there's no valid address.
-        if (activeMessageBox.type.key === MessageTypes.NEW_THING.key &&
-            !isEmpty(messageBox.message.to) && !AddressParser.parseOneAddress(messageBox.message.to)) {
+        if (activeMessageBox.type.key === MessageTypes.NEW_THING.key && !(
+                isEmpty(messageBox.message.to) ||
+                messageBox.message.selectedAddress ||
+                AddressParser.parseOneAddress(messageBox.message.to))) {
             return true
         }
 

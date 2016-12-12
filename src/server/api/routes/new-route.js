@@ -1,6 +1,6 @@
 import {Router} from 'express'
 import AddressParser from 'email-addresses'
-import {find, toArray} from 'lodash'
+import {find, toArray, isString} from 'lodash'
 
 import * as EndpointUtil from '../../shared/utils/endpoint-util'
 import * as ThingService from '../../shared/application/thing-service'
@@ -50,8 +50,9 @@ function isValid(request, response) {
         return false
     }
 
-    if (to && !validateEmailAddress(to)) {
+    if (to && isString(to) && !validateEmailAddress(to)) {
         response.status(400).send('Invalid address')
+        return false
     }
 
     return true

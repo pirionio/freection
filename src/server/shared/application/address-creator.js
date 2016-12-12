@@ -1,5 +1,3 @@
-import AddressParser from 'email-addresses'
-
 import UserTypes from '../../../common/enums/user-types'
 import {BOT} from '../constants'
 
@@ -18,28 +16,6 @@ export function userToAddress(user) {
     }
 }
 
-export function emailToAddress(email, name) {
-    const address = AddressParser.parseOneAddress(email)
-
-    let displayName
-
-    if (name)
-        displayName = name
-    else if (address.name)
-        displayName = address.name
-    else
-        displayName = `<${address.address}>`
-
-    return {
-        id: address.address,
-        type: UserTypes.EMAIL.key,
-        payload: {
-            email: address.address
-        },
-        displayName: displayName
-    }
-}
-
 export function botToAddress() {
     return {
         id: BOT.EMAIL,
@@ -50,3 +26,5 @@ export function botToAddress() {
         displayName: UserTypes.BOT.label
     }
 }
+
+export {emailToAddress} from '../../../common/util/email-to-address'

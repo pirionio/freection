@@ -116,7 +116,9 @@ export async function newThing(user, to, content, payload = {}) {
     try {
         fillContent(content)
 
-        const toAddress = to ? (await getToAddress(to)) : creator
+        const toAddress =
+            to && isString(to) ? (await getToAddress(to)) :
+            to ? to : creator
         const mentionedUserIds = await getMentionsFromText(content.text)
 
         if (isEmpty(content.subject))

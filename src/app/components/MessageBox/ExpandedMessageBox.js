@@ -117,7 +117,7 @@ class ExpandedMessageBox extends Component {
         const {activeMessageBox, messageBox} = this.props
         const addressValid = (activeMessageBox && activeMessageBox.type.key === MessageTypes.NEW_THING.key &&
             messageBox && messageBox.message && messageBox.message.body &&
-            (isEmpty(messageBox.message.to) || AddressParser.parseOneAddress(messageBox.message.to))) ||
+            (isEmpty(messageBox.message.to) || messageBox.message.selectedAddress || AddressParser.parseOneAddress(messageBox.message.to))) ||
             (activeMessageBox && activeMessageBox.type.key !== MessageTypes.NEW_THING.key)
 
         return isNil(activeMessageBox) || activeMessageBox.ongoingAction || !addressValid
@@ -129,7 +129,13 @@ class ExpandedMessageBox extends Component {
         let promise
         switch (activeMessageBox.type.key) {
             case MessageTypes.NEW_THING.key:
-                promise = dispatch(ThingCommandActions.newThing(messageBox.message))
+                const to = messageBox.message.selectedAddress ? messageBox.message.selectedAddress : messageBox.message.to
+                const thing = {
+                    to,
+                    body: messageBox.message.body
+                }
+
+                promise = dispatch(ThingCommandActions.newThing(thing))
                 break
             case MessageTypes.COMMENT_THING.key:
                 promise = dispatch(ThingCommandActions.comment(activeMessageBox.context.id, messageBox.message.body))
