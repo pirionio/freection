@@ -254,7 +254,7 @@ export default async function() {
 
     await sendThing('Max', 'Steve', 'Knowledge base for support', 'I saw that when I worked with David - every day when the on-duty changes, many things seem to slip.', {source: ThingSource.ASANA.key})
 
-    const videos = await sendThing('Max', 'Jawed', 'Can we uploads videos for education about our product?', null, {source: ThingSource.SLACK.key})
+    const videos = await sendThing('Max', 'Jawed', 'Can we upload videos for education about our product?', null, {source: ThingSource.SLACK.key})
     await acceptThing('Jawed', videos)
 
     // New tasks in Inbox
