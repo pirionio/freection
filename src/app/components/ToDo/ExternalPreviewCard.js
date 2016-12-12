@@ -18,7 +18,7 @@ class ExternalPreviewCard extends Component {
     }
 
     render() {
-        const {thing, commands, index, reorder, commitReorder} = this.props
+        const {thing, commands, index, reorder, commitReorder, allowDrag, allowDrop} = this.props
 
         return (
             <PreviewCard thing={thing}
@@ -27,6 +27,8 @@ class ExternalPreviewCard extends Component {
                          category={thing.todoTimeCategory}
                          reorder={reorder}
                          commitReorder={commitReorder}
+                         allowDrag={allowDrag}
+                         allowDrop={allowDrop}
                          onClick={() => window.open(thing.payload.url, '_blank')}>
                 <PreviewCardRecipients>
                     <span>{this.getRecipients()}</span>

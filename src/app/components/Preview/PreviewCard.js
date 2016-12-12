@@ -324,11 +324,13 @@ const style = {
 PreviewCard.propTypes = {
     thing: PropTypes.object.isRequired,
     onClick: PropTypes.func,
-    allowDrag: PropTypes.bool
+    allowDrag: PropTypes.bool,
+    allowDrop: PropTypes.bool
 }
 
 PreviewCard.defaultProps = {
-    allowDrag: true
+    allowDrag: true,
+    allowDrop: true
 }
 
 const itemDragSource = {
@@ -349,6 +351,9 @@ const itemDragSource = {
 
 const itemDropTarget = {
     hover(props, monitor) {
+        if (!isNil(props.allowDrop) && !props.allowDrop)
+            return
+
         const draggedItemId = monitor.getItem().entityId
         const hoveredItemId = props.entityId
         
@@ -358,6 +363,10 @@ const itemDropTarget = {
     
     drop(props) {
         props.commitReorder()
+    },
+
+    canDrop(props) {
+        return isNil(props.allowDrop) || !!props.allowDrop
     }
 }
 

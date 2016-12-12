@@ -29,7 +29,7 @@ class EmailThingPreviewItem extends Component {
     }
 
     render() {
-        const {thing, commands, index, reorder, commitReorder} = this.props
+        const {thing, commands, index, reorder, commitReorder, allowDrag, allowDrop} = this.props
 
         return (
             <PreviewCard thing={thing}
@@ -38,6 +38,8 @@ class EmailThingPreviewItem extends Component {
                          category={thing.todoTimeCategory}
                          reorder={reorder}
                          commitReorder={commitReorder}
+                         allowDrag={allowDrag}
+                         allowDrop={allowDrop}
                          onClick={() => window.open(this.getEmailUrl(), '_blank')}>
                 <PreviewCardRecipients>
                     <span>{this.getRecipients()}</span>

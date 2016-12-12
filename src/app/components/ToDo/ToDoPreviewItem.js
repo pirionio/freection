@@ -19,7 +19,7 @@ class TodoPreviewItem extends Component {
     }
 
     render() {
-        const {thing, commands, index, reorder, commitReorder, dispatch} = this.props
+        const {thing, commands, index, reorder, commitReorder, allowDrag, allowDrop, dispatch} = this.props
 
         return (
             <PreviewCard thing={thing}
@@ -28,6 +28,8 @@ class TodoPreviewItem extends Component {
                          category={thing.todoTimeCategory}
                          reorder={reorder}
                          commitReorder={commitReorder}
+                         allowDrag={allowDrag}
+                         allowDrop={allowDrop}
                          onClick={() => dispatch(ThingPageActions.show(thing))}>
                 <PreviewCardRecipients>
                     <span>{this.getRecipients()}</span>
@@ -45,7 +47,9 @@ TodoPreviewItem.propTypes = {
     commands: PropTypes.array.isRequired,
     index: PropTypes.number.isRequired,
     reorder: PropTypes.func.isRequired,
-    commitReorder: PropTypes.func.isRequired
+    commitReorder: PropTypes.func.isRequired,
+    allowDrag: PropTypes.bool,
+    allowDrop: PropTypes.bool,
 }
 
 function mapStateToProps(state) {
