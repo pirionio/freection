@@ -46,14 +46,13 @@ class CollapsedMessageBox extends Component {
     }
 }
 
+
 const style = {
     box: {
         height: '70px',
         backgroundColor: 'white',
         opacity: '0.7',
-        borderTop: `1px solid ${styleVars.primaryColorHalfOpaque}`,
-        borderLeft: `1px solid ${styleVars.primaryColorHalfOpaque}`,
-        borderRight: `1px solid ${styleVars.primaryColorHalfOpaque}`,
+        border: `1px solid ${styleVars.primaryColorHalfOpaque}`,
         cursor: 'text',
         '&:hover': {
             opacity: '1'
