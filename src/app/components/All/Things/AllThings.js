@@ -13,6 +13,7 @@ import AllThingsPreviewItem from './AllThingsPreviewItem'
 import EmailThingPreviewItem from './EmailThingPreviewItem'
 import ExternalPreviewItem from './ExternalPreviewItem'
 import EntityTypes from '../../../../common/enums/entity-types'
+import styleVars from '../../style-vars'
 
 class AllThings extends Component {
     constructor(props) {
@@ -26,7 +27,9 @@ class AllThings extends Component {
     }
 
     getAllThings() {
-        return orderBy(this.props.things, this.getThingUpdateDate, 'desc').map(thing => {
+        const {sheet: {classes}} = this.props
+
+        const things = orderBy(this.props.things, this.getThingUpdateDate, 'desc').map(thing => {
             if ([EntityTypes.GITHUB.key, EntityTypes.EXTERNAL.key].includes(thing.type.key)) {
                 return <ExternalPreviewItem thing={thing} key={thing.id} />
             } else if (thing.type.key === EntityTypes.EMAIL_THING.key) {
@@ -35,6 +38,12 @@ class AllThings extends Component {
 
             return <AllThingsPreviewItem thing={thing} key={thing.id} />
         })
+
+        return (
+            <div name="all-things-content" className={classes.content}>
+                {things}
+            </div>
+        )
     }
 
     getThingUpdateDate(thing) {
@@ -67,6 +76,9 @@ class AllThings extends Component {
 const style = {
     container: {
         position: 'relative'
+    },
+    content: {
+        maxWidth: styleVars.maxContentWidth
     }
 }
 

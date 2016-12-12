@@ -6,6 +6,7 @@ import Icon from 'react-fontawesome'
 
 import FollowUpPreviewItem from './FollowUpPreviewItem'
 import PreviewGroupPlaceholder from '../Preview/PreviewGroupPlaceholder'
+import styleVars from '../style-vars'
 
 class FollowUpGroup extends Component {
     constructor(props) {
@@ -70,10 +71,12 @@ class FollowUpGroup extends Component {
             <Icon name={this.state.isCollapsed ? 'angle-up' : 'angle-down'} className={classes.collapseIcon} /> :
             null
 
+
+        const containerClass = classNames(classes.container, 'clearfix')
         const titleClass = classNames(classes.header, className)
 
         return (
-            <div name={`container-${category.key}`} className="clearfix">
+            <div name={`container-${category.key}`} className={containerClass}>
                 <div name="group-title" className={titleClass}>
                     <span className={this.hasFollowUps() ? classes.headerWhenCollapsible : ''} onClick={this.toggleCategoryCollapseMode}>
                         {category.label}
@@ -93,6 +96,9 @@ FollowUpGroup.propTypes = {
 }
 
 const style = {
+    container: {
+        maxWidth: styleVars.maxContentWidth
+    },
     header: {
         color: '#515151',
         textTransform: 'uppercase',

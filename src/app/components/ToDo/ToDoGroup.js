@@ -12,6 +12,7 @@ import ExternalPreviewItem from './ExternalPreviewCard'
 import PreviewGroupPlaceholder from '../Preview/PreviewGroupPlaceholder'
 import EntityTypes from '../../../common/enums/entity-types'
 import {DragItemTypes} from '../../constants'
+import styleVars from '../style-vars'
 
 class ToDoGroup extends Component {
     constructor(props) {
@@ -88,7 +89,7 @@ class ToDoGroup extends Component {
             <Icon name={this.state.isCollapsed ? 'angle-up' : 'angle-down'} className={classes.collapseIcon} /> :
             null
 
-        const containerClass = classNames('clearfix', isOver && !allowDrop ? classes.dropNotAllowed : null)
+        const containerClass = classNames(classes.container, 'clearfix', isOver && !allowDrop ? classes.dropNotAllowed : null)
         const titleClass = classNames(classes.header, className, 'js-header')
 
         return connectDropTarget(
@@ -122,6 +123,9 @@ ToDoGroup.defaultProps = {
 }
 
 const style = {
+    container: {
+        maxWidth: styleVars.maxContentWidth
+    },
     dropNotAllowed: {
         cursor: 'not-allowed'
     },

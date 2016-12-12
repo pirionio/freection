@@ -26,6 +26,7 @@ export default {
     
     glassPaneColor: 'rgba(250, 250, 250, 0.5)',
 
+    maxContentWidth: 1178,
     previewLineHeight: 1.571,
     mainAppPadding: 35,
     messageLetterSpacing: '0.025em',

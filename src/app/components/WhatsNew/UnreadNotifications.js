@@ -16,6 +16,7 @@ import ExternalPreviewItem from './ExternalPreviewItem'
 import * as PreviewHelper from '../../helpers/preview-helper'
 import * as WhatsNewActions from '../../actions/whats-new-actions'
 import EntityTypes from '../../../common/enums/entity-types'
+import styleVars from '../style-vars'
 
 class WhatsNew extends Component {
     constructor(props) {
@@ -44,7 +45,7 @@ class WhatsNew extends Component {
             .map(([groupTitle, notifications], index) => {
                 const titleClass = classNames(classes.header, index === 0 && classes.first)
                 return (
-                    <Flexbox name={`container-${groupTitle}`} key={`container-${groupTitle}`}>
+                    <Flexbox name={`container-${groupTitle}`} key={`container-${groupTitle}`} className={classes.notificationsGroup}>
                         <Flexbox name="group-title" container="row" alignItems="center" className={titleClass}>
                             {groupTitle}
                         </Flexbox>
@@ -85,6 +86,9 @@ class WhatsNew extends Component {
 }
 
 const style = {
+    notificationsGroup: {
+        maxWidth: styleVars.maxContentWidth
+    },
     header: {
         color: '#515151',
         textTransform: 'uppercase',

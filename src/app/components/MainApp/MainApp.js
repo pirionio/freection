@@ -26,14 +26,14 @@ class MainApp extends Component {
 const style = {
     container: {
         minWidth: 0,
-        padding: [styleVars.mainAppPadding, styleVars.mainAppPadding, 0, 0],
+        padding: [styleVars.mainAppPadding, 0, 0, 0],
         backgroundColor: styleVars.backgroundColor,
         position: 'relative'
     },
     content: {
         position: 'relative',
         width: '100%',
-        maxWidth: 1178,
+        maxWidth: 1568
     },
     padding: {
         minWidth: styleVars.mainAppPadding,

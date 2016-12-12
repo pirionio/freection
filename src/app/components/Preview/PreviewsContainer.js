@@ -7,6 +7,7 @@ import Flexbox from '../UI/Flexbox'
 import MessagePanel from '../MessageBox/MessagePanel'
 import Scrollable from '../Scrollable/Scrollable'
 import Loader from '../UI/Loader'
+import styleVars from '../style-vars'
 
 class PreviewsContainer extends Component {
     componentDidMount () {
@@ -68,7 +69,7 @@ class PreviewsContainer extends Component {
                 {this.isInFullItemMode() ? children : null}
                 {content}
                 {!this.isInFullItemMode() ?
-                 <Flexbox container="column" alignSelf="center" className={classes.messagePanel}>
+                 <Flexbox container="column" className={classes.messagePanel}>
                      <MessagePanel />
                  </Flexbox> :
                  null}
@@ -83,7 +84,8 @@ const style = {
     },
     messagePanel: {
         width: '100%',
-        padding: [0, 40]
+        padding: [0, 40],
+        maxWidth: styleVars.maxContentWidth
     }
 }
 
