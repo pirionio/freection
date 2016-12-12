@@ -17,7 +17,7 @@ async function getUser(user) {
     if (find(freectionUsers, {firstName: user}))
         return (await User.filter({firstName: user}).run())[0]
 
-    return find(externalUsers, {email: user})
+    return find(externalUsers, {id: user})
 }
 
 async function sendThing(from, to, subject, body, payload) {
@@ -134,11 +134,13 @@ async function createUsers() {
 
     externalUsers = [
         {
-            email: 'hardy@seqouoia.com',
+            id: 'hardy@seqouoia.com',
+            email: '"Hardy" <hardy@seqouoia.com>',
             name: 'Hardy'
         },
         {
-            email: 'eden.freection@gmail.com',
+            id: 'eden.freection@gmail.com',
+            email: '"Eden Yang" <eden.freection@gmail.com>',
             name: 'Eden Yang'
         }
     ]
