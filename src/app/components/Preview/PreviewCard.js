@@ -265,7 +265,7 @@ const style = {
         padding: [17, 24, 15, 29]
     },
     subject: {
-        height: 42,
+        height: 43,
         lineHeight: '23px',
         marginBottom: 11,
         letterSpacing: '0.025em',
