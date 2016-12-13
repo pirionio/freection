@@ -24,8 +24,10 @@ class PreviewsContainer extends Component {
     }
 
     getNoPreviews() {
+        const {sheet: {classes}} = this.props
+
         return (
-            <Flexbox name="preview-content" grow={1} container="column" justifyContent="center" alignItems="center">
+            <Flexbox name="preview-content" grow={1} container="column" justifyContent="center" alignItems="center" className={classes.noPreviewsContainer}>
                 {this.props.getPlaceholder()}
             </Flexbox>
         )
@@ -85,6 +87,9 @@ const style = {
     messagePanel: {
         width: '100%',
         padding: [0, 40],
+        maxWidth: styleVars.maxContentWidth
+    },
+    noPreviewsContainer: {
         maxWidth: styleVars.maxContentWidth
     }
 }
