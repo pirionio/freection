@@ -26,6 +26,7 @@ function getCommands (thing) {
             ThingCommandActionTypes.DISMISS] :
         [EntityTypes.GITHUB.key, EntityTypes.EXTERNAL.key].includes(thing.type.key) ? [
             ThingCommandActionTypes.CLOSE,
+            ThingCommandActionTypes.MARK_AS_DONE,
             ThingCommandActionTypes.DISMISS
         ] :
         thing.type.key === EntityTypes.EMAIL_THING.key ? [

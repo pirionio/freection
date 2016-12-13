@@ -125,13 +125,12 @@ module.exports = {
             name: 'mark as done',
             params: ['thing', 'messageText'],
             type: 'post',
-            path: '/api/things/${thing.id}/done',
+            path: '/api/things/${thing.type.key}/${thing.id}/done',
             body: {
                 messageText: 'messageText'
             },
             completeParams: {
-                thing: 'thing',
-                event: 'result'
+                thing: 'result'
             },
             track: 'done',
             private: true

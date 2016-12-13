@@ -1,6 +1,5 @@
 import querystring from 'querystring'
 
-import asana from 'asana'
 import {flatten, toString, chain} from 'lodash'
 import {Router} from 'express'
 
@@ -8,6 +7,7 @@ import { User } from '../../shared/models'
 import logger from '../../shared/utils/logger'
 import config from '../../shared/config/asana'
 import {post} from '../../../app/util/resource-util.js'
+import * as AsanaService from '../../shared/technical/asana-service'
 
 const router = Router()
 const oauthUrl = 'https://app.asana.com/-/oauth_authorize'
@@ -33,7 +33,7 @@ router.get('/', async function (request, response) {
 router.get('/webhooks', async function (request, response) {
     try {
         const user = await User.get(request.user.id)
-        const client = createAsanaClient(user)
+        const client = AsanaService.createClient(user)
 
         const organizations = await getOrganizations(client)
 
@@ -55,7 +55,7 @@ router.post('/enableProject/:projectId', async function (request, response) {
 
     try {
         const user = await User.get(request.user.id)
-        const client = createAsanaClient(user)
+        const client = AsanaService.createClient(user)
         const webhook = await client.webhooks.create(projectId, `${config.webhookURL}/${request.user.id}`)
 
         await User.appendAsanaProject(request.user.id, toString(projectId), toString(webhook.id))
@@ -86,7 +86,7 @@ router.post('/disableProject/:projectId', async function (request, response) {
             return
         }
 
-        const client = createAsanaClient(user)
+        const client = AsanaService.createClient(user)
 
         await client.webhooks.deleteById(project.webhookId)
         await User.removeAsanaProject(request.user.id, toString(projectId))
@@ -126,12 +126,7 @@ router.get('/callback', async function(request, response) {
         const {refresh_token: refreshToken, access_token: accessToken} =
             await post('https://app.asana.com/-/oauth_token', body, {requestType: 'form'})
 
-        const client = asana.Client.create()
-        client.useOauth({
-            credentials: {
-                access_token: accessToken
-            }
-        })
+        const client = AsanaService.createClientFromToken(accessToken)
 
         const me = await client.users.me()
 
@@ -181,7 +176,7 @@ async function getOrganizations(client) {
 }
 
 async function getProjects(user) {
-    const client = createAsanaClient(user)
+    const client = AsanaService.createClient(user)
 
     const teams = await getTeams(client)
 
@@ -221,22 +216,5 @@ function collectionToArray(streamWrapper) {
         stream.on('error', error => reject(error))
     })
 }
-
-function createAsanaClient(user) {
-    const client = asana.Client.create({
-        clientId: config.clientID,
-        clientSecret: config.clientSecret,
-        redirectUri: config.callbackURL
-    })
-    client.useOauth({
-        credentials: {
-            refresh_token: user.integrations.asana.refreshToken
-        }
-    })
-
-    return client
-}
-
-
 
 export default router

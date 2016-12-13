@@ -270,14 +270,13 @@ export function _markAsDone(thing, messageText) {
             thing,
             messageText
         })
-        return ResourceUtil.post(`/api/things/${thing.id}/done`, {
+        return ResourceUtil.post(`/api/things/${thing.type.key}/${thing.id}/done`, {
                 messageText: messageText
             })
             .then(result => dispatch({
                 type: ThingCommandActionsTypes.MARK_AS_DONE, 
                 status: ActionStatus.COMPLETE,
-                thing: thing,
-                event: result
+                thing: result
             }))
             .catch(() => dispatch({
                 type: ThingCommandActionsTypes.MARK_AS_DONE, 

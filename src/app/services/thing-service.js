@@ -61,9 +61,9 @@ function getExternalAllowedCommands(thing) {
     if (thing.isDoer) {
         switch (thing.payload.status) {
             case ThingStatus.NEW.key:
-                return [ThingCommandActionTypes.DO_THING, ThingCommandActionTypes.DISMISS]
+                return [ThingCommandActionTypes.DO_THING, ThingCommandActionTypes.MARK_AS_DONE, ThingCommandActionTypes.DISMISS]
             case ThingStatus.INPROGRESS.key:
-                return [ThingCommandActionTypes.DISMISS]
+                return [ThingCommandActionTypes.MARK_AS_DONE, ThingCommandActionTypes.DISMISS]
             case ThingStatus.DONE.key:
                 return [ThingCommandActionTypes.CLOSE]
         }

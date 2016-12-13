@@ -117,7 +117,7 @@ async function handleTaskCompleted(user, thing, asanaTask, creator) {
     if (asanaTask.completed && thing &&
         [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status)) {
 
-        await ExternalThingService.markAsDone(creator, thing)
+        await ExternalThingService.markExternalAsDone(creator, thing)
         logger.info(`Asana - thing completed for user ${user.email} by ${creator.displayName}`)
     }
 }

@@ -17,11 +17,10 @@ export function getCommands(notification) {
 }
 
 function getCommandsUnwrapped(notification) {
-
     if ([EntityTypes.GITHUB.key, EntityTypes.EXTERNAL.key].includes(notification.thing.type.key)) {
         switch (notification.eventType.key) {
             case EventTypes.CREATED.key:
-                return [ThingCommandActionTypes.DO_THING, ThingCommandActionTypes.DISMISS]
+                return [ThingCommandActionTypes.DO_THING, ThingCommandActionTypes.MARK_AS_DONE, ThingCommandActionTypes.DISMISS]
             case EventTypes.DONE.key:
                 return [ThingCommandActionTypes.CLOSE]
             case EventTypes.UNASSIGNED.key:
