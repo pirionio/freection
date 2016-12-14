@@ -11,7 +11,7 @@ import logger from '../utils/logger.js'
 import {onboard} from './bot-service'
 
 export async function createNewUser({googleId, firstName, lastName, email, accessToken, refreshToken}) {
-    let organization = EmailParsingUtility.getOrganization(email)
+    const organization = EmailParsingUtility.getOrganization(email)
     const username = EmailParsingUtility.getUsername(email)
 
     const user = await User.save({
@@ -84,14 +84,15 @@ function importThings(user, things) {
 }
 
 export async function findUsers(user, query) {
-    const organizationsUsers = await User.getOrganizationUsers(user.organization)
-
-    const users = organizationsUsers.map(userToAddress)
+    const users = await getUsers(user)
 
     return users.filter(user => user.displayName.toLowerCase().includes(query) || user.payload.email.toLowerCase().includes(query))
 }
 
 export async function getUsers(user) {
+    if (user.organization === 'gmail.com')
+        return [userToAddress(user)]
+
     const organizationsUsers = await User.getOrganizationUsers(user.organization)
 
     return organizationsUsers.map(userToAddress)
