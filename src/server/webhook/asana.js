@@ -1,6 +1,5 @@
 import {Router} from 'express'
 import {toString, some, chain} from 'lodash'
-import asana from 'asana'
 
 import {User} from './../shared/models'
 import * as ThingDomain from '../shared/domain/thing-domain'
@@ -9,7 +8,7 @@ import ThingStatus from '../../common/enums/thing-status'
 import logger from '../shared/utils/logger'
 import UserTypes from '../../common/enums/user-types'
 import ThingSource from '../../common/enums/thing-source.js'
-import config from '../shared/config/asana'
+import * as AsanaService from '../shared/technical/asana-service'
 
 const router = Router()
 
@@ -34,17 +33,7 @@ router.post('/:userId', async function(request, response) {
             logger.info(`Asana - ${stories.length} stories arrived`)
 
             const user = await User.get(userId)
-
-            const client = asana.Client.create({
-                clientId: config.clientID,
-                clientSecret: config.clientSecret,
-                redirectUri: config.callbackURL
-            })
-            client.useOauth({
-                credentials: {
-                    refresh_token: user.integrations.asana.refreshToken
-                }
-            })
+            const client = AsanaService.createClient(user)
 
             // We use for of instead of forEach because we want the processing to by sync and in order
             for (const story of stories) {
