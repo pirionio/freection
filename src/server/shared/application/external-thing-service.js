@@ -5,6 +5,7 @@ import * as ThingDomain from '../domain/thing-domain'
 import * as ThingHelper from '../../../common/helpers/thing-helper'
 import * as EventCreator from './event-creator'
 import ThingStatus from '../../../common/enums/thing-status'
+import ThingSource from '../../../common/enums/thing-source'
 import EntityTypes from '../../../common/enums/entity-types'
 import logger from '../utils/logger'
 import {userToAddress} from './address-creator'
@@ -48,10 +49,10 @@ export async function markAsDone(userToken, thingId) {
 
         validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.INPROGRESS.key])
 
-        // Notice we won't proceed with updating Freection, if the action in Asana failed.
+        // Notice we won't proceed with updating Freection, if the action in the external service failed.
         // TODO we do need, however, to convey the error message better to the user, whose task won't disappear
         const user = await User.get(userToken.id)
-        await closeExternalTask(user, thing.payload.id)
+        await closeExternalTask(user, thing)
 
         remove(thing.doers, doerId => doerId === userToken.id)
         thing.payload.status = ThingStatus.DONE.key
@@ -78,7 +79,12 @@ export async function markAsDoneByExternal(creator, thing) {
     }
 }
 
-async function closeExternalTask(user, taskId) {
+async function closeExternalTask(user, thing) {
+    if (thing && thing.payload.source === ThingSource.ASANA.key)
+        await closeAsanaTask(user, thing.payload.id)
+}
+
+async function closeAsanaTask(user, taskId) {
     const client = AsanaService.createClient(user)
 
     try {
