@@ -43,6 +43,8 @@ class ExternalPreviewItem extends Component {
         switch (notification.eventType.key) {
             case EventTypes.CREATED.key:
                 return <span><strong>{notification.creator.displayName}</strong> opened an issue on {platform}</span>
+            case EventTypes.SENT_BACK.key:
+                return <span><strong>{notification.creator.displayName}</strong> reassigned you on {platform}</span>
             case EventTypes.UNASSIGNED.key:
                 return <span><strong>{notification.creator.displayName}</strong> unassigned you on {platform}</span>
             default:
@@ -55,6 +57,7 @@ class ExternalPreviewItem extends Component {
 
         switch (notification.eventType.key) {
             case EventTypes.CREATED.key:
+            case EventTypes.SENT_BACK.key:
                 return styleVars.blueCircleColor
             case EventTypes.UNASSIGNED.key:
                 return styleVars.redCircleColor

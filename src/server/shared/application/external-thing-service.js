@@ -25,7 +25,7 @@ export async function doThing(user, thingId) {
         const thing = await ThingDomain.getFullThing(thingId)
 
         validateType(thing)
-        validateStatus(thing, [ThingStatus.NEW.key])
+        validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key])
 
         thing.doers.push(user.id)
         thing.payload.status = ThingStatus.INPROGRESS.key
@@ -167,12 +167,33 @@ export async function close(user, thingId) {
     }
 }
 
+export async function sendBack(creator, user, thingId) {
+    try {
+        const thing = await ThingDomain.getFullThing(thingId)
+
+        validateStatus(thing, [ThingStatus.DONE.key, ThingStatus.DISMISS.key, ThingStatus.CLOSE.key])
+
+        thing.payload.status = ThingStatus.REOPENED.key
+
+        ThingHelper.discardUserEvents(user, thing)
+
+        const sentBackEvent = EventCreator.createSentBack(creator, thing, [thing.to.id])
+        thing.events.push(sentBackEvent)
+
+        return await ThingDomain.updateThing(thing)
+    } catch (error) {
+        logger.error(`Error while sending thing ${thingId} back by user ${user.email}:`, error)
+        throw error
+    }
+}
+
 export async function unassign(user, creator, thingId) {
     try {
         const thing = await ThingDomain.getFullThing(thingId)
 
         validateType(thing)
 
+        thing.payload.status = ThingStatus.CLOSE.key
         thing.events.push(EventCreator.createUnassigned(creator, thing, [user.id], user))
 
         await ThingDomain.updateThing(thing)

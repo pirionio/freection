@@ -20,6 +20,7 @@ function getCommandsUnwrapped(notification) {
     if ([EntityTypes.GITHUB.key, EntityTypes.EXTERNAL.key].includes(notification.thing.type.key)) {
         switch (notification.eventType.key) {
             case EventTypes.CREATED.key:
+            case EventTypes.SENT_BACK.key:
                 return [ThingCommandActionTypes.DO_THING, ThingCommandActionTypes.MARK_AS_DONE, ThingCommandActionTypes.DISMISS]
             case EventTypes.DONE.key:
                 return [ThingCommandActionTypes.CLOSE]

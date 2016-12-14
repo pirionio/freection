@@ -1,5 +1,5 @@
 import {Router} from 'express'
-import {toString, some, chain} from 'lodash'
+import {toString, some, chain, startsWith} from 'lodash'
 
 import {User} from './../shared/models'
 import * as ThingDomain from '../shared/domain/thing-domain'
@@ -90,13 +90,18 @@ async function handleTaskAssign(user, thing, asanaTask, creator) {
         await ExternalThingService.newThing(creator, user, asanaTask.name, asanaTask.notes, toString(asanaTask.id),
             `https://app.asana.com/0/${asanaTask.projects[0].id}/${asanaTask.id}`, ThingSource.ASANA.key)
         logger.info(`Asana - new task created for user ${user.email}`)
+
+    } else if (!asanaTask.completed && thing && [ThingStatus.DONE.key, ThingStatus.DISMISS.key, ThingStatus.CLOSE.key].includes(thing.payload.status)) {
+        await ExternalThingService.sendBack(creator, user, thing.id)
+        logger.info(`Asana - task ${asanaTask.id} reassigned to user ${user.email} by ${creator.displayName}`)
+
     } else if (thing) {
         logger.info(`Asana - thing already existed for the task ${user.email}`)
     }
 }
 
 async function handleTaskUnassign(user, thing, asanaTask, creator) {
-    if (!asanaTask.completed && thing && thing.to.id === user.id && thing.doers.includes(user.id)) {
+    if (!asanaTask.completed && thing && thing.to.id === user.id) {
         await ExternalThingService.unassign(user, creator, thing.id)
         logger.info(`Asana - unassigning user ${user.email} from thing ${thing.id} by user ${creator.displayName}`)
     }
@@ -116,7 +121,7 @@ function isTaskAssign(story) {
 }
 
 function isTaakUnassign(story) {
-    return story.text === 'unassigned from you'
+    return story.text === 'unassigned from you' || (startsWith(story.text, 'assigned to') && story.text !== 'assigned to you')
 }
 
 function isTaskCompleted(story) {
