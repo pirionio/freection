@@ -583,7 +583,7 @@ function getReplyAddress(thingId) {
 async function getThingEmailBody(event, body, user, toAddress) {
     const toOrganization = EmailParsingUtility.getOrganization(toAddress.id)
 
-    const bodyTemplate = toOrganization === user.organization ? organizationEmailTemplate : externalEmailTemplate
+    const bodyTemplate = (toOrganization === user.organization && user.organization !== 'gmail.com') ? organizationEmailTemplate : externalEmailTemplate
 
     return juice(bodyTemplate({
         body: textToHtml(body),
