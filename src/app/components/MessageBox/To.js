@@ -44,16 +44,7 @@ class To extends Component {
     renderSuggestion(suggestion) {
         const {sheet: {classes}} = this.props
 
-        if (suggestion.type === UserTypes.FREECTION.key) {
-            return (
-                <Flexbox container>
-                    <Flexbox container="column" justifyContent="center">
-                        <img src={FreectionLogo} className={classes.suggestionIconRectangle} />
-                    </Flexbox>
-                    <Flexbox container="column" justifyContent="center" className={classes.autoCompleteName} grow={1}>{suggestion.displayName}</Flexbox>
-                </Flexbox>
-            )
-        } else if (suggestion.type === UserTypes.EMAIL.key) {
+        if (suggestion.type === UserTypes.EMAIL.key) {
 
             return (
                 <Flexbox container>
@@ -64,6 +55,15 @@ class To extends Component {
                              grow={1}>{suggestion.displayName}</Flexbox>
                     <Flexbox container="column" justifyContent="center"
                              className={classes.autoCompleteEmail}>{suggestion.payload.email}</Flexbox>
+                </Flexbox>
+            )
+        } else {
+            return (
+                <Flexbox container>
+                    <Flexbox container="column" justifyContent="center">
+                        <img src={FreectionLogo} className={classes.suggestionIconRectangle} />
+                    </Flexbox>
+                    <Flexbox container="column" justifyContent="center" className={classes.autoCompleteName} grow={1}>{suggestion.displayName}</Flexbox>
                 </Flexbox>
             )
         }
@@ -142,10 +142,10 @@ class To extends Component {
     }
 
     getSuggestionValue(suggestion) {
-        if (suggestion.type === UserTypes.FREECTION.key)
-            return suggestion.displayName
-        else if (suggestion.type === UserTypes.EMAIL.key)
+        if (suggestion.type === UserTypes.EMAIL.key)
             return `"${suggestion.displayName}" <${suggestion.payload.email}>`
+        else
+            return suggestion.displayName
     }
 
     onChange(event, {newValue, method}) {
