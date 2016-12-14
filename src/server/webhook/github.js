@@ -57,7 +57,7 @@ function handleClosed(payload) {
             things.forEach(thing => {
                 if (thing.payload.status === ThingStatus.INPROGRESS.key) {
                     logger.info(`marking thing as done by github ${fullName}/${number}`)
-                    ExternalThingService.markAsDone(creator, thing)
+                    ExternalThingService.markAsDoneByExternal(creator, thing)
                 } else if ((thing.payload.status === ThingStatus.NEW.key)) {
                     logger.info(`closing thing by github ${fullName}/${number}`)
                     ExternalThingService.closeByExternal(creator, thing)

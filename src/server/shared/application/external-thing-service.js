@@ -64,7 +64,7 @@ export async function markAsDone(userToken, thingId) {
     }
 }
 
-export async function markExternalAsDone(creator, thing) {
+export async function markAsDoneByExternal(creator, thing) {
     try {
         validateStatus(thing, ThingStatus.INPROGRESS.key)
 
