@@ -77,6 +77,24 @@ router.post('/:type/:thingId/dismiss', (request, response) => {
     })
 })
 
+router.post('/:thingId/done', (request, response) => {
+    const markAsDone = (user, thingId, text) => {
+        return ThingService.markAsDone(user, thingId, {text})
+    }
+
+    EndpointUtil.handlePost(request, response, markAsDone, {
+        params: ['thingId'],
+        body: ['messageText'],
+        result: true,
+        transform: thingToDto,
+        errorTemplates: {
+            notFound: getNotFoundErrorTemplate(),
+            illegalOperation: getIllegalOperationErrorTemplate(),
+            general: 'Could not mark task ${thingId} as done by user user ${user}'
+        }
+    })
+})
+
 router.post('/:type/:thingId/done', (request, response) => {
     const markAsDone = (user, thingId, text) => {
         return getServiceByType(request).markAsDone(user, thingId, {text})
