@@ -14,8 +14,7 @@ import * as AsanaService from '../technical/asana-service'
 export async function newThing(creator, toUser, subject, body, id, url, source) {
     const thing = saveNewThing(creator, userToAddress(toUser), subject, body, id, url, source)
     thing.events.push(EventCreator.createCreated(creator, thing, [thing.to.id]))
-    await ThingDomain.updateThing(thing)
-    return thing.events[0]
+    return await ThingDomain.updateThing(thing)
 }
 
 export async function doThing(user, thingId) {
@@ -32,9 +31,7 @@ export async function doThing(user, thingId) {
         thing.events.push(EventCreator.createAccepted(creator, thing, []))
         ThingHelper.discardUserEvents(user, thing)
 
-        await ThingDomain.updateThing(thing)
-
-        return thing
+        return await ThingDomain.updateThing(thing)
     } catch(error) {
         logger.error(`error while setting user ${user.email} as doer of external thing ${thingId}:`, error)
         throw error

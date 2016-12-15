@@ -1,6 +1,6 @@
 import querystring from 'querystring'
 
-import {flatten, toString, chain} from 'lodash'
+import {flatten, toString, chain, find} from 'lodash'
 import {Router} from 'express'
 
 import { User } from '../../shared/models'
@@ -8,6 +8,10 @@ import logger from '../../shared/utils/logger'
 import config from '../../shared/config/asana'
 import {post} from '../../../app/util/resource-util.js'
 import * as AsanaService from '../../shared/technical/asana-service'
+import UserTypes from '../../../common/enums/user-types'
+import ThingSource from '../../../common/enums/thing-source'
+import * as ExternalThingService from '../../shared/application/external-thing-service'
+import {AsanaConstants} from '../../shared/constants'
 
 const router = Router()
 const oauthUrl = 'https://app.asana.com/-/oauth_authorize'
@@ -58,6 +62,8 @@ router.post('/enableProject/:projectId', async function (request, response) {
         const client = AsanaService.createClient(user)
         const webhook = await client.webhooks.create(projectId, `${config.webhookURL}/${request.user.id}`)
 
+        fetchUserTasks(user, client, projectId)
+        
         await User.appendAsanaProject(request.user.id, toString(projectId), toString(webhook.id))
         response.json({})
     } catch(error) {
@@ -65,6 +71,38 @@ router.post('/enableProject/:projectId', async function (request, response) {
         response.status(500).send('error while enabling Asana project')
     }
 })
+
+async function fetchUserTasks(user, client, projectId) {
+    logger.info(`Asana - fetching tasks for user ${user.email} for project ${projectId}`)
+
+    const userTasks = await client.tasks.findByProject(projectId, {
+        opt_fields: 'id,name,notes,assignee,created_by.id,created_by.name,completed',
+        limit: AsanaConstants.FETCH_LIMIT
+    })
+
+    for (let i = 0; i < userTasks.data.length; i++) {
+        const task = userTasks.data[i]
+
+        if (task.assignee && user && user.integrations && user.integrations.asana &&
+            task.assignee.id.toString() === user.integrations.asana.userId &&
+            !task.completed) {
+
+            const creator = {
+                id: toString(task.created_by.id),
+                type: UserTypes.ASANA.key,
+                displayName: task.created_by.name,
+                payload: {}
+            }
+
+            const thing = await ExternalThingService.newThing(creator, user, task.name, task.notes, toString(task.id),
+                AsanaService.getTaskUrl(projectId, task.id), ThingSource.ASANA.key)
+
+            await ExternalThingService.doThing(user, thing.id)
+
+            logger.info(`Asana - created task for user ${user.email} by ${creator.displayName}`)
+        }
+    }
+}
 
 router.post('/disableProject/:projectId', async function (request, response) {
     const {projectId} = request.params

@@ -29,3 +29,7 @@ export function createClientFromToken(accessToken) {
 
     return client
 }
+
+export function getTaskUrl(projectId, taskId) {
+    return `https://app.asana.com/0/${projectId}/${taskId}`
+}

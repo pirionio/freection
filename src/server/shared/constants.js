@@ -21,3 +21,7 @@ export const BOT = {
     GETTING_STARTED_FLOW_SUBJECT: 'Getting Started!',
     FOLLOW_UP_FLOW_SUBJECT: 'How to Follow Up?'
 }
+
+export const AsanaConstants = {
+    FETCH_LIMIT: 100
+}

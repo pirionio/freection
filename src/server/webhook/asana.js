@@ -88,7 +88,7 @@ async function handleStory(client, user, event) {
 async function handleTaskAssign(user, thing, asanaTask, creator) {
     if (!asanaTask.completed && !thing) {
         await ExternalThingService.newThing(creator, user, asanaTask.name, asanaTask.notes, toString(asanaTask.id),
-            `https://app.asana.com/0/${asanaTask.projects[0].id}/${asanaTask.id}`, ThingSource.ASANA.key)
+            AsanaService.getTaskUrl(asanaTask.projects[0].id, asanaTask.id), ThingSource.ASANA.key)
         logger.info(`Asana - new task created for user ${user.email}`)
 
     } else if (!asanaTask.completed && thing && [ThingStatus.DONE.key, ThingStatus.DISMISS.key, ThingStatus.CLOSE.key].includes(thing.payload.status)) {
