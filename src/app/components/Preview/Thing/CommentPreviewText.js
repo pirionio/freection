@@ -11,10 +11,13 @@ const CommentPreviewText = ({comment, newNotifications, sheet: {classes}}) => {
             (+{newNotifications.length - 1})
         </Flexbox> : null
 
+    // Seems more slick to show only the first row.
+    const rows = comment.split('\n')
+
     return (
         <Flexbox container="row" alignItems="center">
             <Flexbox className={classes.textRow}>
-                <TextTruncate className={classes.textTruncate}>{comment}</TextTruncate>
+                <TextTruncate className={classes.textTruncate}>{rows && rows.length ? rows[0] : comment}</TextTruncate>
             </Flexbox>
             { unreadCount }
         </Flexbox>

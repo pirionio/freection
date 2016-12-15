@@ -12,6 +12,7 @@ import * as ThingHelper from '../../../common/helpers/thing-helper'
 const gettingStarted01 = requireText('../templates/getting-started/getting-started01.html', require)
 const gettingStarted02 = requireText('../templates/getting-started/getting-started02.html', require)
 const gettingStarted03 = requireText('../templates/getting-started/getting-started03.html', require)
+const gettingStarted04 = requireText('../templates/getting-started/getting-started04.html', require)
 const followUp01 = requireText('../templates/follow-up/follow-up01.html', require)
 const followUp02 = requireText('../templates/follow-up/follow-up02.html', require)
 const followUp03 = requireText('../templates/follow-up/follow-up03.html', require)
@@ -19,15 +20,16 @@ const followUp03 = requireText('../templates/follow-up/follow-up03.html', requir
 const freectionBot = botToAddress()
 
 export async function onboard(user) {
-    return await ThingService.newThing(BOT.EMAIL, user.email, {subject: BOT.GETTING_STARTED_FLOW_SUBJECT, html: gettingStarted01})
+    const thing = await ThingService.newThing(BOT.EMAIL, user.email, {subject: BOT.GETTING_STARTED_FLOW_SUBJECT, html: gettingStarted01})
+    return await ThingService.comment(freectionBot, thing.id, {html: gettingStarted02})
 }
 
 export async function continueGettingStartedFlow(thing, event) {
     if (event.eventType === EventTypes.ACCEPTED.key) {
-        await ThingService.comment(freectionBot, thing.id, {html: gettingStarted02})
+        await ThingService.comment(freectionBot, thing.id, {html: gettingStarted03})
     }
     if (event.eventType === EventTypes.DONE.key) {
-        await ThingService.comment(freectionBot, thing.id, {html: gettingStarted03})
+        await ThingService.comment(freectionBot, thing.id, {html: gettingStarted04})
         await ThingService.newThing(freectionBot, thing.to.payload.email, {subject: BOT.FOLLOW_UP_FLOW_SUBJECT, html: followUp01})
     }
 }
