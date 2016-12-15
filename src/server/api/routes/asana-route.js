@@ -12,6 +12,7 @@ import UserTypes from '../../../common/enums/user-types'
 import ThingSource from '../../../common/enums/thing-source'
 import * as ExternalThingService from '../../shared/application/external-thing-service'
 import {AsanaConstants} from '../../shared/constants'
+import * as ThingDomain from '../../shared/domain/thing-domain'
 
 const router = Router()
 const oauthUrl = 'https://app.asana.com/-/oauth_authorize'
@@ -94,12 +95,17 @@ async function fetchUserTasks(user, client, projectId) {
                 payload: {}
             }
 
-            const thing = await ExternalThingService.newThing(creator, user, task.name, task.notes, toString(task.id),
-                AsanaService.getTaskUrl(projectId, task.id), ThingSource.ASANA.key)
+            const existingThing = await ThingDomain.getUserThingByExternalId(task.id.toString(), user.id)
 
-            await ExternalThingService.doThing(user, thing.id)
+            if (!existingThing) {
+                const thing = await ExternalThingService.newThing(creator, user, task.name, task.notes, toString(task.id),
+                    AsanaService.getTaskUrl(projectId, task.id), ThingSource.ASANA.key)
+                await ExternalThingService.doThing(user, thing.id)
 
-            logger.info(`Asana - created task for user ${user.email} by ${creator.displayName}`)
+                logger.info(`Asana - created task for user ${user.email} by ${creator.displayName}`)
+            } else {
+                logger.info(`Asana - task in Freection already exists for Asana task ${task.id} with ${user.email} as the recipient`)
+            }
         }
     }
 }
