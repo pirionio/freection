@@ -16,15 +16,17 @@ class AllThingsPreviewItem extends Component {
         const {thing} = this.props
 
         switch (thing.payload.status) {
-            case ThingStatus.DISMISS.key:
-                return styleVars.redCircleColor
             case ThingStatus.NEW.key:
-            case ThingStatus.INPROGRESS.key:
             case ThingStatus.REOPENED.key:
                 return styleVars.blueCircleColor
-            case ThingStatus.CLOSE.key:
+            case ThingStatus.INPROGRESS.key:
+                return styleVars.yellowCircleColor
             case ThingStatus.DONE.key:
                 return styleVars.greenCircleColor
+            case ThingStatus.DISMISS.key:
+                return styleVars.redCircleColor
+            case ThingStatus.CLOSE.key:
+                return styleVars.greyCircleColor
         }
     }
 
