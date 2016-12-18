@@ -17,6 +17,7 @@ export function getCommands(notification) {
 }
 
 function getCommandsUnwrapped(notification) {
+
     if ([EntityTypes.GITHUB.key, EntityTypes.EXTERNAL.key].includes(notification.thing.type.key)) {
         switch (notification.eventType.key) {
             case EventTypes.CREATED.key:
