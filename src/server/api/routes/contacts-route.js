@@ -2,11 +2,12 @@ import Router from 'express'
 import fetch from 'node-fetch'
 import OAuth2 from 'google-auth-library/lib/auth/oauth2client'
 import {reject, union, flatMap, take} from 'lodash'
+import {WebClient} from '@slack/client';
 
 import config from '../../shared/config/google-oauth'
 import promisify from '../../shared/utils/promisify'
 import {findUsers} from '../../shared/application/users-service'
-import {User} from '../../shared/models'
+import {User, SlackTeam} from '../../shared/models'
 import UserTypes from '../../../common/enums/user-types'
 import logger from '../../shared/utils/logger.js'
 import {BOT} from '../../shared/constants'
@@ -18,12 +19,14 @@ router.get('/', async function(request, response) {
 
     try {
         const {query, max} = request.query
-        const {user} = request
+        const user = await User.get(request.user.id).run()
 
         // get both freection and google contacts
-        const googleContactsPromise = getGoogleContacts(request.user.id, query, max)
-        const freectionContacts = await findUsers(request.user, query)
+        const googleContactsPromise = getGoogleContacts(user, query, max)
+        const slackContactsPromise = getSlackContacts(user, query, max)
+        const freectionContacts = await findUsers(user, query)
         const googleContacts = await googleContactsPromise
+        const slackContacts = await slackContactsPromise
 
         // filtering freection users from google contacts
         const freectionEmails = freectionContacts.map(contact => contact.payload.email)
@@ -34,7 +37,7 @@ router.get('/', async function(request, response) {
         const bot = getBotOption(query)
 
         // merge, freection first
-        const merged = union(me, bot, freectionContacts, googleWithoutFreection)
+        const merged = union(me, bot, freectionContacts, slackContacts, googleWithoutFreection)
         const taken = take(merged, max)
 
         response.json(taken)
@@ -44,8 +47,36 @@ router.get('/', async function(request, response) {
     }
 })
 
-async function getGoogleContacts(userId, query, max) {
-    const user = await User.get(userId).run()
+async function getSlackContacts(user, query) {
+    if (!user.integrations.slack || !user.integrations.slack.active)
+        return []
+
+    try {
+        const slackTeam = await SlackTeam.get(user.integrations.slack.teamId).run()
+        const client = new WebClient(slackTeam.accessToken)
+        const users = await client.users.list()
+
+        return users.members.map(user => {
+            return {
+                id: user.id,
+                type: UserTypes.SLACK.key,
+                displayName: user.real_name,
+                payload: {
+                    username: user.name
+                }
+            }
+        }).filter(user => user.displayName.toLowerCase().includes(query) || user.payload.username.toLowerCase().includes(query))
+
+    } catch(error) {
+        if (error.name === 'DocumentNotFoundError')
+            return []
+
+        throw error
+    }
+}
+
+async function getGoogleContacts(user, query, max) {
+
     const accessToken = await getNewAccessToken(user)
 
     const fetchResponse = await fetch(

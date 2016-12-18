@@ -17,6 +17,7 @@ import {isCommandEnter} from '../../helpers/key-binding-helper.js'
 import UserTypes from '../../../common/enums/user-types.js'
 import GmailLogo from '../../static/GmailLogo.svg'
 import FreectionLogo from '../../static/logo-black-39x10.png'
+import SlackLogo from '../../static/SlackLogo.svg'
 import {emailToAddress} from '../../../common/util/email-to-address'
 
 class To extends Component {
@@ -41,32 +42,36 @@ class To extends Component {
         }
     }
 
+    getSuggestionIcon(suggestion) {
+        const {sheet: {classes}} = this.props
+
+        switch (suggestion.type) {
+            case UserTypes.FREECTION.key:
+                return <img src={FreectionLogo} className={classes.suggestionIconRectangle} />
+            case UserTypes.EMAIL.key:
+                return <img src={GmailLogo} className={classes.suggestionIconSquare} />
+            case UserTypes.SLACK.key:
+                return <img src={SlackLogo} className={classes.suggestionIconSquare} />
+        }
+    }
+
     renderSuggestion(suggestion) {
         const {sheet: {classes}} = this.props
 
-        if (suggestion.type === UserTypes.EMAIL.key) {
+        const extraInfo = suggestion.type === UserTypes.EMAIL.key ? suggestion.payload.email :
+            suggestion.type === UserTypes.SLACK.key ? suggestion.payload.username :
+            null
 
-            return (
-                <Flexbox container>
-                    <Flexbox container="column" justifyContent="center">
-                        <img src={GmailLogo} className={classes.suggestionIconSquare} />
-                    </Flexbox>
-                    <Flexbox container="column" justifyContent="center" className={classes.autoCompleteName}
-                             grow={1}>{suggestion.displayName}</Flexbox>
-                    <Flexbox container="column" justifyContent="center"
-                             className={classes.autoCompleteEmail}>{suggestion.payload.email}</Flexbox>
+        return (
+            <Flexbox container>
+                <Flexbox container="column" justifyContent="center" shrink={0} grow={0} className={classes.suggestionIconBox}>
+                    {this.getSuggestionIcon(suggestion)}
                 </Flexbox>
-            )
-        } else {
-            return (
-                <Flexbox container>
-                    <Flexbox container="column" justifyContent="center">
-                        <img src={FreectionLogo} className={classes.suggestionIconRectangle} />
-                    </Flexbox>
-                    <Flexbox container="column" justifyContent="center" className={classes.autoCompleteName} grow={1}>{suggestion.displayName}</Flexbox>
-                </Flexbox>
-            )
-        }
+                <Flexbox container="column" justifyContent="center" className={classes.autoCompleteName} grow={1}>{suggestion.displayName}</Flexbox>
+
+                {extraInfo ? <Flexbox container="column" justifyContent="center"className={classes.autoCompleteEmail}>{extraInfo}</Flexbox> : null}
+            </Flexbox>
+        )
     }
 
     onSuggestionSelected(value) {
@@ -144,8 +149,11 @@ class To extends Component {
     getSuggestionValue(suggestion) {
         if (suggestion.type === UserTypes.EMAIL.key)
             return `"${suggestion.displayName}" <${suggestion.payload.email}>`
-        else
-            return suggestion.displayName
+
+        if (suggestion.type === UserTypes.SLACK.key)
+            return suggestion.payload.username
+
+        return suggestion.displayName
     }
 
     onChange(event, {newValue, method}) {
@@ -220,6 +228,7 @@ class To extends Component {
                              onKeyDown={this.onSelectedBoxKeyDown}
                              onFocus={onFocus}
                              ref={ref => this._selectedBox = ref}>
+                        {this.getSuggestionIcon(selectedAddress)}
                         <span>{name}</span>
                         <img src={Close} className={classes.removeSelectedButton} onClick={this.removeSelected} />
                     </Flexbox>
@@ -289,15 +298,18 @@ const style = {
         paddingLeft: 20,
         paddingRight: 20
     },
+    suggestionIconBox: {
+        width: '55px',
+    },
     suggestionIconSquare: {
         height: 15,
         width: 15,
-        marginRight: 40
+        marginRight: 8
     },
     suggestionIconRectangle: {
         height: 9,
         width: 39,
-        marginRight: 16
+        marginRight: 8
     },
     suggestionFocused: {
         backgroundColor: styleVars.suggestionColor
