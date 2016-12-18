@@ -116,9 +116,7 @@ export async function newThing(user, to, content, payload = {}) {
     try {
         fillContent(content)
 
-        const toAddress =
-            to && isString(to) ? (await getToAddress(to)) :
-            to ? to : creator
+        const toAddress = to ? (await getToAddress(to)) : creator
         const mentionedUserIds = await getMentionsFromText(content.text)
 
         if (isEmpty(content.subject))
@@ -558,11 +556,33 @@ function getCreatorAddress(creator) {
 }
 
 async function getToAddress(to) {
-    const email = AddressParser.parseOneAddress(to).address
 
-    if (email === BOT.EMAIL)
-        return botToAddress()
+    if (isString(to)) {
+        const email = AddressParser.parseOneAddress(to).address
 
+        if (email === BOT.EMAIL)
+            return botToAddress()
+
+        const address = await getUserAddressByEmail(to.payload.email)
+
+        if (address != null)
+            return address
+
+        return emailToAddress(to)
+    }
+
+    // Trying to convert email to a freection user.
+    if (to.type === UserTypes.EMAIL.key) {
+        const address = await getUserAddressByEmail(to.payload.email)
+
+        if (address != null)
+            return address
+    }
+
+    return to
+}
+
+async function getUserAddressByEmail(email) {
     try {
         const toUser = await User.getUserByEmail(email)
         return userToAddress(toUser)
@@ -570,7 +590,7 @@ async function getToAddress(to) {
         if (error !== 'NotFound')
             throw error
         else
-            return emailToAddress(to)
+            return null
     }
 }
 
