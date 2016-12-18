@@ -563,7 +563,7 @@ async function getToAddress(to) {
         if (email === BOT.EMAIL)
             return botToAddress()
 
-        const address = await getUserAddressByEmail(to.payload.email)
+        const address = await getUserAddressByEmail(email)
 
         if (address != null)
             return address
