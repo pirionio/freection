@@ -75,13 +75,12 @@ router.get('/callback', async function(request, response) {
     }
 })
 
-
 router.get('/addapp', async function(request, response) {
     const user = await User.get(request.user.id).run()
 
     if (user.integrations && user.integrations.slack && user.integrations.slack.active) {
 
-        const scope = ['commands', 'users:read']
+        const scope = ['commands', 'users:read', 'chat:write:bot']
 
         const options = {
             client_id: config.clientID,
