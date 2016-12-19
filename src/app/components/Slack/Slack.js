@@ -52,7 +52,7 @@ class Slack extends Component {
         return (
             <Flexbox name="slack-active">
                 <div>Slack is integrated.</div>
-                <div>You can type <strong>/thing</strong> in slack to send other users things.</div>
+                <div>Type <strong>/freection</strong> in Slack to send tasks to others or to yourself.</div>
             </Flexbox>
         )
     }
