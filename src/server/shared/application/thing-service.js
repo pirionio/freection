@@ -3,8 +3,9 @@ import AddressParser from 'email-addresses'
 import requireText from 'require-text'
 import juice from 'juice'
 import htmlToText from 'html-to-text'
+import {WebClient} from '@slack/client';
 
-import {Event, User} from '../models'
+import {Event, User, SlackTeam} from '../models'
 import * as EventCreator from './event-creator'
 import {eventToDto, thingToDto} from '../application/transformers'
 import * as ThingDomain from '../domain/thing-domain'
@@ -136,6 +137,7 @@ export async function newThing(user, to, content, payload = {}) {
         const persistedThing = await ThingDomain.updateThing(thing)
 
         await sendEmailForThing(thing, createdEvent, user, toAddress, content.subject, content.text)
+        await sendSlackForThing(user.id, thing, createdEvent, content.subject)
 
         return persistedThing
     } catch(error) {
@@ -181,12 +183,15 @@ export async function dismiss(user, thingId, messageText) {
 
         remove(thing.doers, doerId => doerId === user.id)
         thing.payload.status = ThingStatus.DISMISS.key
-        thing.events.push(EventCreator.createDismissed(creator, thing, union(thing.followUpers, thing.subscribers), messageText))
+
+        const dismissEvent = EventCreator.createDismissed(creator, thing, union(thing.followUpers, thing.subscribers), messageText)
+        thing.events.push(dismissEvent)
         ThingHelper.discardUserEvents(user, thing)
 
         const persistedThing = await ThingDomain.updateThing(thing)
 
         await sendEmailForEvent(user, thing, last(thing.events))
+        await sendSlackForThing(user.id, thing, dismissEvent, messageText)
         
         return persistedThing
     } catch(error) {
@@ -230,6 +235,7 @@ export async function close(user, thingId, messageText) {
         const persistedThing = await ThingDomain.updateThing(thing)
 
         await sendEmailForEvent(user, thing, closedEvent)
+        await sendSlackForThing(user.id, thing, closedEvent, messageText)
         
         return persistedThing
     } catch(error) {
@@ -289,6 +295,7 @@ export async function markAsDone(user, thingId, content) {
         const persistedThing = await ThingDomain.updateThing(thing)
 
         await sendEmailForEvent(user, thing, doneEvent)
+        await sendSlackForThing(user.id, thing, doneEvent, content.text)
 
         return persistedThing
 
@@ -316,6 +323,7 @@ export async function sendBack(user, thingId, messageText) {
         const persistedThing = await ThingDomain.updateThing(thing)
         
         await sendEmailForEvent(user, thing, sentBackEvent)
+        await sendSlackForThing(user.id, thing, sentBackEvent, messageText)
         
         return persistedThing
 
@@ -339,6 +347,7 @@ export async function ping(user, thingId) {
         const persistedThing = await ThingDomain.updateThing(thing)
 
         await sendEmailForEvent(user, thing, pingEvent)
+        await sendSlackForThing(user.id, thing, pingEvent)
 
         return persistedThing
     } catch (error) {
@@ -363,6 +372,7 @@ export async function pong(user, thingId, messageText) {
         const persistedThing = await ThingDomain.updateThing(thing)
 
         await sendEmailForEvent(user, thing, pongEvent)
+        await sendSlackForThing(user.id, thing, pongEvent, messageText)
 
         return persistedThing
     } catch(error) {
@@ -391,6 +401,7 @@ export async function comment(user, thingId, content) {
         const persistedThing = await ThingDomain.updateThing(thing)
 
         await sendEmailForEvent(user, thing, comment)
+        await sendSlackForThing(user.id, thing, comment, content.text)
 
         await Event.discardUserEventsByType(thingId, EventTypes.COMMENT.key, user.id)
 
@@ -686,6 +697,55 @@ async function sendEmailForEvent(user, thing, event) {
         logger.info(`Email send successfully from ${user.email} to ${emailRecipients}`)
     } catch (error) {
         logger.error(`Error while sending email from ${user.email} to ${emailRecipients}`, error)
+    }
+}
+
+async function sendSlackForThing(userId, thing, event, message) {
+    if (!thing || !thing.to || thing.to.type !== UserTypes.SLACK.key)
+        return
+
+    const user = await User.get(userId).run()
+
+    if (!user.integrations.slack || !user.integrations.slack.active)
+        return
+
+    try {
+        const slackTeam = await SlackTeam.get(user.integrations.slack.teamId).run()
+        const client = new WebClient(slackTeam.accessToken)
+
+        const baseMessage = getSlackMessageForEvent(thing, event)
+
+        await client.chat.postMessage(`@${thing.to.payload.username}`, baseMessage + (message ? `: ${message}` : ''))
+
+        logger.info(`Sending Slack message for thing ${thing.id} by ${user.email} to Slack user ${thing.to.payload.username}`)
+
+    } catch(error) {
+        if (error.name === 'DocumentNotFoundError')
+            return []
+
+        throw error
+    }
+}
+
+function getSlackMessageForEvent(thing, event) {
+    switch (event.eventType) {
+        case EventTypes.CREATED.key:
+            return `${thing.creator.displayName} sent you a task`
+        case EventTypes.DONE.key:
+            return `${thing.creator.displayName} marked task [${thing.subject}] as done`
+        case EventTypes.DISMISSED.key:
+            return `${thing.creator.displayName} dismissed task [${thing.subject}]`
+        case EventTypes.CLOSED.key:
+            return `${thing.creator.displayName} closed task [${thing.subject}]`
+        case EventTypes.PING.key:
+            return `${thing.creator.displayName} pinged you for task [${thing.subject}]`
+        case EventTypes.PONG.key:
+            return `${thing.creator.displayName} ponged on task [${thing.subject}]`
+        case EventTypes.SENT_BACK.key:
+            return `${thing.creator.displayName} sent you back task [${thing.subject}]`
+        case EventTypes.COMMENT.key:
+        default:
+            return `${thing.creator.displayName} commented on task [${thing.subject}]`
     }
 }
 
