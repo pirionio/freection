@@ -89,7 +89,7 @@ async function closeAsanaTask(user, taskId) {
             completed: true
         })
 
-        logger.info(`Asana - closed task ${taskId} after close action in Freection - result:`, result)
+        logger.info(`Asana - closed task ${taskId} after close action in Freection`)
     } catch (error) {
         logger.error(`Asana - could not close task ${taskId} after close action in Freection - error:`, error)
         throw error
