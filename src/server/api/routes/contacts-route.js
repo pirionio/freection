@@ -60,7 +60,7 @@ async function getSlackContacts(user, query) {
             return {
                 id: user.id,
                 type: UserTypes.SLACK.key,
-                displayName: user.real_name,
+                displayName: user.real_name || user.name,
                 payload: {
                     username: user.name
                 }
