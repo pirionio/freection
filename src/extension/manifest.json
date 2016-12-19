@@ -1,7 +1,7 @@
 {
   "name": "Freection",
   "description": "Freection Chrome Extension",
-  "version": "0.7",
+  "version": "0.8",
   "browser_action": {
     "default_icon": "images/extension-icon-19.png",
     "default_popup": "popup.html",
@@ -34,10 +34,6 @@
     "https://inbox.google.com/",
     "https://freection.com/",
     "https://app.freection.com/",
-    "https://demo.freection.com/",
-    "https://ycdemo.freection.com/",
-    "https://freection1.ngrok.io/",
-    "https://freection2.ngrok.io/",
     "storage"
   ],
   "web_accessible_resources": [
