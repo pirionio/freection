@@ -20,7 +20,7 @@ const followUp03 = requireText('../templates/follow-up/follow-up03.html', requir
 const freectionBot = botToAddress()
 
 export async function onboard(user) {
-    const thing = await ThingService.newThing(BOT.EMAIL, user.email, {subject: BOT.GETTING_STARTED_FLOW_SUBJECT, html: gettingStarted01})
+    const thing = await ThingService.newThing(freectionBot, user.email, {subject: BOT.GETTING_STARTED_FLOW_SUBJECT, html: gettingStarted01})
     return await ThingService.comment(freectionBot, thing.id, {html: gettingStarted02})
 }
 
