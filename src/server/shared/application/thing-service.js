@@ -718,7 +718,10 @@ function saveNewThing(body, subject, creator, to, mentionedUserIds, payload) {
     // check if thing is self thing (assigned to creator)
     const isSelfThing = creator.id === to.id
     const status = isSelfThing ? ThingStatus.INPROGRESS.key : ThingStatus.NEW.key
-    const followUpers = isSelfThing ? [] : [creator.id]
+    const followUpers =
+        isSelfThing ? [] :
+        creator.type !== UserTypes.FREECTION.key ? [] :
+        [creator.id]
     const doers = isSelfThing ? [creator.id] : []
     const mentioned = mentionedUserIds
     const subscribers = mentionedUserIds
@@ -781,7 +784,8 @@ function getShowNewList(user, thing, eventType, mentionedUserIdsInEvent) {
             showNewList = union(thing.doers, thing.followUpers, thing.subscribers, getToList(thing))
             break
         case EventTypes.COMMENT.key:
-            showNewList = union(thing.followUpers, thing.doers, thing.subscribers, mentionedUserIdsInEvent, [thing.creator.id])
+            showNewList = union(thing.followUpers, thing.doers, thing.subscribers, mentionedUserIdsInEvent,
+                thing.creator.type === UserTypes.FREECTION.key ? [thing.creator.id] : [])
             break
         case EventTypes.PING.key:
             showNewList = [...thing.doers]
