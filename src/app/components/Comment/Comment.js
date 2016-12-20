@@ -60,9 +60,9 @@ class Comment extends Component {
         const tooltipId = `readByTooltip-${comment.id}`
 
         const readByList = uniq(comment.payload.readByList)
-            .map(userId => {
-                return currentUser.id === userId ? 'You' : find(users, user => user.id === userId).displayName
-            })
+            .map(userId => find(users, user => user.id === userId))
+            .filter(user => !!user)
+            .map(user => currentUser.id === user.id ? 'You' : user.displayName)
 
         const list =  comment.payload.readByEmailList ? [...readByList, ...comment.payload.readByEmailList] : readByList
 
