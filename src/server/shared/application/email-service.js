@@ -11,6 +11,7 @@ import * as ThingDomain from '../domain/thing-domain'
 import * as EventsCreator from './event-creator'
 import {userToAddress} from './address-creator'
 import {imapEmailToDto} from '../application/transformers'
+import logger from '../utils/logger'
 
 function filterThingMessage(user, message) {
     const domain = user.email.substring(user.email.indexOf('@'))
@@ -121,6 +122,30 @@ export async function deleteAllEmails(user) {
 export function sendEmailForThing(user, to, subject, body, messageId) {
     const emailForThingHtml = getEmailForThingHtml(user, body)
     return sendEmail(user, to, subject, undefined, emailForThingHtml, messageId)
+}
+
+export async function newEmailThingFromForward(user, emailData) {
+    const existingThing = await ThingDomain.getThingByEmailId(emailData.mimeMessageId)
+    if (existingThing && existingThing.payload && existingThing.payload.status !== ThingStatus.CLOSE.key) {
+        logger.info(`Thing ${existingThing.id} already exists for incoming email ${emailData.mimeMessageId} - not creating a new one`)
+        return
+    }
+
+    const creator = userToAddress(user)
+    const doer = userToAddress(user)
+
+    const thing = saveNewThing({
+        subject: emailData.subject,
+        id: emailData.mimeMessageId,
+        payload: {
+            recipients: emailData.recipients
+        }
+    }, creator, doer)
+
+    thing.events.push(EventsCreator.createCreated(creator, thing, []))
+    thing.events.push(EventsCreator.createAccepted(creator, thing, []))
+
+    return await ThingDomain.updateThing(thing)
 }
 
 export async function newEmailThing(user, emailData, isHex, payload={}) {

@@ -16,7 +16,14 @@ class EmailThingPreviewItem extends Component {
 
     getEmailUrl() {
         const {thing, currentUser} = this.props
-        return `https://mail.google.com/mail/u/${currentUser.email}/#inbox/${thing.payload.threadIdHex}`
+
+        if (thing.payload.threadIdHex)
+            return `https://mail.google.com/mail/u/${currentUser.email}/#inbox/${thing.payload.threadIdHex}`
+
+        // If we don't have the threadId of the email, the only way to send the user right to it is to open Gmail
+        // with a pre-defined search query for the email's message-id.
+        const emailId = encodeURIComponent(`rfc822msgid:${thing.payload.emailId}`)
+        return `https://mail.google.com/mail/u/${currentUser.email}/#search/${emailId}`
     }
 
     getRecipients() {

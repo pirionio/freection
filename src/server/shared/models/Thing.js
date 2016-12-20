@@ -54,4 +54,8 @@ Thing.ensureIndex('threadId', doc => {
     return doc('payload')('threadId')
 })
 
+Thing.ensureIndex('emailId', doc => {
+    return doc('payload')('emailId')
+})
+
 export default Thing

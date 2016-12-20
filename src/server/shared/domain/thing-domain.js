@@ -52,3 +52,12 @@ export async function getThingByThreadId(threadId) {
         return things[0]
     })
 }
+
+export async function getThingByEmailId(emailId) {
+    return Thing.getAll(emailId, {index: 'emailId'}).run().then(things => {
+        if (things.length === 0)
+            return null
+
+        return things[0]
+    })
+}

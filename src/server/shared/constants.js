@@ -25,3 +25,7 @@ export const BOT = {
 export const AsanaConstants = {
     FETCH_LIMIT: 100
 }
+
+export const EmailConstants = {
+    EMAIL_FORWARD_ADDRESS: 'forward@reply.freection.com'
+}
