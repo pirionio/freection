@@ -23,7 +23,8 @@ export async function createNewUser({googleId, firstName, lastName, email, acces
         firstName: firstName,
         lastName: lastName,
         accessToken: accessToken,
-        refreshToken: refreshToken
+        refreshToken: refreshToken,
+        integrations: {}
     })
 
     //  search for user open things

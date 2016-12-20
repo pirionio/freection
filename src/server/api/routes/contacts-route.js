@@ -48,7 +48,7 @@ router.get('/', async function(request, response) {
 })
 
 async function getSlackContacts(user, query) {
-    if (!user.integrations.slack || !user.integrations.slack.active)
+    if (!user.integrations || !user.integrations.slack || !user.integrations.slack.active)
         return []
 
     try {
