@@ -104,6 +104,9 @@ function getCommandsUnwrapped(notification) {
                 return [ThingCommandActionTypes.FOLLOW_UP, ThingCommandActionTypes.DISCARD_SINGLE_NOTIFICATION]
 
             return [ThingCommandActionTypes.DISCARD_COMMENTS]
+        case EventTypes.PONG.key:
+        case EventTypes.PING.key:
+            return [ThingCommandActionTypes.DISCARD_SINGLE_NOTIFICATION]
         default:
             throw new Error(`UnknownEventType ${notification.eventType.key}`)
     }
