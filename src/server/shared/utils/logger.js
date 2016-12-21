@@ -2,6 +2,7 @@ import winston from 'winston'
 import {Papertrail} from 'winston-papertrail'
 
 import papertrailConfig from '../config/papertrail'
+import GeneralConfig from '../config/general'
 
 const transports = [
     new winston.transports.Console({
@@ -20,4 +21,7 @@ if (papertrailConfig.enable) {
     }))
 }
 
-export default new winston.Logger({transports})
+export default new winston.Logger({
+    level: GeneralConfig.LOG_LEVEL,
+    transports
+})

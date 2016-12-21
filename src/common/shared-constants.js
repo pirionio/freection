@@ -13,5 +13,7 @@ export default {
     
     DEFAULT_BASE_URL: 'https://app.freection.com',
 
+    DEFAULT_LOG_LEVEL: 'info',
+
     MENTION_REGEX: /(^|\s+)@([\w\.]+)/gm
 }
