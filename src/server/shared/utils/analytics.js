@@ -23,6 +23,8 @@ function trackCustomer(name, userId, payload = {}) {
 
 function trackIntercomEvent(name, userId, metadata = {}) {
     if (client) {
+        logger.debug(`Tracking Intercom event ${name} for user ${userId}`)
+        
         const createdAt = toInteger(now() / 1000)
 
         client.events.create({
