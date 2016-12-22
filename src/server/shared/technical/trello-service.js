@@ -2,10 +2,12 @@ import querystring from 'querystring'
 import OAuth from 'oauth'
 
 import config from '../config/trello'
+import promisify from '../utils/promisify'
 
 const oauthRequestUrl = 'https://trello.com/1/OAuthGetRequestToken'
 const oauthAccessUrl = 'https://trello.com/1/OAuthGetAccessToken'
 const oauthAuthorizeUrl = 'https://trello.com/1/OAuthAuthorizeToken'
+const apiUrl = 'https://api.trello.com/1'
 
 const oauth = new OAuth.OAuth(
     oauthRequestUrl,
@@ -16,6 +18,8 @@ const oauth = new OAuth.OAuth(
     config.callbackURL,
     'HMAC-SHA1'
 )
+
+promisify(oauth, ['get', 'post', 'delete'])
 
 export function authorize() {
     return new Promise((resolve, reject) => {
@@ -56,7 +60,7 @@ export function getAccessToken(requestToken, requestTokenSecret, verifier) {
                 return
             }
 
-            oauth.get('https://api.trello.com/1/members/me?fields=username', accessToken, accessTokenSecret, (meError, trelloUserString) => {
+            oauth.get(`${apiUrl}/members/me?fields=username`, accessToken, accessTokenSecret, (meError, trelloUserString) => {
                 if (meError) {
                     reject({
                         message: 'Could not find Trello user',
@@ -75,4 +79,19 @@ export function getAccessToken(requestToken, requestTokenSecret, verifier) {
             })
         })
     })
+}
+
+export async function getBoards({token, secret}) {
+    return await oauth.getAsync(`${apiUrl}/members/me/boards`, token, secret)
+}
+
+export async function createWebhookForBoard(userId, boardId, {token, secret}) {
+    return await oauth.postAsync(`${apiUrl}/webhooks`, token, secret, {
+        idModel: boardId,
+        callbackURL: `${config.webhookURL}/${userId}`
+    }, 'application/json')
+}
+
+export async function deleteWebhook(webhookId, {token, secret}) {
+    return await oauth.deleteAsync(`${apiUrl}/webhooks/${webhookId}`, token, secret)
 }

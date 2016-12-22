@@ -12,6 +12,7 @@ module.exports = [
     require('./email-command'),
     require('./github'),
     require('./asana'),
+    require('./trello'),
     require('./message-box'),
     require('./auth'),
     require('./to'),

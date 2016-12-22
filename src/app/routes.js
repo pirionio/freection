@@ -10,6 +10,7 @@ import AllThings from './components/All/Things/AllThings'
 import Integrations from './components/Integrations/Integrations'
 import Github from './components/Github/Github'
 import Asana from './components/Asana/Asana'
+import Trello from './components/Trello/Trello'
 import Slack from './components/Slack/Slack'
 import Gmail from './components/Gmail/Gmail'
 import FullThing from './components/Thing/FullThing'
@@ -37,6 +38,7 @@ const routes = (
                 <IndexRoute component={Integrations} />
                 <Route path="github" component={Github} />
                 <Route path="asana" component={Asana} />
+                <Route path="trello" component={Trello} />
                 <Route path="slack" component={Slack} />
                 <Route path="gmail" component={Gmail} />
             </Route>

@@ -14,6 +14,7 @@ import thingPage from './thing-page-reducer'
 import emailPage from './email-page-reducer'
 import github from './github'
 import asana from './asana'
+import trello from './trello-reducer'
 import slack from './slack'
 import auth from './auth'
 import to from './to-reducer'
@@ -37,6 +38,7 @@ export default combineReducers({
     emailPage,
     github,
     asana,
+    trello,
     slack,
     auth,
     to,

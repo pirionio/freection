@@ -6,7 +6,7 @@ import classAutobind from 'class-autobind'
 import Flexbox from '../UI/Flexbox'
 import Link from '../UI/Link'
 import AsanaLogoBlack from '../../static/AsanaLogoBlack.png'
-
+import TrelloLogoBlack from '../../static/TrelloLogoBlack.png'
 
 class Integrations extends Component {
     constructor(props) {
@@ -27,6 +27,10 @@ class Integrations extends Component {
                 <Link to="/integrations/asana" className={classes.link}>
                     <img name="asana" src={AsanaLogoBlack} className={classes.logo} />
                     Asana
+                </Link>
+                <Link to="/integrations/trello" className={classes.link}>
+                    <img name="asana" src={TrelloLogoBlack} className={classes.logo} />
+                    Trello
                 </Link>
                 <Link to="/integrations/slack" className={classes.link}>
                     <Icon name="slack" className={classes.icon} />
