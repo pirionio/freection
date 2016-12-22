@@ -21,38 +21,58 @@ router.post('/:userId', async function(request, response) {
     }
 
     try {
-        if (action && action.type === 'addMemberToCard') {
-            const card = action && action.data ? action.data.card : null
+        if (action) {
+            const card = (action && action.data) ? action.data.card : null
 
-            if (!card) {
-                const message = `Trello - could not find card for incoming notification`
-                logger.warn(message)
-                response.sendStatus(200)
-                return
+            if (!card)
+                throw new Error('Could not find card for incoming notification')
+
+            if (shouldAddMember(user, action)) {
+                addMemberToCard(user, card, action.memberCreator)
+            } else if (shouldDeleteMember(user, action)) {
+                removeMemberFromCard(user, card, action.memberCreator)
             }
-
-            const existingThing = await ThingDomain.getUserThingByExternalId(card.id, user.id)
-
-            if (existingThing) {
-                const message = `Trello - card ${card.id} for user ${user.email} already exists in Freection - not creating it again`
-                logger.warn(message)
-                response.sendStatus(200)
-                return
-            }
-
-            const creator = trelloUserToAddress(action.memberCreator)
-            await ExternalThingService.newThing(creator, user, card.name, null, card.id, TrelloService.getCardUrl(card.id), ThingSource.TRELLO.key)
-
-            logger.info(`Trello - notification addMemberToCard arrived for card ${card.id} - creating task in Freection`)
         }
 
         response.sendStatus(200)
 
     } catch (error) {
-        const message = `Trello - error retrieving data`
+        const message = `Trello - error handling incoming notification: ${error.message}`
         logger.error(message, error)
         response.status(500).send(message)
     }
 })
+
+async function addMemberToCard(user, card, memberCreator) {
+    const existingThing = await ThingDomain.getUserThingByExternalId(card.id, user.id)
+
+    if (existingThing)
+        throw new Error(`Card ${card.id} for user ${user.email} already exists in Freection - not creating it again`)
+
+    const creator = trelloUserToAddress(memberCreator)
+    await ExternalThingService.newThing(creator, user, card.name, null, card.id, TrelloService.getCardUrl(card.id), ThingSource.TRELLO.key)
+
+    logger.info(`Notification addMemberToCard arrived for card ${card.id} - creating task in Freection`)
+}
+
+async function removeMemberFromCard(user, card, memberCreator) {
+    const existingThing = await ThingDomain.getUserThingByExternalId(card.id, user.id)
+    
+    if (!existingThing)
+        return
+    
+    const creator = trelloUserToAddress(memberCreator)
+    await ExternalThingService.unassign(user, creator, existingThing.id)
+
+    logger.info(`Trello - notification removeMemberFromCard arrived for card ${card.id} - unassigning user ${user.email} from thing ${existingThing.id}`)
+}
+
+function shouldAddMember(user, action) {
+    return action.type === 'addMemberToCard' && action.member.id === user.integrations.trello.userId
+}
+
+function shouldDeleteMember(user, action) {
+    return action.type === 'removeMemberFromCard' && action.member.id === user.integrations.trello.userId
+}
 
 export default router
