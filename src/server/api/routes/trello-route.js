@@ -58,7 +58,7 @@ router.get('/callback', async function(request, response) {
 
         await user.save()
 
-        response.redirect('/integrations')
+        response.redirect('/integrations/trello')
 
     } catch (error) {
         const message = `Trello - error for user ${user.email}: ${error.message}`
