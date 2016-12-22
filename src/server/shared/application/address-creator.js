@@ -27,4 +27,13 @@ export function botToAddress() {
     }
 }
 
+export function trelloUserToAddress(trelloUser) {
+    return {
+        id: trelloUser.id,
+        displayName: trelloUser.fullName || trelloUser.username,
+        type: UserTypes.TRELLO.key,
+        payload: {}
+    }
+}
+
 export {emailToAddress} from '../../../common/util/email-to-address'

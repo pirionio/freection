@@ -11,6 +11,10 @@ export default {
         key: 'ASANA',
         label: 'Asana'
     },
+    TRELLO: {
+        key: 'TRELLO',
+        label: 'Trello'
+    },
     EMAIL: {
         key: 'EMAIL',
         label: 'Email'

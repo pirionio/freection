@@ -8,6 +8,7 @@ const oauthRequestUrl = 'https://trello.com/1/OAuthGetRequestToken'
 const oauthAccessUrl = 'https://trello.com/1/OAuthGetAccessToken'
 const oauthAuthorizeUrl = 'https://trello.com/1/OAuthAuthorizeToken'
 const apiUrl = 'https://api.trello.com/1'
+const cardUrl = 'https://trello.com/c'
 
 const oauth = new OAuth.OAuth(
     oauthRequestUrl,
@@ -94,4 +95,8 @@ export async function createWebhookForBoard(userId, boardId, {token, secret}) {
 
 export async function deleteWebhook(webhookId, {token, secret}) {
     return await oauth.deleteAsync(`${apiUrl}/webhooks/${webhookId}`, token, secret)
+}
+
+export function getCardUrl(cardId) {
+    return `${cardUrl}/${cardId}`
 }
