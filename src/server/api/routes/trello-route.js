@@ -32,7 +32,6 @@ router.get('/integrate', async function(request, response) {
 
 router.get('/callback', async function(request, response) {
     const token = request.query.oauth_token
-    const secret = secrets[token]
     const verifier = request.query.oauth_verifier
 
     try {
