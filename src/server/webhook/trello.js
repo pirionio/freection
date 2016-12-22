@@ -7,6 +7,7 @@ import * as ThingDomain from '../shared/domain/thing-domain'
 import * as TrelloService from '../shared/technical/trello-service'
 import logger from '../shared/utils/logger'
 import ThingSource from '../../common/enums/thing-source'
+import ThingStatus from '../../common/enums/thing-status'
 
 const router = Router()
 
@@ -44,15 +45,17 @@ router.post('/:userId', async function(request, response) {
 })
 
 async function addMemberToCard(user, card, memberCreator) {
+    const creator = trelloUserToAddress(memberCreator)
+
     const existingThing = await ThingDomain.getUserThingByExternalId(card.id, user.id)
 
-    if (existingThing)
-        throw new Error(`Card ${card.id} for user ${user.email} already exists in Freection - not creating it again`)
-
-    const creator = trelloUserToAddress(memberCreator)
-    await ExternalThingService.newThing(creator, user, card.name, null, card.id, TrelloService.getCardUrl(card.id), ThingSource.TRELLO.key)
-
-    logger.info(`Notification addMemberToCard arrived for card ${card.id} - creating task in Freection`)
+    if (existingThing && [ThingStatus.DONE.key, ThingStatus.DISMISS.key, ThingStatus.CLOSE.key].includes(existingThing.payload.status)) {
+        await ExternalThingService.sendBack(creator, user, existingThing.id)
+        logger.info(`Notification addMemberToCard arrived for card ${card.id} - task already exists and closed - reopening it`)
+    } else if (!existingThing) {
+        await ExternalThingService.newThing(creator, user, card.name, null, card.id, TrelloService.getCardUrl(card.id), ThingSource.TRELLO.key)
+        logger.info(`Notification addMemberToCard arrived for card ${card.id} - creating task in Freection`)
+    }
 }
 
 async function removeMemberFromCard(user, card, memberCreator) {
