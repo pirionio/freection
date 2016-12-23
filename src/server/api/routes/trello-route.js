@@ -4,6 +4,10 @@ import {find, remove} from 'lodash'
 import logger from '../../shared/utils/logger'
 import {User} from '../../shared/models'
 import * as TrelloService from '../../shared/technical/trello-service'
+import * as ThingDomain from '../../shared/domain/thing-domain'
+import * as ExternalThingService from '../../shared/application/external-thing-service'
+import {trelloUserToAddress, userToAddress} from '../../shared/application/address-creator'
+import ThingSource from '../../../common/enums/thing-source'
 
 const router = Router()
 
@@ -135,6 +139,8 @@ router.post('/enableboard/:boardId', async function(request, response) {
 
         await user.save()
 
+        await fetchUserTasks(user, boardId)
+        
         response.json({})
         
     } catch(error) {
@@ -187,5 +193,40 @@ router.post('/disableboard/:boardId', async function(request, response) {
         response.status(500).send(message)
     }
 })
+
+async function fetchUserTasks(user, boardId) {
+    logger.info(`Trello - fetching tasks for user ${user.email} for board ${boardId}`)
+
+    const cardsString = await TrelloService.getCards({
+        token: user.integrations.trello.accessToken, 
+        secret: user.integrations.trello.accessTokenSecret
+    }, true)
+
+    const cards = cardsString ? JSON.parse(cardsString) : []
+    
+    for (let i = 0; i < cards.length; i++) {
+        const card = cards[i]
+
+        if (user && user.integrations && user.integrations.trello &&
+            card.idMembers.includes(user.integrations.trello.userId) &&
+            card.idBoard === boardId) {
+
+            const createAction = find(card.actions, {type: 'createCard'})
+            const creator = createAction ? trelloUserToAddress(createAction.memberCreator) : userToAddress(user)
+
+            const existingThing = await ThingDomain.getUserThingByExternalId(card.id, user.id)
+
+            if (!existingThing) {
+                const thing = await ExternalThingService.newThing(creator, user, card.name, card.desc, card.id,
+                    TrelloService.getCardUrl(card.id), ThingSource.TRELLO.key)
+                await ExternalThingService.doThing(user, thing.id)
+
+                logger.info(`Trello - created task for user ${user.email} by ${creator.displayName}`)
+            } else {
+                logger.info(`Trello - task in Freection already exists for Trello card ${card.id} with ${user.email} as the recipient`)
+            }
+        }
+    }
+}
 
 export default router

@@ -97,6 +97,16 @@ export async function deleteWebhook(webhookId, {token, secret}) {
     return await oauth.deleteAsync(`${apiUrl}/webhooks/${webhookId}`, token, secret)
 }
 
+export async function getCards({token, secret}, withCreator = false) {
+    const options = {}
+
+    if (withCreator) {
+        options.actions = 'createCard'
+    }
+
+    return await oauth.getAsync(`${apiUrl}/members/me/cards?${querystring.stringify(options)}`, token, secret)
+}
+
 export function getCardUrl(cardId) {
     return `${cardUrl}/${cardId}`
 }
