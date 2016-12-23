@@ -39,6 +39,10 @@ function enableBoard(state, action) {
             return immutable(state)
                 .arrayMergeItem('boards', {id: action.boardId}, {posting: true})
                 .value()
+        case ActionStatus.ERROR:
+            return immutable(state)
+                .arrayMergeItem('boards', {id: action.boardId}, {enabled: true, posting: false})
+                .value()
         default:
             return state
     }
@@ -53,6 +57,10 @@ function disableBoard(state, action) {
         case ActionStatus.START:
             return immutable(state)
                 .arrayMergeItem('boards', {id: action.boardId}, {posting: true})
+                .value()
+        case ActionStatus.ERROR:
+            return immutable(state)
+                .arrayMergeItem('boards', {id: action.boardId}, {enabled: false, posting: false})
                 .value()
         default:
             return state
