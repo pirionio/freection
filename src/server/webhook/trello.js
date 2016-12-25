@@ -25,8 +25,11 @@ router.post('/:userId', async function(request, response) {
         if (action) {
             const card = (action && action.data) ? action.data.card : null
 
-            if (!card)
-                throw new Error('Could not find card for incoming notification')
+            if (!card) {
+                logger.warn('Trello - notification arrived but with no card in it - skipping the notification')
+                response.sendStatus(200)
+                return
+            }
 
             if (shouldAddMember(user, action)) {
                 addMemberToCard(user, card, action.memberCreator)
@@ -61,7 +64,7 @@ async function addMemberToCard(user, card, memberCreator) {
 async function removeMemberFromCard(user, card, memberCreator) {
     const existingThing = await ThingDomain.getUserThingByExternalId(card.id, user.id)
     
-    if (!existingThing)
+    if (!existingThing || [ThingStatus.DONE.key, ThingStatus.DISMISS.key, ThingStatus.CLOSE.key].includes(existingThing.payload.status))
         return
     
     const creator = trelloUserToAddress(memberCreator)
