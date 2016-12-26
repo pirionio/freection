@@ -261,6 +261,7 @@ export async function closeAck(user, thingId) {
 
         thing.events.push(EventCreator.createCloseAck(creator, thing, []))
         ThingHelper.discardUserEventsByType(user, thing, EventTypes.CLOSED)
+        ThingHelper.discardUserEventsByType(user, thing, EventTypes.UNASSIGNED)
 
         return await ThingDomain.updateThing(thing)
     }
