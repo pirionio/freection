@@ -8,11 +8,8 @@ import HTML5Backend from 'react-dnd-html5-backend'
 
 import * as ThingHelper from '../../../common/helpers/thing-helper'
 import Flexbox from '../UI/Flexbox'
-import SideBar from '../SideBar/SideBar'
-import Login from '../Login/Login'
 import Page from '../UI/Page'
-import GlassPane from '../GlassPane/GlassPane'
-import {GeneralConstants, GlassPaneIds} from '../../constants'
+import {GeneralConstants} from '../../constants'
 import * as PushService from '../../services/push-service'
 import * as AuthService from '../../services/auth-service.js'
 import FaviconLogo from '../../static/freection-favicon.png'
@@ -21,7 +18,7 @@ import * as DesktopNotificationService from '../../services/desktop-notification
 import * as ChromeExtensionActions from '../../actions/chrome-extension-actions'
 import { closeExpanded } from '../../actions/message-box-actions'
 import {goBack} from 'react-router-redux'
-import CustomDragLayer from '../UI/CustomDragLayer'
+import WelcomeStatus from '../../../common/enums/welcome-status'
 
 // import EmailLifecycleService from '../../services/email-lifecycle-service'
 
@@ -56,6 +53,8 @@ class App extends Component {
         } else {
             clean()
         }
+        
+        this.determineInitialRoute()
     }
 
     componentWillUnmount() {
@@ -69,6 +68,17 @@ class App extends Component {
         window.addEventListener('message', this.listenToChromeExtension, false)
     }
 
+    determineInitialRoute() {
+        const {currentUser} = this.props
+        const {router} = this.context
+
+        if (!currentUser.isAuthenticated) {
+            router.replace('/login')
+        } else if (currentUser.welcomeStatus !== WelcomeStatus.DONE.key) {
+            router.replace('/welcome')
+        }
+    }
+
     listenToChromeExtension(event) {
         const {dispatch, config} = this.props
         if (event.data === GeneralConstants.CHROME_EXTENSION_MESSAGE && event.origin === config.baseUrl) {
@@ -77,36 +87,28 @@ class App extends Component {
     }
 
     getTitle() {
-        const {newNotifications} = this.props
+        const {currentUser, newNotifications} = this.props
+
+        if (!currentUser.isAuthenticated)
+            return 'Freection Login'
+
+        if (currentUser.welcomeStatus !== 'DONE')
+            return 'Freection Welcome'
+
         const notificationsPerThing = ThingHelper.groupNotificationsByThing(newNotifications)
         return notificationsPerThing && notificationsPerThing.length ? `Freection (${notificationsPerThing.length})` : 'Freection'
     }
     
     render () {
-        const {currentUser, sheet: {classes}} = this.props
-
-        // Add CustomDragLayer if the dragged items are not captured properly by the browser.
-
-        if (currentUser.isAuthenticated) {
-            return (
-                <Page title={this.getTitle()} className={classes.page}>
-                    <Flexbox name="root" container="row" className={classes.container}>
-                        <Favicon url={FaviconLogo} />
-                        <SideBar currentUser={currentUser} />
-                        <Flexbox name="app-section" grow={1} container="column">
-                            {this.props.children}
-                        </Flexbox>
-                        <GlassPane name={GlassPaneIds.WHOLE_APP} />
-                    </Flexbox>
-                </Page>
-            )
-        }
+        const {children, sheet: {classes}} = this.props
 
         return (
-            <Flexbox name="root" container="column" className={classes.container}>
-                <Favicon url={FaviconLogo} />
-                <Login />
-            </Flexbox>
+            <Page title={this.getTitle()} className={classes.page}>
+                <Flexbox name="root" container="column" className={classes.container}>
+                    <Favicon url={FaviconLogo} />
+                    {children}
+                </Flexbox>
+            </Page>
         )
     }
 }
@@ -127,6 +129,10 @@ App.propTypes = {
     newNotifications: PropTypes.array.isRequired,
     isExpandedOpen: PropTypes.bool.isRequired,
     isFullThingOpen: PropTypes.bool.isRequired
+}
+
+App.contextTypes = {
+    router: PropTypes.object
 }
 
 const mapStateToProps = state => {

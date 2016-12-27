@@ -7,6 +7,7 @@ import ThingStatus from '../../../common/enums/thing-status.js'
 import UserTypes from '../../../common/enums/user-types.js'
 import EventTypes from '../../../common/enums/event-types.js'
 import EntityTypes from '../../../common/enums/entity-types.js'
+import WelcomeStatus from '../../../common/enums/welcome-status'
 import logger from '../utils/logger.js'
 import {onboard} from './bot-service'
 
@@ -24,7 +25,10 @@ export async function createNewUser({googleId, firstName, lastName, email, acces
         lastName: lastName,
         accessToken: accessToken,
         refreshToken: refreshToken,
-        integrations: {}
+        integrations: {},
+        payload: {
+            welcomeStatus: WelcomeStatus.INTRO.key
+        }
     })
 
     //  search for user open things

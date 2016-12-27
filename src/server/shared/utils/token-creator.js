@@ -8,6 +8,7 @@ export function createUserToken(user) {
         username: user.username,
         slack: user.integrations && user.integrations.slack && user.integrations.slack.active,
         github: user.integrations && user.integrations.github && user.integrations.github.active,
-        allowSendGmail: user.integrations && user.integrations.gmail && user.integrations.gmail.allowSendMail
+        allowSendGmail: user.integrations && user.integrations.gmail && user.integrations.gmail.allowSendMail,
+        welcomeStatus: user.payload.welcomeStatus
     }
 }

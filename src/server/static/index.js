@@ -121,6 +121,7 @@ function getAuthState(request) {
     auth.slack = request.user.slack
     auth.allowSendGmail = request.user.allowSendGmail
     auth.organization = request.user.organization
+    auth.welcomeStatus = request.user.welcomeStatus
 
     const tokenOptions = request.user.exp ? {} : {expiresIn: '30 days'}
     try {
