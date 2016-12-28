@@ -69,13 +69,16 @@ class App extends Component {
     }
 
     determineInitialRoute() {
-        const {auth, currentUser} = this.props
+        const {auth, currentUser, location} = this.props
         const {router} = this.context
 
         if (!auth.isAuthenticated) {
             router.replace('/login')
         } else if (currentUser.welcomeStatus !== WelcomeStatus.DONE.key && currentUser.welcomeStatus !== WelcomeStatus.SKIPPED.key) {
-            router.replace('/welcome')
+            router.replace({
+                pathname: '/welcome',
+                query: location.query || undefined
+            })
         }
     }
 

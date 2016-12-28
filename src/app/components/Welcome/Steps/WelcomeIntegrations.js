@@ -1,33 +1,18 @@
-import React, {Component, PropTypes} from 'react'
-import {connect} from 'react-redux'
-import classAutobind from 'class-autobind'
-import useSheet from 'react-jss'
+import React, {Component} from 'react'
 
-import Flexbox from '../../UI/Flexbox'
 import WelcomeStep from '../WelcomeStep'
-import SingleStar from '../../../static/logo-single-white.png'
+import IntegrationsBox from '../../Integrations/IntegrationsBox'
 
 class WelcomeIntegrations extends Component {
-    constructor(props) {
-        super(props)
-        classAutobind(this, WelcomeIntegrations.prototype)
-    }
-
     render() {
-        const {sheet: {classes}} = this.props
+        const {location} = this.props
 
         return (
             <WelcomeStep title="Integrations">
-                Integrations
+                <IntegrationsBox expand={location.query.expand} />
             </WelcomeStep>
         )
     }
 }
 
-const style = {
-}
-
-WelcomeIntegrations.propTypes = {
-}
-
-export default useSheet(WelcomeIntegrations, style)
+export default WelcomeIntegrations

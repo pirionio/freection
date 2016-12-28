@@ -10,7 +10,7 @@ import {generateOAuth2Url} from '../../shared/technical/google-service'
 const router = Router()
 
 const sendPermissionCallbackUrl = `${GeneralConfig.BASE_URL}/api/google/sendpermission/callback`
-const finalRedirectPath = '/integrations/gmail'
+const finalRedirectPath = '/integrations?expand=gmail'
 
 router.get('/sendpermission', setSendPermission)
 

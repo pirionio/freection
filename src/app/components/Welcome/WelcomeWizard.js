@@ -32,7 +32,10 @@ class WelcomeWizard extends Component {
 
         if (location && location.pathname.indexOf(userWelcomeStatus.path) === -1) {
             const fullPath = router.createHref(`/welcome${userWelcomeStatus.path}`)
-            router.replace(fullPath)
+            router.replace({
+                pathname: fullPath,
+                query: location.query || undefined
+            })
         }
     }
 
@@ -81,6 +84,9 @@ const style = {
         height: 24,
         width: 78,
         marginTop: 48
+    },
+    steps: {
+        margin: [30, 0]
     },
     signOut: {
         position: 'absolute',

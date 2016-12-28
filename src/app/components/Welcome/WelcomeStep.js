@@ -27,7 +27,7 @@ class WelcomeStep extends Component {
 
 const style = {
     title: {
-        marginTop: 200,
+        margin: [150, 0, 80],
         color: 'white',
         fontSize: '2.571em',
         fontWeight: '100',

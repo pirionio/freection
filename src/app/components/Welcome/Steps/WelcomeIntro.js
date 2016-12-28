@@ -39,7 +39,7 @@ class WelcomeIntro extends Component {
 
 const style = {
     explanation: {
-        marginTop: 95,
+        marginTop: 55,
         padding: [0, 130],
         color: 'white',
         fontSize: '1.571em',
