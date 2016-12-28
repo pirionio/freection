@@ -128,6 +128,8 @@ export function userToDto(user) {
         organization: user.organization,
         username: user.username,
         slack: user.integrations && user.integrations.slack && user.integrations.slack.active,
+        asana: user.integrations && user.integrations.asana && user.integrations.asana.active,
+        trello: user.integrations && user.integrations.trello && user.integrations.trello.active,
         github: user.integrations && user.integrations.github && user.integrations.github.active,
         allowSendGmail: user.integrations && user.integrations.gmail && user.integrations.gmail.allowSendMail,
         welcomeStatus: user.payload.welcomeStatus

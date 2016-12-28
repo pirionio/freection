@@ -6,6 +6,7 @@ import Icon from 'react-fontawesome'
 
 import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
+import * as IntegrationsService from '../../services/integrations-service'
 
 class GmailIntegration extends Component {
     constructor(props) {
@@ -19,7 +20,7 @@ class GmailIntegration extends Component {
 
     installChromeExtension() {
         if (!this.isChromeExtensionInstalled()) {
-            chrome.webstore.install()
+            IntegrationsService.instsallChromeExtension()
         }
     }
 

@@ -1,15 +1,18 @@
 import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
 import useSheet from 'react-jss'
 import Collapse from 'rc-collapse'
 import 'rc-collapse/assets/index.css'
 
+import * as IntegrationsService from '../../services/integrations-service'
 import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
 import GmailIntegration from './GmailIntegration'
 import GmailLogo from '../../static/GmailLogo.svg'
 import SlackLogo from '../../static/SlackLogo.svg'
 import TrelloLogo from '../../static/TrelloLogo.png'
+import IntegratedIcon from '../../static/success-grey.png'
 
 const Panel = Collapse.Panel
 
@@ -19,22 +22,25 @@ class IntegrationsBox extends Component {
         classAutobind(this, IntegrationsBox.prototype)
     }
 
-    getIntegration(isExpanded) {
-        if (isExpanded) {
-            return (
-                <Flexbox name="integration" container="column">
+    getHeader(title, logo, isIntegrated, {onClick, href}) {
+        const {sheet: {classes}} = this.props
 
-                </Flexbox>
-            )
+        function buttonClicked(event) {
+            event.stopPropagation()
+            onClick && onClick()
         }
 
-        return (
-            <Flexbox></Flexbox>
-        )
-    }
+        const status =
+            <Flexbox name="status" container="row" alignItems="center" className={classes.integratedStatus}>
+                <img src={IntegratedIcon} className={classes.integratedIcon} />
+                Integrated
+            </Flexbox>
 
-    getHeader(title, logo) {
-        const {sheet: {classes}} = this.props
+        const action =
+            <Flexbox name="action">
+                {onClick && <button onClick={buttonClicked} className={classes.integrateButton}>Integrate Now</button>}
+                {href && <a href={href} onClick={buttonClicked} className={classes.integrateButton}>Integrate Now</a>}
+            </Flexbox>
 
         return (
             <div name="integration-header" className={classes.header}>
@@ -45,24 +51,25 @@ class IntegrationsBox extends Component {
                     <Flexbox name="title" grow={1} shrink={0}>
                         <span className={classes.headerTitle}>{title}</span>
                     </Flexbox>
-                    <Flexbox name="status">
-                        <button className={classes.integrateButton}>Integrate Now</button>
-                    </Flexbox>
+                    {isIntegrated ? status : action}
                 </Flexbox>
             </div>
         )
     }
 
     getGmailHeader() {
-        return this.getHeader('Gmail', GmailLogo)
+        const {chromeExtension} = this.props
+        return this.getHeader('Gmail', GmailLogo, chromeExtension.isInstalled, {onClick: IntegrationsService.instsallChromeExtension})
     }
 
     getSlackHeader() {
-        return this.getHeader('Slack', SlackLogo)
+        const {currentUser} = this.props
+        return this.getHeader('Slack', SlackLogo, currentUser.slack, {href: IntegrationsService.getSlackUrl()})
     }
 
     getTrelloHeader() {
-        return this.getHeader('Trello', TrelloLogo)
+        const {currentUser} = this.props
+        return this.getHeader('Trello', TrelloLogo, currentUser.trello, {href: IntegrationsService.getTrelloUrl()})
     }
 
     render() {
@@ -111,21 +118,46 @@ const style = {
         marginRight: 10
     },
     integrateButton: {
+        display: 'block',
         height: 30,
         lineHeight: '30px',
         width: 144,
         backgroundColor: styleVars.highlightColor,
         color: 'black',
         textTransform: 'uppercase',
+        textDecoration: 'none',
         letterSpacing: '0.025em',
         outline: 'none',
         border: 'none',
-        marginRight: 35
+        marginRight: 35,
+        cursor: 'pointer',
+        '&:hover': {
+            color: 'white'
+        }
+    },
+    integratedStatus: {
+        marginRight: 50,
+        color: '#7f8b91'
+    },
+    integratedIcon: {
+        height: 15,
+        width: 15,
+        marginRight: 5
     }
 }
 
 IntegrationsBox.propTypes = {
+    currentUser: PropTypes.object.isRequired,
+    chromeExtension: PropTypes.object.isRequired,
     expand: PropTypes.string
 }
 
-export default useSheet(IntegrationsBox, style)
+
+function mapStateToProps(state) {
+    return {
+        currentUser: state.userProfile,
+        chromeExtension: state.chromeExtension
+    }
+}
+
+export default useSheet(connect(mapStateToProps)(IntegrationsBox), style)
