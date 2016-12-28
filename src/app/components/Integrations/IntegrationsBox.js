@@ -93,10 +93,12 @@ class IntegrationsBox extends Component {
     }
 
     render() {
-        const {expand, sheet: {classes}} = this.props
+        const {expand, className, sheet: {classes}} = this.props
+
+        const containerClasses = classNames(classes.container, className)
 
         return (
-            <Flexbox name="integrations-box-container" container="column" className={classes.container}>
+            <Flexbox name="integrations-box-container" container="column" className={containerClasses}>
                 <Collapse accordion={true} defaultActiveKey={expand}>
                     <Panel header={this.getGmailHeader()} key="gmail" className={classes.headerWrapper}>
                         <GmailIntegration />
@@ -122,7 +124,7 @@ class IntegrationsBox extends Component {
 const style = {
     container: {
         width: 550,
-        height: 450,
+        height: 550,
         overflowY: 'hidden',
         backgroundColor: styleVars.secondaryBackgroundColor,
         '& .rc-collapse-content-active': {
@@ -186,7 +188,8 @@ const style = {
 IntegrationsBox.propTypes = {
     currentUser: PropTypes.object.isRequired,
     chromeExtension: PropTypes.object.isRequired,
-    expand: PropTypes.string
+    expand: PropTypes.string,
+    className: PropTypes.string
 }
 
 
