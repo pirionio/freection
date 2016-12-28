@@ -101,13 +101,13 @@ const style = {
     container: {
         color: 'black',
         fontSize: '0.857em',
-        lineHeight: 1.5,
+        lineHeight: 2,
         '& > div:not(:first-of-type)': {
-            marginTop: 20
+            marginTop: 10
         }
     },
     title: {
-        marginBottom: 20,
+        marginBottom: 10,
         fontWeight: 'bold'
     },
     permissionRow: {
@@ -119,7 +119,6 @@ const style = {
     },
     extensionLink: {
         color: 'black',
-        margin: [15, 0, 0],
         padding: 0,
         textDecoration: 'underline',
         cursor: 'pointer',
