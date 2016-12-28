@@ -39,6 +39,10 @@ function enableProject(state, action) {
             return immutable(state)
                 .arrayMergeItem('projects', {id: action.id}, {posting: true})
                 .value()
+        case ActionStatus.ERROR:
+            return immutable(state)
+                .arrayMergeItem('projects', {id: action.id}, {enabled: true, posting: false})
+                .value()
         default:
             return state
     }
@@ -53,6 +57,10 @@ function disableProject(state, action) {
         case ActionStatus.START:
             return immutable(state)
                 .arrayMergeItem('projects', {id: action.id}, {posting: true})
+                .value()
+        case ActionStatus.ERROR:
+            return immutable(state)
+                .arrayMergeItem('projects', {id: action.id}, {enabled: false, posting: false})
                 .value()
         default:
             return state

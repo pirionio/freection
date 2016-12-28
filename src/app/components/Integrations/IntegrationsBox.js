@@ -10,15 +10,17 @@ import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
 import GmailIntegration from './GmailIntegration'
 import SlackIntegration from './SlackIntegration'
+import AsanaIntegration from './AsanaIntegration'
 import TrelloIntegration from './TrelloIntegration'
 import GmailLogo from '../../static/GmailLogo.svg'
 import SlackLogo from '../../static/SlackLogo.svg'
 import TrelloLogo from '../../static/TrelloLogo.png'
+import AsanaLogo from '../../static/AsanaLogo.jpg'
 import IntegratedIcon from '../../static/success-grey.png'
 
 const Panel = Collapse.Panel
 
-const NUM_OF_INTEGRATIONS = 3
+const NUM_OF_INTEGRATIONS = 4
 const HEADER_HEIGHT = 50
 
 class IntegrationsBox extends Component {
@@ -77,6 +79,11 @@ class IntegrationsBox extends Component {
         return this.getHeader('Trello', TrelloLogo, currentUser.trello, {href: IntegrationsService.getTrelloUrl()})
     }
 
+    getAsanaIntegration() {
+        const {currentUser} = this.props
+        return this.getHeader('Asana', AsanaLogo, currentUser.asana, {href: IntegrationsService.getAsanaUrl()})
+    }
+
     render() {
         const {expand, sheet: {classes}} = this.props
 
@@ -91,6 +98,9 @@ class IntegrationsBox extends Component {
                     </Panel>
                     <Panel header={this.getTrelloHeader()} key="trello" className={classes.headerWrapper}>
                         <TrelloIntegration />
+                    </Panel>
+                    <Panel header={this.getAsanaIntegration()} key="asana" className={classes.headerWrapper}>
+                        <AsanaIntegration />
                     </Panel>
                 </Collapse>
             </Flexbox>

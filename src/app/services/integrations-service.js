@@ -10,3 +10,7 @@ export function getSlackUrl() {
 export function getTrelloUrl() {
     return '/api/trello/integrate'
 }
+
+export function getAsanaUrl() {
+    return '/api/asana/integrate'
+}

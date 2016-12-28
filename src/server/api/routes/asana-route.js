@@ -186,7 +186,7 @@ router.get('/callback', async function(request, response) {
             }
         }).run()
 
-        response.redirect('/integrations/asana')
+        response.redirect('/integrations?expand=asana')
     } catch (error) {
         logger.error(`error while integrating Asana for user ${request.user.email}`, error)
         response.sendStatus(500)
