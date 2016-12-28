@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
 import useSheet from 'react-jss'
+import classNames from 'classnames'
 import Collapse from 'rc-collapse'
 import 'rc-collapse/assets/index.css'
 
@@ -12,15 +13,17 @@ import GmailIntegration from './GmailIntegration'
 import SlackIntegration from './SlackIntegration'
 import AsanaIntegration from './AsanaIntegration'
 import TrelloIntegration from './TrelloIntegration'
+import GithubIntegration from './GithubIntegration'
 import GmailLogo from '../../static/GmailLogo.svg'
 import SlackLogo from '../../static/SlackLogo.svg'
 import TrelloLogo from '../../static/TrelloLogo.png'
 import AsanaLogo from '../../static/AsanaLogo.jpg'
+import GithubLogo from '../../static/GithubLogo.png'
 import IntegratedIcon from '../../static/success-grey.png'
 
 const Panel = Collapse.Panel
 
-const NUM_OF_INTEGRATIONS = 4
+const NUM_OF_INTEGRATIONS = 5
 const HEADER_HEIGHT = 50
 
 class IntegrationsBox extends Component {
@@ -84,6 +87,11 @@ class IntegrationsBox extends Component {
         return this.getHeader('Asana', AsanaLogo, currentUser.asana, {href: IntegrationsService.getAsanaUrl()})
     }
 
+    getGithubIntegration() {
+        const {currentUser} = this.props
+        return this.getHeader('Github', GithubLogo, currentUser.github, {href: IntegrationsService.getGithubUrl()})
+    }
+
     render() {
         const {expand, sheet: {classes}} = this.props
 
@@ -101,6 +109,9 @@ class IntegrationsBox extends Component {
                     </Panel>
                     <Panel header={this.getAsanaIntegration()} key="asana" className={classes.headerWrapper}>
                         <AsanaIntegration />
+                    </Panel>
+                    <Panel header={this.getGithubIntegration()} key="github" className={classes.headerWrapper}>
+                        <GithubIntegration />
                     </Panel>
                 </Collapse>
             </Flexbox>

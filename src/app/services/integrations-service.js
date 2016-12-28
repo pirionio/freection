@@ -14,3 +14,7 @@ export function getTrelloUrl() {
 export function getAsanaUrl() {
     return '/api/asana/integrate'
 }
+
+export function getGithubUrl() {
+    return '/api/github/integrate'
+}

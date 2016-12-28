@@ -53,7 +53,7 @@ router.get('/callback', (request, response) =>  {
                 getUserId(accessToken)
                     .then(githubUserId => activateGithubForUser(user.id, githubUserId, accessToken))
                     .then(() => logger.info(`user ${user.email} integrated github`))
-                    .then(() => response.redirect('/integrations/github'))
+                    .then(() => response.redirect('/integrations?expand=github'))
                     .catch(error => {
                         logger.error(`error while integrating github for user ${user.email}`, error)
                         response.sendStatus(500)
