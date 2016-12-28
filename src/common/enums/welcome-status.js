@@ -1,14 +1,22 @@
 export default {
     INTRO: {
-        key: 'INTRO'
+        key: 'INTRO',
+        path: '/intro'
     },
     INTEGRATIONS: {
-        key: 'INTEGRATIONS'
+        key: 'INTEGRATIONS',
+        path: '/integrations'
     },
     HOWTO: {
-        key: 'HOWTO'
+        key: 'HOWTO',
+        path: '/howto'
     },
     DONE: {
-        key: 'DONE'
+        key: 'DONE',
+        path: '/inbox'
+    },
+    SKIPPED: {
+        key: 'SKIPPED',
+        path: '/inbox'
     }
 }

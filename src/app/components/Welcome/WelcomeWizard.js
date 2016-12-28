@@ -2,12 +2,13 @@ import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
 import useSheet from 'react-jss'
-import Icon from 'react-fontawesome'
 
+import WelcomeNavigationMenu from './WelcomeNavigationMenu'
 import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
 import FreectionLogo from '../../static/logo-white.png'
 import WelcomeStatus from '../../../common/enums/welcome-status'
+import * as WelcomeActions from '../../actions/welcome-actions'
 
 class WelcomeWizard extends Component {
     constructor(props) {
@@ -16,17 +17,28 @@ class WelcomeWizard extends Component {
     }
 
     componentDidMount() {
-        const {currentUser} = this.props
+        this.determineStep()
+    }
+
+    componentDidUpdate() {
+        this.determineStep()
+    }
+
+    determineStep() {
+        const {currentUser, location} = this.props
         const {router} = this.context
 
-        console.log('currentUser:', currentUser)
+        const userWelcomeStatus = WelcomeStatus[currentUser.welcomeStatus]
 
-        if (currentUser.welcomeStatus === WelcomeStatus.INTRO.key)
-            router.replace('/welcome/intro')
-        else if (currentUser.welcomeStatus === WelcomeStatus.INTEGRATIONS.key)
-            router.replace('/welcome/integrations')
-        else if (currentUser.welcomeStatus === WelcomeStatus.HOWTO.key)
-            router.replace('/welcome/howto')
+        if (location && location.pathname.indexOf(userWelcomeStatus.path) === -1) {
+            const fullPath = router.createHref(`/welcome${userWelcomeStatus.path}`)
+            router.replace(fullPath)
+        }
+    }
+
+    skip() {
+        const {dispatch} = this.props
+        dispatch(WelcomeActions.setWelcomeStatus(WelcomeStatus.SKIPPED.key))
     }
 
     render() {
@@ -38,11 +50,14 @@ class WelcomeWizard extends Component {
                     <Flexbox name="logo">
                         <img src={FreectionLogo} className={classes.logo} />
                     </Flexbox>
-                    {children}
-                    <Flexbox name="sign-out" className={classes.signOut}>
-                        <a href="/login/logout">
-                            <Icon name="sign-out" />
-                        </a>
+                    <Flexbox name="welcome-steps" grow={1} shrink={0} className={classes.steps}>
+                        {children}
+                    </Flexbox>
+                    <WelcomeNavigationMenu />
+                    <Flexbox name="sign-out" container="row" className={classes.signOut}>
+                        <a onClick={this.skip}>Skip</a>
+                        <span> / </span>
+                        <a href="/login/logout">Sign out</a>
                     </Flexbox>
                 </Flexbox>
             </Flexbox>
@@ -71,14 +86,21 @@ const style = {
         position: 'absolute',
         bottom: 15,
         right: 15,
+        fontSize: '0.857em',
+        color: 'a6a6a6',
         '& a': {
-            color: 'black'
+            textDecoration: 'none',
+            color: 'a6a6a6',
+            cursor: 'pointer'
+        },
+        '& span': {
+            margin: [0, 5]
         }
     }
 }
 
 WelcomeWizard.propTypes = {
-
+    currentUser: PropTypes.object.isRequired
 }
 
 WelcomeWizard.contextTypes = {

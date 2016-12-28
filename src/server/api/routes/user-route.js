@@ -17,4 +17,16 @@ router.post('/todos', (request, response) => {
         })
 })
 
+router.post('/welcome/status', (request, response) => {
+    const user = request.user
+    const {welcomeStatus} = request.body
+
+    UserService.setWelcomeStatus(user.id, welcomeStatus)
+        .then(result => response.json(result))
+        .catch(error => {
+            logger.error(`Could not set the welcome status for user ${user.email}`, error)
+            response.status(500).send(`Could not set the welcome status for ${user.email}`)
+        })
+})
+
 export default router

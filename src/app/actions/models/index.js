@@ -22,5 +22,6 @@ module.exports = [
     require('./inline-message'),
     require('./slack'),
     require('./chrome-extension'),
-    require('./system-event')
+    require('./system-event'),
+    require('./welcome')
 ]

@@ -15,7 +15,7 @@ class WelcomeStep extends Component {
         const {title, children, sheet: {classes}} = this.props
 
         return (
-            <Flexbox name="welcome-step" container="column" className={classes.container}>
+            <Flexbox name="welcome-step" container="column">
                 <Flexbox name="title" alignSelf="center" className={classes.title}>
                     {title}
                 </Flexbox>
@@ -26,10 +26,6 @@ class WelcomeStep extends Component {
 }
 
 const style = {
-    container: {
-        height: '100%',
-        width: '100%'
-    },
     title: {
         marginTop: 200,
         color: 'white',

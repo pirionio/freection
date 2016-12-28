@@ -5,6 +5,8 @@ import App from './components/App/App'
 import Login from './components/Login/Login'
 import WelcomeWizard from './components/Welcome/WelcomeWizard'
 import WelcomeIntro from './components/Welcome/Steps/WelcomeIntro'
+import WelcomeIntegrations from './components/Welcome/Steps/WelcomeIntegrations'
+import WelcomeHowto from './components/Welcome/Steps/WelcomeHowto'
 import MainApp from './components/MainApp/MainApp'
 import UnreadNotifications from './components/WhatsNew/UnreadNotifications'
 import ToDo from './components/ToDo/ToDo'
@@ -26,6 +28,8 @@ const routes = (
         <Route path="login" component={Login} />
         <Route path="welcome" component={WelcomeWizard}>
             <Route path="intro" component={WelcomeIntro} />
+            <Route path="integrations" component={WelcomeIntegrations} />
+            <Route path="howto" component={WelcomeHowto} />
         </Route>
         <Route component={MainApp}>
             <IndexRedirect to="inbox" />

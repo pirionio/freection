@@ -74,7 +74,7 @@ class App extends Component {
 
         if (!auth.isAuthenticated) {
             router.replace('/login')
-        } else if (currentUser.welcomeStatus !== WelcomeStatus.DONE.key) {
+        } else if (currentUser.welcomeStatus !== WelcomeStatus.DONE.key && currentUser.welcomeStatus !== WelcomeStatus.SKIPPED.key) {
             router.replace('/welcome')
         }
     }

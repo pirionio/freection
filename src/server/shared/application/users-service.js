@@ -115,3 +115,9 @@ export async function setTodos(userId, todos) {
     const persistedUser = await user.save()
     return persistedUser.todos
 }
+
+export async function setWelcomeStatus(userId, welcomeStatus) {
+    const user = await User.get(userId).run()
+    user.payload.welcomeStatus = welcomeStatus
+    return await user.save()
+}
