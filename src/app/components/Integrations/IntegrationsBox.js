@@ -10,12 +10,16 @@ import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
 import GmailIntegration from './GmailIntegration'
 import SlackIntegration from './SlackIntegration'
+import TrelloIntegration from './TrelloIntegration'
 import GmailLogo from '../../static/GmailLogo.svg'
 import SlackLogo from '../../static/SlackLogo.svg'
 import TrelloLogo from '../../static/TrelloLogo.png'
 import IntegratedIcon from '../../static/success-grey.png'
 
 const Panel = Collapse.Panel
+
+const NUM_OF_INTEGRATIONS = 3
+const HEADER_HEIGHT = 50
 
 class IntegrationsBox extends Component {
     constructor(props) {
@@ -85,7 +89,9 @@ class IntegrationsBox extends Component {
                     <Panel header={this.getSlackHeader()} key="slack" className={classes.headerWrapper}>
                         <SlackIntegration />
                     </Panel>
-                    <Panel header={this.getTrelloHeader()} key="trello" className={classes.headerWrapper}>Trello</Panel>
+                    <Panel header={this.getTrelloHeader()} key="trello" className={classes.headerWrapper}>
+                        <TrelloIntegration />
+                    </Panel>
                 </Collapse>
             </Flexbox>
         )
@@ -95,15 +101,22 @@ class IntegrationsBox extends Component {
 const style = {
     container: {
         width: 550,
-        minHeight: 450,
-        backgroundColor: styleVars.secondaryBackgroundColor
+        height: 450,
+        overflowY: 'hidden',
+        backgroundColor: styleVars.secondaryBackgroundColor,
+        '& .rc-collapse-content-active': {
+            height: `calc(100% - ${HEADER_HEIGHT}px)`
+        },
+        '& .rc-collapse-item-active': {
+            height: `calc(100% - ${HEADER_HEIGHT * NUM_OF_INTEGRATIONS - HEADER_HEIGHT}px)`
+        }
     },
     headerWrapper: {
         width: '100%',
         backgroundColor: styleVars.secondaryBackgroundColor,
         '& .rc-collapse-header': {
-            height: '50px !important',
-            lineHeight: '50px !important'
+            height: `${HEADER_HEIGHT}px !important`,
+            lineHeight: `${HEADER_HEIGHT}px !important`
         }
     },
     header: {

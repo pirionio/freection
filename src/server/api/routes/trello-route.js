@@ -62,10 +62,10 @@ router.get('/callback', async function(request, response) {
 
         await user.save()
 
-        response.redirect('/integrations/trello')
+        response.redirect('/integrations?expand=trello')
 
     } catch (error) {
-        const message = `Trello - error for user ${user.email}: ${error.message}`
+        const message = `Trello - error for user ${request.user.email}: ${error.message}`
         logger.error(message, error.cause)
         response.status(404).send(message)
     }
