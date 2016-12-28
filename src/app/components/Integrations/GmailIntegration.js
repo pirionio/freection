@@ -111,7 +111,7 @@ const style = {
         fontWeight: 'bold'
     },
     permissionRow: {
-        height: 25,
+        height: 20,
         padding: [0, 20, 0, 5]
     },
     icon: {
@@ -136,8 +136,8 @@ const style = {
         textDecoration: 'none',
         fontWeight: '500',
         fontSize: '0.75em',
-        height: 27,
-        padding: [8, 16],
+        height: 20,
+        padding: [3, 12],
         cursor: 'hand',
         '&:focus':{
             outline: 'none'
