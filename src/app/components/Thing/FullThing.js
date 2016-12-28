@@ -160,7 +160,7 @@ function mapStateToProps(state) {
         commands: state.thingPage.commands,
         invalidationStatus: state.thingPage.invalidationStatus,
         ongoingAction: state.thingPage.ongoingAction,
-        currentUser: state.auth
+        currentUser: state.userProfile
     }
 }
 

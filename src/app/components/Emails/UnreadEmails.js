@@ -119,7 +119,7 @@ function mapStateToProps(state) {
     return {
         emails: state.unreadEmails.emails,
         invalidationStatus: state.unreadEmails.invalidationStatus,
-        currentUser: state.auth
+        currentUser: state.userProfile
     }
 }
 

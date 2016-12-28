@@ -40,12 +40,12 @@ class App extends Component {
     }
 
     componentDidMount() {
-        const {currentUser, dispatch} = this.props
+        const {auth, currentUser, dispatch} = this.props
 
         document.addEventListener('keydown', this.onKeyDown)
 
-        if (currentUser.isAuthenticated) {
-            PushService.listenToUpdates(currentUser.email, currentUser.pushToken, dispatch)
+        if (auth.isAuthenticated) {
+            PushService.listenToUpdates(currentUser.email, auth.pushToken, dispatch)
             AuthService.initialize(currentUser)
             DesktopNotificationService.initialize()
             initialize(currentUser)
@@ -69,10 +69,10 @@ class App extends Component {
     }
 
     determineInitialRoute() {
-        const {currentUser} = this.props
+        const {auth, currentUser} = this.props
         const {router} = this.context
 
-        if (!currentUser.isAuthenticated) {
+        if (!auth.isAuthenticated) {
             router.replace('/login')
         } else if (currentUser.welcomeStatus !== WelcomeStatus.DONE.key) {
             router.replace('/welcome')
@@ -87,9 +87,9 @@ class App extends Component {
     }
 
     getTitle() {
-        const {currentUser, newNotifications} = this.props
+        const {auth, currentUser, newNotifications} = this.props
 
-        if (!currentUser.isAuthenticated)
+        if (!auth.isAuthenticated)
             return 'Freection Login'
 
         if (currentUser.welcomeStatus !== 'DONE')
@@ -124,6 +124,7 @@ const style = {
 }
 
 App.propTypes = {
+    auth: PropTypes.object.isRequired,
     currentUser: PropTypes.object.isRequired,
     config: PropTypes.object.isRequired,
     newNotifications: PropTypes.array.isRequired,
@@ -137,7 +138,8 @@ App.contextTypes = {
 
 const mapStateToProps = state => {
     return {
-        currentUser: state.auth,
+        auth: state.auth,
+        currentUser: state.userProfile,
         config: state.config,
         newNotifications: state.whatsNew.notifications,
         isExpandedOpen: state.expandedMessageBox.opened,

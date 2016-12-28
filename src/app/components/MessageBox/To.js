@@ -381,7 +381,7 @@ function mapStateToProps(state, {model}) {
         query: state.to.query,
         pendingQueries: state.to.pendingQueries,
         cache: state.to.cache,
-        currentUser: state.auth,
+        currentUser: state.userProfile,
         value: get(state, `${model}.to`),
         selectedAddress: get(state, `${model}.selectedAddress`),
         selected: get(state, `${model}.selected`)

@@ -2,6 +2,7 @@ import {reject, chain} from 'lodash'
 
 import {User, Thing} from '../models'
 import {userToAddress} from './address-creator'
+import {userToDto} from './transformers'
 import * as EmailParsingUtility from '../utils/email-parsing-utility.js'
 import ThingStatus from '../../../common/enums/thing-status.js'
 import UserTypes from '../../../common/enums/user-types.js'
@@ -86,6 +87,11 @@ function importThings(user, things) {
 
     return Promise.all(promises).then(() =>
         logger.info(`import ${promises.length} things for user ${user.email}`))
+}
+
+export async function getUserProfile(userId) {
+    const user = await User.get(userId)
+    return userToDto(user)
 }
 
 export async function findUsers(user, query) {

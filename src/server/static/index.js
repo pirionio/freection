@@ -10,12 +10,13 @@ import TokenConfig from '../shared/config/token'
 import logger from '../shared/utils/logger'
 import login from './login'
 import * as ThingService from '../shared/application/thing-service'
-import {getUsers} from '../shared/application/users-service.js'
+import * as UsersService from '../shared/application/users-service.js'
 import reducer from '../../app/reducers'
 import * as WhatsNewActions from '../../app/actions/whats-new-actions'
 import * as ToDoActions from '../../app/actions/to-do-actions'
 import * as FollowUpActions from '../../app/actions/follow-up-actions'
 import * as AuthActions from '../../app/actions/auth-actions'
+import * as UserProfileActions from '../../app/actions/user-profile-actions'
 import * as UsersActions from '../../app/actions/users-actions.js'
 
 export function configure(app) {
@@ -81,6 +82,9 @@ async function getInitialState(request) {
     let state = {}
 
     if (request.isAuthenticated()) {
+        const userProfile = await UsersService.getUserProfile(user.id)
+        state = reducer(state, UserProfileActions.setState(userProfile))
+
         const whatsNew = await ThingService.getWhatsNew(user)
         state = reducer(state, WhatsNewActions.setState(whatsNew))
 
@@ -90,12 +94,13 @@ async function getInitialState(request) {
         const followUps = await ThingService.getFollowUps(user)
         state = reducer(state, FollowUpActions.setState(followUps))
 
-        const users = await getUsers(user)
+        const users = await UsersService.getUsers(user)
         state = reducer(state, UsersActions.setState(users))
     }
 
     const authState = getAuthState(request)
     state = reducer(state, AuthActions.setState(authState))
+
     state = Object.assign(state, {
         config: getConfig()
     })
@@ -113,15 +118,6 @@ function getAuthState(request) {
     }
 
     auth.id = request.user.id
-    auth.firstName = request.user.firstName
-    auth.lastName = request.user.lastName
-    auth.email = request.user.email
-    auth.expire = request.user.exp * 1000 // Convert to ms since epoch
-    auth.github = request.user.github
-    auth.slack = request.user.slack
-    auth.allowSendGmail = request.user.allowSendGmail
-    auth.organization = request.user.organization
-    auth.welcomeStatus = request.user.welcomeStatus
 
     const tokenOptions = request.user.exp ? {} : {expiresIn: '30 days'}
     try {

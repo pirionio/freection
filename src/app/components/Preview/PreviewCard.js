@@ -390,7 +390,7 @@ function collectDrop(connect, monitor) {
 
 function mapStateToProps(state) {
     return {
-        currentUser: state.auth
+        currentUser: state.userProfile
     }
 }
 

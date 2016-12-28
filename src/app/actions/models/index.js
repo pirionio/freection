@@ -15,6 +15,7 @@ module.exports = [
     require('./trello'),
     require('./message-box'),
     require('./auth'),
+    require('./user-profile'),
     require('./to'),
     require('./users'),
     require('./glass-pane'),

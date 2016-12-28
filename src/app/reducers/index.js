@@ -17,6 +17,7 @@ import asana from './asana'
 import trello from './trello-reducer'
 import slack from './slack'
 import auth from './auth'
+import userProfile from './user-profile-reducer'
 import to from './to-reducer'
 import users from './users-reducer'
 import glassPane from './glass-pane-reducer'
@@ -41,6 +42,7 @@ export default combineReducers({
     trello,
     slack,
     auth,
+    userProfile,
     to,
     users,
     glassPane,

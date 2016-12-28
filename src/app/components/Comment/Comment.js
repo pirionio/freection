@@ -191,7 +191,7 @@ Comment.propTypes = {
 
 const mapStateToProps = state => {
     return {
-        currentUser: state.auth,
+        currentUser: state.userProfile,
         users: state.users
     }
 }

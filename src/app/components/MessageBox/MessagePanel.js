@@ -193,7 +193,7 @@ function mapStateToProps(state) {
         messageBoxes: state.messagePanel.messageBoxes,
         activeMessageBox: find(state.messagePanel.messageBoxes, {id: state.messagePanel.activeMessageBoxId}),
         messageBox: state.messageBox,
-        currentUser: state.auth,
+        currentUser: state.userProfile,
         isExpandedOpened: state.expandedMessageBox.opened
     }
 }

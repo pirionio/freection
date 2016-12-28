@@ -149,7 +149,7 @@ Gmail.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        currentUser: state.auth,
+        currentUser: state.userProfile,
         chromeExtension: state.chromeExtension
     }
 }

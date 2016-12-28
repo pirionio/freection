@@ -95,7 +95,7 @@ function mapStateToProps(state) {
     return {
         thread: state.emailPage.thread,
         invalidationStatus: state.emailPage.invalidationStatus,
-        currentUser: state.auth
+        currentUser: state.userProfile
     }
 }
 
