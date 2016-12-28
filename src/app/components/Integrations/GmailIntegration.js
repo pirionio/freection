@@ -136,7 +136,7 @@ const style = {
         fontWeight: '500',
         fontSize: '0.75em',
         height: 20,
-        padding: [3, 12],
+        padding: [1, 12],
         cursor: 'hand',
         '&:focus':{
             outline: 'none'

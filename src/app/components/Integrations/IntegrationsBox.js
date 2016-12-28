@@ -160,10 +160,9 @@ const style = {
         display: 'block',
         height: 30,
         lineHeight: '30px',
-        width: 144,
+        width: 110,
         backgroundColor: styleVars.highlightColor,
         color: 'black',
-        textTransform: 'uppercase',
         textDecoration: 'none',
         letterSpacing: '0.025em',
         outline: 'none',
@@ -175,7 +174,7 @@ const style = {
         }
     },
     integratedStatus: {
-        marginRight: 50,
+        marginRight: 35,
         color: '#7f8b91'
     },
     integratedIcon: {
