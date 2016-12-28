@@ -68,7 +68,7 @@ router.get('/callback', async function(request, response) {
             }
         }).run()
 
-        response.redirect('/integrations/slack')
+        response.redirect('/integrations?expand=slack')
     } catch (error) {
         logger.error(`error while integrating slack for user ${request.user.email}`, error)
         response.sendStatus(500)
@@ -111,7 +111,7 @@ router.get('/callback/app', async function(request, response) {
             name: access.team_name
         }, {conflict: 'replace'})
 
-        response.redirect('/integrations/slack')
+        response.redirect('/integrations?expand=slack')
     } catch (error) {
         logger.error(`error while add app to slack by user ${request.user.email}`, error)
         response.sendStatus(500)

@@ -9,6 +9,7 @@ import * as IntegrationsService from '../../services/integrations-service'
 import Flexbox from '../UI/Flexbox'
 import styleVars from '../style-vars'
 import GmailIntegration from './GmailIntegration'
+import SlackIntegration from './SlackIntegration'
 import GmailLogo from '../../static/GmailLogo.svg'
 import SlackLogo from '../../static/SlackLogo.svg'
 import TrelloLogo from '../../static/TrelloLogo.png'
@@ -81,7 +82,9 @@ class IntegrationsBox extends Component {
                     <Panel header={this.getGmailHeader()} key="gmail" className={classes.headerWrapper}>
                         <GmailIntegration />
                     </Panel>
-                    <Panel header={this.getSlackHeader()} key="slack" className={classes.headerWrapper}>Slack</Panel>
+                    <Panel header={this.getSlackHeader()} key="slack" className={classes.headerWrapper}>
+                        <SlackIntegration />
+                    </Panel>
                     <Panel header={this.getTrelloHeader()} key="trello" className={classes.headerWrapper}>Trello</Panel>
                 </Collapse>
             </Flexbox>
