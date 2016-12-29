@@ -2,6 +2,7 @@ import Router from 'express'
 
 import * as UserService from '../../shared/application/users-service'
 import logger from '../../shared/utils/logger'
+import WelcomeStatus from '../../../common/enums/welcome-status'
 
 const router = Router()
 
@@ -26,6 +27,17 @@ router.post('/welcome/status', (request, response) => {
         .catch(error => {
             logger.error(`Could not set the welcome status for user ${user.email}`, error)
             response.status(500).send(`Could not set the welcome status for ${user.email}`)
+        })
+})
+
+router.get('/welcome/init', (request, response) => {
+    const user = request.user
+
+    UserService.setWelcomeStatus(user.id, WelcomeStatus.INTRO.key)
+        .then(result => response.json({}))
+        .catch(error => {
+            logger.error(`Could not init the welcome status for user ${user.email}`, error)
+            response.status(500).send(`Could not init the welcome status for ${user.email}`)
         })
 })
 
