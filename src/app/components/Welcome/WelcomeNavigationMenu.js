@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import classAutobind from 'class-autobind'
 import useSheet from 'react-jss'
 import findIndex from 'lodash/findIndex'
+import last from 'lodash/last'
 
 import Flexbox from '../UI/Flexbox'
 import Ellipse from '../UI/Ellipse'
@@ -16,7 +17,7 @@ class WelcomeNavigationMenu extends Component {
         classAutobind(this, WelcomeNavigationMenu.prototype)
     }
 
-    getButton(welcomeStatus) {
+    getStepButton(welcomeStatus) {
         const {currentUser, sheet: {classes}} = this.props
 
         const isCurrent = currentUser.welcomeStatus === welcomeStatus.key
@@ -32,27 +33,32 @@ class WelcomeNavigationMenu extends Component {
         const {dispatch} = this.props
         dispatch(WelcomeActions.setWelcomeStatus(welcomeStatus.key))
     }
-    
-    render() {
+
+    getSteps() {
+        return SharedConstants.WELCOME_WIZARD_STEPS.slice(0, -1).map(this.getStepButton)
+    }
+
+    getAction() {
         const {currentUser, sheet: {classes}} = this.props
 
         const currentStatusIndex = findIndex(SharedConstants.WELCOME_WIZARD_STEPS, {key: currentUser.welcomeStatus})
+        const nextStatus = (currentStatusIndex + 1 < SharedConstants.WELCOME_WIZARD_STEPS.length) ?
+            SharedConstants.WELCOME_WIZARD_STEPS[currentStatusIndex + 1] :
+            last(SharedConstants.WELCOME_WIZARD_STEPS)
 
-        const menu = SharedConstants.WELCOME_WIZARD_STEPS.map((welcomeStatus, index) => {
-            if (index === SharedConstants.WELCOME_WIZARD_STEPS.length - 1) {
-                if (index === currentStatusIndex + 1)
-                    return <a className={classes.link} key="Done" onClick={() => this.navigate(welcomeStatus)}>Done!</a>
+        // If the current step is one before last, show a Done action. Otherwise show a Next action.
+        return currentStatusIndex === SharedConstants.WELCOME_WIZARD_STEPS.length - 2 ?
+            <a className={classes.link} key="Done" onClick={() => this.navigate(nextStatus)}>Done!</a> :
+            <a className={classes.link} key="Next" onClick={() => this.navigate(nextStatus)}>Next</a>
+    }
 
-                const nextStatus = SharedConstants.WELCOME_WIZARD_STEPS[currentStatusIndex + 1]
-                return <a className={classes.link} key="Next" onClick={() => this.navigate(nextStatus)}>Next</a>
-            }
-
-            return this.getButton(welcomeStatus)
-        })
+    render() {
+        const {sheet: {classes}} = this.props
 
         return (
             <Flexbox name="navigation-menu" container="row" className={classes.navigationMenu}>
-                {menu}
+                {this.getSteps()}
+                {this.getAction()}
             </Flexbox>
         )
     }
@@ -60,9 +66,13 @@ class WelcomeNavigationMenu extends Component {
 
 const style = {
     navigationMenu: {
-        marginBottom: 15
+        marginBottom: 15,
+        position: 'relative'
     },
     link: {
+        position: 'absolute',
+        right: -35,
+        width: 35,
         color: styleVars.highlightColor,
         fontSize: '0.857em',
         letterSpacing: '0.05em',
@@ -72,8 +82,10 @@ const style = {
     ellipse: {
         height: 12,
         width: 12,
-        marginRight: 18,
-        cursor: 'pointer'
+        cursor: 'pointer',
+        '&:not(last-of-type)': {
+            marginRight: 18,
+        }
     }
 }
 
