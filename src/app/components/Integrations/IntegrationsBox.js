@@ -47,7 +47,7 @@ class IntegrationsBox extends Component {
             </Flexbox>
 
         const action =
-            <Flexbox name="action">
+            <Flexbox name="action" className={classes.action}>
                 {onClick && <button onClick={buttonClicked} className={classes.integrateButton}>Integrate Now</button>}
                 {href && <a href={href} onClick={buttonClicked} className={classes.integrateButton}>Integrate Now</a>}
             </Flexbox>
@@ -144,7 +144,8 @@ const style = {
     },
     header: {
         display: 'inline-block',
-        width: 'calc(100% - 28px)'
+        width: 'calc(100% - 28px)',
+        textIndent: 0
     },
     headerTitle: {
         color: 'black',
@@ -156,25 +157,31 @@ const style = {
         width: 15,
         marginRight: 10
     },
-    integrateButton: {
-        display: 'block',
+    action: {
         height: 30,
         lineHeight: '30px',
         width: 110,
         backgroundColor: styleVars.highlightColor,
+        marginRight: 35,
+    },
+    integrateButton: {
+        display: 'block',
+        height: '100%',
+        width: '100%',
+        backgroundColor: 'transparent',
         color: 'black',
         textDecoration: 'none',
+        textAlign: 'center',
         letterSpacing: '0.025em',
         outline: 'none',
         border: 'none',
-        marginRight: 35,
         cursor: 'pointer',
         '&:hover': {
             color: 'white'
         }
     },
     integratedStatus: {
-        marginRight: 35,
+        marginRight: 50,
         color: '#7f8b91'
     },
     integratedIcon: {
