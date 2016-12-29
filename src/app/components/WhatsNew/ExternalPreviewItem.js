@@ -47,6 +47,8 @@ class ExternalPreviewItem extends Component {
                 return <span><strong>{notification.creator.displayName}</strong> reassigned you on {platform}</span>
             case EventTypes.UNASSIGNED.key:
                 return <span><strong>{notification.creator.displayName}</strong> unassigned you on {platform}</span>
+            case EventTypes.TRELLO_LIST_CHANGED.key:
+                return <span>Card moved to {notification.payload.toList.name}</span>
             default:
                 return <span><strong>{notification.creator.displayName}</strong> closed an issue on {platform}</span>
         }
@@ -61,6 +63,8 @@ class ExternalPreviewItem extends Component {
                 return styleVars.blueCircleColor
             case EventTypes.UNASSIGNED.key:
                 return styleVars.redCircleColor
+            case EventTypes.TRELLO_LIST_CHANGED.key:
+                return styleVars.yellowCircleColor
             default:
                 return styleVars.greenCircleColor
         }

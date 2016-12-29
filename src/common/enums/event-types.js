@@ -58,5 +58,9 @@ export default {
     UNASSIGNED: {
         key: 'UNASSIGNED',
         label: 'Unassigned'
+    },
+    TRELLO_LIST_CHANGED: {
+        key: 'TRELLO_LIST_CHANGED',
+        label: 'List changed'
     }
 }

@@ -55,6 +55,9 @@ export function handleEvent(event) {
             case EventTypes.UNASSIGNED.key:
                 unassignedNotification(event)
                 break
+            case EventTypes.TRELLO_LIST_CHANGED.key:
+                trelloListChangedNotification(event)
+                break
         }
     } else {
         if (event.eventType.key === EventTypes.CREATED.key && event.thing.type.key === EntityTypes.EMAIL_THING.key) {
@@ -77,6 +80,7 @@ function getLogoByEventType(type) {
         case EventType.COMMENT.key:
         case EventType.PING.key:
         case EventType.PONG.key:
+        case EventType.TRELLO_LIST_CHANGED.key:
             return LogoInProgress
         case EventType.DONE.key:
             return LogoDone
@@ -170,4 +174,8 @@ function mentionedNotification(event) {
 
 function unassignedNotification(event) {
     showNotification(event.id, `${event.creator.displayName} unassigned you`, event.thing.subject, event.eventType)
+}
+
+function trelloListChangedNotification(event) {
+    showNotification(event.id, `card moved to list ${event.payload.toList.name}`, event.thing.subject, event.eventType)
 }

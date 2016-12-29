@@ -120,3 +120,10 @@ export function commentReadByEmail(event) {
         event
     }
 }
+
+export function trelloListChanged(event) {
+    return {
+        type: EventActionsTypes.TRELLO_LIST_CHANGED,
+        event
+    }
+}

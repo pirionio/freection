@@ -61,6 +61,9 @@ export function listenToUpdates(email, pushToken, dispatch) {
 
         if (event.eventType.key === EventTypes.UNASSIGNED.key)
             dispatch(EventActions.unassigned(event))
+
+        if (event.eventType.key === EventTypes.TRELLO_LIST_CHANGED.key)
+            dispatch(EventActions.trelloListChanged(event))
     })
 
     socket.on('notification-deleted', event => {

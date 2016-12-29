@@ -27,6 +27,8 @@ function getCommandsUnwrapped(notification) {
                 return [ThingCommandActionTypes.CLOSE]
             case EventTypes.UNASSIGNED.key:
                 return [ThingCommandActionTypes.CLOSE_ACK]
+            case EventTypes.TRELLO_LIST_CHANGED.key:
+                return [ThingCommandActionTypes.DISCARD_SINGLE_NOTIFICATION, ThingCommandActionTypes.MARK_AS_DONE]
             default:
                 throw new Error(`UnknownEventType ${notification.eventType.key}`)
         }

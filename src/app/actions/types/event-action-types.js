@@ -15,7 +15,8 @@ const EventActionsTypes = {
     UNASSIGNED: 'EVENT_UNASSIGNED',
     COMMENT_CREATED: 'EVENT_COMMENT_CREATED',
     COMMENT_READ_BY: 'EVENT_COMMENT_READ_BY',
-    COMMENT_READ_BY_EMAIL: 'EVENT_COMMENT_READ_BY_EMAIL'
+    COMMENT_READ_BY_EMAIL: 'EVENT_COMMENT_READ_BY_EMAIL',
+    TRELLO_LIST_CHANGED: 'EVENT_TRELLO_LIST_CHANGED'
 }
 
 export default EventActionsTypes
@@ -39,6 +40,7 @@ export function isOfTypeEvent(type) {
         case EventActionsTypes.COMMENT_CREATED:
         case EventActionsTypes.COMMENT_READ_BY:
         case EventActionsTypes.COMMENT_READ_BY_EMAIL:
+        case EventActionsTypes.TRELLO_LIST_CHANGED:
             return true
         default:
             return false

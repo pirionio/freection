@@ -7,6 +7,7 @@ import * as EventCreator from './event-creator'
 import ThingStatus from '../../../common/enums/thing-status'
 import ThingSource from '../../../common/enums/thing-source'
 import EntityTypes from '../../../common/enums/entity-types'
+import EventTypes from '../../../common/enums/event-types'
 import logger from '../utils/logger'
 import {userToAddress} from './address-creator'
 import * as AsanaService from '../technical/asana-service'
@@ -55,10 +56,18 @@ export async function markAsDone(userToken, thingId) {
         thing.payload.status = ThingStatus.DONE.key
         thing.events.push(EventCreator.createDone(creator, thing, []))
 
+        doneSideEffects(user, thing)
+
         return await ThingDomain.updateThing(thing)
     } catch(error) {
         logger.error(`Error while marking thing ${thingId} as done by external:`, error)
         throw error
+    }
+}
+
+function doneSideEffects(user, thing) {
+    if (thing && thing.payload.source === ThingSource.TRELLO.key) {
+        ThingHelper.discardUserEventsByType(user, thing, EventTypes.TRELLO_LIST_CHANGED)
     }
 }
 
@@ -198,6 +207,24 @@ export async function unassign(user, creator, thingId) {
         return thing
     } catch(error) {
         logger.error(`error while unassigning external thing ${thingId} by user ${creator.displayName} for user ${user.email}:`, error)
+        throw error
+    }
+}
+
+export async function trelloListChanged(user, creator, thingId, fromList, toList) {
+    try {
+        const thing = await ThingDomain.getFullThing(thingId)
+
+        validateType(thing)
+
+        thing.events.push(EventCreator.createTrelloListChanged(creator, thing, [user.id], user, fromList, toList))
+
+        await ThingDomain.updateThing(thing)
+
+        return thing
+    } catch(error) {
+        logger.error(`error while updating external thing ${thingId} 
+            by user ${creator.displayName} for user ${user.email} after change in Trello list:`, error)
         throw error
     }
 }

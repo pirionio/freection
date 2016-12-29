@@ -68,6 +68,10 @@ module.exports = {
         {
             name: 'comment read by email',
             params: ['event']
+        },
+        {
+            name: 'trello list changed',
+            params: ['event']
         }
     ]
 }

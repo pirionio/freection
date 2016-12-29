@@ -254,3 +254,17 @@ export function createUnassigned(creator, thing, showNewList, user) {
         showNewList
     }
 }
+
+export function createTrelloListChanged(creator, thing, showNewList, user, fromList, toList) {
+    return {
+        thingId: thing.id,
+        eventType: EventTypes.TRELLO_LIST_CHANGED.key,
+        createdAt: new Date(),
+        creator,
+        payload: {
+            fromList,
+            toList
+        },
+        showNewList
+    }
+}
