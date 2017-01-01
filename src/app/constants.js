@@ -39,3 +39,11 @@ export const GlassPaneIds = {
 export const DragItemTypes = {
     PREVIEW_CARD: 'PREVIEW_CARD'
 }
+
+export const WelcomeWizardConstants = {
+    LOGO_HEIGHT: 24,
+    LOGO_MARGIN: 48,
+    STEP_MARGIN: 30,
+    NAVIGATION_MENU_HEIGHT: 12,
+    NAVIGATION_MENU_MARGIN: 15
+}

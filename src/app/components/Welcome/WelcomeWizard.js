@@ -9,6 +9,7 @@ import styleVars from '../style-vars'
 import FreectionLogo from '../../static/logo-white.png'
 import WelcomeStatus from '../../../common/enums/welcome-status'
 import * as WelcomeActions from '../../actions/welcome-actions'
+import {WelcomeWizardConstants} from '../../constants'
 
 class WelcomeWizard extends Component {
     constructor(props) {
@@ -72,6 +73,7 @@ const style = {
     container: {
         height: '100%',
         width: '100%',
+        minHeight: 600,
         backgroundColor: styleVars.backgroundColor
     },
     content: {
@@ -81,12 +83,13 @@ const style = {
         position: 'relative'
     },
     logo: {
-        height: 24,
+        height: WelcomeWizardConstants.LOGO_HEIGHT,
         width: 78,
-        marginTop: 48
+        marginTop: WelcomeWizardConstants.LOGO_MARGIN
     },
     steps: {
-        margin: [30, 0]
+        margin: [WelcomeWizardConstants.STEP_MARGIN, 0],
+        overflowY: 'hidden'
     },
     signOut: {
         position: 'absolute',

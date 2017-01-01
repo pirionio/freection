@@ -124,15 +124,8 @@ class IntegrationsBox extends Component {
 const style = {
     container: {
         width: 550,
-        height: 550,
-        overflowY: 'hidden',
-        backgroundColor: styleVars.secondaryBackgroundColor,
-        '& .rc-collapse-content-active': {
-            height: `calc(100% - ${HEADER_HEIGHT}px)`
-        },
-        '& .rc-collapse-item-active': {
-            height: `calc(100% - ${HEADER_HEIGHT * NUM_OF_INTEGRATIONS - HEADER_HEIGHT}px)`
-        }
+        overflowY: 'auto',
+        backgroundColor: styleVars.secondaryBackgroundColor
     },
     headerWrapper: {
         width: '100%',
@@ -162,7 +155,7 @@ const style = {
         lineHeight: '30px',
         width: 110,
         backgroundColor: styleVars.highlightColor,
-        marginRight: 35,
+        marginRight: 35
     },
     integrateButton: {
         display: 'block',

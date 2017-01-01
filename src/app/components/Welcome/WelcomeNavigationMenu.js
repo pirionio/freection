@@ -10,6 +10,7 @@ import Ellipse from '../UI/Ellipse'
 import styleVars from '../style-vars'
 import SharedConstants from '../../../common/shared-constants'
 import * as WelcomeActions from '../../actions/welcome-actions'
+import {WelcomeWizardConstants} from '../../constants'
 
 class WelcomeNavigationMenu extends Component {
     constructor(props) {
@@ -66,7 +67,8 @@ class WelcomeNavigationMenu extends Component {
 
 const style = {
     navigationMenu: {
-        marginBottom: 15,
+        height: WelcomeWizardConstants.NAVIGATION_MENU_HEIGHT,
+        marginBottom: WelcomeWizardConstants.NAVIGATION_MENU_MARGIN,
         position: 'relative'
     },
     link: {

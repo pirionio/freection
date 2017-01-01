@@ -45,7 +45,7 @@ class AsanaIntegration extends Component {
         const rows = projects.map(project => <Project key={project.id} project={project} />)
 
         return (
-            <Flexbox name="asana-content" grow={1} container="column" className={classes.content}>
+            <Flexbox name="asana-content" grow={1} container="column">
                 <Flexbox name="asana-header" className={classes.title}>
                     Projects
                 </Flexbox>
@@ -53,9 +53,7 @@ class AsanaIntegration extends Component {
                     Select the project you want to get notifications for:
                 </Flexbox>
                 <Flexbox name="asana-project-list" grow={1} container="column">
-                    <Scrollable>
-                        {rows}
-                    </Scrollable>
+                    {rows}
                 </Flexbox>
             </Flexbox>
         )
@@ -83,9 +81,6 @@ const style = {
         fontSize: '0.857em',
         lineHeight: 2
     },
-    content: {
-        height: 'calc(100% - 32px)'
-    },
     title: {
         marginBottom: 20,
         fontWeight: 'bold'
@@ -96,7 +91,7 @@ const style = {
     },
     fetching: {
         position: 'relative',
-        height: '100%'
+        height: 180
     }
 }
 

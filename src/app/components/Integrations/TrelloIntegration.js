@@ -45,7 +45,7 @@ class TrelloIntegration extends Component {
         const rows = boards.map(board => <Board key={board.id} board={board} />)
 
         return (
-            <Flexbox name="trello-content" grow={1} container="column" className={classes.content}>
+            <Flexbox name="trello-content" grow={1} container="column">
                 <Flexbox name="trello-title" className={classes.title}>
                     Boards
                 </Flexbox>
@@ -53,9 +53,7 @@ class TrelloIntegration extends Component {
                     Select the boards you want to get notifications for:
                 </Flexbox>
                 <Flexbox name="trello-board-list" grow={1} container="column">
-                    <Scrollable>
-                        {rows}
-                    </Scrollable>
+                    {rows}
                 </Flexbox>
             </Flexbox>
         )
@@ -83,9 +81,6 @@ const style = {
         fontSize: '0.857em',
         lineHeight: 2
     },
-    content: {
-        height: 'calc(100% - 32px)'
-    },
     title: {
         marginBottom: 20,
         fontWeight: 'bold'
@@ -96,7 +91,7 @@ const style = {
     },
     fetching: {
         position: 'relative',
-        height: '100%'
+        height: 180
     }
 }
 

@@ -46,7 +46,7 @@ class GithubIntegration extends Component {
         const rows = repositories.map(repository => <Repository key={repository.fullName} repository={repository} />)
 
         return (
-            <Flexbox name="github-content" grow={1} container="column" className={classes.content}>
+            <Flexbox name="github-content" grow={1} container="column">
                 <Flexbox name="github-header" className={classes.title}>
                     Repositories
                 </Flexbox>
@@ -59,9 +59,7 @@ class GithubIntegration extends Component {
                     </div>
                 </Flexbox>
                 <Flexbox name="github-repositories-list" grow={1} container="column">
-                    <Scrollable>
-                        {rows}
-                    </Scrollable>
+                    {rows}
                 </Flexbox>
             </Flexbox>
         )
@@ -89,9 +87,6 @@ const style = {
         fontSize: '0.857em',
         lineHeight: 2
     },
-    content: {
-        height: 'calc(100% - 32px)'
-    },
     title: {
         marginBottom: 20,
         fontWeight: 'bold'
@@ -102,7 +97,7 @@ const style = {
     },
     fetching: {
         position: 'relative',
-        height: '100%'
+        height: 180
     }
 }
 
