@@ -1,6 +1,17 @@
+import * as ChromeExtensionActions from '../actions/chrome-extension-actions'
 
-export function instsallChromeExtension() {
-    chrome.webstore.install()
+export function instsallChromeExtension(dispatch) {
+    return new Promise((resolve, reject) => {
+        chrome.webstore.install('',
+            result => {
+                dispatch(ChromeExtensionActions.setIsInstalled(true))
+                resolve(result)
+            },
+            error => {
+                reject(error)
+            }
+        )
+    })
 }
 
 export function getSlackUrl() {

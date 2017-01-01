@@ -23,13 +23,16 @@ import IntegratedIcon from '../../static/success-grey.png'
 
 const Panel = Collapse.Panel
 
-const NUM_OF_INTEGRATIONS = 5
 const HEADER_HEIGHT = 50
 
 class IntegrationsBox extends Component {
     constructor(props) {
         super(props)
         classAutobind(this, IntegrationsBox.prototype)
+
+        this.state = {
+            activeKey: props.expand || null
+        }
     }
 
     getHeader(title, logo, isIntegrated, {onClick, href}) {
@@ -68,8 +71,10 @@ class IntegrationsBox extends Component {
     }
 
     getGmailHeader() {
-        const {chromeExtension} = this.props
-        return this.getHeader('Gmail', GmailLogo, chromeExtension.isInstalled, {onClick: IntegrationsService.instsallChromeExtension})
+        const {chromeExtension, dispatch} = this.props
+        return this.getHeader('Gmail', GmailLogo, chromeExtension.isInstalled, {onClick: () =>
+            IntegrationsService.instsallChromeExtension(dispatch).then(() => this.changeActivePanel('gmail'))
+        })
     }
 
     getSlackHeader() {
@@ -92,14 +97,20 @@ class IntegrationsBox extends Component {
         return this.getHeader('Github', GithubLogo, currentUser.github, {href: IntegrationsService.getGithubUrl()})
     }
 
+    changeActivePanel(activeKey) {
+        this.setState({
+            activeKey
+        })
+    }
+
     render() {
-        const {expand, className, sheet: {classes}} = this.props
+        const {className, sheet: {classes}} = this.props
 
         const containerClasses = classNames(classes.container, className)
 
         return (
             <Flexbox name="integrations-box-container" container="column" className={containerClasses}>
-                <Collapse accordion={true} defaultActiveKey={expand}>
+                <Collapse accordion={true} activeKey={this.state.activeKey} onChange={this.changeActivePanel}>
                     <Panel header={this.getGmailHeader()} key="gmail" className={classes.headerWrapper}>
                         <GmailIntegration />
                     </Panel>
@@ -190,7 +201,6 @@ IntegrationsBox.propTypes = {
     expand: PropTypes.string,
     className: PropTypes.string
 }
-
 
 function mapStateToProps(state) {
     return {

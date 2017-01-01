@@ -20,7 +20,7 @@ class GmailIntegration extends Component {
 
     installChromeExtension() {
         if (!this.isChromeExtensionInstalled()) {
-            IntegrationsService.instsallChromeExtension()
+            IntegrationsService.instsallChromeExtension(this.props.dispatch)
         }
     }
 
