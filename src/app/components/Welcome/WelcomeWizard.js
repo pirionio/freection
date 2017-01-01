@@ -95,7 +95,6 @@ const style = {
         position: 'absolute',
         bottom: 15,
         right: 15,
-        fontSize: '0.857em',
         color: 'a6a6a6',
         '& a': {
             textDecoration: 'none',

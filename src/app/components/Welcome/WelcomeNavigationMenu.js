@@ -18,13 +18,15 @@ class WelcomeNavigationMenu extends Component {
         classAutobind(this, WelcomeNavigationMenu.prototype)
     }
 
-    getStepButton(welcomeStatus) {
+    getStepButton(welcomeStatus, index) {
         const {currentUser, sheet: {classes}} = this.props
 
         const isCurrent = currentUser.welcomeStatus === welcomeStatus.key
 
+        const buttonClass = index < SharedConstants.WELCOME_WIZARD_STEPS.length - 2 ? classes.stepLink : null
+
         return (
-            <a key={welcomeStatus.key} onClick={() => this.navigate(welcomeStatus)}>
+            <a key={welcomeStatus.key} onClick={() => this.navigate(welcomeStatus)} className={buttonClass}>
                 <Ellipse color={isCurrent ? styleVars.highlightColor : styleVars.primaryColor} oval={false} className={classes.ellipse} />
             </a>
         )
@@ -76,18 +78,18 @@ const style = {
         right: -35,
         width: 35,
         color: styleVars.highlightColor,
-        fontSize: '0.857em',
         letterSpacing: '0.05em',
         textDecoration: 'none',
-        cursor: 'pointer'
+        cursor: 'pointer',
+        paddingLeft: 18
+    },
+    stepLink: {
+        marginRight: 18
     },
     ellipse: {
-        height: 12,
-        width: 12,
-        cursor: 'pointer',
-        '&:not(last-of-type)': {
-            marginRight: 18,
-        }
+        height: 15,
+        width: 15,
+        cursor: 'pointer'
     }
 }
 
