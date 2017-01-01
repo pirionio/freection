@@ -95,7 +95,7 @@ class App extends Component {
         if (!auth.isAuthenticated)
             return 'Freection Login'
 
-        if (currentUser.welcomeStatus !== 'DONE')
+        if (currentUser.welcomeStatus !== WelcomeStatus.DONE.key && currentUser.welcomeStatus !== WelcomeStatus.SKIPPED.key)
             return 'Freection Welcome'
 
         const notificationsPerThing = ThingHelper.groupNotificationsByThing(newNotifications)
