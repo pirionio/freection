@@ -79,6 +79,9 @@ async function createUsers() {
             organization: 'paypal.com',
             firstName: 'Max',
             lastName: 'Levchin',
+            payload: {
+                welcomeStatus: 'DONE'
+            }
         },
         {
             id: 'e4cc822f-bc8b-4839-8237-c25f10a1db29',
@@ -88,7 +91,10 @@ async function createUsers() {
             username: 'david.sacks',
             organization: 'paypal.com',
             firstName: 'David',
-            lastName: 'Sacks'
+            lastName: 'Sacks',
+            payload: {
+                welcomeStatus: 'DONE'
+            }
         },
         {
             id: '066c2cc8-32ad-4919-a943-d8ccc3c0db58',
@@ -98,7 +104,10 @@ async function createUsers() {
             username: 'peter.thiel',
             organization: 'paypal.com',
             firstName: 'Peter',
-            lastName: 'Thiel'
+            lastName: 'Thiel',
+            payload: {
+                welcomeStatus: 'DONE'
+            }
         },
         {
             id: '322ac797-4086-4396-a203-2e5d1d05a0b6',
@@ -108,7 +117,10 @@ async function createUsers() {
             username: 'elon.musk',
             organization: 'paypal.com',
             firstName: 'Elon',
-            lastName: 'Musk'
+            lastName: 'Musk',
+            payload: {
+                welcomeStatus: 'DONE'
+            }
         },
         {
             id: '5f9a8dcb-3ad8-40e6-9966-f92c9135b74f',
@@ -118,7 +130,10 @@ async function createUsers() {
             username: 'steve.chen',
             organization: 'paypal.com',
             firstName: 'Steve',
-            lastName: 'Chen'
+            lastName: 'Chen',
+            payload: {
+                welcomeStatus: 'DONE'
+            }
         },
         {
             id: '79889b8f-f5f7-42af-b102-e01e60b3a393',
@@ -128,7 +143,10 @@ async function createUsers() {
             username: 'jawed.karim',
             organization: 'paypal.com',
             firstName: 'Jawed',
-            lastName: 'Karim'
+            lastName: 'Karim',
+            payload: {
+                welcomeStatus: 'DONE'
+            }
         }
     ]
 
