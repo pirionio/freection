@@ -58,7 +58,7 @@ router.post('/thing', async function(request, response) {
                 return
             }
 
-            let subject = text
+            let thingText = text
             let toUserEmail
 
             // we need to find the mentioned user
@@ -82,10 +82,10 @@ router.post('/thing', async function(request, response) {
             }
 
             if (text.startsWith(mentioned[0])) {
-                subject = text.substring(mentioned[0].length)
+                thingText = text.substring(mentioned[0].length)
             }
 
-            await ThingService.newThing(creator, toUserEmail, {subject, text: ''}, {source: ThingSource.SLACK.key})
+            await ThingService.newThing(creator, toUserEmail, {text: thingText}, {source: ThingSource.SLACK.key})
             delayRespondWith(responseUrl, 'New task created in Freection')
 
         } else {
