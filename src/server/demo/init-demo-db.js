@@ -4,7 +4,7 @@ import * as ThingService from '../shared/application/thing-service'
 import * as EventService from '../shared/application/event-service'
 import * as EmailService from '../shared/application/email-service'
 import * as UserService from '../shared/application/users-service'
-import {User, Thing, Event} from '../shared/models'
+import {User, Thing, Event, SlackTeam} from '../shared/models'
 import SharedConstants from '../../common/shared-constants'
 import ThingSource from '../../common/enums/thing-source'
 import TodoTimeCategory from '../../common/enums/todo-time-category'
@@ -81,6 +81,16 @@ async function createUsers() {
             lastName: 'Levchin',
             payload: {
                 welcomeStatus: 'DONE'
+            },
+            integrations: {
+                slack: {
+                    accessToken:  'xoxp-82206641841-82202285973-123536190310-9bc2a83dba937a3f596f4460b39e7d27' ,
+                    active: true ,
+                    teamId:  'T2E62JVQR' ,
+                    teamName:  'freection-paypal' ,
+                    userId:  'U2E5Y8DUM' ,
+                    username:  'Max L'
+                }
             }
         },
         {
@@ -133,7 +143,17 @@ async function createUsers() {
             lastName: 'Chen',
             payload: {
                 welcomeStatus: 'DONE'
-            }
+            },
+            integrations: {
+                slack: {
+                    accessToken:  'xoxp-82206641841-122134398464-122936490996-14cf0c1be1e7d5dfa5fc26b08f560fee' ,
+                    active: true ,
+                    teamId:  'T2E62JVQR' ,
+                    teamName:  'freection-paypal' ,
+                    userId:  'U3L3YBQDN' ,
+                    username:  'Steve'
+                }
+            } ,
         },
         {
             id: '79889b8f-f5f7-42af-b102-e01e60b3a393',
@@ -166,11 +186,22 @@ async function createUsers() {
     await User.save(freectionUsers, {conflict: 'update'})
 }
 
+async function createSlackTeam() {
+    await SlackTeam.save({
+        id:  'T2E62JVQR',
+        name:  'freection-paypal',
+        accessToken:  'xoxp-82206641841-82202285973-123536190310-9bc2a83dba937a3f596f4460b39e7d27',
+    }, {conflict: 'update'})
+}
+
 export default async function() {
     await User.filter(doc => doc('id').ne(userId)).delete().execute()
     await Thing.delete().execute()
     await Event.delete().execute()
+    await SlackTeam.delete().execute()
+
     await createUsers()
+    await createSlackTeam()
 
     // Tasks in to-do
 
