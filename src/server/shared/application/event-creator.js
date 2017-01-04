@@ -268,3 +268,16 @@ export function createTrelloListChanged(creator, thing, showNewList, user, fromL
         showNewList
     }
 }
+
+export function createSuggestion(creator, thing, showNewList, messageText) {
+    return {
+        thingId: thing.id,
+        eventType: EventTypes.SUGGESTION.key,
+        createdAt: new Date(),
+        creator,
+        payload: {
+            text: messageText
+        },
+        showNewList
+    }
+} 

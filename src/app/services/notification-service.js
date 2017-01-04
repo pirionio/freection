@@ -17,6 +17,8 @@ export function getCommands(notification) {
 }
 
 function getCommandsUnwrapped(notification) {
+    if (notification.eventType.key === EventTypes.SUGGESTION.key)
+        return [ThingCommandActionTypes.DISCARD_SINGLE_NOTIFICATION]
 
     if ([EntityTypes.GITHUB.key, EntityTypes.EXTERNAL.key].includes(notification.thing.type.key)) {
         switch (notification.eventType.key) {

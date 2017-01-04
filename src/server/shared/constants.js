@@ -29,3 +29,7 @@ export const AsanaConstants = {
 export const EmailConstants = {
     EMAIL_FORWARD_ADDRESS: 'forward@reply.freection.com'
 }
+
+export const NlpConstancts = {
+    KEYWORD_RELEVANCE_BOUND: 0.88
+}

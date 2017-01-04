@@ -51,7 +51,9 @@ class FullThing extends Component {
 
         // Filter out CREATED events that have no text - since we allow creating a new Thing with no body at all.
         return thing.events ?
-            reject(ThingHelper.getAllMessages(thing), message => !message.payload.text && message.eventType.key !== EventTypes.PING.key) :
+            reject(ThingHelper.getAllMessages(thing), message => {
+                return (!message.payload.text && !message.payload.html) && message.eventType.key !== EventTypes.PING.key
+            }) :
             []
     }
 
@@ -95,6 +97,7 @@ class FullThing extends Component {
 
     requireText(command, sendAction) {
         const {dispatch, thing} = this.props
+
 
         const messageBoxTitle =
             command === ThingCommandActionTypes.MARK_AS_DONE ? 'Done' :

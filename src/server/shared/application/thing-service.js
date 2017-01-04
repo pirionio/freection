@@ -3,7 +3,7 @@ import AddressParser from 'email-addresses'
 import requireText from 'require-text'
 import juice from 'juice'
 import htmlToText from 'html-to-text'
-import {WebClient} from '@slack/client';
+import {WebClient} from '@slack/client'
 
 import {Event, User, SlackTeam} from '../models'
 import * as EventCreator from './event-creator'
@@ -25,6 +25,7 @@ import {url as pixelUrl} from '../config/pixel'
 import textToHtml from '../../../common/util/textToHtml'
 import * as ThingHelper from '../../../common/helpers/thing-helper'
 import * as EmailParsingUtility from '../utils/email-parsing-utility.js'
+import * as ThingNlpService from './thing-nlp-service'
 
 const organizationEmailTemplate = template(requireText('./templates/email-template-organization.html', require))
 const externalEmailTemplate = template(requireText('./templates/email-template-external.html', require))
@@ -134,6 +135,9 @@ export async function newThing(user, to, content, payload = {}) {
             thing.events.push(EventCreator.createAccepted(creator, thing, [], mentionedUserIds))
         }
 
+        if (GeneralConfig.COLLECT_LANGUAGE_INFO)
+            await ThingNlpService.analyzeThingEvent(thing, createdEvent)
+
         const persistedThing = await ThingDomain.updateThing(thing)
 
         await sendEmailForThing(thing, createdEvent, user, toAddress, content.subject, content.text)
@@ -161,6 +165,9 @@ export async function doThing(user, thingId) {
         thing.payload.status = ThingStatus.INPROGRESS.key
         thing.events.push(EventCreator.createAccepted(creator, thing, []))
         ThingHelper.discardUserEvents(user, thing)
+
+        if (GeneralConfig.COLLECT_LANGUAGE_INFO)
+            await ThingNlpService.checkThingSuggestions(user, thing)
 
         return await ThingDomain.updateThing(thing)
     } catch(error) {
@@ -398,6 +405,9 @@ export async function comment(user, thingId, content) {
         thing.events.push(comment)
 
         updateThingMentions(thing, mentionedUserIds)
+
+        if (GeneralConfig.COLLECT_LANGUAGE_INFO)
+            await ThingNlpService.analyzeThingEvent(thing, comment)
 
         const persistedThing = await ThingDomain.updateThing(thing)
 

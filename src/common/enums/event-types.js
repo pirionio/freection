@@ -62,5 +62,9 @@ export default {
     TRELLO_LIST_CHANGED: {
         key: 'TRELLO_LIST_CHANGED',
         label: 'List changed'
+    },
+    SUGGESTION: {
+        key: 'SUGGESTION',
+        label: 'Suggestion'
     }
 }

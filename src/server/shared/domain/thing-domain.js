@@ -61,3 +61,7 @@ export async function getThingByEmailId(emailId) {
         return things[0]
     })
 }
+
+export async function getThingsByKeyword(keyword) {
+    return Thing.getAll(keyword.toLowerCase(), {index: 'keywords'}).run()
+}

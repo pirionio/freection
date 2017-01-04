@@ -138,6 +138,7 @@
     "thinky": "2.3.3",
     "url-loader": "0.5.7",
     "utf7": "https://github.com/freection/utf7.git",
+    "watson-developer-cloud": "2.14.4",
     "webpack": "1.13.1",
     "winston": "2.2.0",
     "winston-papertrail": "1.0.2",

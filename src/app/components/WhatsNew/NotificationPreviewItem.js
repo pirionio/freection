@@ -28,6 +28,11 @@ class NotificationPreviewItem extends Component {
         else if (SharedConstants.MESSAGE_TYPED_EVENTS.includes(notification.eventType.key))
             text = <CommentPreviewText comment={notification.payload.text}
                                        newNotifications={notification.payload.newNotifications} />
+
+        else if (notification.eventType.key === EventTypes.SUGGESTION.key)
+            text = <CommentPreviewText comment={notification.payload.text}
+                                       newNotifications={notification.payload.newNotifications} />
+
         if (text) {
             return (
                 <Flexbox container="row">
@@ -71,6 +76,8 @@ class NotificationPreviewItem extends Component {
                     <span><strong>{creator.displayName}</strong> sent a task back</span>
             case EventTypes.CLOSED.key:
                 return <span><strong>{creator.displayName}</strong> closed a task</span>
+            case EventTypes.SUGGESTION.key:
+                return <span><strong>Freection Bot</strong> suggests</span>
             default:
                 return <span><strong>{creator.displayName}</strong> {notification.eventType.label}</span>
         }
@@ -94,6 +101,8 @@ class NotificationPreviewItem extends Component {
                 return styleVars.redCircleColor
             case EventTypes.DONE.key:
                 return styleVars.greenCircleColor
+            case EventTypes.SUGGESTION.key:
+                return styleVars.basePurpleColor
             default:
                 return 'black'
         }

@@ -58,4 +58,8 @@ Thing.ensureIndex('emailId', doc => {
     return doc('payload')('emailId')
 })
 
+Thing.ensureIndex('keywords', doc => {
+    return doc('payload')('nlp')('keywords')('textLowerCase')
+}, {multi: true})
+
 export default Thing
