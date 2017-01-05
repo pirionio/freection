@@ -10,6 +10,7 @@ import * as EventCreator from './event-creator'
 import {eventToDto, thingToDto} from '../application/transformers'
 import * as ThingDomain from '../domain/thing-domain'
 import ThingStatus from '../../../common/enums/thing-status'
+import ThingSource from '../../../common/enums/thing-source'
 import EntityTypes from '../../../common/enums/entity-types'
 import EventTypes from '../../../common/enums/event-types'
 import UserTypes from '../../../common/enums/user-types'
@@ -141,7 +142,7 @@ export async function newThing(user, to, content, payload = {}) {
         const persistedThing = await ThingDomain.updateThing(thing)
 
         await sendEmailForThing(thing, createdEvent, user, toAddress, content.subject, content.text)
-        await sendSlackForThing(user.id, thing, createdEvent, content.subject)
+        await notifyRecipientInSlack(user.id, thing, createdEvent, content.subject)
 
         return persistedThing
     } catch(error) {
@@ -199,8 +200,9 @@ export async function dismiss(user, thingId, messageText) {
         const persistedThing = await ThingDomain.updateThing(thing)
 
         await sendEmailForEvent(user, thing, last(thing.events))
-        await sendSlackForThing(user.id, thing, dismissEvent, messageText)
-        
+        await notifyRecipientInSlack(user.id, thing, dismissEvent, messageText)
+        await notifyCreatorInSlack(thing, dismissEvent, messageText)
+
         return persistedThing
     } catch(error) {
         logger.error(`error while dismissing thing ${thingId} by user ${user.email}`, error)
@@ -243,7 +245,7 @@ export async function close(user, thingId, messageText) {
         const persistedThing = await ThingDomain.updateThing(thing)
 
         await sendEmailForEvent(user, thing, closedEvent)
-        await sendSlackForThing(user.id, thing, closedEvent, messageText)
+        await notifyRecipientInSlack(user.id, thing, closedEvent, messageText)
         
         return persistedThing
     } catch(error) {
@@ -304,8 +306,9 @@ export async function markAsDone(user, thingId, content) {
         const persistedThing = await ThingDomain.updateThing(thing)
 
         await sendEmailForEvent(user, thing, doneEvent)
-        await sendSlackForThing(user.id, thing, doneEvent, content.text)
-
+        await notifyRecipientInSlack(user.id, thing, doneEvent, content.text)
+        await notifyCreatorInSlack(thing, doneEvent, content.text)
+        
         return persistedThing
 
     } catch (error) {
@@ -332,7 +335,7 @@ export async function sendBack(user, thingId, messageText) {
         const persistedThing = await ThingDomain.updateThing(thing)
         
         await sendEmailForEvent(user, thing, sentBackEvent)
-        await sendSlackForThing(user.id, thing, sentBackEvent, messageText)
+        await notifyRecipientInSlack(user.id, thing, sentBackEvent, messageText)
         
         return persistedThing
 
@@ -356,7 +359,7 @@ export async function ping(user, thingId) {
         const persistedThing = await ThingDomain.updateThing(thing)
 
         await sendEmailForEvent(user, thing, pingEvent)
-        await sendSlackForThing(user.id, thing, pingEvent)
+        await notifyRecipientInSlack(user.id, thing, pingEvent)
 
         return persistedThing
     } catch (error) {
@@ -381,7 +384,7 @@ export async function pong(user, thingId, messageText) {
         const persistedThing = await ThingDomain.updateThing(thing)
 
         await sendEmailForEvent(user, thing, pongEvent)
-        await sendSlackForThing(user.id, thing, pongEvent, messageText)
+        await notifyRecipientInSlack(user.id, thing, pongEvent, messageText)
 
         return persistedThing
     } catch(error) {
@@ -413,7 +416,7 @@ export async function comment(user, thingId, content) {
         const persistedThing = await ThingDomain.updateThing(thing)
 
         await sendEmailForEvent(user, thing, comment)
-        await sendSlackForThing(user.id, thing, comment, content.text)
+        await notifyRecipientInSlack(user.id, thing, comment, content.text)
 
         await Event.discardUserEventsByType(thingId, EventTypes.COMMENT.key, user.id)
 
@@ -712,7 +715,7 @@ async function sendEmailForEvent(user, thing, event) {
     }
 }
 
-async function sendSlackForThing(userId, thing, event, message) {
+async function notifyRecipientInSlack(userId, thing, event, message) {
     if (!thing || !thing.to || thing.to.type !== UserTypes.SLACK.key)
         return
 
@@ -739,25 +742,53 @@ async function sendSlackForThing(userId, thing, event, message) {
     }
 }
 
+async function notifyCreatorInSlack(thing, event, message) {
+    if (!thing || !thing.creator || thing.payload.source !== ThingSource.SLACK.key)
+        return
+
+    const creatorUser = await User.get(thing.creator.id).run()
+
+    if (!creatorUser.integrations.slack || !creatorUser.integrations.slack.active)
+        return
+
+    try {
+        const slackTeam = await SlackTeam.get(creatorUser.integrations.slack.teamId).run()
+        const client = new WebClient(slackTeam.accessToken)
+
+        const baseMessage = getSlackMessageForEvent(thing, event)
+
+        await client.chat.postMessage(`@${creatorUser.integrations.slack.username}`,
+            baseMessage + (message ? `: ${message}` : ''))
+
+        logger.info(`Sending Slack message for thing ${thing.id} to Slack user ${creatorUser.integrations.slack.username}`)
+
+    } catch(error) {
+        if (error.name === 'DocumentNotFoundError')
+            return []
+
+        throw error
+    }
+}
+
 function getSlackMessageForEvent(thing, event) {
     switch (event.eventType) {
         case EventTypes.CREATED.key:
-            return `${thing.creator.displayName} sent you a task`
+            return `${event.creator.displayName} sent you a task`
         case EventTypes.DONE.key:
-            return `${thing.creator.displayName} marked task [${thing.subject}] as done`
+            return `${event.creator.displayName} marked task [${thing.subject}] as done`
         case EventTypes.DISMISSED.key:
-            return `${thing.creator.displayName} dismissed task [${thing.subject}]`
+            return `${event.creator.displayName} dismissed task [${thing.subject}]`
         case EventTypes.CLOSED.key:
-            return `${thing.creator.displayName} closed task [${thing.subject}]`
+            return `${event.creator.displayName} closed task [${thing.subject}]`
         case EventTypes.PING.key:
-            return `${thing.creator.displayName} pinged you for task [${thing.subject}]`
+            return `${event.creator.displayName} pinged you for task [${thing.subject}]`
         case EventTypes.PONG.key:
-            return `${thing.creator.displayName} ponged on task [${thing.subject}]`
+            return `${event.creator.displayName} ponged on task [${thing.subject}]`
         case EventTypes.SENT_BACK.key:
-            return `${thing.creator.displayName} sent you back task [${thing.subject}]`
+            return `${event.creator.displayName} sent you back task [${thing.subject}]`
         case EventTypes.COMMENT.key:
         default:
-            return `${thing.creator.displayName} commented on task [${thing.subject}]`
+            return `${event.creator.displayName} commented on task [${thing.subject}]`
     }
 }
 
