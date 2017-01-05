@@ -84,12 +84,12 @@ async function createUsers() {
             },
             integrations: {
                 slack: {
-                    accessToken:  'xoxp-82206641841-82202285973-123536190310-9bc2a83dba937a3f596f4460b39e7d27' ,
-                    active: true ,
-                    teamId:  'T2E62JVQR' ,
-                    teamName:  'freection-paypal' ,
-                    userId:  'U2E5Y8DUM' ,
-                    username:  'Max L'
+                    accessToken:  'xoxp-82206641841-82202285973-123869758501-cc7f70340d10b03ae22cbf814c79ebe4',
+                    active: true,
+                    teamId:  'T2E62JVQR',
+                    teamName:  'freection-paypal',
+                    userId:  'U2E5Y8DUM',
+                    username:  'max'
                 }
             }
         },
@@ -104,6 +104,16 @@ async function createUsers() {
             lastName: 'Sacks',
             payload: {
                 welcomeStatus: 'DONE'
+            },
+            integrations: {
+                slack: {
+                    accessToken:  'xoxp-82206641841-82193380532-123716803331-2e11b027311d77f5781eeece4d072d9b',
+                    active: true,
+                    teamId:  'T2E62JVQR',
+                    teamName:  'freection-paypal',
+                    userId:  'U2E5PB6FN',
+                    username:  'david'
+                }
             }
         },
         {
@@ -146,12 +156,12 @@ async function createUsers() {
             },
             integrations: {
                 slack: {
-                    accessToken:  'xoxp-82206641841-122134398464-122936490996-14cf0c1be1e7d5dfa5fc26b08f560fee' ,
-                    active: true ,
-                    teamId:  'T2E62JVQR' ,
-                    teamName:  'freection-paypal' ,
-                    userId:  'U3L3YBQDN' ,
-                    username:  'Steve'
+                    accessToken:  'xoxp-82206641841-122134398464-123105069873-cc6762edd4271ee795aff5828371f53d',
+                    active: true,
+                    teamId:  'T2E62JVQR',
+                    teamName:  'freection-paypal',
+                    userId:  'U3L3YBQDN',
+                    username:  'steve'
                 }
             } ,
         },
@@ -190,7 +200,7 @@ async function createSlackTeam() {
     await SlackTeam.save({
         id:  'T2E62JVQR',
         name:  'freection-paypal',
-        accessToken:  'xoxp-82206641841-82202285973-123536190310-9bc2a83dba937a3f596f4460b39e7d27',
+        accessToken:  'xoxp-82206641841-82202285973-82198234496-b80aec4e4938b3d4fb994907a58d6973'
     }, {conflict: 'update'})
 }
 
