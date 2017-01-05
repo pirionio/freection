@@ -96,7 +96,7 @@ function getAllAllowedCommandsArray(thing) {
         }
     }
 
-    if (thing.isTo) {
+    if (thing.isTo || thing.isDoer) {
         switch (thing.payload.status) {
             case ThingStatus.NEW.key:
             case ThingStatus.REOPENED.key:

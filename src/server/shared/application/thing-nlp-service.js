@@ -44,7 +44,7 @@ export async function analyzeThingEvent(thing, event) {
 
     // This is important in order to later search similar keywords case-insensitive.
     // I simply didn't manage to create an index in the DB on this field that would be case-insensitive.
-    combinedResult.keywords.forEach(keyword => {
+    combinedResult.keywords && combinedResult.keywords.forEach(keyword => {
         keyword.textLowerCase = keyword.text.toLowerCase()
     })
 

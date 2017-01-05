@@ -45,6 +45,7 @@ function getCommandsUnwrapped(notification) {
                     createCommand(ThingCommandActionTypes.MARK_AS_DONE),
                     createCommand(ThingCommandActionTypes.DISMISS)]
             case EventTypes.CLOSED.key:
+            case EventTypes.DONE.key:
                 return [ThingCommandActionTypes.CLOSE_ACK]
             case EventTypes.COMMENT.key:
                 return [notification.payload.isMentioned ?
@@ -105,7 +106,8 @@ function getCommandsUnwrapped(notification) {
             return [ThingCommandActionTypes.FOLLOW_UP, ThingCommandActionTypes.DISCARD_SINGLE_NOTIFICATION]
         case EventTypes.COMMENT.key:
             if (notification.payload.isMentioned)
-                return [ThingCommandActionTypes.FOLLOW_UP, ThingCommandActionTypes.DISCARD_SINGLE_NOTIFICATION]
+                return [ThingCommandActionTypes.FOLLOW_UP, ThingCommandActionTypes.DO_THING,
+                    ThingCommandActionTypes.DISCARD_SINGLE_NOTIFICATION]
 
             return [ThingCommandActionTypes.DISCARD_COMMENTS]
         case EventTypes.PONG.key:

@@ -159,14 +159,15 @@ export async function doThing(user, thingId) {
         if (thing.type !== EntityTypes.THING.key)
             throw 'InvalidEntityType'
 
-        validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key])
+        validateStatus(thing, [ThingStatus.NEW.key, ThingStatus.REOPENED.key, ThingStatus.INPROGRESS.key])
 
         thing.doers.push(user.id)
         thing.payload.status = ThingStatus.INPROGRESS.key
         thing.events.push(EventCreator.createAccepted(creator, thing, []))
         ThingHelper.discardUserEvents(user, thing)
 
-        if (GeneralConfig.COLLECT_LANGUAGE_INFO)
+        // Perform analysis only when the original To user accepts the task.
+        if (GeneralConfig.COLLECT_LANGUAGE_INFO && user.id === thing.to.id)
             await ThingNlpService.checkThingSuggestions(user, thing)
 
         return await ThingDomain.updateThing(thing)
@@ -843,7 +844,7 @@ function getShowNewList(user, thing, eventType, mentionedUserIdsInEvent) {
             break
         case EventTypes.DISMISSED.key:
         case EventTypes.DONE.key:
-            showNewList = union(thing.followUpers, thing.subscribers)
+            showNewList = union(thing.followUpers, thing.subscribers, thing.doers)
             break
         case EventTypes.CLOSED.key:
             if ([ThingStatus.NEW.key, ThingStatus.INPROGRESS.key, ThingStatus.REOPENED.key].includes(thing.payload.status))
