@@ -150,7 +150,7 @@ const style = {
         marginBottom: 8
     },
     date: {
-        color: styleVars.baseGrayColor,
+        color: styleVars.greyTextColor,
         fontSize: '0.857em'
     },
     readBy: {
@@ -166,7 +166,7 @@ const style = {
         fontSize: '0.714em'
     },
     readByTooltipTitle: {
-        color: styleVars.baseGrayColor,
+        color: styleVars.greyTextColor,
         marginBottom: 10
     },
     readByTooltipItem: {
@@ -175,7 +175,7 @@ const style = {
     },
     notReadBy: {
         fontSize: '0.857em',
-        color: styleVars.baseGrayColor
+        color: styleVars.greyTextColor
     },
     text: {
         lineHeight: '2',

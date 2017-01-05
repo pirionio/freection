@@ -206,7 +206,7 @@ const style = {
         minWidth: 0
     },
     date:{
-        color: styleVars.baseGrayColor
+        color: styleVars.greyTextColor
     }
 }
 

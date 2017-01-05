@@ -1,3 +1,5 @@
+import StyleConstants from '../../common/style-constants'
+
 export default {
     primaryColor: '#1e272c',
     primaryColorHalfOpaque: 'rgba(30, 39, 44, 0.5)',
@@ -10,19 +12,20 @@ export default {
     watermarkColor: 'darkgrey',
     disabledColor: '#f5f4f4',
     disabledOnGreyColor: '#afafaf',
-    baseBlueColor: '#448ccb',
-    basePurpleColor: '#7985ce',
-    basePinkColor: '#ff3a4e',
-    baseGrayColor: '#565656',
-    baseGreenColor: '#b7cbc0',
+    greyTextColor: '#565656',
     suggestionColor: '#eceff2',
     mentionColor: '#575f67',
+    
+    baseBlueColor: StyleConstants.baseBlueColor,
+    basePurpleColor: StyleConstants.basePurpleColor,
+    basePinkColor: StyleConstants.baseRedColor,
+    baseGreenColor: StyleConstants.baseGreenColor,
 
-    redCircleColor: '#ff3a4e',
-    blueCircleColor: '#448ccb',
-    greenCircleColor: 'green',
-    yellowCircleColor: '#ffd200',
-    greyCircleColor: '#646464',
+    redCircleColor: StyleConstants.baseRedColor,
+    blueCircleColor: StyleConstants.baseBlueColor,
+    greenCircleColor: StyleConstants.baseGreenColor,
+    yellowCircleColor: StyleConstants.baseYellowColor,
+    greyCircleColor: StyleConstants.baseGreyColor,
     
     glassPaneColor: 'rgba(250, 250, 250, 0.5)',
 

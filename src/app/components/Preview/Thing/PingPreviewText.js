@@ -22,7 +22,7 @@ const PingPreviewText = ({newNotifications, sheet: {classes}}) => {
 
 const style = {
     unreadCount: {
-        color: styleVars.baseGrayColor,
+        color: styleVars.greyTextColor,
         marginLeft: 6,
         fontSize: '0.85em'
     },

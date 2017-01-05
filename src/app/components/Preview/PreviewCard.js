@@ -311,7 +311,7 @@ const style = {
         textOverflow: 'ellipsis'
     },
     unreadCount: {
-        color: styleVars.baseGrayColor,
+        color: styleVars.greyTextColor,
         marginLeft: 6,
         fontSize: '0.85em'
     },
