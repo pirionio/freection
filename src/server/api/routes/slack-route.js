@@ -1,5 +1,4 @@
 import querystring from 'querystring'
-
 import {Router} from 'express'
 import {WebClient} from '@slack/client'
 
@@ -55,6 +54,10 @@ router.get('/callback', async function(request, response) {
         webClient = new WebClient(accessToken)
         const identity = await webClient.users.identity()
 
+        // It's crucial to bring the full user info, and not use the identity object, because the user's name
+        // in the identity object is not really the actual username in Slack, but the Name field of the user's profile.
+        const userInfo = await webClient.users.info(identity.user.id)
+
         await User.get(request.user.id).update({
             integrations: {
                 slack: {
@@ -63,7 +66,7 @@ router.get('/callback', async function(request, response) {
                     teamId: identity.team.id,
                     teamName: identity.team.name,
                     userId: identity.user.id,
-                    username: identity.user.name
+                    username: userInfo.user.name
                 }
             }
         }).run()
