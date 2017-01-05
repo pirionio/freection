@@ -82,7 +82,7 @@ router.post('/thing', async function(request, response) {
             }
 
             if (text.startsWith(mentioned[0])) {
-                thingText = text.substring(mentioned[0].length)
+                thingText = text.substring(mentioned[0].length + 1)
             }
 
             await ThingService.newThing(creator, toUserEmail, {text: thingText}, {source: ThingSource.SLACK.key})
