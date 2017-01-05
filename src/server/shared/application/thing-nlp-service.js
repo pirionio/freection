@@ -71,7 +71,8 @@ export async function checkThingSuggestions(user, thing) {
                 'I found some older tasks that might be related.'))
 
             relatedThings.forEach(relatedThing => {
-                thing.events.push(EventCreator.createComment(botToAddress(), new Date(), thing, [], [], null,
+                thing.events.push(EventCreator.createComment(botToAddress(), new Date(), thing, [], [],
+                    `Task ${relatedThing.subject} might be related`,
                     generateRelatedThingMessageHtml(relatedThing)))
             })
         }
@@ -79,7 +80,8 @@ export async function checkThingSuggestions(user, thing) {
         if (helpersString) {
             thing.events.push(EventCreator.createSuggestion(botToAddress(), thing, [user.id],
                 'I found some people that might help you.'))
-            thing.events.push(EventCreator.createComment(botToAddress(), new Date(), thing, [], [], null,
+            thing.events.push(EventCreator.createComment(botToAddress(), new Date(), thing, [], [],
+                `These people worked on similar tasks, they might help: ${helpersString}`,
                 generateHelpersMessageHtml(helpersString)))
         }
     }
