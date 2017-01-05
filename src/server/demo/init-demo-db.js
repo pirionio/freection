@@ -200,7 +200,7 @@ async function createSlackTeam() {
     await SlackTeam.save({
         id:  'T2E62JVQR',
         name:  'freection-paypal',
-        accessToken:  'xoxp-82206641841-82202285973-82198234496-b80aec4e4938b3d4fb994907a58d6973'
+        accessToken:  'xoxp-82206641841-82202285973-123792005570-42631f18db726a7bfcc5e6dd52fd6201'
     }, {conflict: 'update'})
 }
 
