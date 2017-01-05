@@ -1,4 +1,4 @@
-import {union, uniq, some} from 'lodash'
+import {union, uniq, some, trimEnd} from 'lodash'
 
 import watson from 'watson-developer-cloud'
 
@@ -9,6 +9,7 @@ import GeneralConfig from '../config/general'
 import WatsonConfig from '../config/watson'
 import {NlpConstancts} from '../constants'
 import promisify from '../utils/promisify'
+import logger from '../utils/logger'
 
 const alchemyLanguage = watson.alchemy_language({
     api_key: WatsonConfig.alchemyAppKey
@@ -20,10 +21,19 @@ export async function analyzeThingEvent(thing, event) {
     if (!event.payload.text)
         return
 
-    const combinedResult = await alchemyLanguage.combinedAsync({
-        extract: 'keywords,concepts,entities',
-        text: event.payload.text
-    })
+    let combinedResult = null
+
+    try {
+        combinedResult = await alchemyLanguage.combinedAsync({
+            extract: 'keywords,concepts,entities',
+            text: event.payload.text
+        })
+    } catch (error) {
+        logger.warn(`Error while analyzing thing ${thing.id} in Watson Alchemy:`, error)
+    }
+
+    if (!combinedResult)
+        return
 
     if (!thing.payload.nlp)
         thing.payload.nlp = {
@@ -49,30 +59,68 @@ export async function checkThingSuggestions(user, thing) {
 
     for (var i = 0; i < thing.payload.nlp.keywords.length; i++) {
         const keyword = thing.payload.nlp.keywords[i]
+
         if (parseFloat(keyword.relevance) <= NlpConstancts.KEYWORD_RELEVANCE_BOUND)
             continue
 
-        const relatedThings = await ThingDomain.getThingsByKeyword(keyword.text)
+        const relatedThings = await findRelatedThings(thing, keyword)
+        const helpersString = findHelpers(user, relatedThings)
 
-        const relevantThings = relatedThings.filter(relatedThing => {
-            return relatedThing.id !== thing.id && some(relatedThing.payload.nlp.keywords, relatedKeyword => {
-                    return relatedKeyword.text.toLowerCase() === keyword.text.toLowerCase() &&
-                        parseFloat(relatedKeyword.relevance) > NlpConstancts.KEYWORD_RELEVANCE_BOUND
-                })
-        })
+        if (relatedThings && relatedThings.length) {
+            thing.events.push(EventCreator.createSuggestion(botToAddress(), thing, [user.id],
+                'I found some older tasks that might be related.'))
 
-        if (relevantThings && relevantThings.length) {
-            thing.events.push(EventCreator.createSuggestion(botToAddress(), thing, [user.id], 'I found some older tasks that might be related to this one.'))
-
-            relevantThings.forEach(relevantThing => {
-                thing.events.push(EventCreator.createComment(botToAddress(), new Date(), thing, [], [],
-                    `Task ${relevantThing.subject} might be related`,
-                    `<div>
-                        <span>Task </span>
-                        <strong><a href="${GeneralConfig.BASE_URL}/inbox/${relevantThing.id}">${relevantThing.subject}</a></strong> 
-                        <span> might be relevant.</span>
-                    </div>`))
+            relatedThings.forEach(relatedThing => {
+                thing.events.push(EventCreator.createComment(botToAddress(), new Date(), thing, [], [], null,
+                    generateRelatedThingMessageHtml(relatedThing)))
             })
         }
+
+        if (helpersString) {
+            thing.events.push(EventCreator.createSuggestion(botToAddress(), thing, [user.id],
+                'I found some people that might help you.'))
+            thing.events.push(EventCreator.createComment(botToAddress(), new Date(), thing, [], [], null,
+                generateHelpersMessageHtml(helpersString)))
+        }
     }
+}
+
+async function findRelatedThings(baseThing, baseKeyword) {
+    const things = await ThingDomain.getThingsByKeyword(baseKeyword.text)
+
+    return things.filter(thing => {
+        return baseThing.id !== thing.id && some(thing.payload.nlp.keywords, keyword => {
+                return keyword.text.toLowerCase() === baseKeyword.text.toLowerCase() &&
+                    parseFloat(keyword.relevance) > NlpConstancts.KEYWORD_RELEVANCE_BOUND
+            })
+    })
+}
+
+function findHelpers(user, things) {
+    const helpers = things
+        .filter(thing => thing.to.id !== user.id)
+        .map(thing => thing.to.payload.username ? `@${thing.to.payload.username}` : thing.to.displayName)
+
+    return helpers && helpers.length ?
+        trimEnd(helpers.join(', '), ', ') :
+        null
+}
+
+function generateRelatedThingMessageHtml(thing) {
+    return (
+        `<div>
+            <span>Task </span>
+            <strong><a href="${GeneralConfig.BASE_URL}/inbox/${thing.id}">${thing.subject}</a></strong> 
+            <span> might be relevant.</span>
+        </div>`
+    )
+}
+
+function generateHelpersMessageHtml(helpersString) {
+    return (
+        `<div>
+            <div>These people worked on similar tasks, they might help:</div>
+            <div><strong>${helpersString}</strong></div>
+        </div>`
+    )
 }
