@@ -16,6 +16,7 @@ import EventTypes from '../../../common/enums/event-types'
 import UserTypes from '../../../common/enums/user-types'
 import TodoTimeCategory from '../../../common/enums/todo-time-category'
 import SharedConstants from '../../../common/shared-constants'
+import StyleConstants from '../../../common/style-constants'
 import {BOT} from '../constants'
 import {userToAddress, emailToAddress, botToAddress} from './address-creator'
 import {sendMessage} from '../technical/email-send-service'
@@ -728,9 +729,17 @@ async function notifyRecipientInSlack(userId, thing, event, message) {
         const slackTeam = await SlackTeam.get(user.integrations.slack.teamId).run()
         const client = new WebClient(slackTeam.accessToken)
 
-        const baseMessage = getSlackMessageForEvent(thing, event)
-
-        await client.chat.postMessage(`@${thing.to.payload.username}`, baseMessage + (message ? `: ${message}` : ''))
+        await client.chat.postMessage(`@${thing.to.payload.username}`, '', {
+            attachments: [
+                {
+                    pretext: getSlackMessageForEvent(event),
+                    title: thing.subject,
+                    title_link: `${GeneralConfig.BASE_URL}/inbox/${thing.id}`,
+                    text: message ? message : null,
+                    color: getSlackMessageColor(event)
+                }
+            ]
+        })
 
         logger.info(`Sending Slack message for thing ${thing.id} by ${user.email} to Slack user ${thing.to.payload.username}`)
 
@@ -755,10 +764,17 @@ async function notifyCreatorInSlack(thing, event, message) {
         const slackTeam = await SlackTeam.get(creatorUser.integrations.slack.teamId).run()
         const client = new WebClient(slackTeam.accessToken)
 
-        const baseMessage = getSlackMessageForEvent(thing, event)
-
-        await client.chat.postMessage(`@${creatorUser.integrations.slack.username}`,
-            baseMessage + (message ? `: ${message}` : ''))
+        await client.chat.postMessage(`@${creatorUser.integrations.slack.username}`, '', {
+            attachments: [
+                {
+                    pretext: getSlackMessageForEvent(event),
+                    title: thing.subject,
+                    title_link: `${GeneralConfig.BASE_URL}/inbox/${thing.id}`,
+                    text: message ? message : null,
+                    color: getSlackMessageColor(event)
+                }
+            ]
+        })
 
         logger.info(`Sending Slack message for thing ${thing.id} to Slack user ${creatorUser.integrations.slack.username}`)
 
@@ -770,25 +786,44 @@ async function notifyCreatorInSlack(thing, event, message) {
     }
 }
 
-function getSlackMessageForEvent(thing, event) {
+function getSlackMessageForEvent(event) {
     switch (event.eventType) {
         case EventTypes.CREATED.key:
             return `${event.creator.displayName} sent you a task`
         case EventTypes.DONE.key:
-            return `${event.creator.displayName} marked task [${thing.subject}] as done`
+            return `${event.creator.displayName} marked task as done`
         case EventTypes.DISMISSED.key:
-            return `${event.creator.displayName} dismissed task [${thing.subject}]`
+            return `${event.creator.displayName} dismissed task`
         case EventTypes.CLOSED.key:
-            return `${event.creator.displayName} closed task [${thing.subject}]`
+            return `${event.creator.displayName} closed task`
         case EventTypes.PING.key:
-            return `${event.creator.displayName} pinged you for task [${thing.subject}]`
+            return `${event.creator.displayName} pinged you for task`
         case EventTypes.PONG.key:
-            return `${event.creator.displayName} ponged on task [${thing.subject}]`
+            return `${event.creator.displayName} ponged on task`
         case EventTypes.SENT_BACK.key:
-            return `${event.creator.displayName} sent you back task [${thing.subject}]`
+            return `${event.creator.displayName} sent you back task`
         case EventTypes.COMMENT.key:
         default:
-            return `${event.creator.displayName} commented on task [${thing.subject}]`
+            return `${event.creator.displayName} commented on task`
+    }
+}
+
+function getSlackMessageColor(event) {
+    switch (event.eventType) {
+        case EventTypes.CREATED.key:
+        case EventTypes.SENT_BACK.key:
+            return StyleConstants.baseBlueColor
+        case EventTypes.DONE.key:
+            return StyleConstants.baseGreenColor
+        case EventTypes.DISMISSED.key:
+            return StyleConstants.baseRedColor
+        case EventTypes.CLOSED.key:
+            return StyleConstants.baseGreyColor
+        case EventTypes.COMMENT.key:
+        case EventTypes.PING.key:
+        case EventTypes.PONG.key:
+        default:
+            return StyleConstants.baseYellowColor
     }
 }
 
