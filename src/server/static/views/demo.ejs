@@ -108,10 +108,19 @@
 
             <div class="button-row">
                 <form method="post" action="/demo/init">
-                    <input type="submit" value="1. Initialize">
+                    <input type="submit" value="1a. Initialize">
                 </form>
                 <div class="explanation">
                     Start here. This will initialize the demo environment so you can start it from scratch whenever you want.
+                </div>
+            </div>
+
+            <div class="button-row">
+                <form method="post" action="/demo/init?withScenario=true">
+                    <input type="submit" value="1b. Initialize">
+                </form>
+                <div class="explanation">
+                    Start here. This will initialize the demo environment too, but with an empty inbox.
                 </div>
             </div>
 

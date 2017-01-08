@@ -204,7 +204,7 @@ async function createSlackTeam() {
     }, {conflict: 'update'})
 }
 
-export default async function() {
+export default async function(withScenario=false) {
     await User.filter(doc => doc('id').ne(userId)).delete().execute()
     await Thing.delete().execute()
     await Event.delete().execute()
@@ -282,7 +282,10 @@ export default async function() {
     await comment('Max', widget, 'Let’s begin with short iterations to get the feeling for Permal.')
     await discardComments('Max', widget)
     await readAllComments('Max', widget)
-    await comment('Steve', widget, 'Cool, do we have documentation of the eBay API somewhere?')
+
+    if (!withScenario) {
+        await comment('Steve', widget, 'Cool, do we have documentation of the eBay API somewhere?')
+    }
 
     // Supporting IE4
     const ie4 = await sendThing('Max', 'Jawed', 'Supporting Internet Explorer 4', 'Seems like a pretty big portion of our users actually still use this old browser, we really need it to work properly and to look at least… acceptable.')
@@ -318,9 +321,11 @@ export default async function() {
 
     // New tasks in Inbox
 
-    await sendThing('David', 'Max', 'Crash from last night', 'Hey Max,\r\n\r\nnot sure if you got it, but many users could not log in tonight, can we direct them that it’s all over now?\r\nPlease keep me in the loop and let me know ASAP.')
-    await sendThing('Steve', 'Max', 'let\'s talk about my salary', 'Hey what’s up?\r\n\r\nI’ve been in the company for a while now, I would appreciate it if we could have a talk about upgrading my salary.\r\n\r\nThank you!')
-    await sendThing('Peter', 'Max', 'How many active users so far this month', 'I have a meeting soon, can’t remember the exact number we talked about last week in the meeting.')
+    if (!withScenario) {
+        await sendThing('David', 'Max', 'Crash from last night', 'Hey Max,\r\n\r\nnot sure if you got it, but many users could not log in tonight, can we direct them that it’s all over now?\r\nPlease keep me in the loop and let me know ASAP.')
+        await sendThing('Steve', 'Max', 'let\'s talk about my salary', 'Hey what’s up?\r\n\r\nI’ve been in the company for a while now, I would appreciate it if we could have a talk about upgrading my salary.\r\n\r\nThank you!')
+        await sendThing('Peter', 'Max', 'How many active users so far this month', 'I have a meeting soon, can’t remember the exact number we talked about last week in the meeting.')
+    }
 
     /* const peter = await User.get('066c2cc8-32ad-4919-a943-d8ccc3c0db58').run()
      await EmailService.sendEmail(peter, 'max.freection@gmail.com', 'Company Update',

@@ -27,15 +27,15 @@ async function getUserToken() {
 
 export function configure(app) {
     app.post('/demo/init', (request, response) => {
-        initDemoDB()
-            .then(() => {
-                logger.info('complete initialize db for demo')
-                response.redirect('/demo')
-            })
-            .catch(error => {
-                logger.error('error while initialize db for demo', error)
-                response.status(500).send(error)
-            })
+    initDemoDB(request.query.withScenario)
+        .then(() => {
+            logger.info('complete initialize db for demo')
+            response.redirect('/demo')
+        })
+        .catch(error => {
+            logger.error('error while initialize db for demo', error)
+            response.status(500).send(error)
+        })
     })
 
     app.post('/demo/ping', (request, response) => {
