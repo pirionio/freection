@@ -282,10 +282,7 @@ export default async function(withScenario=false) {
     await comment('Max', widget, 'Let’s begin with short iterations to get the feeling for Permal.')
     await discardComments('Max', widget)
     await readAllComments('Max', widget)
-
-    if (!withScenario) {
-        await comment('Steve', widget, 'Cool, do we have documentation of the eBay API somewhere?')
-    }
+    await comment('Steve', widget, 'Cool, do we have documentation of the eBay API somewhere?')
 
     // Supporting IE4
     const ie4 = await sendThing('Max', 'Jawed', 'Supporting Internet Explorer 4', 'Seems like a pretty big portion of our users actually still use this old browser, we really need it to work properly and to look at least… acceptable.')
