@@ -26,9 +26,9 @@ router.post('/:userId', async function(request, response) {
             const card = (action && action.data) ? action.data.card : null
 
             if (!card) {
-                logger.warn(`Trello - notification [${action.type}] arrived for user ${user.email} 
-                    from [${action.memberCreator ? action.memberCreator.username : 'Unknown'}] 
-                    but with no card in it - skipping the notification`)
+                logger.warn(`Trello - notification [${action.type}] arrived for user ${user.email} ` +
+                    `from [${action.memberCreator ? action.memberCreator.username : 'Unknown'}] ` +
+                    `but with no card in it - skipping the notification`)
                 response.sendStatus(200)
                 return
             }
