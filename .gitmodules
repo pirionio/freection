@@ -1,0 +1,3 @@
+[submodule "src/extension"]
+	path = src/extension
+	url = https://github.com/freection/freection-chrome-extension.git
